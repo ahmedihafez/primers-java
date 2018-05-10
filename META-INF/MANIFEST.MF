@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Primer3-java
+Bundle-SymbolicName: primer3-java;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Require-Bundle: org.eclipse.wb.core.lib,
+ org.apache.commons.cli
+Export-Package: com.primer3,
+ com.primer3.dpal,
+ com.primer3.libprimer3,
+ com.primer3.masker,
+ com.primer3.oligotm,
+ com.primer3.p3_seq_lib,
+ com.primer3.sequence,
+ com.primer3.thal,
+ resources
