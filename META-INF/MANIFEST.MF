@@ -5,12 +5,13 @@ Bundle-SymbolicName: primer3-java;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Require-Bundle: org.eclipse.wb.core.lib,
  org.apache.commons.cli
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: com.primer3,
  com.primer3.dpal,
  com.primer3.libprimer3,
  com.primer3.masker,
  com.primer3.oligotm,
  com.primer3.p3_seq_lib,
+ com.primer3.primers,
  com.primer3.sequence,
- com.primer3.thal,
- resources
+ com.primer3.thal
