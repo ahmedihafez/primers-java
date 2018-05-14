@@ -379,20 +379,20 @@ public class primer_rec {
 		double sum = 0;
 
 		if (type == oligo_type.OT_LEFT || type == oligo_type.OT_RIGHT) {
-			if( pa.p_args.weights.temp_gt > 0 && this.temp > pa.p_args.opt_tm)
-				sum += pa.p_args.weights.temp_gt * (this.temp - pa.p_args.opt_tm);
-			if (pa.p_args.weights.temp_lt > 0 && this.temp < pa.p_args.opt_tm)
-				sum += pa.p_args.weights.temp_lt * (pa.p_args.opt_tm - this.temp);
+			if( pa.p_args.weights.temp_gt > 0 && this.temp > pa.p_args.getOptTm())
+				sum += pa.p_args.weights.temp_gt * (this.temp - pa.p_args.getOptTm());
+			if (pa.p_args.weights.temp_lt > 0 && this.temp < pa.p_args.getOptTm())
+				sum += pa.p_args.weights.temp_lt * (pa.p_args.getOptTm() - this.temp);
 
-			if (pa.p_args.weights.gc_content_gt > 0 && this.gc_content > pa.p_args.opt_gc_content)
-				sum += pa.p_args.weights.gc_content_gt * (this.gc_content - pa.p_args.opt_gc_content);
-			if (pa.p_args.weights.gc_content_lt > 0 && this.gc_content < pa.p_args.opt_gc_content)
-				sum += pa.p_args.weights.gc_content_lt * (pa.p_args.opt_gc_content - this.gc_content);
+			if (pa.p_args.weights.gc_content_gt > 0 && this.gc_content > pa.p_args.getOptGC())
+				sum += pa.p_args.weights.gc_content_gt * (this.gc_content - pa.p_args.getOptGC());
+			if (pa.p_args.weights.gc_content_lt > 0 && this.gc_content < pa.p_args.getOptGC())
+				sum += pa.p_args.weights.gc_content_lt * (pa.p_args.getOptGC() - this.gc_content);
 
-			if (pa.p_args.weights.length_lt > 0 && this.length < pa.p_args.opt_size)
-				sum += pa.p_args.weights.length_lt * (pa.p_args.opt_size - this.length);
-			if (pa.p_args.weights.length_gt > 0 && this.length > pa.p_args.opt_size)
-				sum += pa.p_args.weights.length_gt * (this.length - pa.p_args.opt_size);
+			if (pa.p_args.weights.length_lt > 0 && this.length < pa.p_args.getOptSize())
+				sum += pa.p_args.weights.length_lt * (pa.p_args.getOptSize() - this.length);
+			if (pa.p_args.weights.length_gt > 0 && this.length > pa.p_args.getOptSize())
+				sum += pa.p_args.weights.length_gt * (this.length - pa.p_args.getOptSize());
 
 			/* edited by M. Lepamets */
 			if (pa.p_args.weights.failure_rate > 0) {
@@ -478,20 +478,20 @@ public class primer_rec {
 			}
 			return sum;
 		} else if (type == oligo_type.OT_INTL) {
-			if(pa.o_args.weights.temp_gt > 0 && this.temp > pa.o_args.opt_tm)
-				sum += pa.o_args.weights.temp_gt * (this.temp - pa.o_args.opt_tm);
-			if(pa.o_args.weights.temp_lt > 0 && this.temp < pa.o_args.opt_tm)
-				sum += pa.o_args.weights.temp_lt * (pa.o_args.opt_tm - this.temp);
+			if(pa.o_args.weights.temp_gt > 0 && this.temp > pa.o_args.getOptTm())
+				sum += pa.o_args.weights.temp_gt * (this.temp - pa.o_args.getOptTm());
+			if(pa.o_args.weights.temp_lt > 0 && this.temp < pa.o_args.getOptTm())
+				sum += pa.o_args.weights.temp_lt * (pa.o_args.getOptTm() - this.temp);
 
-			if(pa.o_args.weights.gc_content_gt > 0 && this.gc_content > pa.o_args.opt_gc_content)
-				sum += pa.o_args.weights.gc_content_gt * (this.gc_content - pa.o_args.opt_gc_content);
-			if(pa.o_args.weights.gc_content_lt > 0 && this.gc_content < pa.o_args.opt_gc_content)
-				sum += pa.o_args.weights.gc_content_lt * (pa.o_args.opt_gc_content - this.gc_content);
+			if(pa.o_args.weights.gc_content_gt > 0 && this.gc_content > pa.o_args.getOptGC())
+				sum += pa.o_args.weights.gc_content_gt * (this.gc_content - pa.o_args.getOptGC());
+			if(pa.o_args.weights.gc_content_lt > 0 && this.gc_content < pa.o_args.getOptGC())
+				sum += pa.o_args.weights.gc_content_lt * (pa.o_args.getOptGC() - this.gc_content);
 
-			if(pa.o_args.weights.length_lt > 0 && this.length < pa.o_args.opt_size)
-				sum += pa.o_args.weights.length_lt * (pa.o_args.opt_size - this.length);
-			if(pa.o_args.weights.length_gt > 0 && this.length  > pa.o_args.opt_size)
-				sum += pa.o_args.weights.length_gt * (this.length - pa.o_args.opt_size);
+			if(pa.o_args.weights.length_lt > 0 && this.length < pa.o_args.getOptSize())
+				sum += pa.o_args.weights.length_lt * (pa.o_args.getOptSize() - this.length);
+			if(pa.o_args.weights.length_gt > 0 && this.length  > pa.o_args.getOptSize())
+				sum += pa.o_args.weights.length_gt * (this.length - pa.o_args.getOptSize());
 			if(pa.o_args.weights.compl_any > 0 && pa.thermodynamic_oligo_alignment==p3_global_settings.DONOT_USE_THERMODYNAMICS_ALIGNMENT)
 				sum += pa.o_args.weights.compl_any * this.self_any;
 			if(pa.o_args.weights.compl_end > 0 && pa.thermodynamic_oligo_alignment==p3_global_settings.DONOT_USE_THERMODYNAMICS_ALIGNMENT)
@@ -595,7 +595,7 @@ public class primer_rec {
 		char[] oligo_seq;
 		char[] revc_oligo_seq;
 
-		args_for_one_oligo_or_primer po_args;
+		PrimersOligosArguments po_args;
 		oligo_pair op = new oligo_pair();
 
 		/* Initialize slots in h */
@@ -685,7 +685,7 @@ public class primer_rec {
 
 		gc_and_n_content(j, k-j+1, sa.trimmed_seq);
 
-		if (this.num_ns > po_args.num_ns_accepted) {
+		if (this.num_ns > po_args.getMaxNumOfNsAccepted()) {
 			this.op_set_too_many_ns();
 			stats.ns++;
 			if (!must_use) return;
@@ -786,11 +786,11 @@ public class primer_rec {
 			}
 		}
 
-		if (this.gc_content < po_args.min_gc) {
+		if (this.gc_content < po_args.getMinGC()) {
 			op_set_low_gc_content();
 			stats.gc++;
 			if (!must_use) return;
-		} else if (this.gc_content > po_args.max_gc) {
+		} else if (this.gc_content > po_args.getMaxGC()) {
 			op_set_high_gc_content();
 			stats.gc++;
 			if (!must_use) return;
@@ -838,7 +838,7 @@ public class primer_rec {
 				&& !must_use) 
 			return;
 
-		max_poly_x = po_args.max_poly_x;
+		max_poly_x = po_args.getMaxPolyX();
 		if (max_poly_x > 0) {
 			poly_x = 1;
 			for(i=j+1;i<=k;i++){
@@ -857,21 +857,21 @@ public class primer_rec {
 			}
 		}
 
-		this.temp = oligo_tm.seqtm(oligo_seq, po_args.dna_conc,
-				po_args.salt_conc,
-				po_args.divalent_conc,
-				po_args.dntp_conc,
+		this.temp = oligo_tm.seqtm(oligo_seq, po_args.getDnaConcentration(),
+				po_args.getSaltConcentration(),
+				po_args.getDivalentConcentration(),
+				po_args.getDntpConcentration(),
 				LibPrimer3.MAX_NN_TM_LENGTH,
 				pa.tm_santalucia,
 				pa.salt_corrections);
 
-		if (this.temp < po_args.min_tm) {
+		if (this.temp < po_args.getMinTm()) {
 			op_set_low_tm();
 			stats.temp_min++;
 			if (!must_use) return;
 		}
 
-		if (this.temp > po_args.max_tm) {
+		if (this.temp > po_args.getMaxTm()) {
 			op_set_high_tm();
 			stats.temp_max++;
 			if (!must_use) return;
@@ -988,13 +988,13 @@ public class primer_rec {
 		//		  #endif
 
 
-		if (this.length > po_args.max_size ) {
+		if (this.length > po_args.getMaxSize() ) {
 			op_set_too_long();
 			stats.size_max ++;
 			if (!must_use) return;
 		}
 
-		if (this.length < po_args.min_size ) {
+		if (this.length < po_args.getMinSize() ) {
 			op_set_too_short();
 			stats.size_min ++;
 			if (!must_use) return;
@@ -1102,10 +1102,10 @@ public class primer_rec {
 		/* First, check the oligo against the repeat library. */
 		if (l == oligo_type.OT_INTL) {
 			lib = pa.o_args.repeat_lib;
-			max_lib_compl =  (int)pa.o_args.max_repeat_compl;
+			max_lib_compl =  (int)pa.o_args.getMaxRepeatCompl();
 		} else {
 			lib = pa.p_args.repeat_lib;
-			max_lib_compl =  (int)pa.p_args.max_repeat_compl;
+			max_lib_compl =  (int)pa.p_args.getMaxRepeatCompl();
 		}	
 		
 		char[] s   = oligo_compute_sequence_and_reverse( sa, l);
@@ -1204,10 +1204,10 @@ public class primer_rec {
 	 * which we use as an approximation for both secondary structure and
 	 * self primer-dimer. 
 	 */
-	void oligo_hairpin(args_for_one_oligo_or_primer po_args,
+	void oligo_hairpin(PrimersOligosArguments po_args,
 			oligo_stats ostats, thal_arg_holder thal_arg_to_use, char[] oligo_seq) throws ThermodynamicAlignmentException {
 		this.hairpin_th = LibPrimer3.align_thermod(oligo_seq, oligo_seq, thal_arg_to_use.hairpin_th);
-		if(this.hairpin_th > po_args.max_hairpin_th) {
+		if(this.hairpin_th > po_args.getMaxHairPinTH()) {
 			op_set_high_hairpin_th();
 			ostats.hairpin_th++;
 			ostats.ok--;
@@ -1216,18 +1216,18 @@ public class primer_rec {
 
 
 
-	void oligo_compl_thermod(args_for_one_oligo_or_primer po_args,
+	void oligo_compl_thermod(PrimersOligosArguments po_args,
 			oligo_stats ostats, thal_arg_holder thal_arg_to_use,
 			char[] oligo_seq, char[] revc_oligo_seq) throws ThermodynamicAlignmentException {
 		this.self_any = LibPrimer3. align_thermod(oligo_seq, revc_oligo_seq, thal_arg_to_use.any);
-		if(this.self_any > po_args.max_self_any_th) { 
+		if(this.self_any > po_args.getMaxSelfAnyTH()) { 
 			this.op_set_high_self_any();
 			ostats.compl_any++;
 			ostats.ok--;
 			if (!this.must_use) return;
 		}  
 		this.self_end = LibPrimer3.align_thermod(oligo_seq, revc_oligo_seq, thal_arg_to_use.end1);  
-		if(this.self_end > po_args.max_self_end_th){  
+		if(this.self_end > po_args.getMaxSelfEndTH()){  
 			this.op_set_high_self_end();
 			ostats.compl_end++;
 			ostats.ok--;
@@ -1237,11 +1237,11 @@ public class primer_rec {
 
 
 
-	void oligo_compl(args_for_one_oligo_or_primer po_args,
+	void oligo_compl(PrimersOligosArguments po_args,
 			oligo_stats ostats, dpal_arg_holder dpal_arg_to_use,
 			char[] oligo_seq, char[] revc_oligo_seq) throws AlignmentException {
 		this.self_any = LibPrimer3.align(oligo_seq, revc_oligo_seq, dpal_arg_to_use.local);
-		if (this.self_any > po_args.max_self_any) {
+		if (this.self_any > po_args.getMaxSelfAny()) {
 			this.op_set_high_self_any();
 			ostats.compl_any++;
 			ostats.ok--;     
@@ -1249,7 +1249,7 @@ public class primer_rec {
 		}
 
 		this.self_end = LibPrimer3.align(oligo_seq, revc_oligo_seq, dpal_arg_to_use.end);
-		if (this.self_end > po_args.max_self_end) {
+		if (this.self_end > po_args.getMaxSelfEnd()) {
 			this.op_set_high_self_end();
 			ostats.compl_end++;
 			ostats.ok--;
@@ -1268,7 +1268,7 @@ public class primer_rec {
 	 */
 	private boolean sequence_quality_is_ok(p3_global_settings pa,
 			oligo_type l, seq_args sa, int j, int k, oligo_stats global_oligo_stats,
-			args_for_one_oligo_or_primer po_args) {
+			PrimersOligosArguments po_args) {
 
 		int i, min_q, min_q_end, m, q;
 		boolean  retval = true;
@@ -1280,9 +1280,9 @@ public class primer_rec {
 
 		q = pa.quality_range_max;
 
-		min_q = po_args.min_quality;
+		min_q = po_args.getMinQuality();
 		if (oligo_type.OT_LEFT == l || oligo_type.OT_RIGHT == l) {
-			min_q_end = po_args.min_end_quality;
+			min_q_end = po_args.getMinEndQuality();
 		} else {
 			min_q_end = min_q;
 		}
@@ -1323,7 +1323,7 @@ public class primer_rec {
 		this.seq_quality = min_q;
 		this.seq_end_quality = min_q_end;
 
-		if (this.seq_quality < po_args.min_quality) {
+		if (this.seq_quality < po_args.getMinQuality()) {
 			op_set_low_sequence_quality();
 			global_oligo_stats.seq_quality++;
 			//		    retval = 0;
@@ -1331,7 +1331,7 @@ public class primer_rec {
 		}
 
 		if (oligo_type.OT_LEFT == l || oligo_type.OT_RIGHT == l) {
-			if (this.seq_end_quality < po_args.min_end_quality) {
+			if (this.seq_end_quality < po_args.getMinEndQuality()) {
 				op_set_low_end_sequence_quality();
 				global_oligo_stats.seq_quality++;
 				retval = false;

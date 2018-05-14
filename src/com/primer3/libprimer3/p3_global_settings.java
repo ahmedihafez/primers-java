@@ -65,8 +65,14 @@ public class p3_global_settings {
 	/* ================================================== */
 	/* Arguments for individual oligos and/or primers */
 
-	public args_for_one_oligo_or_primer p_args = new args_for_one_oligo_or_primer();
-	public args_for_one_oligo_or_primer o_args = new args_for_one_oligo_or_primer();
+	public PrimersOligosArguments p_args = new PrimersOligosArguments();
+	
+	public PrimersOligosArguments getPrimerArg()
+	{
+		return p_args;
+	}
+	
+	public PrimersOligosArguments o_args = new PrimersOligosArguments();
 
 	/** 
 	 * tm_santalucia added by T.Koressaar for updated table
@@ -302,8 +308,8 @@ public class p3_global_settings {
 		this.salt_corrections                 = salt_correction_type.santalucia;
 		this.thermodynamic_oligo_alignment    = 1;
 		this.thermodynamic_template_alignment = 0;
-		this.p_args.divalent_conc             = 1.5;
-		this.p_args.dntp_conc                 = 0.6;
+		this.p_args.setDivalentConcentration(1.5);
+		this.p_args.setDntpConcentration(0.6);
 		this.lib_ambiguity_codes_consensus    = false;
 	}
 
@@ -314,34 +320,34 @@ public class p3_global_settings {
 	 */
 	private void pr_set_default_global_args_1() {
 		/* Arguments for primers ================================= */
-		this.p_args.opt_size          = 20;
-		this.p_args.min_size          = 18;
-		this.p_args.max_size          = 27;
+		this.p_args.setOptSize(20);
+		this.p_args.setMinSize(18);
+		this.p_args.setMaxSize(27);
 
-		this.p_args.opt_tm            = 60;
-		this.p_args.min_tm            = 57;
-		this.p_args.max_tm            = 63;
+		this.p_args.setOptTm(60);
+		this.p_args.setMinTm(57);
+		this.p_args.setMaxTm(63);
 
-		this.p_args.min_gc            = 20.0;
-		this.p_args.opt_gc_content    = LibPrimer3.DEFAULT_OPT_GC_PERCENT;
-		this.p_args.max_gc            = 80.0;
-		this.p_args.salt_conc         = 50.0;
-		this.p_args.divalent_conc     = 0.0;
-		this.p_args.dntp_conc         = 0.0;
+		this.p_args.setMinGC(20.0);
+		this.p_args.setOptGC(LibPrimer3.DEFAULT_OPT_GC_PERCENT);
+		this.p_args.setMaxGC(80.0);
+		this.p_args.setSaltConcentration(50.0);
+		this.p_args.setDivalentConcentration(0.0);
+		this.p_args.setDntpConcentration(0.0);
 
-		this.p_args.dna_conc          = 50.0;
-		this.p_args.num_ns_accepted   = 0;
-		this.p_args.max_self_any      = 8.0;
-		this.p_args.max_self_end      = 3.0;
-		this.p_args.max_self_any_th   = 47.0;
-		this.p_args.max_self_end_th   = 47.0;
-		this.p_args.max_hairpin_th    = 47.0;
-		this.p_args.max_poly_x        = 5;
-		this.p_args.max_repeat_compl  = 12.0;
-		this.p_args.min_quality       = 0;
-		this.p_args.min_end_quality   = 0;
-		this.p_args.max_template_mispriming = LibPrimer3.PR_UNDEFINED_ALIGN_OPT;
-		this.p_args.max_template_mispriming_th = LibPrimer3.PR_UNDEFINED_ALIGN_OPT;
+		this.p_args.setDnaConcentration(50.0);
+		this.p_args.setMaxNumOfNsAccepted(0);
+		this.p_args.setMaxSelfAny(8.0);
+		this.p_args.setMaxSelfEnd(3.0);
+		this.p_args.setMaxSelfAnyTH(47.0);
+		this.p_args.setMaxSelfEndTH(47.0);
+		this.p_args.setMaxHairPinTH(47.0);
+		this.p_args.setMaxPolyX(5);
+		this.p_args.setMaxRepeatCompl(12.0);
+		this.p_args.setMinQuality(0);
+		this.p_args.setMinEndQuality(0);
+		this.p_args.setMaxTemplateMispriming(LibPrimer3.PR_UNDEFINED_ALIGN_OPT);
+		this.p_args.setMaxTemplateMisprimingTH(LibPrimer3.PR_UNDEFINED_ALIGN_OPT);
 		/* The following apply only to primers (and not to internal
 		     oligos). */
 		this.gc_clamp                 = 0;
@@ -406,32 +412,32 @@ public class p3_global_settings {
 		this.product_opt_size    = LibPrimer3.PR_UNDEFINED_INT_OPT;
 		this.pair_max_template_mispriming = LibPrimer3.PR_UNDEFINED_ALIGN_OPT;
 		this.pair_max_template_mispriming_th = LibPrimer3.PR_UNDEFINED_ALIGN_OPT;
-		this.o_args.opt_size        = 20;
-		this.o_args.min_size        = 18;
-		this.o_args.max_size        = 27;
-		this.o_args.opt_tm          = 60.0;
-		this.o_args.min_tm          = 57.0;
-		this.o_args.max_tm          = 63.0;
-		this.o_args.min_gc          = 20.0;
-		this.o_args.max_gc          = 80.0;
-		this.o_args.opt_gc_content  = LibPrimer3.DEFAULT_OPT_GC_PERCENT;
-		this.o_args.max_poly_x      = 5;
-		this.o_args.salt_conc       = 50.0;
-		this.o_args.divalent_conc   = 0.0;
-		this.o_args.dntp_conc       = 0.0;
-		this.o_args.dna_conc        = 50.0;
-		this.o_args.num_ns_accepted = 0;
-		this.o_args.max_self_any    = 12.0;
-		this.o_args.max_self_end    = 12.0;
-		this.o_args.max_self_any_th = 47.0;
-		this.o_args.max_self_end_th = 47.0;
-		this.o_args.max_hairpin_th  = 47.0;
-		this.o_args.max_repeat_compl= 12.0;
+		this.o_args.setOptSize(20);
+		this.o_args.setMinSize(18);
+		this.o_args.setMaxSize(27);
+		this.o_args.setOptTm(60.0);
+		this.o_args.setMinTm(57.0);
+		this.o_args.setMaxTm(63.0);
+		this.o_args.setMinGC(20.0);
+		this.o_args.setMaxGC(80.0);
+		this.o_args.setOptGC(LibPrimer3.DEFAULT_OPT_GC_PERCENT);
+		this.o_args.setMaxPolyX(5);
+		this.o_args.setSaltConcentration(50.0);
+		this.o_args.setDivalentConcentration(0.0);
+		this.o_args.setDntpConcentration(0.0);
+		this.o_args.setDnaConcentration(50.0);
+		this.o_args.setMaxNumOfNsAccepted(0);
+		this.o_args.setMaxSelfAny(12.0);
+		this.o_args.setMaxSelfEnd(12.0);
+		this.o_args.setMaxSelfAnyTH(47.0);
+		this.o_args.setMaxSelfEndTH(47.0);
+		this.o_args.setMaxHairPinTH(47.0);
+		this.o_args.setMaxRepeatCompl(12.0);
 
-		this.o_args.min_quality           = 0;
-		this.o_args.min_end_quality       = 0;
-		this.o_args.max_template_mispriming = LibPrimer3.PR_UNDEFINED_ALIGN_OPT;
-		this.o_args.max_template_mispriming_th = LibPrimer3.PR_UNDEFINED_ALIGN_OPT;
+		this.o_args.setMinQuality(0);
+		this.o_args.setMinEndQuality(0);
+		this.o_args.setMaxTemplateMispriming(LibPrimer3.PR_UNDEFINED_ALIGN_OPT);
+		this.o_args.setMaxTemplateMisprimingTH(LibPrimer3.PR_UNDEFINED_ALIGN_OPT);
 		this.o_args.weights.temp_gt       = 1;
 		this.o_args.weights.temp_lt       = 1;
 		this.o_args.weights.length_gt     = 1;
@@ -815,7 +821,7 @@ public class p3_global_settings {
 	 * @param datum
 	 */
 	public void p3_set_gs_primer_internal_oligo_self_end(String datum) {
-		this.o_args.set_max_self_end(datum);
+		this.o_args.setMaxSelfEnd(datum);
 	}
 
 	/**
@@ -938,7 +944,7 @@ public class p3_global_settings {
 
 
 	public boolean _pr_need_template_mispriming() {
-		return this.p_args.max_template_mispriming >= 0
+		return this.p_args.getMaxTemplateMispriming() >= 0
 				|| this.p_args.weights.template_mispriming > 0.0
 				|| this._pr_need_pair_template_mispriming();
 	}
@@ -950,7 +956,7 @@ public class p3_global_settings {
 
 	public boolean _pr_need_template_mispriming_thermod() {
 		return
-				this.p_args.max_template_mispriming_th >= 0
+				this.p_args.getMaxTemplateMisprimingTH() >= 0
 				|| this.p_args.weights.template_mispriming_th > 0.0
 				|| this._pr_need_pair_template_mispriming_thermod();
 	}
@@ -1092,30 +1098,30 @@ public class p3_global_settings {
 		System.out.format("failure_rate %f\n", p.p_args.weights.failure_rate) ;
 		System.out.format("end oligo_weights\n") ;
 
-		System.out.format("opt_tm %f\n", p.p_args.opt_tm) ;
-		System.out.format("min_tm %f\n", p.p_args.min_tm) ;
-		System.out.format("max_tm %f\n", p.p_args.max_tm) ;
-		System.out.format("opt_gc_content %f\n", p.p_args.opt_gc_content) ;
-		System.out.format("max_gc %f\n", p.p_args.max_gc) ;
-		System.out.format("min_gc %f\n", p.p_args.min_gc) ;
-		System.out.format("divalent_conc %f\n", p.p_args.divalent_conc) ;
-		System.out.format("dntp_conc %f\n", p.p_args.dntp_conc) ;
-		System.out.format("dna_conc %f\n", p.p_args.dna_conc) ;
-		System.out.format("num_ns_accepted %s\n", p.p_args.num_ns_accepted) ;
-		System.out.format("opt_size %s\n", p.p_args.opt_size) ;
-		System.out.format("min_size %s\n", p.p_args.min_size) ;
-		System.out.format("max_size %s\n", p.p_args.max_size) ;
-		System.out.format("max_poly_x %s\n", p.p_args.max_poly_x) ;
-		System.out.format("min_end_quality %s\n", p.p_args.min_end_quality) ;
-		System.out.format("min_quality %s\n", p.p_args.min_quality) ;
-		System.out.format("max_self_any %f\n", p.p_args.max_self_any) ;
-		System.out.format("max_self_end %f\n", p.p_args.max_self_end) ;
-		System.out.format("max_self_any_th %f\n", p.p_args.max_self_any_th) ;
-		System.out.format("max_self_end_th %f\n", p.p_args.max_self_end_th) ;
-		System.out.format("max_hairpin %f\n", p.p_args.max_hairpin_th) ;
-		System.out.format("max_repeat_compl %f\n", p.p_args.max_repeat_compl) ;
-		System.out.format("max_template_mispriming %f\n", p.p_args.max_template_mispriming) ;
-		System.out.format("max_template_mispriming_th %f\n", p.p_args.max_template_mispriming_th) ;
+		System.out.format("opt_tm %f\n", p.p_args.getOptTm()) ;
+		System.out.format("min_tm %f\n", p.p_args.getMinTm()) ;
+		System.out.format("max_tm %f\n", p.p_args.getMaxTm()) ;
+		System.out.format("opt_gc_content %f\n", p.p_args.getOptGC()) ;
+		System.out.format("max_gc %f\n", p.p_args.getMaxGC()) ;
+		System.out.format("min_gc %f\n", p.p_args.getMinGC()) ;
+		System.out.format("divalent_conc %f\n", p.p_args.getDivalentConcentration()) ;
+		System.out.format("dntp_conc %f\n", p.p_args.getDntpConcentration()) ;
+		System.out.format("dna_conc %f\n", p.p_args.getDnaConcentration()) ;
+		System.out.format("num_ns_accepted %s\n", p.p_args.getMaxNumOfNsAccepted()) ;
+		System.out.format("opt_size %s\n", p.p_args.getOptSize()) ;
+		System.out.format("min_size %s\n", p.p_args.getMinSize()) ;
+		System.out.format("max_size %s\n", p.p_args.getMaxSize()) ;
+		System.out.format("max_poly_x %s\n", p.p_args.getMaxPolyX()) ;
+		System.out.format("min_end_quality %s\n", p.p_args.getMinEndQuality()) ;
+		System.out.format("min_quality %s\n", p.p_args.getMinQuality()) ;
+		System.out.format("max_self_any %f\n", p.p_args.getMaxSelfAny()) ;
+		System.out.format("max_self_end %f\n", p.p_args.getMaxSelfEnd()) ;
+		System.out.format("max_self_any_th %f\n", p.p_args.getMaxSelfAnyTH()) ;
+		System.out.format("max_self_end_th %f\n", p.p_args.getMaxSelfEndTH()) ;
+		System.out.format("max_hairpin %f\n", p.p_args.getMaxHairPinTH()) ;
+		System.out.format("max_repeat_compl %f\n", p.p_args.getMaxRepeatCompl()) ;
+		System.out.format("max_template_mispriming %f\n", p.p_args.getMaxTemplateMispriming()) ;
+		System.out.format("max_template_mispriming_th %f\n", p.p_args.getMaxTemplateMisprimingTH()) ;
 		System.out.format("end primer args\n") ;
 
 		System.out.format("begin internal oligo args (p.o_args.)\n") ;
@@ -1140,25 +1146,25 @@ public class p3_global_settings {
 		System.out.format("    num_ns %f\n", p.o_args.weights.num_ns) ;
 		System.out.format("  end internal oligo_weights\n") ;
 
-		System.out.format("  opt_tm %f\n", p.o_args.opt_tm) ;
-		System.out.format("  min_tm %f\n", p.o_args.min_tm) ;
-		System.out.format("  max_tm %f\n", p.o_args.max_tm) ;
-		System.out.format("  opt_gc_content %f\n", p.o_args.opt_gc_content) ;
-		System.out.format("  max_gc %f\n", p.o_args.max_gc) ;
-		System.out.format("  min_gc %f\n", p.o_args.min_gc) ;
-		System.out.format("  divalent_conc %f\n", p.o_args.divalent_conc) ;
-		System.out.format("  dntp_conc %f\n", p.o_args.dntp_conc) ;
-		System.out.format("  dna_conc %f\n", p.o_args.dna_conc) ;
-		System.out.format("  num_ns_accepted %s\n", p.o_args.num_ns_accepted) ;
-		System.out.format("  opt_size %s\n", p.o_args.opt_size) ;
-		System.out.format("  min_size %s\n", p.o_args.min_size) ;
-		System.out.format("  max_size %s\n", p.o_args.max_size) ;
-		System.out.format("  max_poly_x %s\n", p.o_args.max_poly_x) ;
-		System.out.format("  min_end_quality %s\n", p.o_args.min_end_quality) ;
-		System.out.format("  min_quality %s\n", p.o_args.min_quality) ;
-		System.out.format("  max_self_any %f\n", p.o_args.max_self_any) ;
-		System.out.format("  max_self_end %f\n", p.o_args.max_self_end) ;
-		System.out.format("  max_repeat_compl %f\n", p.o_args.max_repeat_compl) ;
+		System.out.format("  opt_tm %f\n", p.o_args.getOptTm()) ;
+		System.out.format("  min_tm %f\n", p.o_args.getMinTm()) ;
+		System.out.format("  max_tm %f\n", p.o_args.getMaxTm()) ;
+		System.out.format("  opt_gc_content %f\n", p.o_args.getOptGC()) ;
+		System.out.format("  max_gc %f\n", p.o_args.getMaxGC()) ;
+		System.out.format("  min_gc %f\n", p.o_args.getMinGC()) ;
+		System.out.format("  divalent_conc %f\n", p.o_args.getDivalentConcentration()) ;
+		System.out.format("  dntp_conc %f\n", p.o_args.getDntpConcentration()) ;
+		System.out.format("  dna_conc %f\n", p.o_args.getDnaConcentration()) ;
+		System.out.format("  num_ns_accepted %s\n", p.o_args.getMaxNumOfNsAccepted()) ;
+		System.out.format("  opt_size %s\n", p.o_args.getOptSize()) ;
+		System.out.format("  min_size %s\n", p.o_args.getMinSize()) ;
+		System.out.format("  max_size %s\n", p.o_args.getMaxSize()) ;
+		System.out.format("  max_poly_x %s\n", p.o_args.getMaxPolyX()) ;
+		System.out.format("  min_end_quality %s\n", p.o_args.getMinEndQuality()) ;
+		System.out.format("  min_quality %s\n", p.o_args.getMinQuality()) ;
+		System.out.format("  max_self_any %f\n", p.o_args.getMaxSelfAny()) ;
+		System.out.format("  max_self_end %f\n", p.o_args.getMaxSelfEnd()) ;
+		System.out.format("  max_repeat_compl %f\n", p.o_args.getMaxRepeatCompl()) ;
 		System.out.format("  end internal oligo args\n");
 		System.out.format("\n");
 		System.out.format("END GLOBAL ARGS\n");

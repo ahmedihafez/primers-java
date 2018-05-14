@@ -86,10 +86,7 @@ public class oligo_tm {
 			if ('G' == c || 'C' == c)
 				GC_count++;
 		}
-		return  81.5
-			    + (16.6 * Math.log10(salt_conc / 1000.0))
-			    + (41.0 * (((double) GC_count) / length))
-			    - (600.0 / length);
+		return  81.5 + (16.6 * Math.log10(salt_conc / 1000.0)) + (41.0 * (((double) GC_count) / length)) - (600.0 / length);
 	}
 	
 	
@@ -458,9 +455,9 @@ public class oligo_tm {
 	/** Returns 1 if the sequence is self-complementary or symmetrical; 0
 	   otherwise
 	*/
-	int symmetry(char[] seq) {
-		return 0 ;
-	}
+//	int symmetry(char[] seq) {
+//		return 0 ;
+//	}
 	
 
 	/** Converts divalent salt concentration to monovalent salt concentration */

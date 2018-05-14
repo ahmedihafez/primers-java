@@ -149,28 +149,28 @@ public class boulder {
 						pa.p3_set_pa_product_size(datum);
 					}
 					else if (key.equals("PRIMER_OPT_SIZE")) { 
-						pa.p_args.set_opt_size(datum);
+						pa.p_args.setOptSize(datum);
 					}
 					else if (key.equals("PRIMER_MIN_SIZE")) { 
-						pa.p_args.set_min_size(datum);
+						pa.p_args.setMinSize(datum);
 					}
 					else if (key.equals("PRIMER_MAX_SIZE")) { 
-						pa.p_args.set_max_size(datum);
+						pa.p_args.setMaxSize(datum);
 					}
 					else if (key.equals("PRIMER_MAX_POLY_X")) { 
-						pa.p_args.set_max_poly_x(datum);
+						pa.p_args.setMaxPolyX(datum);
 					}
 					else if (key.equals("PRIMER_OPT_TM")) { 
-						pa.p_args.set_opt_tm(datum);
+						pa.p_args.setOptTm(datum);
 					}
 					else if (key.equals("PRIMER_OPT_GC_PERCENT")) { 
-						pa.p_args.set_opt_gc_content(datum);
+						pa.p_args.setOptGCContent(datum);
 					}
 					else if (key.equals("PRIMER_MIN_TM")) {
-						pa.p_args.set_min_tm(datum);
+						pa.p_args.setMinTm(datum);
 					}
 					else if (key.equals("PRIMER_MAX_TM")) { 
-						pa.p_args.set_max_tm(datum);
+						pa.p_args.setMaxTm(datum);
 					}
 					else if (key.equals("PRIMER_PAIR_MAX_DIFF_TM")) { 
 						pa.p3_set_pa_max_diff_tm(datum);
@@ -183,31 +183,31 @@ public class boulder {
 					}
 					else if (key.equals("PRIMER_MIN_GC")) { 
 						//pa.p_args.set_min_gc
-						pa.p_args.set_min_gc(datum);
+						pa.p_args.setMinGC(datum);
 					}
 					else if (key.equals("PRIMER_MAX_GC")) { 
 						//pa.p_args.set_max_gc
-						pa.p_args.set_max_gc(datum);
+						pa.p_args.setMaxGC(datum);
 					}
 					else if (key.equals("PRIMER_SALT_MONOVALENT")) { 
 						//pa.p_args.set_salt_conc
-						pa.p_args.set_salt_conc(datum);
+						pa.p_args.setSaltConcentration(datum);
 					}
 					else if (key.equals("PRIMER_SALT_DIVALENT")) { 
 						// pa.p_args.set_divalent_conc
-						pa.p_args.set_divalent_conc(datum);
+						pa.p_args.setDivalentConcentration(datum);
 					}
 					else if (key.equals("PRIMER_DNTP_CONC")) { 
 						//pa.p_args.set_dntp_conc
-						pa.p_args.set_dntp_conc(datum);
+						pa.p_args.setDntpConcentration(datum);
 					}
 					else if (key.equals("PRIMER_DNA_CONC")) { 
 						//pa.p_args.set_dna_conc
-						pa.p_args.set_dna_conc(datum);
+						pa.p_args.setDnaConcentration(datum);
 					}
 					else if (key.equals("PRIMER_MAX_NS_ACCEPTED")) { 
 						// pa.p_args.set_num_ns_accepted
-						pa.p_args.set_num_ns_accepted(datum);
+						pa.p_args.setMaxNumOfNsAccepted(datum);
 					}
 					else if (key.equals("PRIMER_PRODUCT_OPT_SIZE")) { 
 						//pa.p3_set_pa_product_opt_size
@@ -215,23 +215,23 @@ public class boulder {
 					}
 					else if (key.equals("PRIMER_MAX_SELF_ANY")) { 
 						// pa.p_args.set_max_self_any
-						pa.p_args.set_max_self_any(datum);
+						pa.p_args.setMaxSelfAny(datum);
 					}
 					else if (key.equals("PRIMER_MAX_SELF_END")) { 
 						// p3_set_gs_primer_self_end
-						pa.p_args.set_max_self_end(datum);
+						pa.p_args.setMaxSelfEnd(datum);
 					}
 					else if (key.equals("PRIMER_MAX_SELF_ANY_TH")) { 
 						//pa.p_args.set_max_self_any_th
-						pa.p_args.set_max_self_any_th(datum);
+						pa.p_args.setMaxSelfAnyTH(datum);
 					}
 					else if (key.equals("PRIMER_MAX_SELF_END_TH")) { 
 						//pa.p_args.set_max_self_end_th
-						pa.p_args.set_max_self_end_th(datum);
+						pa.p_args.setMaxSelfEndTH(datum);
 					}
 					else if (key.equals("PRIMER_MAX_HAIRPIN_TH")) { 
 						//pa.p_args.set_max_hairpin_th
-						pa.p_args.set_max_hairpin_th(datum);
+						pa.p_args.setMaxHairPinTH(datum);
 					}
 					else if (key.equals("PRIMER_PAIR_MAX_COMPL_ANY")) { 
 						//pa.p3_set_pa_pair_compl_any
@@ -281,12 +281,12 @@ public class boulder {
 					}
 					else if (key.equals("PRIMER_MIN_QUALITY")) { 
 						// pa.p_args.set_min_quality
-						pa.p_args.set_min_quality(datum);
+						pa.p_args.setMinQuality(datum);
 					}
 					else if (key.equals("PRIMER_MIN_END_QUALITY")) {
 						
 	//					COMPARE_INT("PRIMER_MIN_END_QUALITY", pa.p_args.set_min_end_quality);
-						pa.p_args.set_min_end_quality(datum);
+						pa.p_args.setMinEndQuality(datum);
 					}
 					else if (key.equals("PRIMER_MIN_THREE_PRIME_DISTANCE")) { 
 						int min_three_prime_distance = Integer.parseInt(datum);
@@ -374,83 +374,83 @@ public class boulder {
 						pa.p3_set_pa_pick_left_primer(datum);
 					}
 					else if (key.equals("PRIMER_INTERNAL_OPT_SIZE")) {
-						pa.o_args.set_opt_size(datum);
+						pa.o_args.setOptSize(datum);
 					}
 					else if (key.equals("PRIMER_INTERNAL_MAX_SIZE")) { 
-						pa.o_args.set_max_size(datum);
+						pa.o_args.setMaxSize(datum);
 					}
 					else if (key.equals("PRIMER_INTERNAL_MIN_SIZE")) { 
-						pa.o_args.set_min_size(datum);
+						pa.o_args.setMinSize(datum);
 					}
 					else if (key.equals("PRIMER_INTERNAL_MAX_POLY_X")) { 
-						pa.o_args.set_max_poly_x(datum);
+						pa.o_args.setMaxPolyX(datum);
 					}
 					else if (key.equals("PRIMER_INTERNAL_OPT_TM")) { 
-						pa.o_args.set_opt_tm(datum);
+						pa.o_args.setOptTm(datum);
 					}
 					else if (key.equals("PRIMER_INTERNAL_OPT_GC_PERCENT")) {
-						pa.o_args.set_opt_gc_content(datum);
+						pa.o_args.setOptGCContent(datum);
 					}
 					else if (key.equals("PRIMER_INTERNAL_MAX_TM")) { 
-						pa.o_args.set_max_tm(datum);
+						pa.o_args.setMaxTm(datum);
 					}
 					else if (key.equals("PRIMER_INTERNAL_MIN_TM")) { 
-						pa.o_args.set_min_tm(datum);
+						pa.o_args.setMinTm(datum);
 					}
 					else if (key.equals("PRIMER_INTERNAL_MIN_GC")) { 
-						pa.o_args.set_min_gc(datum);
+						pa.o_args.setMinGC(datum);
 					}
 					else if (key.equals("PRIMER_INTERNAL_MAX_GC")) { 
-						pa.o_args.set_max_gc(datum);
+						pa.o_args.setMaxGC(datum);
 					}
 					else if (key.equals("PRIMER_INTERNAL_SALT_MONOVALENT")) {
-						pa.o_args.set_salt_conc(datum);
+						pa.o_args.setSaltConcentration(datum);
 					}
 					else if (key.equals("PRIMER_INTERNAL_SALT_DIVALENT")) {
-						pa.o_args.set_divalent_conc(datum);
+						pa.o_args.setDivalentConcentration(datum);
 					}
 					else if (key.equals("PRIMER_INTERNAL_DNTP_CONC")) {
-						pa.o_args.set_dntp_conc(datum);
+						pa.o_args.setDntpConcentration(datum);
 					}
 					else if (key.equals("PRIMER_INTERNAL_DNA_CONC")) { 
-						pa.o_args.set_dna_conc(datum);
+						pa.o_args.setDnaConcentration(datum);
 					}
 					else if (key.equals("PRIMER_INTERNAL_MAX_NS_ACCEPTED")) { 
-						pa.o_args.set_num_ns_accepted(datum);
+						pa.o_args.setMaxNumOfNsAccepted(datum);
 					}
 					else if (key.equals("PRIMER_INTERNAL_MIN_QUALITY")) { 
-						pa.o_args.set_min_quality(datum);
+						pa.o_args.setMinQuality(datum);
 					}
 					else if (key.equals("PRIMER_INTERNAL_MAX_SELF_ANY")) {
-						pa.o_args.set_max_self_any(datum);
+						pa.o_args.setMaxSelfAny(datum);
 					}
 					else if (key.equals("PRIMER_INTERNAL_MAX_SELF_END")) { 
 						pa.p3_set_gs_primer_internal_oligo_self_end(datum);
 					}
 					else if (key.equals("PRIMER_INTERNAL_MAX_SELF_ANY_TH")) {
-						pa.o_args.set_max_self_any_th(datum);
+						pa.o_args.setMaxSelfAnyTH(datum);
 					}
 					else if (key.equals("PRIMER_INTERNAL_MAX_SELF_END_TH")) {
-						pa.o_args.set_max_self_end_th(datum);
+						pa.o_args.setMaxSelfEndTH(datum);
 					}
 					else if (key.equals("PRIMER_INTERNAL_MAX_HAIRPIN_TH")) {
-						pa.o_args.set_max_hairpin_th(datum);
+						pa.o_args.setMaxHairPinTH(datum);
 					}
 					else if (key.equals("PRIMER_MAX_LIBRARY_MISPRIMING")) {
-						pa.p_args.set_max_repeat_compl(datum);
+						pa.p_args.setMaxRepeatCompl(datum);
 					}
 					else if (key.equals("PRIMER_INTERNAL_MAX_LIBRARY_MISHYB")) {
-						pa.o_args.set_max_repeat_compl(datum);
+						pa.o_args.setMaxRepeatCompl(datum);
 					}
 					else if (key.equals("PRIMER_PAIR_MAX_LIBRARY_MISPRIMING")) {
 						pa.p3_set_pa_pair_repeat_compl(datum);
 					}
 				      /* Mispriming / mishybing in the template. */
 					else if (key.equals("PRIMER_MAX_TEMPLATE_MISPRIMING")) {
-						pa.p_args.set_max_template_mispriming(datum);
+						pa.p_args.setMaxTemplateMispriming(datum);
 					}
 					else if (key.equals("PRIMER_MAX_TEMPLATE_MISPRIMING_TH")) {
-						pa.p_args.set_max_template_mispriming_th(datum);
+						pa.p_args.setMaxTemplateMisprimingTH(datum);
 					}
 					else if (key.equals("PRIMER_PAIR_MAX_TEMPLATE_MISPRIMING")) {
 						pa.p3_set_pa_pair_max_template_mispriming(datum);

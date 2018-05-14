@@ -967,17 +967,17 @@ public class LibPrimer3 {
 		     oligos. */
 		if (retval.output_type == p3_output_type.primer_list && pa.pick_left_primer)
 			f_b = n - 1;
-		else if (tar_r - 1 < n - pr_min + pa.p_args.max_size - 1
+		else if (tar_r - 1 < n - pr_min + pa.p_args.getMaxSize() - 1
 				&& !(pa.pick_anyway && sa.left_input != null ))
 			f_b=tar_r - 1;
 		else
-			f_b = n - pr_min + pa.p_args.max_size-1;
+			f_b = n - pr_min + pa.p_args.getMaxSize()-1;
 
 		if (pa.pick_left_primer) {
 			/* We will need a left primer. */
 			left=n; right=0;
-			length = f_b - pa.p_args.min_size + 1;
-			start = pa.p_args.min_size - 1;
+			length = f_b - pa.p_args.getMinSize() + 1;
+			start = pa.p_args.getMinSize() - 1;
 
 			// just in case
 
@@ -1010,17 +1010,17 @@ public class LibPrimer3 {
 		}  /* if (pa.pick_left_primer) */
 		if (retval.output_type == p3_output_type.primer_list && pa.pick_right_primer)
 			r_b = 0;
-		else if (tar_l+1>pr_min - pa.p_args.max_size
+		else if (tar_l+1>pr_min - pa.p_args.getMaxSize()
 				&& !(pa.pick_anyway && sa.right_input != null))
 			r_b = tar_l+1;
 		else
-			r_b = pr_min - pa.p_args.max_size;
+			r_b = pr_min - pa.p_args.getMaxSize();
 
 		if ( pa.pick_right_primer ) {
 			// init extreme
 			retval.fwd.extreme = right;
 			/* We will need a right primer */
-			length = n-pa.p_args.min_size - r_b + 1;
+			length = n-pa.p_args.getMinSize() - r_b + 1;
 			start = r_b;
 
 			/* Use the primer provided */
@@ -1097,7 +1097,7 @@ public class LibPrimer3 {
 		} else if (start > -1) {
 			/* Loop over possible primer lengths, from min to max */
 			ret = 0;
-			for (j = pa.p_args.min_size; j <= pa.p_args.max_size; j++) {
+			for (j = pa.p_args.getMinSize(); j <= pa.p_args.getMaxSize(); j++) {
 				ret += add_one_primer_by_position(start, j, oligo,
 						pa, sa, dpal_arg_to_use, thal_arg_to_use, retval);
 				if (ret == 0) {
@@ -1108,7 +1108,7 @@ public class LibPrimer3 {
 		} else if (end > -1) {
 			/* Loop over possible primer lengths, from min to max */
 			ret = 0;
-			for (j = pa.p_args.min_size; j <= pa.p_args.max_size; j++) {
+			for (j = pa.p_args.getMinSize(); j <= pa.p_args.getMaxSize(); j++) {
 				if (oligo.type != oligo_type.OT_RIGHT) {
 					new_start = end - j + 1;
 				} else {
@@ -1461,22 +1461,22 @@ public class LibPrimer3 {
 				}
 				/* Check if calculated positions make sense */
 				/* position_f cannot be outside included region */
-				if (pr_position_f < (pa.p_args.min_size -1)) {
-					pr_position_f = pa.p_args.min_size - 1;
+				if (pr_position_f < (pa.p_args.getMinSize() -1)) {
+					pr_position_f = pa.p_args.getMinSize() - 1;
 				}
-				if (pr_position_f > (n - pa.p_args.min_size - 1)) {
-					pr_position_f = n - pa.p_args.min_size - 1;
+				if (pr_position_f > (n - pa.p_args.getMinSize() - 1)) {
+					pr_position_f = n - pa.p_args.getMinSize() - 1;
 					/* Actually this should never happen */
 					retval.warnings.append("Calculation error in forward sequencing position calculation");
 				}
 				/* position_r cannot be outside included region */
-				if (pr_position_r < (pa.p_args.min_size - 1)) {
-					pr_position_r = pa.p_args.min_size - 1;
+				if (pr_position_r < (pa.p_args.getMinSize() - 1)) {
+					pr_position_r = pa.p_args.getMinSize() - 1;
 					/* Actually this should never happen */
 					retval.warnings.append("Calculation error in reverse sequencing position calculation");
 				}
-				if (pr_position_r > (n - pa.p_args.min_size - 1)) {
-					pr_position_r = n - pa.p_args.min_size - 1;
+				if (pr_position_r > (n - pa.p_args.getMinSize() - 1)) {
+					pr_position_r = n - pa.p_args.getMinSize() - 1;
 				}
 				/* Now all pr_positions are within the sequence */
 				if (pa.pick_left_primer) {
@@ -1560,12 +1560,12 @@ public class LibPrimer3 {
 
 		/* Conditions for primer length */
 		if (oligo.type == oligo_type.OT_INTL) {
-			primer_size_small=pa.o_args.min_size;
-			primer_size_large=pa.o_args.max_size;
+			primer_size_small=pa.o_args.getMinSize();
+			primer_size_large=pa.o_args.getMaxSize();
 		}
 		else {
-			primer_size_small=pa.p_args.min_size;
-			primer_size_large=pa.p_args.max_size;
+			primer_size_small=pa.p_args.getMinSize();
+			primer_size_large=pa.p_args.getMaxSize();
 		}
 
 		/* Loop over locations in the sequence */
@@ -1694,8 +1694,8 @@ public class LibPrimer3 {
 		if (pa.pick_left_primer) {
 			/* We will need a left primer. */
 			retval.fwd.extreme = 0;
-			length = n - pa.p_args.min_size;
-			start = pa.p_args.min_size - 1;
+			length = n - pa.p_args.getMinSize();
+			start = pa.p_args.getMinSize() - 1;
 
 			/* Pick all good in the given range */
 			pick_primer_range(start, length,retval.fwd,
@@ -1705,7 +1705,7 @@ public class LibPrimer3 {
 		if ( pa.pick_right_primer ) {
 			/* We will need a right primer */
 			retval.rev.extreme = n;
-			length = n - pa.p_args.min_size + 1;
+			length = n - pa.p_args.getMinSize() + 1;
 			start = 0;
 
 			/* Pick all good in the given range */
@@ -1715,8 +1715,8 @@ public class LibPrimer3 {
 
 		if ( pa.pick_internal_oligo ) {
 			/* We will need a internal oligo */
-			length = n - pa.o_args.min_size;
-			start = pa.o_args.min_size - 1;
+			length = n - pa.o_args.getMinSize();
+			start = pa.o_args.getMinSize() - 1;
 			retval.intl.extreme = 0;
 
 			/* Pick all good in the given range */
@@ -1766,12 +1766,12 @@ public class LibPrimer3 {
 		//		PR_ASSERT(INT_MAX > (n=strlen(sa.trimmed_seq)));
 
 		if (oligo.type == oligo_type.OT_INTL) {
-			primer_size_small=pa.o_args.min_size; 
-			primer_size_large=pa.o_args.max_size;
+			primer_size_small=pa.o_args.getMinSize(); 
+			primer_size_large=pa.o_args.getMaxSize();
 		}
 		else {
-			primer_size_small=pa.p_args.min_size;
-			primer_size_large=pa.p_args.max_size;
+			primer_size_small=pa.p_args.getMinSize();
+			primer_size_large=pa.p_args.getMaxSize();
 		}
 
 		/* Loop over locations in the sequence */
@@ -1894,7 +1894,7 @@ public class LibPrimer3 {
 				(pa.min_right_three_prime_distance < -1))
 			nonfatal_err.append( "Minimum 3' distance must be >= -1 (min_*_three_prime_distance)");
 
-		if ((pa.p_args.min_quality != 0 || pa.o_args.min_quality != 0)
+		if ((pa.p_args.getMinQuality() != 0 || pa.o_args.getMinQuality() != 0)
 				&& sa.n_quality == 0)
 			nonfatal_err.append( "Sequence quality data missing");
 
@@ -1903,7 +1903,7 @@ public class LibPrimer3 {
 			return true;
 		}
 
-		if (pa.p_args.max_template_mispriming > Short.MAX_VALUE && pa.thermodynamic_template_alignment == 0) {
+		if (pa.p_args.getMaxTemplateMispriming() > Short.MAX_VALUE && pa.thermodynamic_template_alignment == 0) {
 			glob_err.append( "Value too large at tag PRIMER_MAX_TEMPLATE_MISPRIMING");
 			return true;
 		}
@@ -1913,12 +1913,12 @@ public class LibPrimer3 {
 			return true;
 		}
 
-		if (pa.p_args.max_repeat_compl > Short.MAX_VALUE && pa.thermodynamic_oligo_alignment == 0) {
+		if (pa.p_args.getMaxRepeatCompl() > Short.MAX_VALUE && pa.thermodynamic_oligo_alignment == 0) {
 			glob_err.append( "Value too large at tag PRIMER_MAX_LIBRARY_MISPRIMING");
 			return true;
 		}
 
-		if (pa.o_args.max_repeat_compl > Short.MAX_VALUE && pa.thermodynamic_oligo_alignment == 0) {
+		if (pa.o_args.getMaxRepeatCompl() > Short.MAX_VALUE && pa.thermodynamic_oligo_alignment == 0) {
 			glob_err.append( "Value too large at tag PRIMER_INTERNAL_MAX_LIBRARY_MISHYB");
 			return true;
 		}
@@ -1928,45 +1928,45 @@ public class LibPrimer3 {
 			return true;
 		}
 
-		if (pa.o_args.max_template_mispriming >= 0 && pa.thermodynamic_template_alignment==0)
+		if (pa.o_args.getMaxTemplateMispriming() >= 0 && pa.thermodynamic_template_alignment==0)
 			glob_err.append("PRIMER_INTERNAL_MAX_TEMPLATE_MISHYB is not supported");
-		if (pa.o_args.max_template_mispriming_th >= 0 && pa.thermodynamic_template_alignment==1)
+		if (pa.o_args.getMaxTemplateMisprimingTH() >= 0 && pa.thermodynamic_template_alignment==1)
 			glob_err.append("PRIMER_INTERNAL_MAX_TEMPLATE_MISHYB_TH is not supported");
-		if (pa.p_args.min_size < 1)
+		if (pa.p_args.getMinSize() < 1)
 			glob_err.append( "PRIMER_MIN_SIZE must be >= 1");
 
-		if (pa.p_args.max_size > MAX_PRIMER_LENGTH) {
+		if (pa.p_args.getMaxSize() > MAX_PRIMER_LENGTH) {
 			glob_err.append( "PRIMER_MAX_SIZE exceeds built-in maximum of " + MAX_PRIMER_LENGTH);
 			return true;
 		}
 
-		if (pa.p_args.opt_size > pa.p_args.max_size) {
+		if (pa.p_args.getOptSize() > pa.p_args.getMaxSize()) {
 			glob_err.append( "PRIMER_{OPT,DEFAULT}_SIZE > PRIMER_MAX_SIZE");
 			return true;
 		}
 
-		if (pa.p_args.opt_size < pa.p_args.min_size) {
+		if (pa.p_args.getOptSize() < pa.p_args.getMinSize()) {
 			glob_err.append("PRIMER_{OPT,DEFAULT}_SIZE < PRIMER_MIN_SIZE");
 			return true;
 		}
 
-		if (pa.o_args.max_size > MAX_PRIMER_LENGTH) {
+		if (pa.o_args.getMaxSize() > MAX_PRIMER_LENGTH) {
 			glob_err.append("PRIMER_INTERNAL_MAX_SIZE exceeds built-in maximum");
 			return true;
 		}
 
-		if (pa.o_args.opt_size > pa.o_args.max_size) {
+		if (pa.o_args.getOptSize() > pa.o_args.getMaxSize()) {
 			glob_err.append("PRIMER_INTERNAL_{OPT,DEFAULT}_SIZE > MAX_SIZE");
 			return true;
 		}
 
-		if (pa.o_args.opt_size < pa.o_args.min_size) {
+		if (pa.o_args.getOptSize() < pa.o_args.getMinSize()) {
 			glob_err.append("PRIMER_INTERNAL_{OPT,DEFAULT}_SIZE < MIN_SIZE");
 			return true;
 		}
 
 		/* A GC clamp can not be bigger then the primer */
-		if (pa.gc_clamp > pa.p_args.min_size) {
+		if (pa.gc_clamp > pa.p_args.getMinSize()) {
 			glob_err.append("PRIMER_GC_CLAMP > PRIMER_MIN_SIZE");
 			return true;
 		}
@@ -1996,13 +1996,13 @@ public class LibPrimer3 {
 		for(i=0;i<pa.num_intervals;i++)
 			if(pa.pr_min[i]<pr_min) pr_min=pa.pr_min[i];
 
-		if (pa.p_args.max_size > pr_min) {
+		if (pa.p_args.getMaxSize() > pr_min) {
 			glob_err.append("PRIMER_MAX_SIZE > min PRIMER_PRODUCT_SIZE_RANGE");
 			return true;
 		}
 
 		if ((pa.pick_internal_oligo)
-				&& pa.o_args.max_size > pr_min) {
+				&& pa.o_args.getMaxSize() > pr_min) {
 			glob_err.append( "PRIMER_INTERNAL_MAX_SIZE > min PRIMER_PRODUCT_SIZE_RANGE");
 			return true;
 		}
@@ -2088,22 +2088,22 @@ public class LibPrimer3 {
 		}
 
 		if (null != sa.quality) {
-			if(pa.p_args.min_quality != 0 && pa.p_args.min_quality < pa.quality_range_min) {
+			if(pa.p_args.getMinQuality() != 0 && pa.p_args.getMinQuality() < pa.quality_range_min) {
 				glob_err.append(
 						"PRIMER_MIN_QUALITY < PRIMER_QUALITY_RANGE_MIN");
 				return true;
 			}
-			if (pa.p_args.min_quality != 0 && pa.p_args.min_quality > pa.quality_range_max) {
+			if (pa.p_args.getMinQuality() != 0 && pa.p_args.getMinQuality() > pa.quality_range_max) {
 				glob_err.append(
 						"PRIMER_MIN_QUALITY > PRIMER_QUALITY_RANGE_MAX");
 				return true;
 			}
-			if (pa.o_args.min_quality != 0 && pa.o_args.min_quality <pa.quality_range_min) {
+			if (pa.o_args.getMinQuality() != 0 && pa.o_args.getMinQuality() <pa.quality_range_min) {
 				glob_err.append(
 						"PRIMER_INTERNAL_MIN_QUALITY < PRIMER_QUALITY_RANGE_MIN");
 				return true;
 			}
-			if (pa.o_args.min_quality != 0 && pa.o_args.min_quality > pa.quality_range_max) {
+			if (pa.o_args.getMinQuality() != 0 && pa.o_args.getMinQuality() > pa.quality_range_max) {
 				glob_err.append(
 						"PRIMER_INTERNAL_MIN_QUALITY > PRIMER_QUALITY_RANGE_MAX");
 				return true;
@@ -2133,92 +2133,92 @@ public class LibPrimer3 {
 			}
 		}
 
-		if (pa.p_args.opt_tm < pa.p_args.min_tm
-				|| pa.p_args.opt_tm > pa.p_args.max_tm) {
+		if (pa.p_args.getOptTm() < pa.p_args.getMinTm()
+				|| pa.p_args.getOptTm() > pa.p_args.getMaxTm()) {
 			glob_err.append("Optimum primer Tm lower than minimum or higher than maximum");
 			return true;
 		}
 
-		if (pa.o_args.opt_tm < pa.o_args.min_tm
-				|| pa.o_args.opt_tm > pa.o_args.max_tm) {
+		if (pa.o_args.getOptTm() < pa.o_args.getMinTm()
+				|| pa.o_args.getOptTm() > pa.o_args.getMaxTm()) {
 			glob_err.append("Optimum internal oligo Tm lower than minimum or higher than maximum");
 			return true;
 		}
 
-		if (pa.p_args.min_gc > pa.p_args.max_gc
-				|| pa.p_args.min_gc > 100
-				|| pa.p_args.max_gc < 0){
+		if (pa.p_args.getMinGC() > pa.p_args.getMaxGC()
+				|| pa.p_args.getMinGC() > 100
+				|| pa.p_args.getMaxGC() < 0){
 			glob_err.append("Illegal value for PRIMER_MAX_GC and PRIMER_MIN_GC");
 			return true;
 		}
 
-		if (pa.o_args.min_gc > pa.o_args.max_gc
-				|| pa.o_args.min_gc > 100
-				|| pa.o_args.max_gc < 0) {
+		if (pa.o_args.getMinGC() > pa.o_args.getMaxGC()
+				|| pa.o_args.getMinGC() > 100
+				|| pa.o_args.getMaxGC() < 0) {
 			glob_err.append(
 					"Illegal value for PRIMER_INTERNAL_OLIGO_GC");
 			return true;
 		}
-		if (pa.p_args.num_ns_accepted < 0) {
+		if (pa.p_args.getMaxNumOfNsAccepted() < 0) {
 			glob_err.append(
 					"Illegal value for PRIMER_MAX_NS_ACCEPTED");
 			return true;
 		}
-		if (pa.o_args.num_ns_accepted < 0){
+		if (pa.o_args.getMaxNumOfNsAccepted() < 0){
 			glob_err.append(
 					"Illegal value for PRIMER_INTERNAL_MAX_NS_ACCEPTED");
 			return true;
 		}
-		if (pa.p_args.max_self_any < 0 || pa.p_args.max_self_any > Short.MAX_VALUE
-				|| pa.p_args.max_self_end < 0 || pa.p_args.max_self_end > Short.MAX_VALUE
+		if (pa.p_args.getMaxSelfAny() < 0 || pa.p_args.getMaxSelfAny() > Short.MAX_VALUE
+				|| pa.p_args.getMaxSelfEnd() < 0 || pa.p_args.getMaxSelfEnd() > Short.MAX_VALUE
 				|| pa.pair_compl_any < 0 || pa.pair_compl_any > Short.MAX_VALUE 
 				|| pa.pair_compl_end < 0 || pa.pair_compl_end > Short.MAX_VALUE) {
 			glob_err.append( "Illegal value for primer complementarity restrictions");
 			return true;
 		}
 
-		if (pa.p_args.max_self_any_th < 0
-				|| pa.p_args.max_self_end_th < 0 || pa.p_args.max_hairpin_th < 0
+		if (pa.p_args.getMaxSelfAnyTH() < 0
+				|| pa.p_args.getMaxSelfEndTH() < 0 || pa.p_args.getMaxHairPinTH() < 0
 				|| pa.pair_compl_any_th < 0 || pa.pair_compl_end_th < 0) {
 			glob_err.append(
 					"Illegal value for primer complementarity restrictions (thermod. approach)");
 			return true;
 		}
 
-		if( pa.o_args.max_self_any < 0 || pa.o_args.max_self_any > Short.MAX_VALUE
-				|| pa.o_args.max_self_end < 0 || pa.o_args.max_self_end > Short.MAX_VALUE) {
+		if( pa.o_args.getMaxSelfAny() < 0 || pa.o_args.getMaxSelfAny() > Short.MAX_VALUE
+				|| pa.o_args.getMaxSelfEnd() < 0 || pa.o_args.getMaxSelfEnd() > Short.MAX_VALUE) {
 			glob_err.append(
 					"Illegal value for internal oligo complementarity restrictions");
 			return true;
 		}
 
-		if( pa.o_args.max_self_any_th < 0
-				|| pa.o_args.max_self_end_th < 0 || pa.o_args.max_hairpin_th < 0) {
+		if( pa.o_args.getMaxSelfAnyTH() < 0
+				|| pa.o_args.getMaxSelfEndTH() < 0 || pa.o_args.getMaxHairPinTH() < 0) {
 			glob_err.append(
 					"Illegal value for internal oligo complementarity restrictions");
 			return true;
 		}
 
-		if (pa.p_args.salt_conc <= 0 || pa.p_args.dna_conc<=0){
+		if (pa.p_args.getSaltConcentration() <= 0 || pa.p_args.getDnaConcentration()<=0){
 			glob_err.append(
 					"Illegal value for primer salt or dna concentration");
 			return true;
 		}
 
-		if((pa.p_args.dntp_conc < 0 && pa.p_args.divalent_conc !=0 )
-				|| pa.p_args.divalent_conc<0){ /* added by T.Koressaar */
+		if((pa.p_args.getDntpConcentration() < 0 && pa.p_args.getDivalentConcentration() !=0 )
+				|| pa.p_args.getDivalentConcentration()<0){ /* added by T.Koressaar */
 			glob_err.append( "Illegal value for primer divalent salt or dNTP concentration");
 			return true;
 		}
 
-		if(pa.o_args.salt_conc<=0||pa.o_args.dna_conc<=0){
+		if(pa.o_args.getSaltConcentration()<=0||pa.o_args.getDnaConcentration()<=0){
 			glob_err.append(
 					"Illegal value for internal oligo salt or dna concentration");
 			return true;
 		}
 
-		if((pa.o_args.dntp_conc<0 && pa.o_args.divalent_conc!=0)
-				|| pa.o_args.divalent_conc < 0) { /* added by T.Koressaar */
+		if((pa.o_args.getDntpConcentration()<0 && pa.o_args.getDivalentConcentration()!=0)
+				|| pa.o_args.getDivalentConcentration() < 0) { /* added by T.Koressaar */
 			glob_err.append(
 					"Illegal value for internal oligo divalent salt or dNTP concentration");
 			return true;
@@ -2243,10 +2243,10 @@ public class LibPrimer3 {
 				glob_err.append("Specified internal oligo exceeds built-in maximum of " + MAX_PRIMER_LENGTH);
 				return true;
 			}
-			if ((sa.internal_input.length) >  pa.o_args.max_size)
+			if ((sa.internal_input.length) >  pa.o_args.getMaxSize())
 				warning.append("Specified internal oligo > PRIMER_INTERNAL_MAX_SIZE");
 
-			if ((sa.internal_input.length) <  pa.o_args.min_size)
+			if ((sa.internal_input.length) <  pa.o_args.getMinSize())
 				warning.append("Specified internal oligo < PRIMER_INTERNAL_MIN_SIZE");
 
 			if (!strstr_nocase(sa.sequence, sa.internal_input))
@@ -2260,9 +2260,9 @@ public class LibPrimer3 {
 						"Specified left primer exceeds built-in maximum of " + MAX_PRIMER_LENGTH);
 				return true;
 			}
-			if ((sa.left_input.length) >  pa.p_args.max_size)
+			if ((sa.left_input.length) >  pa.p_args.getMaxSize())
 				warning.append("Specified left primer > PRIMER_MAX_SIZE");
-			if ((sa.left_input.length) < pa.p_args.min_size)
+			if ((sa.left_input.length) < pa.p_args.getMinSize())
 				warning.append( "Specified left primer < PRIMER_MIN_SIZE");
 			if (!strstr_nocase(sa.sequence, sa.left_input))
 				nonfatal_err.append(
@@ -2277,9 +2277,9 @@ public class LibPrimer3 {
 						"Specified right primer exceeds built-in maximum of " + MAX_PRIMER_LENGTH);
 				return true;
 			}
-			if ((sa.right_input.length) < pa.p_args.min_size)
+			if ((sa.right_input.length) < pa.p_args.getMinSize())
 				warning.append( "Specified right primer < PRIMER_MIN_SIZE");
-			if ((sa.right_input.length) >  pa.p_args.max_size) {
+			if ((sa.right_input.length) >  pa.p_args.getMaxSize()) {
 				warning.append( "Specified right primer > PRIMER_MAX_SIZE");
 			} else { /* We do not want to overflow s1. */
 				char[] s1 =  Sequence.p3_reverse_complement(sa.right_input);
@@ -2307,14 +2307,14 @@ public class LibPrimer3 {
 
 		if ((pa.p_args.weights.gc_content_lt != 0 ||
 				pa.p_args.weights.gc_content_gt != 0)
-				&& pa.p_args.opt_gc_content == DEFAULT_OPT_GC_PERCENT) {
+				&& pa.p_args.getOptGC() == DEFAULT_OPT_GC_PERCENT) {
 			glob_err.append( "Primer GC content is part of objective function while optimum gc_content is not defined");
 			return true;
 		}
 
 		if ((pa.o_args.weights.gc_content_lt != 0 ||
 				pa.o_args.weights.gc_content_gt != 0 )
-				&& pa.o_args.opt_gc_content == DEFAULT_OPT_GC_PERCENT) {
+				&& pa.o_args.getOptGC() == DEFAULT_OPT_GC_PERCENT) {
 			glob_err.append("Hyb probe GC content is part of objective function while optimum gc_content is not defined");
 			return true;
 		}
@@ -2413,18 +2413,18 @@ public class LibPrimer3 {
 		}
 
 		if ((sa.primer_overlap_junctions_count > 0) &&
-				(pa.min_5_prime_overlap_of_junction > (pa.p_args.max_size / 2))) {
+				(pa.min_5_prime_overlap_of_junction > (pa.p_args.getMaxSize() / 2))) {
 			glob_err.append("PRIMER_MIN_5_PRIME_OVERLAP_OF_JUNCTION > PRIMER_MAX_SIZE / 2");
 			return true;
 		}
 
 		if ((sa.primer_overlap_junctions_count > 0) && 
-				(pa.min_3_prime_overlap_of_junction > (pa.p_args.max_size / 2))) {
+				(pa.min_3_prime_overlap_of_junction > (pa.p_args.getMaxSize() / 2))) {
 			glob_err.append("PRIMER_MIN_3_PRIME_OVERLAP_OF_JUNCTION > PRIMER_MAX_SIZE / 2");
 			return true;
 		}
 
-		if (pa.p_args.divalent_conc > 0.0 && pa.p_args.dntp_conc <= 0.0) {
+		if (pa.p_args.getDivalentConcentration() > 0.0 && pa.p_args.getDntpConcentration() <= 0.0) {
 			warning.append( "PRIMER_SALT_DIVALENT > 0.0 but PRIMER_DNTP_CONC <= 0.0; use reasonable value for PRIMER_DNTP_CONC");
 		}
 
@@ -2762,9 +2762,9 @@ public class LibPrimer3 {
 			System.err.format("other strand Score %f aligning %s against %s\n\n",
 					h.template_mispriming_r, oseq, target_r);
 
-		if (pa.p_args.max_template_mispriming >= 0) {
+		if (pa.p_args.getMaxTemplateMispriming() >= 0) {
 			if (h.oligo_max_template_mispriming()
-					> pa.p_args.max_template_mispriming) {
+					> pa.p_args.getMaxTemplateMispriming()) {
 				h.op_set_high_similarity_to_multiple_template_sites();
 				if (l == oligo_type.OT_LEFT  || l == oligo_type.OT_RIGHT  ) {
 					ostats.template_mispriming++;
@@ -2873,9 +2873,9 @@ public class LibPrimer3 {
 			System.err.format( "In primer_mispriming_to_template_thermod\n other strand Score %f aligning %s against %s\n\n",
 					h.template_mispriming_r, oseq, target_r);
 
-		if (pa.p_args.max_template_mispriming_th >= 0) {
+		if (pa.p_args.getMaxTemplateMisprimingTH() >= 0) {
 			if (h.oligo_max_template_mispriming_thermod()
-					> pa.p_args.max_template_mispriming_th) {
+					> pa.p_args.getMaxTemplateMisprimingTH()) {
 				h.op_set_high_similarity_to_multiple_template_sites();
 				if (l == oligo_type.OT_LEFT|| l == oligo_type.OT_RIGHT  ) {
 					ostats.template_mispriming++;

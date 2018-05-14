@@ -418,8 +418,8 @@ public class seq_args {
 
 		int pmin = Integer.MAX_VALUE;
 		int pmax = 0;
-		int omin = pa.p_args.min_size;
-		int omax = pa.p_args.max_size;
+		int omin = pa.p_args.getMinSize();
+		int omax = pa.p_args.getMaxSize();
 
 		/* Determine min/max product size */
 		for (int i=0; i<pa.num_intervals; i++) {

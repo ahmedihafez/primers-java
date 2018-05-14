@@ -300,9 +300,9 @@ public class primer_pair {
 		ppair.product_tm =  oligo_tm.long_seq_tm(sa.trimmed_seq, ppair.left.start,
 				ppair.right.start - ppair.left.start + 1,
 				/* TO DO -- skewed, it would be better to not use p_args elements here */
-				pa.p_args.salt_conc,
-				pa.p_args.divalent_conc,
-				pa.p_args.dntp_conc);
+				pa.p_args.getSaltConcentration(),
+				pa.p_args.getDivalentConcentration(),
+				pa.p_args.getDntpConcentration());
 
 		//		  PR_ASSERT(ppair.product_tm != oligo_tm.OLIGOTM_ERROR);
 
@@ -507,7 +507,7 @@ public class primer_pair {
 			   */
 			  if (pa.thermodynamic_oligo_alignment==0 && (compl_end = LibPrimer3.align(s2_rev, s1_rev, dpal_arg_to_use.end))
 			      > ppair.compl_end) {
-			    if (compl_end > pa.p_args.max_self_end) {
+			    if (compl_end > pa.p_args.getMaxSelfEnd()) {
 			      if (update_stats) { pair_expl.compl_end++; }
 			      if (!must_use) return PAIR_FAILED;
 			    }
@@ -533,7 +533,7 @@ public class primer_pair {
 						   compl_end = compl_end2;
 					   }
 					  
-				      if (compl_end > pa.p_args.max_self_end_th) {
+				      if (compl_end > pa.p_args.getMaxSelfEndTH()) {
 				         if (update_stats) {
 				            pair_expl.compl_end++; 
 				         }
