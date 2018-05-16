@@ -22,10 +22,10 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 import com.primer3.libprimer3.LibPrimer3;
-import com.primer3.libprimer3.p3_global_settings;
+import com.primer3.libprimer3.P3GlobalSettings;
 import com.primer3.libprimer3.p3retval;
 import com.primer3.libprimer3.seq_args;
-import com.primer3.libprimer3.task;
+import com.primer3.libprimer3.P3Task;
 import com.primer3.masker.formula_parameters;
 import com.primer3.masker.masker;
 import com.primer3.masker.masking_direction;
@@ -159,7 +159,7 @@ public class Primer3Main {
 
 
 
-		p3_global_settings global_pa;
+		P3GlobalSettings global_pa;
 		seq_args sarg;
 		// TODO :: Missing ??
 		read_boulder_record_results read_boulder_record_res ;
@@ -276,7 +276,7 @@ public class Primer3Main {
 
 
 		/* Allocate the space for global settings and fill in default parameters */
-		global_pa = p3_global_settings.p3_create_global_settings(default_version);
+		global_pa = P3GlobalSettings.p3_create_global_settings(default_version);
 
 		if(global_pa == null)
 		{
@@ -303,11 +303,11 @@ public class Primer3Main {
 					nonfatal_parse_err, warnings, read_boulder_record_res);
 
 			/* Check if any thermodynamical alignment flag was given */
-			if ((global_pa.thermodynamic_oligo_alignment == 1) || 
-					(global_pa.thermodynamic_template_alignment == 1))
+			if ((global_pa.isThermodynamicOligoAlignment() ) || 
+					(global_pa.isThermodynamicTemplateAlignment() ))
 				read_thermodynamic_parameters();
 			/* Check if masking template flag was given */
-			if (global_pa.mask_template)
+			if (global_pa.isMaskTemplate())
 				validate_kmer_lists_path();
 
 
@@ -369,24 +369,24 @@ public class Primer3Main {
 			{
 				break; /* There were no more boulder records */
 			}
-			if(global_pa.mask_template){
-				global_pa.lowercase_masking=global_pa.mask_template;
+			if(global_pa.isMaskTemplate()){
+				global_pa.setLowercaseMasking(global_pa.isMaskTemplate());
 			}
 			/* Check if any thermodynamical alignment flag was given and the
 	        path to the parameter files changed - we need to reread them */
-			if (((global_pa.thermodynamic_oligo_alignment == 1) ||
-					(global_pa.thermodynamic_template_alignment == 1))
+			if (((global_pa.isThermodynamicOligoAlignment() ) ||
+					(global_pa.isThermodynamicTemplateAlignment() ))
 					&& (thermodynamic_path_changed ))
 				read_thermodynamic_parameters();
 
 			/* Check if template masking flag was given */
-			if (global_pa.mask_template )
+			if (global_pa.isMaskTemplate() )
 				validate_kmer_lists_path();
 
 
 			/* Check that we found the thermodynamic parameters in case any thermodynamic flag was set to 1. */
-			if (((global_pa.thermodynamic_oligo_alignment == 1) ||
-					(global_pa.thermodynamic_template_alignment == 1))
+			if (((global_pa.isThermodynamicOligoAlignment() ) ||
+					(global_pa.isThermodynamicTemplateAlignment() ))
 					&& (thermodynamic_params_path == null)) {
 				/* no parameter directory found, error */
 				System.out.println("PRIMER_ERROR=thermodynamic approach chosen, but path to thermodynamic parameters not specified\n=\n");
@@ -394,30 +394,30 @@ public class Primer3Main {
 			}
 
 			/* Check that we found the kmer lists in case masking flag was set to 1. */
-			if (global_pa.mask_template  && kmer_lists_path == null){
+			if (global_pa.isMaskTemplate()  && kmer_lists_path == null){
 				System.out.println("PRIMER_ERROR=masking template chosen, but path to kmer lists not specified\n=\n");
 				System.exit(-1);
 			}
 
 			/* Set up some masking parameters */
 			/* edited by M. Lepamets */
-			if (global_pa.mask_template ) {
-				global_pa.mp.window_size = masker.DEFAULT_WORD_LEN_2;
+			if (global_pa.isMaskTemplate() ) {
+				global_pa.getMaskingParameters().window_size = masker.DEFAULT_WORD_LEN_2;
 
-				if (global_pa.pick_right_primer ) global_pa.mp.mdir = masking_direction.fwd;
-				else if (global_pa.pick_left_primer ) global_pa.mp.mdir = masking_direction.rev;
+				if (global_pa.isPickRightPrimer() ) global_pa.getMaskingParameters().mdir = masking_direction.fwd;
+				else if (global_pa.isPickLeftPrimer() ) global_pa.getMaskingParameters().mdir = masking_direction.rev;
 				/* Check if masking parameters (k-mer list usage) have changed */
-				if (global_pa.masking_parameters_changed) {
+				if (global_pa.isMaskingParametersChanged()) {
 					//	            masker.delete_formula_parameters (global_pa.mp.fp, global_pa.mp.nlists);
-					global_pa.mp.fp = formula_parameters.create_default_formula_parameters (global_pa.mp.list_prefix, kmer_lists_path);
-					global_pa.masking_parameters_changed = false;
+					global_pa.getMaskingParameters().fp = formula_parameters.create_default_formula_parameters (global_pa.getMaskingParameters().list_prefix, kmer_lists_path);
+					global_pa.setMaskingParametersChanged(false);
 				}
 			}
 
 			input_found = 1;
-			if ((global_pa.primer_task == task.generic)
-					&& (global_pa.pick_internal_oligo )){
-				PR_ASSERT(global_pa.pick_internal_oligo);
+			if ((global_pa.getPrimerTask() == P3Task.GENERIC)
+					&& (global_pa.isPickInternalOligo() )){
+				PR_ASSERT(global_pa.isPickInternalOligo());
 			}
 
 			/* TODO :: If there are fatal errors, write the proper message and exit */
@@ -470,7 +470,7 @@ public class Primer3Main {
 			/* If it was necessary to use a left_input, right_input,
 	       or internal_oligo_input primer that was
 	       unacceptable, then add warnings. */
-			if (global_pa.pick_anyway && format_output) {
+			if (global_pa.isPickAnyway() && format_output) {
 				if (sarg.left_input != null) {
 					retval.add_must_use_warnings( "Left primer", retval.fwd);
 				}
@@ -513,7 +513,7 @@ public class Primer3Main {
 
 	private static void PR_ASSERT(boolean pick_internal_oligo) {
 		// TODO Auto-generated method stub
-
+		assert pick_internal_oligo;
 	}
 
 

@@ -1,6 +1,6 @@
 package com.primer3.libprimer3;
 
-public class pair_weights {
+public class PairWeights {
 	
 	double primer_quality;
 	double io_quality;

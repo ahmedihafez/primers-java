@@ -34,7 +34,7 @@ class masking_buffer {
 	int mi;
 	
 	
-	public masking_buffer(int word_length , masker_parameters mp)
+	public masking_buffer(int word_length , MaskerParameters mp)
 	{
 		this.ei = masker.MAX_BUFFER_SIZE - word_length +1;
 		this.mp = mp;
@@ -42,8 +42,8 @@ class masking_buffer {
 	
 	
 	
-	masker_parameters mp ;
-	public void setMaskingParameters(masker_parameters mp )
+	MaskerParameters mp ;
+	public void setMaskingParameters(MaskerParameters mp )
 	{
 		this.mp = mp ;
 	}

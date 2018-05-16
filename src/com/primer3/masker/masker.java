@@ -69,7 +69,7 @@ public class masker {
 	
 	
 	public static void read_and_mask_sequence(input_sequence input_seq,
-			output_sequence output_seq, masker_parameters mp, boolean debug) {
+			output_sequence output_seq, MaskerParameters mp, boolean debug) {
 		
 		int is_header = 0;
 		boolean init_round = true;
@@ -144,7 +144,7 @@ public class masker {
 
 	}
 
-	private static void mask_oligo_region(oligo_pair h, masker_parameters mp,
+	private static void mask_oligo_region(oligo_pair h, MaskerParameters mp,
 			masking_buffer mbuffer, int word_length, boolean debug) {
 		h.calculate_scores(mp,word_length);
 		

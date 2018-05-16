@@ -38,7 +38,7 @@ public class maskerMain {
 		int npos = 0;
 		int[] list_pos = new int[MAX_VARIABLES], list_components = new int[MAX_VARIABLES];
 		
-		masker_parameters mp = new masker_parameters();
+		MaskerParameters mp = new MaskerParameters();
 		parameters_builder pbuilder = new parameters_builder();
 		input_sequence input_seq = null;
 		output_sequence output_seq = new output_sequence();
@@ -135,7 +135,7 @@ public class maskerMain {
 		}
 	}
 	
-	static void print_parameters (masker_parameters mp)
+	static void print_parameters (MaskerParameters mp)
 	{
 		int i;
 		System.err.format("Current masker parameters:\n");

@@ -28,17 +28,17 @@ public class oligo_tm {
 	 * Return the delta G of the last len bases of oligo if oligo is at least len
 	 * bases long; otherwise return the delta G of oligo. 
 	 */
-	static double end_oligodg(Sequence s, int len, tm_method_type tm_method) {
+	static double end_oligodg(Sequence s, int len, MeltingTemperatureMethod tm_method) {
 		
-		if (tm_method != tm_method_type.breslauer_auto
-			      && tm_method != tm_method_type.santalucia_auto)
+		if (tm_method != MeltingTemperatureMethod.breslauer_auto
+			      && tm_method != MeltingTemperatureMethod.santalucia_auto)
 			    return OLIGOTM_ERROR;
 		int x = s.length();
 		
 		return x < len ? oligodg(s,tm_method) : oligodg(s.subSeqRange(x-len,x-1),tm_method);
 	}
 
-	public static double end_oligodg(char[] seq, int len, tm_method_type tm_method) {
+	public static double end_oligodg(char[] seq, int len, MeltingTemperatureMethod tm_method) {
 		return end_oligodg(new Sequence(seq),len,tm_method);
 	}
 	/** Calculate the melting temperature of substr(seq, start, length) using the
@@ -149,8 +149,8 @@ public class oligo_tm {
             double K_mM,     
             double divalent_conc,
             double dntp_conc,     
-            tm_method_type tm_method,    
-            salt_correction_type salt_corrections  
+            MeltingTemperatureMethod tm_method,    
+            SaltCorrectionMethod salt_corrections  
             ) {
 		
 		int dh = 0, ds = 0 ;
@@ -165,12 +165,12 @@ public class oligo_tm {
 		 if(divalent_to_monovalent(divalent_conc, dntp_conc) == OLIGOTM_ERROR)
 			     return OLIGOTM_ERROR;
 		  /** K_mM = K_mM + divalent_to_monovalent(divalent_conc, dntp_conc); **/
-		 if (tm_method != tm_method_type.breslauer_auto
-			      && tm_method != tm_method_type.santalucia_auto)
+		 if (tm_method != MeltingTemperatureMethod.breslauer_auto
+			      && tm_method != MeltingTemperatureMethod.santalucia_auto)
 			    return OLIGOTM_ERROR;
-		 if (salt_corrections != salt_correction_type.schildkraut
-			      && salt_corrections != salt_correction_type.santalucia
-			      && salt_corrections != salt_correction_type.owczarzy)
+		 if (salt_corrections != SaltCorrectionMethod.schildkraut
+			      && salt_corrections != SaltCorrectionMethod.santalucia
+			      && salt_corrections != SaltCorrectionMethod.owczarzy)
 			    return OLIGOTM_ERROR;
 		// len = (strlen(s)-1); no need for this 
 //		len = seq.length()-1;
@@ -182,7 +182,7 @@ public class oligo_tm {
 		HashMap<String, Integer> ds_Table = DS;
 
 		
-		if( tm_method == tm_method_type.breslauer_auto ) {
+		if( tm_method == MeltingTemperatureMethod.breslauer_auto ) {
 		    ds=108;
 		    dh_Table = H;
 		    ds_Table = S;
@@ -213,7 +213,7 @@ public class oligo_tm {
 			dh += dh_Table.get(STATE(last, c));
 		}
 		// get last one again
-		if( tm_method != tm_method_type.breslauer_auto )
+		if( tm_method != MeltingTemperatureMethod.breslauer_auto )
 		{
 			c = s.previous();
 			/** Terminal AT penalty **/
@@ -246,11 +246,11 @@ public class oligo_tm {
 		len = seq.length();
 		
 		
-		if (salt_corrections == salt_correction_type.schildkraut) {
+		if (salt_corrections == SaltCorrectionMethod.schildkraut) {
 		     K_mM = K_mM + divalent_to_monovalent(divalent_conc, dntp_conc);
 		     correction = 16.6 * Math.log10(K_mM/1000.0) - T_KELVIN;
 		     Tm = delta_H / (delta_S + 1.987 * Math.log(DNA_nM/4000000000.0)) + correction;
-		} else if (salt_corrections== salt_correction_type.santalucia) {
+		} else if (salt_corrections== SaltCorrectionMethod.santalucia) {
 		    K_mM = K_mM + divalent_to_monovalent(divalent_conc, dntp_conc);
 		    delta_S = delta_S + 0.368 * (len - 1) * Math.log(K_mM / 1000.0 );
 		    if(sym ) { /* primer is symmetrical */
@@ -260,7 +260,7 @@ public class oligo_tm {
 		      /* Equation B */
 		      Tm = delta_H / (delta_S + 1.987 * Math.log(DNA_nM/4000000000.0)) - T_KELVIN;
 		    }      
-		 } else if (salt_corrections == salt_correction_type.owczarzy) {
+		 } else if (salt_corrections == SaltCorrectionMethod.owczarzy) {
 		     double gcPercent= seq.getGCPrercent();
 		     double free_divalent; /* conc of divalent cations minus dNTP conc */
 		     /**** BEGIN: UPDATED SALT BY OWCZARZY *****/
@@ -352,18 +352,18 @@ public class oligo_tm {
           double divalent_conc, 
           double dntp_conc,    
           int  nn_max_len,  
-          tm_method_type  tm_method,       
-          salt_correction_type salt_corrections 
+          MeltingTemperatureMethod  tm_method,       
+          SaltCorrectionMethod salt_corrections 
           ) {
 		
 		int len = seq.length();
 		
-		if (tm_method != tm_method_type.breslauer_auto
-			      && tm_method != tm_method_type.santalucia_auto)
+		if (tm_method != MeltingTemperatureMethod.breslauer_auto
+			      && tm_method != MeltingTemperatureMethod.santalucia_auto)
 			return OLIGOTM_ERROR;
-		if (salt_corrections != salt_correction_type.schildkraut
-			      && salt_corrections != salt_correction_type.santalucia
-			      && salt_corrections != salt_correction_type.owczarzy)
+		if (salt_corrections != SaltCorrectionMethod.schildkraut
+			      && salt_corrections != SaltCorrectionMethod.santalucia
+			      && salt_corrections != SaltCorrectionMethod.owczarzy)
 			return OLIGOTM_ERROR;
 		
 		
@@ -381,8 +381,8 @@ public class oligo_tm {
 	          double divalent_conc, 
 	          double dntp_conc,    
 	          int  nn_max_len,  
-	          tm_method_type  tm_method,       
-	          salt_correction_type salt_corrections 
+	          MeltingTemperatureMethod  tm_method,       
+	          SaltCorrectionMethod salt_corrections 
 	          ) {
 		return seqtm(new Sequence(seq),  
 		           dna_conc,  
@@ -401,12 +401,12 @@ public class oligo_tm {
 	   neighbor model.
 	*/
 	static double oligodg(Sequence seq, 
-			tm_method_type tm_method 
+			MeltingTemperatureMethod tm_method 
 	               ) {
 		
 		// FIXME :: unwanted Check
-		if (tm_method != tm_method_type.breslauer_auto
-				&& tm_method != tm_method_type.santalucia_auto)
+		if (tm_method != MeltingTemperatureMethod.breslauer_auto
+				&& tm_method != MeltingTemperatureMethod.santalucia_auto)
 			return OLIGOTM_ERROR;
 				
 		double dg = 0;
@@ -416,7 +416,7 @@ public class oligo_tm {
 		//   c = *s; s++;
 		char c = s.current(); s.next(); // or just c = s.next();
 		HashMap<String, Integer> dg_Table = G;
-		if(tm_method != tm_method_type.breslauer_auto)
+		if(tm_method != MeltingTemperatureMethod.breslauer_auto)
 		{	
 			dg_Table = DG;
 			dg=-1960; /* Initial dG */
@@ -435,7 +435,7 @@ public class oligo_tm {
 			
 		}
 		
-		 if(tm_method != tm_method_type.breslauer_auto) {
+		 if(tm_method != MeltingTemperatureMethod.breslauer_auto) {
 //		    int sym;
 		    // --s; --s; c = *s;
 		    c = s.previous();
@@ -712,7 +712,7 @@ public class oligo_tm {
 		double mv = 100, d = 50;
 		double dv = 0, n = 0;
 		
-		double tm = oligotm(seq, d, mv, dv, n, tm_method_type.santalucia_auto, salt_correction_type.schildkraut);
+		double tm = oligotm(seq, d, mv, dv, n, MeltingTemperatureMethod.santalucia_auto, SaltCorrectionMethod.schildkraut);
 		System.out.println("Tm = " + tm);
 	}
 	

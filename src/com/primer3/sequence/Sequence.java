@@ -5,7 +5,7 @@ import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
 import com.primer3.libprimer3.oligo_type;
-import com.primer3.libprimer3.primer_rec;
+import com.primer3.libprimer3.PrimerReccord;
 import com.primer3.libprimer3.seq_args;
 
 /**

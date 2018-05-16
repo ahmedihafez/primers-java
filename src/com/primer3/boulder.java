@@ -4,10 +4,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-import com.primer3.libprimer3.p3_global_settings;
+import com.primer3.libprimer3.P3GlobalSettings;
 import com.primer3.libprimer3.p3retval;
 import com.primer3.libprimer3.seq_args;
-import com.primer3.libprimer3.task;
+import com.primer3.libprimer3.P3Task;
 import com.primer3.p3_seq_lib.seq_lib;
 
 public class boulder {
@@ -24,7 +24,7 @@ public class boulder {
 	                        int io_version,
 	                        boolean echo_output,
 	                        p3_file_type file_type,
-	                        p3_global_settings pa, 
+	                        P3GlobalSettings pa, 
 	                        seq_args sa,
 	                        StringBuilder glob_err,
 	                        StringBuilder non_fatal_err,
@@ -149,28 +149,28 @@ public class boulder {
 						pa.p3_set_pa_product_size(datum);
 					}
 					else if (key.equals("PRIMER_OPT_SIZE")) { 
-						pa.p_args.setOptSize(datum);
+						pa.primersArgs.setOptSize(datum);
 					}
 					else if (key.equals("PRIMER_MIN_SIZE")) { 
-						pa.p_args.setMinSize(datum);
+						pa.primersArgs.setMinSize(datum);
 					}
 					else if (key.equals("PRIMER_MAX_SIZE")) { 
-						pa.p_args.setMaxSize(datum);
+						pa.primersArgs.setMaxSize(datum);
 					}
 					else if (key.equals("PRIMER_MAX_POLY_X")) { 
-						pa.p_args.setMaxPolyX(datum);
+						pa.primersArgs.setMaxPolyX(datum);
 					}
 					else if (key.equals("PRIMER_OPT_TM")) { 
-						pa.p_args.setOptTm(datum);
+						pa.primersArgs.setOptTm(datum);
 					}
 					else if (key.equals("PRIMER_OPT_GC_PERCENT")) { 
-						pa.p_args.setOptGCContent(datum);
+						pa.primersArgs.setOptGCContent(datum);
 					}
 					else if (key.equals("PRIMER_MIN_TM")) {
-						pa.p_args.setMinTm(datum);
+						pa.primersArgs.setMinTm(datum);
 					}
 					else if (key.equals("PRIMER_MAX_TM")) { 
-						pa.p_args.setMaxTm(datum);
+						pa.primersArgs.setMaxTm(datum);
 					}
 					else if (key.equals("PRIMER_PAIR_MAX_DIFF_TM")) { 
 						pa.p3_set_pa_max_diff_tm(datum);
@@ -183,31 +183,31 @@ public class boulder {
 					}
 					else if (key.equals("PRIMER_MIN_GC")) { 
 						//pa.p_args.set_min_gc
-						pa.p_args.setMinGC(datum);
+						pa.primersArgs.setMinGC(datum);
 					}
 					else if (key.equals("PRIMER_MAX_GC")) { 
 						//pa.p_args.set_max_gc
-						pa.p_args.setMaxGC(datum);
+						pa.primersArgs.setMaxGC(datum);
 					}
 					else if (key.equals("PRIMER_SALT_MONOVALENT")) { 
 						//pa.p_args.set_salt_conc
-						pa.p_args.setSaltConcentration(datum);
+						pa.primersArgs.setSaltConcentration(datum);
 					}
 					else if (key.equals("PRIMER_SALT_DIVALENT")) { 
 						// pa.p_args.set_divalent_conc
-						pa.p_args.setDivalentConcentration(datum);
+						pa.primersArgs.setDivalentConcentration(datum);
 					}
 					else if (key.equals("PRIMER_DNTP_CONC")) { 
 						//pa.p_args.set_dntp_conc
-						pa.p_args.setDntpConcentration(datum);
+						pa.primersArgs.setDntpConcentration(datum);
 					}
 					else if (key.equals("PRIMER_DNA_CONC")) { 
 						//pa.p_args.set_dna_conc
-						pa.p_args.setDnaConcentration(datum);
+						pa.primersArgs.setDnaConcentration(datum);
 					}
 					else if (key.equals("PRIMER_MAX_NS_ACCEPTED")) { 
 						// pa.p_args.set_num_ns_accepted
-						pa.p_args.setMaxNumOfNsAccepted(datum);
+						pa.primersArgs.setMaxNumOfNsAccepted(datum);
 					}
 					else if (key.equals("PRIMER_PRODUCT_OPT_SIZE")) { 
 						//pa.p3_set_pa_product_opt_size
@@ -215,23 +215,23 @@ public class boulder {
 					}
 					else if (key.equals("PRIMER_MAX_SELF_ANY")) { 
 						// pa.p_args.set_max_self_any
-						pa.p_args.setMaxSelfAny(datum);
+						pa.primersArgs.setMaxSelfAny(datum);
 					}
 					else if (key.equals("PRIMER_MAX_SELF_END")) { 
 						// p3_set_gs_primer_self_end
-						pa.p_args.setMaxSelfEnd(datum);
+						pa.primersArgs.setMaxSelfEnd(datum);
 					}
 					else if (key.equals("PRIMER_MAX_SELF_ANY_TH")) { 
 						//pa.p_args.set_max_self_any_th
-						pa.p_args.setMaxSelfAnyTH(datum);
+						pa.primersArgs.setMaxSelfAnyTH(datum);
 					}
 					else if (key.equals("PRIMER_MAX_SELF_END_TH")) { 
 						//pa.p_args.set_max_self_end_th
-						pa.p_args.setMaxSelfEndTH(datum);
+						pa.primersArgs.setMaxSelfEndTH(datum);
 					}
 					else if (key.equals("PRIMER_MAX_HAIRPIN_TH")) { 
 						//pa.p_args.set_max_hairpin_th
-						pa.p_args.setMaxHairPinTH(datum);
+						pa.primersArgs.setMaxHairPinTH(datum);
 					}
 					else if (key.equals("PRIMER_PAIR_MAX_COMPL_ANY")) { 
 						//pa.p3_set_pa_pair_compl_any
@@ -281,12 +281,12 @@ public class boulder {
 					}
 					else if (key.equals("PRIMER_MIN_QUALITY")) { 
 						// pa.p_args.set_min_quality
-						pa.p_args.setMinQuality(datum);
+						pa.primersArgs.setMinQuality(datum);
 					}
 					else if (key.equals("PRIMER_MIN_END_QUALITY")) {
 						
 	//					COMPARE_INT("PRIMER_MIN_END_QUALITY", pa.p_args.set_min_end_quality);
-						pa.p_args.setMinEndQuality(datum);
+						pa.primersArgs.setMinEndQuality(datum);
 					}
 					else if (key.equals("PRIMER_MIN_THREE_PRIME_DISTANCE")) { 
 						int min_three_prime_distance = Integer.parseInt(datum);
@@ -337,19 +337,19 @@ public class boulder {
 					}
 					else if (key.equals("PRIMER_SEQUENCING_LEAD")) { 
 						//pa.p3_set_pa_sequencing.lead
-						pa.sequencing.set_lead(datum);
+						pa.getSequencingParameters().setLead(datum);
 					}
 					else if (key.equals("PRIMER_SEQUENCING_SPACING")) { 
 						//pa.p3_set_pa_sequencing.spacing
-						pa.sequencing.set_spacing(datum);
+						pa.getSequencingParameters().setSpacing(datum);
 					}
 					else if (key.equals("PRIMER_SEQUENCING_INTERVAL")) { 
 						//pa.p3_set_pa_sequencing.interval
-						pa.sequencing.set_interval(datum);
+						pa.getSequencingParameters().setInterval(datum);
 					}
 					else if (key.equals("PRIMER_SEQUENCING_ACCURACY")) { 
 						//pa.p3_set_pa_sequencing.accuracy
-						pa.sequencing.set_accuracy(datum);
+						pa.getSequencingParameters().setAccuracy(datum);
 					}
 					else if (key.equals("PRIMER_MIN_5_PRIME_OVERLAP_OF_JUNCTION")) { 
 						//pa.p3_set_pa_min_5_prime_overlap_of_junction
@@ -374,83 +374,83 @@ public class boulder {
 						pa.p3_set_pa_pick_left_primer(datum);
 					}
 					else if (key.equals("PRIMER_INTERNAL_OPT_SIZE")) {
-						pa.o_args.setOptSize(datum);
+						pa.oligosArgs.setOptSize(datum);
 					}
 					else if (key.equals("PRIMER_INTERNAL_MAX_SIZE")) { 
-						pa.o_args.setMaxSize(datum);
+						pa.oligosArgs.setMaxSize(datum);
 					}
 					else if (key.equals("PRIMER_INTERNAL_MIN_SIZE")) { 
-						pa.o_args.setMinSize(datum);
+						pa.oligosArgs.setMinSize(datum);
 					}
 					else if (key.equals("PRIMER_INTERNAL_MAX_POLY_X")) { 
-						pa.o_args.setMaxPolyX(datum);
+						pa.oligosArgs.setMaxPolyX(datum);
 					}
 					else if (key.equals("PRIMER_INTERNAL_OPT_TM")) { 
-						pa.o_args.setOptTm(datum);
+						pa.oligosArgs.setOptTm(datum);
 					}
 					else if (key.equals("PRIMER_INTERNAL_OPT_GC_PERCENT")) {
-						pa.o_args.setOptGCContent(datum);
+						pa.oligosArgs.setOptGCContent(datum);
 					}
 					else if (key.equals("PRIMER_INTERNAL_MAX_TM")) { 
-						pa.o_args.setMaxTm(datum);
+						pa.oligosArgs.setMaxTm(datum);
 					}
 					else if (key.equals("PRIMER_INTERNAL_MIN_TM")) { 
-						pa.o_args.setMinTm(datum);
+						pa.oligosArgs.setMinTm(datum);
 					}
 					else if (key.equals("PRIMER_INTERNAL_MIN_GC")) { 
-						pa.o_args.setMinGC(datum);
+						pa.oligosArgs.setMinGC(datum);
 					}
 					else if (key.equals("PRIMER_INTERNAL_MAX_GC")) { 
-						pa.o_args.setMaxGC(datum);
+						pa.oligosArgs.setMaxGC(datum);
 					}
 					else if (key.equals("PRIMER_INTERNAL_SALT_MONOVALENT")) {
-						pa.o_args.setSaltConcentration(datum);
+						pa.oligosArgs.setSaltConcentration(datum);
 					}
 					else if (key.equals("PRIMER_INTERNAL_SALT_DIVALENT")) {
-						pa.o_args.setDivalentConcentration(datum);
+						pa.oligosArgs.setDivalentConcentration(datum);
 					}
 					else if (key.equals("PRIMER_INTERNAL_DNTP_CONC")) {
-						pa.o_args.setDntpConcentration(datum);
+						pa.oligosArgs.setDntpConcentration(datum);
 					}
 					else if (key.equals("PRIMER_INTERNAL_DNA_CONC")) { 
-						pa.o_args.setDnaConcentration(datum);
+						pa.oligosArgs.setDnaConcentration(datum);
 					}
 					else if (key.equals("PRIMER_INTERNAL_MAX_NS_ACCEPTED")) { 
-						pa.o_args.setMaxNumOfNsAccepted(datum);
+						pa.oligosArgs.setMaxNumOfNsAccepted(datum);
 					}
 					else if (key.equals("PRIMER_INTERNAL_MIN_QUALITY")) { 
-						pa.o_args.setMinQuality(datum);
+						pa.oligosArgs.setMinQuality(datum);
 					}
 					else if (key.equals("PRIMER_INTERNAL_MAX_SELF_ANY")) {
-						pa.o_args.setMaxSelfAny(datum);
+						pa.oligosArgs.setMaxSelfAny(datum);
 					}
 					else if (key.equals("PRIMER_INTERNAL_MAX_SELF_END")) { 
 						pa.p3_set_gs_primer_internal_oligo_self_end(datum);
 					}
 					else if (key.equals("PRIMER_INTERNAL_MAX_SELF_ANY_TH")) {
-						pa.o_args.setMaxSelfAnyTH(datum);
+						pa.oligosArgs.setMaxSelfAnyTH(datum);
 					}
 					else if (key.equals("PRIMER_INTERNAL_MAX_SELF_END_TH")) {
-						pa.o_args.setMaxSelfEndTH(datum);
+						pa.oligosArgs.setMaxSelfEndTH(datum);
 					}
 					else if (key.equals("PRIMER_INTERNAL_MAX_HAIRPIN_TH")) {
-						pa.o_args.setMaxHairPinTH(datum);
+						pa.oligosArgs.setMaxHairPinTH(datum);
 					}
 					else if (key.equals("PRIMER_MAX_LIBRARY_MISPRIMING")) {
-						pa.p_args.setMaxRepeatCompl(datum);
+						pa.primersArgs.setMaxRepeatCompl(datum);
 					}
 					else if (key.equals("PRIMER_INTERNAL_MAX_LIBRARY_MISHYB")) {
-						pa.o_args.setMaxRepeatCompl(datum);
+						pa.oligosArgs.setMaxRepeatCompl(datum);
 					}
 					else if (key.equals("PRIMER_PAIR_MAX_LIBRARY_MISPRIMING")) {
 						pa.p3_set_pa_pair_repeat_compl(datum);
 					}
 				      /* Mispriming / mishybing in the template. */
 					else if (key.equals("PRIMER_MAX_TEMPLATE_MISPRIMING")) {
-						pa.p_args.setMaxTemplateMispriming(datum);
+						pa.primersArgs.setMaxTemplateMispriming(datum);
 					}
 					else if (key.equals("PRIMER_MAX_TEMPLATE_MISPRIMING_TH")) {
-						pa.p_args.setMaxTemplateMisprimingTH(datum);
+						pa.primersArgs.setMaxTemplateMisprimingTH(datum);
 					}
 					else if (key.equals("PRIMER_PAIR_MAX_TEMPLATE_MISPRIMING")) {
 						pa.p3_set_pa_pair_max_template_mispriming(datum);
@@ -525,187 +525,187 @@ public class boulder {
 					}
 					/* added by A. Untergasser */
 					else if (key.equals("PRIMER_MUST_MATCH_FIVE_PRIME")) { 
-						pa.p_args.set_must_match_five_prime(datum);
+						pa.primersArgs.set_must_match_five_prime(datum);
 					}
 					else if (key.equals("PRIMER_MUST_MATCH_THREE_PRIME")) { 
-						pa.p_args.set_must_match_three_prime(datum);
+						pa.primersArgs.set_must_match_three_prime(datum);
 					}
 					else if (key.equals("PRIMER_INTERNAL_MUST_MATCH_FIVE_PRIME")) { 
-						pa.o_args.set_must_match_five_prime(datum);
+						pa.oligosArgs.set_must_match_five_prime(datum);
 					}
 					else if (key.equals("PRIMER_INTERNAL_MUST_MATCH_THREE_PRIME")) { 
-						pa.o_args.set_must_match_three_prime(datum);
+						pa.oligosArgs.set_must_match_three_prime(datum);
 					}
 				      /* weights for objective functions  */
 				      /* CHANGE TEMP/temp . TM/tm */
 					else if (key.equals("PRIMER_WT_TM_GT")) { 
-						pa.p_args.weights.set_temp_gt(datum);
+						pa.primersArgs.weights.set_temp_gt(datum);
 					}
 					else if (key.equals("PRIMER_WT_TM_LT")) { 
-						pa.p_args.weights.set_temp_lt(datum);
+						pa.primersArgs.weights.set_temp_lt(datum);
 					}
 				    else if (key.equals("PRIMER_WT_GC_PERCENT_GT")) { 
-				    	pa.p_args.weights.set_gc_content_gt(datum);
+				    	pa.primersArgs.weights.set_gc_content_gt(datum);
 				    }
 				    else if (key.equals("PRIMER_WT_GC_PERCENT_LT")) { 
-				    	pa.p_args.weights.set_gc_content_lt(datum);
+				    	pa.primersArgs.weights.set_gc_content_lt(datum);
 				    }
 				    else if (key.equals("PRIMER_WT_SIZE_LT")) { 
-				    	pa.p_args.weights.set_length_lt(datum);
+				    	pa.primersArgs.weights.set_length_lt(datum);
 				    }
 				    else if (key.equals("PRIMER_WT_SIZE_GT")) { 
-				    	pa.p_args.weights.set_length_gt(datum);
+				    	pa.primersArgs.weights.set_length_gt(datum);
 				    }
 				    else if (key.equals("PRIMER_WT_SELF_ANY")) { 
-				    	pa.p_args.weights.set_compl_any(datum);
+				    	pa.primersArgs.weights.set_compl_any(datum);
 				    }
 				    else if (key.equals("PRIMER_WT_SELF_END")) { 
-				    	pa.p_args.weights.set_compl_end(datum);
+				    	pa.primersArgs.weights.set_compl_end(datum);
 				    }
 				    else if (key.equals("PRIMER_WT_SELF_ANY_TH")) { 
-				    	pa.p_args.weights.set_compl_any_th(datum);
+				    	pa.primersArgs.weights.set_compl_any_th(datum);
 				    }
 				    else if (key.equals("PRIMER_WT_SELF_END_TH")) { 
-				    	pa.p_args.weights.set_compl_end_th(datum);
+				    	pa.primersArgs.weights.set_compl_end_th(datum);
 				    }
 				    else if (key.equals("PRIMER_WT_HAIRPIN_TH")) { 
-				    	pa.p_args.weights.set_hairpin_th(datum);
+				    	pa.primersArgs.weights.set_hairpin_th(datum);
 				    }
 				    else if (key.equals("PRIMER_WT_NUM_NS")) { 
-				    	pa.p_args.weights.set_num_ns(datum);
+				    	pa.primersArgs.weights.set_num_ns(datum);
 				    }
 				    else if (key.equals("PRIMER_WT_LIBRARY_MISPRIMING")) { 
-				    	pa.p_args.weights.set_repeat_sim(datum);
+				    	pa.primersArgs.weights.set_repeat_sim(datum);
 				    }
 				    else if (key.equals("PRIMER_WT_SEQ_QUAL")) { 
-				    	pa.p_args.weights.set_seq_quality(datum);
+				    	pa.primersArgs.weights.set_seq_quality(datum);
 				    }
 				    else if (key.equals("PRIMER_WT_END_QUAL")) { 
-				    	pa.p_args.weights.set_end_quality(datum);
+				    	pa.primersArgs.weights.set_end_quality(datum);
 				    }
 				    else if (key.equals("PRIMER_WT_POS_PENALTY")) { 
-				    	pa.p_args.weights.set_pos_penalty(datum);
+				    	pa.primersArgs.weights.set_pos_penalty(datum);
 				    }
 				    else if (key.equals("PRIMER_WT_END_STABILITY")) { 
-				    	pa.p_args.weights.set_end_stability(datum);
+				    	pa.primersArgs.weights.set_end_stability(datum);
 				    }
 				    else if (key.equals("PRIMER_WT_TEMPLATE_MISPRIMING")) { 
-				    	pa.p_args.weights.set_template_mispriming(datum);
+				    	pa.primersArgs.weights.set_template_mispriming(datum);
 				    }
 				    else if (key.equals("PRIMER_WT_TEMPLATE_MISPRIMING_TH")) { 
-				    	pa.p_args.weights.set_template_mispriming_th(datum);
+				    	pa.primersArgs.weights.set_template_mispriming_th(datum);
 				    }
 				    else if (key.equals("PRIMER_WT_MASK_FAILURE_RATE")) { 
-				    	pa.p_args.weights.set_failure_rate(datum);                        
+				    	pa.primersArgs.weights.set_failure_rate(datum);                        
 				    }
 				    else if (key.equals("PRIMER_INTERNAL_WT_TM_GT")) { 
-				    	pa.o_args.weights.set_temp_gt(datum);
+				    	pa.oligosArgs.weights.set_temp_gt(datum);
 				    }
 				    else if (key.equals("PRIMER_INTERNAL_WT_TM_LT")) { 
-				    	pa.o_args.weights.set_temp_lt(datum);
+				    	pa.oligosArgs.weights.set_temp_lt(datum);
 				    }
 				    else if (key.equals("PRIMER_INTERNAL_WT_GC_PERCENT_GT")) { 
-				    	pa.o_args.weights.set_gc_content_gt(datum);
+				    	pa.oligosArgs.weights.set_gc_content_gt(datum);
 				    }
 				    else if (key.equals("PRIMER_INTERNAL_WT_GC_PERCENT_LT")) { 
-				    	pa.o_args.weights.set_gc_content_lt(datum);
+				    	pa.oligosArgs.weights.set_gc_content_lt(datum);
 				    }
 				    else if (key.equals("PRIMER_INTERNAL_WT_SIZE_LT")) { 
-				    	pa.o_args.weights.set_length_lt(datum);
+				    	pa.oligosArgs.weights.set_length_lt(datum);
 				    }
 				    else if (key.equals("PRIMER_INTERNAL_WT_SIZE_GT")) { 
-				    	pa.o_args.weights.set_length_gt(datum);
+				    	pa.oligosArgs.weights.set_length_gt(datum);
 				    }
 				    else if (key.equals("PRIMER_INTERNAL_WT_SELF_ANY")) { 
-				    	pa.o_args.weights.set_compl_any(datum);
+				    	pa.oligosArgs.weights.set_compl_any(datum);
 				    }
 				    else if (key.equals("PRIMER_INTERNAL_WT_SELF_END")) { 
-				    	pa.o_args.weights.set_compl_end(datum);
+				    	pa.oligosArgs.weights.set_compl_end(datum);
 				    }
 				    else if (key.equals("PRIMER_INTERNAL_WT_SELF_ANY_TH")) { 
-				    	pa.o_args.weights.set_compl_any_th(datum);
+				    	pa.oligosArgs.weights.set_compl_any_th(datum);
 				    }
 				    else if (key.equals("PRIMER_INTERNAL_WT_SELF_END_TH")) { 
-				    	pa.o_args.weights.set_compl_end_th(datum);
+				    	pa.oligosArgs.weights.set_compl_end_th(datum);
 				    }
 				    else if (key.equals("PRIMER_INTERNAL_WT_HAIRPIN_TH")) { 
-				    	pa.o_args.weights.set_hairpin_th(datum);
+				    	pa.oligosArgs.weights.set_hairpin_th(datum);
 				    }
 				    else if (key.equals("PRIMER_INTERNAL_WT_NUM_NS")) { 
-				    	pa.o_args.weights.set_num_ns(datum);
+				    	pa.oligosArgs.weights.set_num_ns(datum);
 				    }
 				    else if (key.equals("PRIMER_INTERNAL_WT_LIBRARY_MISHYB")) { 
-				    	pa.o_args.weights.set_repeat_sim(datum);
+				    	pa.oligosArgs.weights.set_repeat_sim(datum);
 				    }
 				    else if (key.equals("PRIMER_INTERNAL_WT_SEQ_QUAL")) { 
-				    	pa.o_args.weights.set_seq_quality(datum);
+				    	pa.oligosArgs.weights.set_seq_quality(datum);
 				    }
 				    else if (key.equals("PRIMER_INTERNAL_WT_END_QUAL")) { 
-				    	pa.o_args.weights.set_end_quality(datum);
+				    	pa.oligosArgs.weights.set_end_quality(datum);
 				    }
 				    else if (key.equals("PRIMER_WT_TEMPLATE_MISPRIMING_TH")) { 
-				    	pa.o_args.weights.set_template_mispriming_th(datum);
+				    	pa.oligosArgs.weights.set_template_mispriming_th(datum);
 				    }
 				    else if (key.equals("PRIMER_PAIR_WT_PR_PENALTY")) {
-				    	pa.pr_pair_weights.set_primer_quality(datum);
+				    	pa.getPrPairWeights().set_primer_quality(datum);
 				    }
 				    else if (key.equals("PRIMER_PAIR_WT_IO_PENALTY")) { 
-				    	pa.pr_pair_weights.set_io_quality(datum);
+				    	pa.getPrPairWeights().set_io_quality(datum);
 				    }
 				    else if (key.equals("PRIMER_PAIR_WT_DIFF_TM")) {
-				    	pa.pr_pair_weights.set_diff_tm(datum);
+				    	pa.getPrPairWeights().set_diff_tm(datum);
 				    }
 				    else if (key.equals("PRIMER_PAIR_WT_COMPL_ANY")) { 
-				    	pa.pr_pair_weights.set_compl_any(datum);
+				    	pa.getPrPairWeights().set_compl_any(datum);
 				    }
 				    else if (key.equals("PRIMER_PAIR_WT_COMPL_END")) { 
-				    	pa.pr_pair_weights.set_compl_end(datum);
+				    	pa.getPrPairWeights().set_compl_end(datum);
 				    }
 				    else if (key.equals("PRIMER_PAIR_WT_COMPL_ANY_TH")) { 
-				    	pa.pr_pair_weights.set_compl_any_th(datum);
+				    	pa.getPrPairWeights().set_compl_any_th(datum);
 				    }
 				    else if (key.equals("PRIMER_PAIR_WT_COMPL_END_TH")) { 
-				    	pa.pr_pair_weights.set_compl_end_th(datum);
+				    	pa.getPrPairWeights().set_compl_end_th(datum);
 				    }
 				    else if (key.equals("PRIMER_PAIR_WT_PRODUCT_TM_LT")) { 
-				    	pa.pr_pair_weights.set_product_tm_lt(datum);
+				    	pa.getPrPairWeights().set_product_tm_lt(datum);
 				    }
 				    else if (key.equals("PRIMER_PAIR_WT_PRODUCT_TM_GT")) { 
-				    	pa.pr_pair_weights.set_product_tm_gt(datum);
+				    	pa.getPrPairWeights().set_product_tm_gt(datum);
 				    }
 				    else if (key.equals("PRIMER_PAIR_WT_PRODUCT_SIZE_GT")) { 
-				    	pa.pr_pair_weights.set_product_size_gt(datum);
+				    	pa.getPrPairWeights().set_product_size_gt(datum);
 				    }
 				    else if (key.equals("PRIMER_PAIR_WT_PRODUCT_SIZE_LT")) {  
-				    	pa.pr_pair_weights.set_product_size_lt(datum);
+				    	pa.getPrPairWeights().set_product_size_lt(datum);
 				    }
 				    else if (key.equals("PRIMER_PAIR_WT_LIBRARY_MISPRIMING")) { 
-				    	pa.pr_pair_weights.set_repeat_sim(datum);
+				    	pa.getPrPairWeights().set_repeat_sim(datum);
 				    }
 				    else if (key.equals("PRIMER_PAIR_WT_TEMPLATE_MISPRIMING")) { 
-				    	pa.pr_pair_weights.set_template_mispriming(datum);
+				    	pa.getPrPairWeights().set_template_mispriming(datum);
 				    }
 				    else if (key.equals("PRIMER_PAIR_WT_TEMPLATE_MISPRIMING_TH")) { 
-				    	pa.pr_pair_weights.set_template_mispriming_th(datum);
+				    	pa.getPrPairWeights().set_template_mispriming_th(datum);
 				    }
 				    else if (key.equals("PRIMER_MASK_TEMPLATE")) {
 
 				    	boolean retValue = pa.p3_set_pa_mask_template(datum);
 				    	pa.p3_set_pa_lowercase_masking(retValue);
-				    	pa.masking_parameters_changed = retValue;
+				    	pa.setMaskingParametersChanged(retValue);
 //	                    parse_int("PRIMER_MASK_TEMPLATE", datum, &pa.mask_template, parse_err);  
 //	                    pa.lowercase_masking = pa.mask_template;
 //	                    pa.masking_parameters_changed = pa.mask_template;
 //	                    continue;
 					}
 				    else if (key.equals("PRIMER_MASK_FAILURE_RATE")) {
-				    	pa.mp.set_failure_rate(datum);
+				    	pa.getMaskingParameters().set_failure_rate(datum);
 				    }
 				    else if (key.equals("PRIMER_MASK_5P_DIRECTION")) {
-				    	pa.mp.set_nucl_masked_in_5p_direction(datum);
+				    	pa.getMaskingParameters().set_nucl_masked_in_5p_direction(datum);
 				    }
 				    else if (key.equals("PRIMER_MASK_3P_DIRECTION")) {
-				    	pa.mp.set_nucl_masked_in_3p_direction(datum);
+				    	pa.getMaskingParameters().set_nucl_masked_in_3p_direction(datum);
 				    }
 				    else if (key.equals("PRIMER_MASK_KMERLIST_PREFIX")) {
 				    	pa.set_masking_parameters_KmerLis_Prefix(datum);
@@ -739,67 +739,67 @@ public class boulder {
 		/* Figure out the right settings for the tasks*/
 		if (task_tmp != null ) {
 			if (task_tmp.equals("pick_pcr_primers")) {
-				pa.primer_task = task.generic;
-				pa.pick_left_primer = true;
-				pa.pick_right_primer = true;
-				pa.pick_internal_oligo = false;
+				pa.setPrimerTask(P3Task.GENERIC);
+				pa.setPickLeftPrimer(true);
+				pa.setPickRightPrimer(true);
+				pa.setPickInternalOligo(false);
 			} 
 			else if (task_tmp.equals("pick_pcr_primers_and_hyb_probe")) {
-				pa.primer_task = task.generic; 
-				pa.pick_left_primer = true;
-				pa.pick_right_primer = true;
-				pa.pick_internal_oligo = true;
+				pa.setPrimerTask(P3Task.GENERIC); 
+				pa.setPickLeftPrimer(true);
+				pa.setPickRightPrimer(true);
+				pa.setPickInternalOligo(true);
 		    } 
 			else if (task_tmp.equals( "pick_left_only")) {
-				pa.primer_task = task.generic;
-				pa.pick_left_primer = true;
-				pa.pick_right_primer = false;
-				pa.pick_internal_oligo = false;
+				pa.setPrimerTask(P3Task.GENERIC);
+				pa.setPickLeftPrimer(true);
+				pa.setPickRightPrimer(false);
+				pa.setPickInternalOligo(false);
 		    } 
 			else if (task_tmp.equals( "pick_right_only")) {
-				pa.primer_task = task.generic;
-				pa.pick_left_primer = false;
-				pa.pick_right_primer = true;
-				pa.pick_internal_oligo = false;
+				pa.setPrimerTask(P3Task.GENERIC);
+				pa.setPickLeftPrimer(false);
+				pa.setPickRightPrimer(true);
+				pa.setPickInternalOligo(false);
 		    } 
 			else if (task_tmp.equals( "pick_hyb_probe_only")) {
-				pa.primer_task = task.generic;
-				pa.pick_left_primer = false;
-				pa.pick_right_primer = false;
-				pa.pick_internal_oligo = true;
+				pa.setPrimerTask(P3Task.GENERIC);
+				pa.setPickLeftPrimer(false);
+				pa.setPickRightPrimer(false);
+				pa.setPickInternalOligo(true);
 		    } 
 			else if (task_tmp.equals( "generic")) {
-				pa.primer_task = task.generic;
+				pa.setPrimerTask(P3Task.GENERIC);
 		    } 
 			else if (task_tmp.equals( "pick_detection_primers")) {
-				pa.primer_task = task.generic; /* Deliberate duplication for
+				pa.setPrimerTask(P3Task.GENERIC); /* Deliberate duplication for
 						    backward compatibility. */
 		    } 
 			else if (task_tmp.equals( "pick_cloning_primers")) {
-				pa.primer_task = task.pick_cloning_primers;
+				pa.setPrimerTask(P3Task.PICK_CLONING_PRIMERS);
 		    } 
 			else if (task_tmp.equals( "pick_discriminative_primers")) {
-				pa.primer_task = task.pick_discriminative_primers;
+				pa.setPrimerTask(P3Task.PICK_DISCRIMINATIVE_PRIMERS);
 		    } 
 			else if (task_tmp.equals( "pick_sequencing_primers")) {
-		    	pa.primer_task = task.pick_sequencing_primers;
+		    	pa.setPrimerTask(P3Task.PICK_SEQUENCING_PRIMERS);
 		    } 
 			else if (task_tmp.equals( "pick_primer_list")) {
-				pa.primer_task = task.pick_primer_list;
+				pa.setPrimerTask(P3Task.PICK_PRIMER_LIST);
 		    } else if (task_tmp.equals( "check_primers")) {
-		    	pa.primer_task = task.check_primers;
+		    	pa.setPrimerTask(P3Task.CHECK_PRIMERS);
 		    	/* check_primers sets the picking flags itself */
-		    	pa.pick_left_primer = false;
-		    	pa.pick_right_primer = false;
-		    	pa.pick_internal_oligo = false;
+		    	pa.setPickLeftPrimer(false);
+		    	pa.setPickRightPrimer(false);
+		    	pa.setPickInternalOligo(false);
 		    	if (sa.left_input != null){
-		    		pa.pick_left_primer = true;
+		    		pa.setPickLeftPrimer(true);
 		    	}
 		    	if (sa.right_input != null){
-		    		pa.pick_right_primer = true;
+		    		pa.setPickRightPrimer(true);
 		    	}
 		    	if (sa.internal_input != null){
-		    		pa.pick_internal_oligo = true;
+		    		pa.setPickInternalOligo(true);
 		    	}
 		    } 
 		    else 
@@ -809,13 +809,13 @@ public class boulder {
 		
 		/* Read in the repeat libraries */
 		if (null != repeat_file_path) {
-			pa.p_args.repeat_lib =  null;
+			pa.primersArgs.repeat_lib =  null;
 			if (!repeat_file_path.isEmpty()) {
 				try {
-					pa.p_args.repeat_lib = seq_lib.read_and_create_seq_lib(repeat_file_path, 
+					pa.primersArgs.repeat_lib = seq_lib.read_and_create_seq_lib(repeat_file_path, 
 				                              "mispriming library");
-					if(!pa.p_args.repeat_lib.getErrors().isEmpty()) {
-						glob_err.append(pa.p_args.repeat_lib.getErrors());
+					if(!pa.primersArgs.repeat_lib.getErrors().isEmpty()) {
+						glob_err.append(pa.primersArgs.repeat_lib.getErrors());
 					}
 				} catch (Exception e) {
 					glob_err.append("Can not read mispriming library " + repeat_file_path);
@@ -826,13 +826,13 @@ public class boulder {
 		
 		  /* Read in the repeat libraries for internal oligo */
 		if (null != int_repeat_file_path) {
-			pa.o_args.repeat_lib =  null;
+			pa.oligosArgs.repeat_lib =  null;
 			if (!int_repeat_file_path.isEmpty()) {
 				try {
-					pa.o_args.repeat_lib = seq_lib.read_and_create_seq_lib(int_repeat_file_path, 
+					pa.oligosArgs.repeat_lib = seq_lib.read_and_create_seq_lib(int_repeat_file_path, 
 				                              "internal oligo mishyb library");
-					if(!pa.o_args.repeat_lib.getErrors().isEmpty()) {
-						glob_err.append(pa.o_args.repeat_lib.getErrors());
+					if(!pa.oligosArgs.repeat_lib.getErrors().isEmpty()) {
+						glob_err.append(pa.oligosArgs.repeat_lib.getErrors());
 					}
 				} catch (Exception e) {
 					glob_err.append("Can not read internal oligo mishyb library" + int_repeat_file_path);
@@ -871,7 +871,7 @@ public class boulder {
 	                 p3_file_type expected_file_type,
 	                 boolean echo_output,
 	                 boolean strict_tags,
-	                 p3_global_settings pa, 
+	                 P3GlobalSettings pa, 
 	                 seq_args sarg,
 	                 StringBuilder fatal_err,
 	                 StringBuilder nonfatal_err,
@@ -1017,7 +1017,7 @@ public class boulder {
 
 
 	public static void print_format_output(int io_version,
-			p3_global_settings global_pa, seq_args sarg, p3retval retval,
+			P3GlobalSettings global_pa, seq_args sarg, p3retval retval,
 			String pr_release, int explain_flag) {
 		// TODO Auto-generated method stub
 		

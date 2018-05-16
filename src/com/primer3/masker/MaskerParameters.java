@@ -3,7 +3,7 @@ package com.primer3.masker;
 import java.util.List;
 
 
-public class masker_parameters {
+public class MaskerParameters {
 	/* strand to mask */
 	public masking_direction mdir;
 	

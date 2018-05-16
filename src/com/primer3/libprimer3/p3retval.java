@@ -89,7 +89,7 @@ public class p3retval {
 	}
 
 
-	public void print_boulder(int io_version,p3_global_settings pa, seq_args sa, boolean   explain_flag) {
+	public void print_boulder(int io_version,P3GlobalSettings pa, seq_args sa, boolean   explain_flag) {
 
 		p3retval retval = this;
 		/* The pointers to warning tag */
@@ -105,7 +105,7 @@ public class p3retval {
 		String suffix ;
 
 		/* Pointers for the primer set just printing */
-		primer_rec fwd, rev, intl;
+		PrimerReccord fwd, rev, intl;
 
 		/* Variables only used for Primer Lists */
 		int num_fwd, num_rev, num_int, num_pair, num_print;
@@ -182,7 +182,7 @@ public class p3retval {
 			 * set it to the number requested. */
 
 			/* Get how may primers should be printed */
-			num_print = pa.num_return;
+			num_print = pa.getNumReturn();
 			/* Set how many primers will be printed */
 			print_fwd = (num_print < num_fwd) ? num_print : num_fwd;
 			print_rev = (num_print < num_rev) ? num_print : num_rev;
@@ -231,19 +231,19 @@ public class p3retval {
 				rev = retval.rev.oligo.get(i);
 				intl = retval.intl.oligo.get(i);
 				/* Do fwd oligos have to be printed? */
-				if ((pa.pick_left_primer) && (i < print_fwd)) {
+				if ((pa.isPickLeftPrimer()) && (i < print_fwd)) {
 					go_fwd = 1;
 				} else {
 					go_fwd = 0;
 				}
 				/* Do rev oligos have to be printed? */
-				if ((pa.pick_right_primer) && (i < print_rev)) {
+				if ((pa.isPickRightPrimer()) && (i < print_rev)) {
 					go_rev = 1;
 				} else {
 					go_rev = 0;
 				}
 				/* Do int oligos have to be printed? */
-				if ((pa.pick_internal_oligo) && (i < print_int)) {
+				if ((pa.isPickInternalOligo()) && (i < print_int)) {
 					go_int = 1;
 				} else {
 					go_int = 0;
@@ -258,7 +258,7 @@ public class p3retval {
 				go_fwd = 1;
 				go_rev = 1;
 				/* Do hyb oligos have to be printed? */
-				if (pa.pick_internal_oligo ) {
+				if (pa.isPickInternalOligo() ) {
 					go_int = 1;
 				} else {
 					go_int = 0;
@@ -307,15 +307,15 @@ public class p3retval {
 			/* Print primer start and length */
 			if (go_fwd == 1)
 				System.out.format("PRIMER_LEFT%s=%d,%d\n", suffix,
-						fwd.start + incl_s + pa.first_base_index,
+						fwd.start + incl_s + pa.getFirstBaseIndex(),
 						fwd.length);
 			if (go_rev == 1)
 				System.out.format("PRIMER_RIGHT%s=%d,%d\n", suffix,
-						rev.start + incl_s + pa.first_base_index,
+						rev.start + incl_s + pa.getFirstBaseIndex(),
 						rev.length);
 			if (go_int == 1)
 				System.out.format("PRIMER_%s%s=%d,%d\n", int_oligo, suffix,
-						intl.start + incl_s + pa.first_base_index,
+						intl.start + incl_s + pa.getFirstBaseIndex(),
 						intl.length);
 
 			/* Print primer Tm */
@@ -336,57 +336,57 @@ public class p3retval {
 						intl.gc_content);
 
 			/* Print primer self_any */
-			if (go_fwd == 1 && pa.thermodynamic_oligo_alignment==0)
+			if (go_fwd == 1 && pa.isThermodynamicOligoAlignment()==false)
 				System.out.format("PRIMER_LEFT%s_SELF_ANY=%.2f\n", suffix,
 						fwd.self_any);
-			if (go_rev == 1 && pa.thermodynamic_oligo_alignment==0)
+			if (go_rev == 1 && pa.isThermodynamicOligoAlignment()==false)
 				System.out.format("PRIMER_RIGHT%s_SELF_ANY=%.2f\n", suffix,
 						rev.self_any);
-			if (go_int == 1 && pa.thermodynamic_oligo_alignment==0)
+			if (go_int == 1 && pa.isThermodynamicOligoAlignment()==false)
 				System.out.format("PRIMER_%s%s_SELF_ANY=%.2f\n", int_oligo, suffix,
 						intl.self_any);
-			if (go_int == 1 && pa.thermodynamic_oligo_alignment==1)
+			if (go_int == 1 && pa.isThermodynamicOligoAlignment()==true)
 				System.out.format("PRIMER_%s%s_SELF_ANY_TH=%.2f\n", int_oligo, suffix,
 						intl.self_any);
 			/* Print primer self_any thermodynamical approach */
-			if (go_fwd == 1 && pa.thermodynamic_oligo_alignment==1)
+			if (go_fwd == 1 && pa.isThermodynamicOligoAlignment()==true)
 				System.out.format("PRIMER_LEFT%s_SELF_ANY_TH=%.2f\n", suffix,
 						fwd.self_any);
-			if (go_rev == 1 && pa.thermodynamic_oligo_alignment==1)
+			if (go_rev == 1 && pa.isThermodynamicOligoAlignment()==true)
 				System.out.format("PRIMER_RIGHT%s_SELF_ANY_TH=%.2f\n", suffix,
 						rev.self_any);
 			/* Print primer self_end*/
-			if (go_fwd == 1 && pa.thermodynamic_oligo_alignment==0)
+			if (go_fwd == 1 && pa.isThermodynamicOligoAlignment()==false)
 				System.out.format("PRIMER_LEFT%s_SELF_END=%.2f\n", suffix,
 						fwd.self_end);
-			if (go_rev == 1 && pa.thermodynamic_oligo_alignment==0)
+			if (go_rev == 1 && pa.isThermodynamicOligoAlignment()==false)
 				System.out.format("PRIMER_RIGHT%s_SELF_END=%.2f\n", suffix,
 						rev.self_end);
-			if (go_int == 1 && pa.thermodynamic_oligo_alignment==0)
+			if (go_int == 1 && pa.isThermodynamicOligoAlignment()==false)
 				System.out.format("PRIMER_%s%s_SELF_END=%.2f\n", int_oligo, suffix,
 						intl.self_end);
-			if (go_int == 1 && pa.thermodynamic_oligo_alignment==1)
+			if (go_int == 1 && pa.isThermodynamicOligoAlignment()==true)
 				System.out.format("PRIMER_%s%s_SELF_END_TH=%.2f\n", int_oligo, suffix,
 						intl.self_end);
 			/* Print primer self_end thermodynamical approach */
-			if (go_fwd == 1 && pa.thermodynamic_oligo_alignment==1)
+			if (go_fwd == 1 && pa.isThermodynamicOligoAlignment()==true)
 				System.out.format("PRIMER_LEFT%s_SELF_END_TH=%.2f\n", suffix,
 						fwd.self_end);
-			if (go_rev == 1 && pa.thermodynamic_oligo_alignment==1)
+			if (go_rev == 1 && pa.isThermodynamicOligoAlignment()==true)
 				System.out.format("PRIMER_RIGHT%s_SELF_END_TH=%.2f\n", suffix,
 						rev.self_end);
 			/* Print primer hairpin */
-			if (go_fwd == 1 && pa.thermodynamic_oligo_alignment==1)
+			if (go_fwd == 1 && pa.isThermodynamicOligoAlignment()==true)
 				System.out.format("PRIMER_LEFT%s_HAIRPIN_TH=%.2f\n", suffix,
 						fwd.hairpin_th);
-			if (go_rev == 1 && pa.thermodynamic_oligo_alignment==1)
+			if (go_rev == 1 && pa.isThermodynamicOligoAlignment()==true)
 				System.out.format("PRIMER_RIGHT%s_HAIRPIN_TH=%.2f\n", suffix,
 						rev.hairpin_th);
-			if (go_int == 1 && pa.thermodynamic_oligo_alignment==1)
+			if (go_int == 1 && pa.isThermodynamicOligoAlignment()==true)
 				System.out.format("PRIMER_%s%s_HAIRPIN_TH=%.2f\n", int_oligo, suffix,
 						intl.hairpin_th);
 			/*Print out primer mispriming scores */
-			if (seq_lib.seq_lib_num_seq(pa.p_args.repeat_lib) > 0) {
+			if (seq_lib.seq_lib_num_seq(pa.primersArgs.repeat_lib) > 0) {
 				if (go_fwd == 1)
 					System.out.format("PRIMER_LEFT%s_LIBRARY_MISPRIMING=%.2f, %s\n", suffix,
 							fwd.repeat_sim.score[fwd.repeat_sim.max],
@@ -402,7 +402,7 @@ public class p3retval {
 			}
 
 			/* Print out internal oligo mispriming scores */
-			if (go_int == 1 && seq_lib.seq_lib_num_seq(pa.o_args.repeat_lib) > 0)
+			if (go_int == 1 && seq_lib.seq_lib_num_seq(pa.oligosArgs.repeat_lib) > 0)
 				System.out.format("PRIMER_%s%s_LIBRARY_MISHYB=%.2f, %s\n", int_oligo, suffix,
 						intl.repeat_sim.score[intl.repeat_sim.max],
 						intl.repeat_sim.name);
@@ -422,7 +422,7 @@ public class p3retval {
 			}
 
 			/* Print position penalty, this is for backward compatibility */
-			if (!pa._PR_DEFAULT_POSITION_PENALTIES()
+			if (!pa.isDefaultPositionPenalties()
 					|| !sa.PR_START_CODON_POS_IS_NULL()){
 				System.out.format("PRIMER_LEFT%s_POSITION_PENALTY=%f\n", suffix,
 						fwd.position_penalty);
@@ -439,23 +439,23 @@ public class p3retval {
 						suffix, rev.end_stability);
 
 			/* Print primer template mispriming */
-			if ( (pa.thermodynamic_template_alignment == 0) && (go_fwd == 1) && 
+			if ( (!pa.isThermodynamicTemplateAlignment() ) && (go_fwd == 1) && 
 					(fwd.oligo_max_template_mispriming() != LibPrimer3.ALIGN_SCORE_UNDEF))
 				System.out.format("PRIMER_LEFT%s_TEMPLATE_MISPRIMING=%.4f\n", suffix,
 						fwd.oligo_max_template_mispriming());
-			if ( (pa.thermodynamic_template_alignment == 0) && (go_rev == 1) && 
+			if ( (!pa.isThermodynamicTemplateAlignment() ) && (go_rev == 1) && 
 					(rev.oligo_max_template_mispriming() != LibPrimer3.ALIGN_SCORE_UNDEF))
 				System.out.format("PRIMER_RIGHT%s_TEMPLATE_MISPRIMING=%.4f\n", suffix,
 						rev.oligo_max_template_mispriming());
 
 			/* Print primer template mispriming, thermodynamical approach*/
-			if ( (pa.thermodynamic_template_alignment == 1) && (go_fwd == 1) &&
+			if ( (pa.isThermodynamicTemplateAlignment()) && (go_fwd == 1) &&
 					(fwd.oligo_max_template_mispriming_thermod() != LibPrimer3.ALIGN_SCORE_UNDEF)) {
 				System.out.format("PRIMER_LEFT%s_TEMPLATE_MISPRIMING_TH=%.4f\n", suffix,
 						fwd.oligo_max_template_mispriming_thermod());
 			}
 
-			if ( (pa.thermodynamic_template_alignment == 1) && (go_rev == 1) &&
+			if ( (pa.isThermodynamicTemplateAlignment() ) && (go_rev == 1) &&
 					(rev.oligo_max_template_mispriming_thermod() != LibPrimer3.ALIGN_SCORE_UNDEF)) {
 				System.out.format("PRIMER_RIGHT%s_TEMPLATE_MISPRIMING_TH=%.4f\n", suffix,
 						rev.oligo_max_template_mispriming_thermod());
@@ -473,25 +473,25 @@ public class p3retval {
 					System.out.format("PRIMER_%s%s_MIN_SEQ_QUALITY=%d\n", int_oligo,
 							suffix, intl.seq_quality);
 				/* Print pair comp_any */
-				if(pa.thermodynamic_oligo_alignment==0)
+				if(pa.isThermodynamicOligoAlignment()==false)
 					System.out.format("PRIMER_PAIR%s_COMPL_ANY=%.2f\n", suffix,
 							retval.best_pairs.pairs.get(i).compl_any);
-				if(pa.thermodynamic_oligo_alignment==1)
+				if(pa.isThermodynamicOligoAlignment()==true)
 					System.out.format("PRIMER_PAIR%s_COMPL_ANY_TH=%.2f\n", suffix,
 							retval.best_pairs.pairs.get(i).compl_any);
 				/* Print pair comp_end */
-				if(pa.thermodynamic_oligo_alignment==0)
+				if(pa.isThermodynamicOligoAlignment()==false)
 					System.out.format("PRIMER_PAIR%s_COMPL_END=%.2f\n", suffix,
 							retval.best_pairs.pairs.get(i).compl_end);
-				if(pa.thermodynamic_oligo_alignment==1)
+				if(pa.isThermodynamicOligoAlignment()==true)
 					System.out.format("PRIMER_PAIR%s_COMPL_END_TH=%.2f\n", suffix,
 							retval.best_pairs.pairs.get(i).compl_end);
 				/* Print product size */
 				System.out.format("PRIMER_PAIR%s_PRODUCT_SIZE=%d\n", suffix,
 						retval.best_pairs.pairs.get(i).product_size);
 				/* Print the product Tm if a Tm range is defined */
-				if (pa.product_max_tm != LibPrimer3.PR_DEFAULT_PRODUCT_MAX_TM ||
-						pa.product_min_tm != LibPrimer3.PR_DEFAULT_PRODUCT_MIN_TM) {
+				if (pa.getProductMaxTM() != LibPrimer3.PR_DEFAULT_PRODUCT_MAX_TM ||
+						pa.getProductMinTM() != LibPrimer3.PR_DEFAULT_PRODUCT_MIN_TM) {
 					System.out.format("PRIMER_PAIR%s_PRODUCT_TM=%.4f\n", suffix,
 							retval.best_pairs.pairs.get(i).product_tm);
 
@@ -503,11 +503,11 @@ public class p3retval {
 				}
 
 				/* Print the primer pair template mispriming */
-				if ((pa.thermodynamic_template_alignment == 0) && (retval.best_pairs.pairs.get(i).template_mispriming != LibPrimer3.ALIGN_SCORE_UNDEF))
+				if ((!pa.isThermodynamicTemplateAlignment() ) && (retval.best_pairs.pairs.get(i).template_mispriming != LibPrimer3.ALIGN_SCORE_UNDEF))
 					System.out.format("PRIMER_PAIR%s_TEMPLATE_MISPRIMING=%.2f\n", suffix,
 							retval.best_pairs.pairs.get(i).template_mispriming);
 				/* Print the primer pair template mispriming. Thermodynamic approach.  */
-				if ((pa.thermodynamic_template_alignment == 1) && (retval.best_pairs.pairs.get(i).template_mispriming != LibPrimer3.ALIGN_SCORE_UNDEF))
+				if ((pa.isThermodynamicTemplateAlignment() ) && (retval.best_pairs.pairs.get(i).template_mispriming != LibPrimer3.ALIGN_SCORE_UNDEF))
 					System.out.format("PRIMER_PAIR%s_TEMPLATE_MISPRIMING_TH=%.2f\n", suffix,
 							retval.best_pairs.pairs.get(i).template_mispriming);
 
@@ -520,15 +520,15 @@ public class p3retval {
 
 	}
 
-	private String p3_get_rv_and_gs_warnings(p3_global_settings pa) {
+	private String p3_get_rv_and_gs_warnings(P3GlobalSettings pa) {
 
 		String warning = "";
 
-		if(pa.p_args.repeat_lib != null)
-			warning += pa.p_args.repeat_lib.seq_lib_warning_data();
+		if(pa.primersArgs.repeat_lib != null)
+			warning += pa.primersArgs.repeat_lib.seq_lib_warning_data();
 
-		if(pa.o_args.repeat_lib != null && !pa.o_args.repeat_lib.seq_lib_warning_data().isEmpty()) {
-			warning += pa.o_args.repeat_lib.seq_lib_warning_data() + " (for internal oligo)";
+		if(pa.oligosArgs.repeat_lib != null && !pa.oligosArgs.repeat_lib.seq_lib_warning_data().isEmpty()) {
+			warning += pa.oligosArgs.repeat_lib.seq_lib_warning_data() + " (for internal oligo)";
 		}
 
 		if(this.warnings.length() > 0)
@@ -537,25 +537,25 @@ public class p3retval {
 		return warning;
 	}
 
-	private void print_all_explain(p3_global_settings pa, seq_args sa,
+	private void print_all_explain(P3GlobalSettings pa, seq_args sa,
 			int io_version) {
-		if (pa.pick_left_primer
-				&& !(pa.pick_anyway && sa.left_input != null))
+		if (pa.isPickLeftPrimer()
+				&& !(pa.isPickAnyway() && sa.left_input != null))
 			System.out.format("PRIMER_LEFT_EXPLAIN=%s\n",
 					p3_get_rv_fwd().p3_get_oligo_array_explain_string());
 
-		if (pa.pick_right_primer 
-				&& !(pa.pick_anyway && sa.right_input != null))
+		if (pa.isPickRightPrimer() 
+				&& !(pa.isPickAnyway() && sa.right_input != null))
 			System.out.format("PRIMER_RIGHT_EXPLAIN=%s\n",
 					p3_get_rv_rev().p3_get_oligo_array_explain_string());
 
-		if ( pa.pick_internal_oligo 
-				&& !(pa.pick_anyway && sa.internal_input != null)) 
+		if ( pa.isPickInternalOligo() 
+				&& !(pa.isPickAnyway() && sa.internal_input != null)) 
 			System.out.format("PRIMER_INTERNAL_EXPLAIN=%s\n",
 					p3_get_rv_intl().p3_get_oligo_array_explain_string());
 
-		if (pa.pick_right_primer  
-				&& pa.pick_left_primer ) {
+		if (pa.isPickRightPrimer()  
+				&& pa.isPickLeftPrimer() ) {
 			System.out.format("PRIMER_PAIR_EXPLAIN=%s\n", 
 					p3_get_rv_best_pairs().p3_get_pair_array_explain_string());
 		}

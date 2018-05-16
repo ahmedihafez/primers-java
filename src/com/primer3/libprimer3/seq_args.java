@@ -322,16 +322,16 @@ public class seq_args {
 	}
 
 
-	public int fake_a_sequence(p3_global_settings pa) {
+	public int fake_a_sequence(P3GlobalSettings pa) {
 		int i, product_size, space, ns_to_fill;
 		char[] rev =null;
 		int ns_to_fill_first, ns_to_fill_second;
 
 		/* Determine the product size */
-		if ( pa.product_opt_size == LibPrimer3.PR_UNDEFINED_INT_OPT){
-			product_size = pa.pr_max[0] - pa.pr_min[0];
+		if ( pa.getProductOptSize() == LibPrimer3.PR_UNDEFINED_INT_OPT){
+			product_size = pa.getProductSizeRange(0).getRight() - pa.getProductSizeRange(0).getLeft();
 		} else {
-			product_size = pa.product_opt_size;
+			product_size = pa.getProductOptSize();
 		} 
 
 		space = product_size + 1;
@@ -404,7 +404,7 @@ public class seq_args {
 	 * oligo length in order to reduce the ranges of the ok regions. On
 	 * some imputs this improves speed dramatically.
 	 */
-	public void _optimize_ok_regions_list(p3_global_settings pa) {
+	public void _optimize_ok_regions_list(P3GlobalSettings pa) {
 		/* We do this only if we enabled the optimization and
 		 * the primers were NOT specified. */
 		if (!LibPrimer3.OPTIMIZE_OK_REGIONS || (this.left_input != null) || (this.right_input!= null)) {
@@ -418,16 +418,16 @@ public class seq_args {
 
 		int pmin = Integer.MAX_VALUE;
 		int pmax = 0;
-		int omin = pa.p_args.getMinSize();
-		int omax = pa.p_args.getMaxSize();
+		int omin = pa.primersArgs.getMinSize();
+		int omax = pa.primersArgs.getMaxSize();
 
 		/* Determine min/max product size */
-		for (int i=0; i<pa.num_intervals; i++) {
-			if (pa.pr_min[i] < pmin) { 
-				pmin = pa.pr_min[i]; 
+		for (int i=0; i<pa.getProductSizeRangesNumber(); i++) {
+			if (pa.getProductSizeRange(i).getLeft() < pmin) { 
+				pmin = pa.getProductSizeRange(i).getLeft(); 
 			}
-			if (pa.pr_max[i] > pmax) { 
-				pmax = pa.pr_max[i]; 
+			if (pa.getProductSizeRange(i).getRight() > pmax) { 
+				pmax = pa.getProductSizeRange(i).getRight(); 
 			}
 		}
 
@@ -563,7 +563,7 @@ public class seq_args {
 	 *  Function to set the included region and fix the start positions 
 	 */
 	public void _adjust_seq_args(
-			p3_global_settings pa,
+			P3GlobalSettings pa,
 			p3retval retval) {
 
 
@@ -575,12 +575,12 @@ public class seq_args {
 		int seq_len, inc_len;
 
 		/* Create a seq for check primers if needed */
-		if (pa.primer_task == task.check_primers) {
+		if (pa.getPrimerTask() == P3Task.CHECK_PRIMERS) {
 			if (null == sa.sequence) {
 				sa.fake_a_sequence( pa);
 			}
 		}
-		if (pa.primer_task == task.pick_sequencing_primers && sa.incl_l != -1) {
+		if (pa.getPrimerTask() == P3Task.PICK_SEQUENCING_PRIMERS && sa.incl_l != -1) {
 			nonfatal_err.append("Task pick_sequencing_primers cannot be combined with included region");
 			return;
 		}
@@ -591,7 +591,7 @@ public class seq_args {
 		     sa.sequence == NULL
 		 */
 		if (null == sa.sequence) {
-			if (pa.primer_task == task.check_primers) {
+			if (pa.getPrimerTask() == P3Task.CHECK_PRIMERS) {
 				nonfatal_err.append( "No primers provided");
 			} else {
 				nonfatal_err.append( "Missing SEQUENCE tag");
@@ -602,10 +602,10 @@ public class seq_args {
 		seq_len =sa.sequence.length;
 
 		/* For pick_cloning_primers set the forced positions */
-		if (pa.primer_task == task.pick_cloning_primers) {
+		if (pa.getPrimerTask() == P3Task.PICK_CLONING_PRIMERS) {
 			if(sa.incl_l == -1) {
-				sa.force_left_start = pa.first_base_index;
-				sa.force_right_start = seq_len + pa.first_base_index - 1;
+				sa.force_left_start = pa.getFirstBaseIndex();
+				sa.force_right_start = seq_len + pa.getFirstBaseIndex() - 1;
 			} else {
 				sa.force_left_start = sa.incl_s;
 				sa.force_right_start = sa.incl_s + sa.incl_l - 1;
@@ -613,7 +613,7 @@ public class seq_args {
 		}
 
 		/* For pick_discriminative_primers set the forced positions */
-		if (pa.primer_task == task.pick_discriminative_primers) {
+		if (pa.getPrimerTask() == P3Task.PICK_DISCRIMINATIVE_PRIMERS) {
 			/* Changed here from incl_s and incl_l to sa.tar2.pairs[0][0/1] */
 			if (sa.tar2.count != 1) {
 				nonfatal_err.append("Task pick_discriminative_primers requires exactly one SEQUENCE_TARGET");
@@ -626,25 +626,25 @@ public class seq_args {
 		 * use the whole sequence as included region */
 		if (sa.incl_l == -1) {
 			sa.incl_l = seq_len;
-			sa.incl_s = pa.first_base_index;
+			sa.incl_s = pa.getFirstBaseIndex();
 		}
 
 		/* Generate at least one target */
-		if (pa.primer_task == task.pick_sequencing_primers && sa.tar2.count == 0) {
-			sa.tar2.pairs[0][0] = pa.first_base_index;
+		if (pa.getPrimerTask() == P3Task.PICK_SEQUENCING_PRIMERS && sa.tar2.count == 0) {
+			sa.tar2.pairs[0][0] = pa.getFirstBaseIndex();
 			sa.tar2.pairs[0][1] = seq_len;
 			sa.tar2.count = 1;
 		}
 
 		/* Fix the start of the included region and start codon */
-		sa.incl_s -= pa.first_base_index;
-		sa.start_codon_pos -= pa.first_base_index;
+		sa.incl_s -= pa.getFirstBaseIndex();
+		sa.start_codon_pos -= pa.getFirstBaseIndex();
 
 		/* Fix the start */
-		sa.force_left_start -= pa.first_base_index;
-		sa.force_left_end -= pa.first_base_index;
-		sa.force_right_start -= pa.first_base_index;
-		sa.force_right_end -= pa.first_base_index;
+		sa.force_left_start -= pa.getFirstBaseIndex();
+		sa.force_left_end -= pa.getFirstBaseIndex();
+		sa.force_right_start -= pa.getFirstBaseIndex();
+		sa.force_right_end -= pa.getFirstBaseIndex();
 
 		/* Make it relative to included region */
 		sa.force_left_start -= sa.incl_s;
@@ -666,18 +666,18 @@ public class seq_args {
 
 			/* Masks original trimmed sequence */
 			/* edited by M. Lepamets */
-			if (pa.mask_template && (pa.pick_left_primer  && pa.pick_right_primer )) {
+			if (pa.isMaskTemplate() && (pa.isPickLeftPrimer()  && pa.isPickRightPrimer() )) {
 				input_sequence input_seq = new input_sequence(sa.trimmed_orig_seq);
 				output_sequence output_seq =null;
 
 				//		       input_seq = input_sequence.create_input_sequence_from_string (sa.trimmed_orig_seq, nonfatal_err);
-				output_seq =  output_sequence.create_output_sequence (sa.incl_l, pa.mp.mdir);
+				output_seq =  output_sequence.create_output_sequence (sa.incl_l, pa.getMaskingParameters().mdir);
 
-				masker.read_and_mask_sequence(input_seq, output_seq, pa.mp, false);
+				masker.read_and_mask_sequence(input_seq, output_seq, pa.getMaskingParameters(), false);
 				if (output_seq.sequence != null) {
-					if (pa.mp.mdir == masking_direction.fwd) {
+					if (pa.getMaskingParameters().mdir == masking_direction.fwd) {
 						sa.trimmed_masked_seq = output_seq.sequence;
-					} else if (pa.mp.mdir == masking_direction.rev) {
+					} else if (pa.getMaskingParameters().mdir == masking_direction.rev) {
 						sa.trimmed_masked_seq_r = output_seq.sequence;
 					}
 				} else {
@@ -699,7 +699,7 @@ public class seq_args {
 			sa.upcased_seq_r = Sequence.p3_reverse_complement(sa.upcased_seq);
 		}
 
-		if (sa._check_and_adjust_intervals( seq_len, pa.first_base_index, nonfatal_err, warning)) {
+		if (sa._check_and_adjust_intervals( seq_len, pa.getFirstBaseIndex(), nonfatal_err, warning)) {
 			return;
 		}
 
@@ -707,7 +707,7 @@ public class seq_args {
 
 				"SEQUENCE_OVERLAP_JUNCTION_LIST",
 				seq_len,
-				pa.first_base_index,
+				pa.getFirstBaseIndex(),
 				nonfatal_err, warning)) {
 			return;
 		}

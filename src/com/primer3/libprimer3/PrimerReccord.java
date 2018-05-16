@@ -10,7 +10,7 @@ import com.primer3.sequence.Sequence;
 import com.primer3.thal.ThermodynamicAlignmentException;
 import com.primer3.thal.thal_args;
 
-public class primer_rec {
+public class PrimerReccord {
 	// new add here and should be maintained
 	public oligo_type rec_type;
 	
@@ -151,9 +151,9 @@ public class primer_rec {
 		return (this.problems.prob & OP_COMPLETELY_WRITTEN) != 0;
 	}
 
-	/* 
-	   Return 1 iff the argument 'oligo' has any problems -- i.e.
-	   violations of design constraints.
+	/**
+	 *  Return 1 iff the argument 'oligo' has any problems -- i.e.
+	 *  violations of design constraints.
 	 */
 	public boolean p3_ol_has_any_problem() {
 		return (this.problems.prob & any_problem) != 0;
@@ -375,162 +375,170 @@ public class primer_rec {
 	/**
 	 *  Calculate the part of the objective function due to one primer. 
 	 */
-	public double p_obj_fn(p3_global_settings pa, oligo_type type) throws PrimerRecordException {
+	public double p_obj_fn(P3GlobalSettings pa, oligo_type type) throws PrimerRecordException {
 		double sum = 0;
 
 		if (type == oligo_type.OT_LEFT || type == oligo_type.OT_RIGHT) {
-			if( pa.p_args.weights.temp_gt > 0 && this.temp > pa.p_args.getOptTm())
-				sum += pa.p_args.weights.temp_gt * (this.temp - pa.p_args.getOptTm());
-			if (pa.p_args.weights.temp_lt > 0 && this.temp < pa.p_args.getOptTm())
-				sum += pa.p_args.weights.temp_lt * (pa.p_args.getOptTm() - this.temp);
+			if( pa.primersArgs.weights.temp_gt > 0 && this.temp > pa.primersArgs.getOptTm())
+				sum += pa.primersArgs.weights.temp_gt * (this.temp - pa.primersArgs.getOptTm());
+			if (pa.primersArgs.weights.temp_lt > 0 && this.temp < pa.primersArgs.getOptTm())
+				sum += pa.primersArgs.weights.temp_lt * (pa.primersArgs.getOptTm() - this.temp);
 
-			if (pa.p_args.weights.gc_content_gt > 0 && this.gc_content > pa.p_args.getOptGC())
-				sum += pa.p_args.weights.gc_content_gt * (this.gc_content - pa.p_args.getOptGC());
-			if (pa.p_args.weights.gc_content_lt > 0 && this.gc_content < pa.p_args.getOptGC())
-				sum += pa.p_args.weights.gc_content_lt * (pa.p_args.getOptGC() - this.gc_content);
+			if (pa.primersArgs.weights.gc_content_gt > 0 && this.gc_content > pa.primersArgs.getOptGC())
+				sum += pa.primersArgs.weights.gc_content_gt * (this.gc_content - pa.primersArgs.getOptGC());
+			if (pa.primersArgs.weights.gc_content_lt > 0 && this.gc_content < pa.primersArgs.getOptGC())
+				sum += pa.primersArgs.weights.gc_content_lt * (pa.primersArgs.getOptGC() - this.gc_content);
 
-			if (pa.p_args.weights.length_lt > 0 && this.length < pa.p_args.getOptSize())
-				sum += pa.p_args.weights.length_lt * (pa.p_args.getOptSize() - this.length);
-			if (pa.p_args.weights.length_gt > 0 && this.length > pa.p_args.getOptSize())
-				sum += pa.p_args.weights.length_gt * (this.length - pa.p_args.getOptSize());
+			if (pa.primersArgs.weights.length_lt > 0 && this.length < pa.primersArgs.getOptSize())
+				sum += pa.primersArgs.weights.length_lt * (pa.primersArgs.getOptSize() - this.length);
+			if (pa.primersArgs.weights.length_gt > 0 && this.length > pa.primersArgs.getOptSize())
+				sum += pa.primersArgs.weights.length_gt * (this.length - pa.primersArgs.getOptSize());
 
 			/* edited by M. Lepamets */
-			if (pa.p_args.weights.failure_rate > 0) {
-				sum += pa.p_args.weights.failure_rate * this.failure_rate;
+			if (pa.primersArgs.weights.failure_rate > 0) {
+				sum += pa.primersArgs.weights.failure_rate * this.failure_rate;
 			}     
 
 			/* BEGIN: secondary structures */
-			if (pa.thermodynamic_oligo_alignment==p3_global_settings.DONOT_USE_THERMODYNAMICS_ALIGNMENT) {
+			// pa.thermodynamic_oligo_alignment == P3GlobalSettings.DONOT_USE_THERMODYNAMICS_ALIGNMENT
+			if (! pa.isThermodynamicOligoAlignment() ) {
 
-				if (pa.p_args.weights.compl_any > 0)
-					sum += pa.p_args.weights.compl_any * this.self_any;
-				if (pa.p_args.weights.compl_end > 0)
-					sum += pa.p_args.weights.compl_end * this.self_end;
+				if (pa.primersArgs.weights.compl_any > 0)
+					sum += pa.primersArgs.weights.compl_any * this.self_any;
+				if (pa.primersArgs.weights.compl_end > 0)
+					sum += pa.primersArgs.weights.compl_end * this.self_end;
 
-			} else if (pa.thermodynamic_oligo_alignment==p3_global_settings.USE_THERMODYNAMICS_ALIGNMENT) {
+				
+			} else if (pa.isThermodynamicOligoAlignment() ) { // == P3GlobalSettings.USE_THERMODYNAMICS_ALIGNMENT
 
-				if (pa.p_args.weights.compl_any_th > 0) {
-					if ((this.temp - pa.p_args.weights.temp_cutoff) <= this.self_any)
-						sum += pa.p_args.weights.compl_any_th * (this.self_any - (this.temp - pa.p_args.weights.temp_cutoff - 1.0)); /* -1.0 is added for the case where == */
+				if (pa.primersArgs.weights.compl_any_th > 0) {
+					if ((this.temp - pa.primersArgs.weights.temp_cutoff) <= this.self_any)
+						sum += pa.primersArgs.weights.compl_any_th * (this.self_any - (this.temp - pa.primersArgs.weights.temp_cutoff - 1.0)); /* -1.0 is added for the case where == */
 					else
-						sum += pa.p_args.weights.compl_any_th  * (1/(this.temp - pa.p_args.weights.temp_cutoff + 1.0 - this.self_any));
+						sum += pa.primersArgs.weights.compl_any_th  * (1/(this.temp - pa.primersArgs.weights.temp_cutoff + 1.0 - this.self_any));
 				}
 
-				if (pa.p_args.weights.compl_end_th > 0) {
-					if ((this.temp - pa.p_args.weights.temp_cutoff) <= this.self_end)
-						sum += pa.p_args.weights.compl_end_th * (this.self_end - (this.temp - pa.p_args.weights.temp_cutoff - 1.0));
+				if (pa.primersArgs.weights.compl_end_th > 0) {
+					if ((this.temp - pa.primersArgs.weights.temp_cutoff) <= this.self_end)
+						sum += pa.primersArgs.weights.compl_end_th * (this.self_end - (this.temp - pa.primersArgs.weights.temp_cutoff - 1.0));
 					else
-						sum += pa.p_args.weights.compl_end_th * (1/(this.temp - pa.p_args.weights.temp_cutoff + 1.0 - this.self_end));
+						sum += pa.primersArgs.weights.compl_end_th * (1/(this.temp - pa.primersArgs.weights.temp_cutoff + 1.0 - this.self_end));
 				}
 
-				if (pa.p_args.weights.hairpin_th > 0) {
-					if ((this.temp - pa.p_args.weights.temp_cutoff) <= this.hairpin_th)
-						sum += pa.p_args.weights.hairpin_th * (this.hairpin_th - (this.temp - pa.p_args.weights.temp_cutoff - 1.0));
+				if (pa.primersArgs.weights.hairpin_th > 0) {
+					if ((this.temp - pa.primersArgs.weights.temp_cutoff) <= this.hairpin_th)
+						sum += pa.primersArgs.weights.hairpin_th * (this.hairpin_th - (this.temp - pa.primersArgs.weights.temp_cutoff - 1.0));
 					else
-						sum += pa.p_args.weights.hairpin_th * (1/(this.temp - pa.p_args.weights.temp_cutoff + 1.0 - this.hairpin_th));
+						sum += pa.primersArgs.weights.hairpin_th * (1/(this.temp - pa.primersArgs.weights.temp_cutoff + 1.0 - this.hairpin_th));
 				}
 
-			} else {
-				throw new PrimerRecordException("  illegal value for pa.thermodynamic_oligo_alignment ");
-				/* Programming error, 
-			     illegal value for pa.thermodynamic_oligo_alignment */
-			}
+			} 
+//			else {
+//				throw new PrimerRecordException("  illegal value for pa.thermodynamic_oligo_alignment ");
+//				/* Programming error, 
+//			     illegal value for pa.thermodynamic_oligo_alignment */
+//			}
 			/* END: secondary structures */
 
-			if (pa.p_args.weights.num_ns > 0)
-				sum += pa.p_args.weights.num_ns * this.num_ns;
-			if(pa.p_args.weights.repeat_sim > 0)
-				sum += pa.p_args.weights.repeat_sim * this.repeat_sim.score[this.repeat_sim.max];
+			if (pa.primersArgs.weights.num_ns > 0)
+				sum += pa.primersArgs.weights.num_ns * this.num_ns;
+			if(pa.primersArgs.weights.repeat_sim > 0)
+				sum += pa.primersArgs.weights.repeat_sim * this.repeat_sim.score[this.repeat_sim.max];
 			if (!bf_get_overlaps_target()) {
 				/* We might be evaluating p_obj_fn with this.target if
 		           the client supplied 'pick_anyway' and specified
 		           a primer or oligo. */
 				if((bf_get_infinite_pos_penalty()))
 					throw new PrimerRecordException("  bf_get_infinite_pos_penalty is set ");;
-					if(pa.p_args.weights.pos_penalty > 0)
-						sum += pa.p_args.weights.pos_penalty * this.position_penalty;
+					if(pa.primersArgs.weights.pos_penalty > 0)
+						sum += pa.primersArgs.weights.pos_penalty * this.position_penalty;
 			}
-			if(pa.p_args.weights.end_stability > 0)
-				sum += pa.p_args.weights.end_stability * this.end_stability;
+			if(pa.primersArgs.weights.end_stability > 0)
+				sum += pa.primersArgs.weights.end_stability * this.end_stability;
 
 			/* FIX ME QUALITY WT Change here */
-			if(pa.p_args.weights.seq_quality > 0)
-				sum += pa.p_args.weights.seq_quality *
-				(pa.quality_range_max - this.seq_quality);  /* Look for end seq quality */
+			if(pa.primersArgs.weights.seq_quality > 0)
+				sum += pa.primersArgs.weights.seq_quality *
+				(pa.getQualityRangeMax() - this.seq_quality);  /* Look for end seq quality */
 
-			if (pa.p_args.weights.template_mispriming  > 0 && pa.thermodynamic_template_alignment==0) {
+			if (pa.primersArgs.weights.template_mispriming  > 0 && !pa.isThermodynamicTemplateAlignment() ) {
 				if(! (this.oligo_max_template_mispriming() != LibPrimer3.ALIGN_SCORE_UNDEF ))
 					throw new PrimerRecordException(" Error in : oligo_max_template_mispriming exceed MaxValue ");
-				sum += pa.p_args.weights.template_mispriming * this.oligo_max_template_mispriming();
+				sum += pa.primersArgs.weights.template_mispriming * this.oligo_max_template_mispriming();
 			}
 
-			if (pa.p_args.weights.template_mispriming_th  > 0 && pa.thermodynamic_template_alignment == 1) {
+			if (pa.primersArgs.weights.template_mispriming_th  > 0 && pa.isThermodynamicTemplateAlignment() ) {
 
 				if(this.oligo_max_template_mispriming_thermod() == LibPrimer3.ALIGN_SCORE_UNDEF)
 					throw new PrimerRecordException(" Error in : oligo_max_template_mispriming_thermod exceed MaxValue ");
 
-				if((this.temp - pa.p_args.weights.temp_cutoff) <= this.oligo_max_template_mispriming_thermod())
-					sum += pa.p_args.weights.template_mispriming_th * 
-					(this.oligo_max_template_mispriming_thermod() - (this.temp - pa.p_args.weights.temp_cutoff - 1.0));
-				if((this.temp - pa.p_args.weights.temp_cutoff) > this.oligo_max_template_mispriming_thermod())
-					sum += pa.p_args.weights.template_mispriming_th *
-					(1/(this.temp - pa.p_args.weights.temp_cutoff + 1.0 - this.oligo_max_template_mispriming_thermod()));
+				if((this.temp - pa.primersArgs.weights.temp_cutoff) <= this.oligo_max_template_mispriming_thermod())
+					sum += pa.primersArgs.weights.template_mispriming_th * 
+					(this.oligo_max_template_mispriming_thermod() - (this.temp - pa.primersArgs.weights.temp_cutoff - 1.0));
+				if((this.temp - pa.primersArgs.weights.temp_cutoff) > this.oligo_max_template_mispriming_thermod())
+					sum += pa.primersArgs.weights.template_mispriming_th *
+					(1/(this.temp - pa.primersArgs.weights.temp_cutoff + 1.0 - this.oligo_max_template_mispriming_thermod()));
 			}
 			return sum;
 		} else if (type == oligo_type.OT_INTL) {
-			if(pa.o_args.weights.temp_gt > 0 && this.temp > pa.o_args.getOptTm())
-				sum += pa.o_args.weights.temp_gt * (this.temp - pa.o_args.getOptTm());
-			if(pa.o_args.weights.temp_lt > 0 && this.temp < pa.o_args.getOptTm())
-				sum += pa.o_args.weights.temp_lt * (pa.o_args.getOptTm() - this.temp);
+			if(pa.oligosArgs.weights.temp_gt > 0 && this.temp > pa.oligosArgs.getOptTm())
+				sum += pa.oligosArgs.weights.temp_gt * (this.temp - pa.oligosArgs.getOptTm());
+			if(pa.oligosArgs.weights.temp_lt > 0 && this.temp < pa.oligosArgs.getOptTm())
+				sum += pa.oligosArgs.weights.temp_lt * (pa.oligosArgs.getOptTm() - this.temp);
 
-			if(pa.o_args.weights.gc_content_gt > 0 && this.gc_content > pa.o_args.getOptGC())
-				sum += pa.o_args.weights.gc_content_gt * (this.gc_content - pa.o_args.getOptGC());
-			if(pa.o_args.weights.gc_content_lt > 0 && this.gc_content < pa.o_args.getOptGC())
-				sum += pa.o_args.weights.gc_content_lt * (pa.o_args.getOptGC() - this.gc_content);
+			if(pa.oligosArgs.weights.gc_content_gt > 0 && this.gc_content > pa.oligosArgs.getOptGC())
+				sum += pa.oligosArgs.weights.gc_content_gt * (this.gc_content - pa.oligosArgs.getOptGC());
+			if(pa.oligosArgs.weights.gc_content_lt > 0 && this.gc_content < pa.oligosArgs.getOptGC())
+				sum += pa.oligosArgs.weights.gc_content_lt * (pa.oligosArgs.getOptGC() - this.gc_content);
 
-			if(pa.o_args.weights.length_lt > 0 && this.length < pa.o_args.getOptSize())
-				sum += pa.o_args.weights.length_lt * (pa.o_args.getOptSize() - this.length);
-			if(pa.o_args.weights.length_gt > 0 && this.length  > pa.o_args.getOptSize())
-				sum += pa.o_args.weights.length_gt * (this.length - pa.o_args.getOptSize());
-			if(pa.o_args.weights.compl_any > 0 && pa.thermodynamic_oligo_alignment==p3_global_settings.DONOT_USE_THERMODYNAMICS_ALIGNMENT)
-				sum += pa.o_args.weights.compl_any * this.self_any;
-			if(pa.o_args.weights.compl_end > 0 && pa.thermodynamic_oligo_alignment==p3_global_settings.DONOT_USE_THERMODYNAMICS_ALIGNMENT)
-				sum += pa.o_args.weights.compl_end * this.self_end;
-
+			if(pa.oligosArgs.weights.length_lt > 0 && this.length < pa.oligosArgs.getOptSize())
+				sum += pa.oligosArgs.weights.length_lt * (pa.oligosArgs.getOptSize() - this.length);
+			if(pa.oligosArgs.weights.length_gt > 0 && this.length  > pa.oligosArgs.getOptSize())
+				sum += pa.oligosArgs.weights.length_gt * (this.length - pa.oligosArgs.getOptSize());
+			// Refactored pa.thermodynamic_oligo_alignment==P3GlobalSettings.DONOT_USE_THERMODYNAMICS_ALIGNMENT
+			
+			if(!pa.isThermodynamicOligoAlignment())
+			{
+				if(pa.oligosArgs.weights.compl_any > 0 ) // && !pa.thermodynamic_oligo_alignment
+					sum += pa.oligosArgs.weights.compl_any * this.self_any;
+				if(pa.oligosArgs.weights.compl_end > 0 ) // && !pa.thermodynamic_oligo_alignment
+					sum += pa.oligosArgs.weights.compl_end * this.self_end;
+			}
 			/* begin thermodynamical approach */
-			if (pa.thermodynamic_oligo_alignment==p3_global_settings.USE_THERMODYNAMICS_ALIGNMENT) {
+			// == P3GlobalSettings.USE_THERMODYNAMICS_ALIGNMENT
+			if (pa.isThermodynamicOligoAlignment()) {
 
-				if (pa.o_args.weights.compl_any_th > 0) {
-					if ((this.temp - pa.o_args.weights.temp_cutoff) <= this.self_any)
-						sum += pa.o_args.weights.compl_any_th * (this.self_any - (this.temp - pa.o_args.weights.temp_cutoff - 1.0)); /* -1.0 is added for the case where == */
+				if (pa.oligosArgs.weights.compl_any_th > 0) {
+					if ((this.temp - pa.oligosArgs.weights.temp_cutoff) <= this.self_any)
+						sum += pa.oligosArgs.weights.compl_any_th * (this.self_any - (this.temp - pa.oligosArgs.weights.temp_cutoff - 1.0)); /* -1.0 is added for the case where == */
 					else 
-						sum += pa.o_args.weights.compl_any_th * (1/(this.temp - pa.o_args.weights.temp_cutoff + 1.0 - this.self_any));
+						sum += pa.oligosArgs.weights.compl_any_th * (1/(this.temp - pa.oligosArgs.weights.temp_cutoff + 1.0 - this.self_any));
 				}
 
-				if (pa.o_args.weights.compl_end_th > 0) {
-					if ((this.temp - pa.o_args.weights.temp_cutoff) <= this.self_end) 
-						sum += pa.o_args.weights.compl_end_th * (this.self_end - (this.temp - pa.o_args.weights.temp_cutoff - 1.0));
+				if (pa.oligosArgs.weights.compl_end_th > 0) {
+					if ((this.temp - pa.oligosArgs.weights.temp_cutoff) <= this.self_end) 
+						sum += pa.oligosArgs.weights.compl_end_th * (this.self_end - (this.temp - pa.oligosArgs.weights.temp_cutoff - 1.0));
 					else
-						sum += pa.o_args.weights.compl_end_th * (1/(this.temp - pa.o_args.weights.temp_cutoff + 1.0 - this.self_end));
+						sum += pa.oligosArgs.weights.compl_end_th * (1/(this.temp - pa.oligosArgs.weights.temp_cutoff + 1.0 - this.self_end));
 				}
 
-				if (pa.o_args.weights.hairpin_th > 0) {
-					if ((this.temp - pa.o_args.weights.temp_cutoff) <= this.hairpin_th) 
-						sum += pa.o_args.weights.hairpin_th * (this.hairpin_th - (this.temp - pa.o_args.weights.temp_cutoff - 1.0));
+				if (pa.oligosArgs.weights.hairpin_th > 0) {
+					if ((this.temp - pa.oligosArgs.weights.temp_cutoff) <= this.hairpin_th) 
+						sum += pa.oligosArgs.weights.hairpin_th * (this.hairpin_th - (this.temp - pa.oligosArgs.weights.temp_cutoff - 1.0));
 					else
-						sum += pa.o_args.weights.hairpin_th * (1/(this.temp - pa.o_args.weights.temp_cutoff + 1.0 - this.hairpin_th));
+						sum += pa.oligosArgs.weights.hairpin_th * (1/(this.temp - pa.oligosArgs.weights.temp_cutoff + 1.0 - this.hairpin_th));
 				}
 			}
 			/* end thermodynamical approach */
 
-			if(pa.o_args.weights.num_ns > 0)
-				sum += pa.o_args.weights.num_ns * this.num_ns;
-			if(pa.o_args.weights.repeat_sim > 0)
-				sum += pa.o_args.weights.repeat_sim * this.repeat_sim.score[this.repeat_sim.max];
+			if(pa.oligosArgs.weights.num_ns > 0)
+				sum += pa.oligosArgs.weights.num_ns * this.num_ns;
+			if(pa.oligosArgs.weights.repeat_sim > 0)
+				sum += pa.oligosArgs.weights.repeat_sim * this.repeat_sim.score[this.repeat_sim.max];
 
 			/* FIXME  :: QUALITY WT */
-			if(pa.o_args.weights.seq_quality > 0)
-				sum += pa.o_args.weights.seq_quality * (pa.quality_range_max - this.seq_quality);
+			if(pa.oligosArgs.weights.seq_quality > 0)
+				sum += pa.oligosArgs.weights.seq_quality * (pa.getQualityRangeMax() - this.seq_quality);
 
 			
 			this.quality = sum;
@@ -565,7 +573,7 @@ public class primer_rec {
 	 * @throws AlignmentException 
 	 * @throws ThermodynamicAlignmentException 
 	 */
-	public void calc_and_check_oligo_features(p3_global_settings pa,
+	public void calc_and_check_oligo_features(P3GlobalSettings pa,
 			oligo_type otype, dpal_arg_holder dpal_arg_to_use,
 			thal_arg_holder thal_arg_to_use, seq_args sa, oligo_stats stats,
 			p3retval retval, 
@@ -625,9 +633,9 @@ public class primer_rec {
 		}
 
 		if (oligo_type.OT_INTL == otype) {
-			po_args = pa.o_args;
+			po_args = pa.oligosArgs;
 		} else {
-			po_args = pa.p_args;
+			po_args = pa.primersArgs;
 		}
 
 		/* Set j and k, and sanity check */
@@ -651,13 +659,13 @@ public class primer_rec {
 				&& this.start >= retval.stop_codon_pos))) {
 			stats.no_orf++;
 			this.op_set_does_not_amplify_orf();
-			if (!pa.pick_anyway) return;
+			if (!pa.isPickAnyway()) return;
 		}
 
 		/* edited by T. Koressaar and M. Lepamets for lowercase masking */
-		if(pa.lowercase_masking) {
+		if(pa.isLowercaseMasking()) {
 			char[] sequence_check = sa.trimmed_orig_seq;
-			if (pa.mask_template) {
+			if (pa.isMaskTemplate()) {
 				if (otype == oligo_type.OT_LEFT) sequence_check = sa.trimmed_masked_seq;
 				else if (otype == oligo_type.OT_RIGHT) sequence_check = sa.trimmed_masked_seq_r;
 			}
@@ -665,7 +673,7 @@ public class primer_rec {
 			if (is_lowercase_masked( sequence_check[three_prime_pos], stats)) {
 				if (!must_use) return;
 			}
-		} else if(pa.lowercase_masking == false && pa.mask_template == true){
+		} else if(pa.isLowercaseMasking() == false && pa.isMaskTemplate() == true){
 			retval.warnings.append("Use PRIMER_LOWERCASE_MASKING=1 when using PRIMER_MASK_TEMPLATE=1.");
 			return;
 		}
@@ -696,15 +704,15 @@ public class primer_rec {
 			penalties only when there is 0 or 1 target. */
 		//		 PR_ASSERT(sa.tar2.count <= 1 || pa.PR_DEFAULT_POSITION_PENALTIES());
 
-		if (pa.primer_task == task.pick_sequencing_primers ) {
+		if (pa.getPrimerTask() == P3Task.PICK_SEQUENCING_PRIMERS ) {
 			this.position_penalty = 0.0;
 		} else if (otype != oligo_type.OT_INTL
-				&& pa.PR_DEFAULT_POSITION_PENALTIES()
+				&& pa.isDefaultPositionPenalties()
 				&& sa.tar2.oligo_overlaps_interval(j, k-j+1)) {
 			this.position_penalty = 0.0;
 			this.bf_set_infinite_pos_penalty(1);
 			this.bf_set_overlaps_target(1);
-		} else if (otype != oligo_type.OT_INTL && !pa.PR_DEFAULT_POSITION_PENALTIES()
+		} else if (otype != oligo_type.OT_INTL && !pa.isDefaultPositionPenalties()
 				&& 1 == sa.tar2.count) {
 			this.compute_position_penalty(pa, sa,  otype);
 			if (this.bf_get_infinite_pos_penalty()) {
@@ -799,7 +807,7 @@ public class primer_rec {
 		if (oligo_type.OT_LEFT == otype || oligo_type.OT_RIGHT == otype) {
 			/* gc_clamp is applicable only to primers (as opposed
 			       to primers and hybridzations oligos. */
-			for (i = 0; i < pa.gc_clamp; i++) {
+			for (i = 0; i < pa.getGcClamp(); i++) {
 				/* We want to look at the 3' end of the oligo being
 			         assessed, so we look in the 5' end of its reverse-complement */
 				if (revc_oligo_seq[i] != 'G' && revc_oligo_seq[i] != 'C') {
@@ -812,7 +820,7 @@ public class primer_rec {
 			}
 		}		  
 
-		if (pa.max_end_gc < 5  && (oligo_type.OT_LEFT == otype || oligo_type.OT_RIGHT == otype)) {
+		if (pa.getMaxEndGC() < 5  && (oligo_type.OT_LEFT == otype || oligo_type.OT_RIGHT == otype)) {
 			/* The CGs are only counted in the END of primers (as opposed
 			       to primers and hybridzations oligos. */
 			gc_count=0;
@@ -823,7 +831,7 @@ public class primer_rec {
 					gc_count++;
 				}
 			}
-			if (gc_count > pa.max_end_gc) {
+			if (gc_count > pa.getMaxEndGC()) {
 				op_set_too_many_gc_at_end();
 				stats.gc_end_high++;
 				if (!must_use) return;
@@ -862,8 +870,8 @@ public class primer_rec {
 				po_args.getDivalentConcentration(),
 				po_args.getDntpConcentration(),
 				LibPrimer3.MAX_NN_TM_LENGTH,
-				pa.tm_santalucia,
-				pa.salt_corrections);
+				pa.mtMethod,
+				pa.getSaltCorrectionMethod());
 
 		if (this.temp < po_args.getMinTm()) {
 			op_set_low_tm();
@@ -881,8 +889,8 @@ public class primer_rec {
 		     (not to oligos) */
 		if (oligo_type.OT_LEFT == otype || oligo_type.OT_RIGHT == otype) {
 			if ((this.end_stability = oligo_tm.end_oligodg(oligo_seq, 5,
-					pa.tm_santalucia))
-					> pa.max_end_stability) {
+					pa.mtMethod))
+					> pa.getMaxEndStability()) {
 				/* Must not be called on a hybridization probe / internal oligo: */
 				op_set_high_end_stability();
 				stats.stability++;
@@ -895,7 +903,7 @@ public class primer_rec {
 				|| retval.output_type == p3_output_type.primer_list
 				|| po_args.weights.compl_any > 0
 				|| po_args.weights.compl_end > 0)
-				&& pa.thermodynamic_oligo_alignment == 0) {
+				&& !pa.isThermodynamicOligoAlignment() ) {
 
 			oligo_compl( po_args,
 					stats, dpal_arg_to_use,
@@ -913,7 +921,7 @@ public class primer_rec {
 					|| retval.output_type == p3_output_type.primer_list
 					|| po_args.weights.compl_any_th > 0
 					|| po_args.weights.compl_end_th > 0)
-					&& pa.thermodynamic_oligo_alignment == 1 ) 
+					&& pa.isThermodynamicOligoAlignment()  ) 
 			{
 				oligo_compl_thermod( po_args,
 						stats, thal_arg_to_use,
@@ -938,7 +946,7 @@ public class primer_rec {
 				//			        || po_args.weights.compl_end_th /* Triinu, is this needed? */
 				//			#endif
 				)
-				&& pa.thermodynamic_oligo_alignment == 1
+				&& pa.isThermodynamicOligoAlignment() 
 				) {
 			this.oligo_hairpin( po_args,
 					stats, thal_arg_to_use,
@@ -973,9 +981,9 @@ public class primer_rec {
 						(oligo_type.OT_RIGHT == otype || oligo_type.OT_LEFT == otype)
 						&& 
 						(
-								( pa.p_args.weights.template_mispriming > 0 && pa.thermodynamic_template_alignment == 0 )
+								( pa.primersArgs.weights.template_mispriming > 0 && !pa.isThermodynamicTemplateAlignment()  )
 								||
-								(pa.p_args.weights.template_mispriming_th > 0 && pa.thermodynamic_template_alignment == 1)
+								(pa.primersArgs.weights.template_mispriming_th > 0 && pa.isThermodynamicTemplateAlignment() )
 								)
 						)
 				) {
@@ -1002,18 +1010,18 @@ public class primer_rec {
 
 		for (for_i=0; for_i < sa.primer_overlap_junctions_count; for_i++) {
 			if (oligo_type.OT_LEFT == otype
-					&& ((this.start + pa.min_5_prime_overlap_of_junction - 1) 
+					&& ((this.start + pa.getMin5PrimeOverlapOfJunction() - 1) 
 							<= sa.primer_overlap_junctions[for_i])
-							&& ((this.start + this.length - pa.min_3_prime_overlap_of_junction))
+							&& ((this.start + this.length - pa.getMin3PrimeOverlapOfJunction()))
 							> sa.primer_overlap_junctions[for_i]) {
 				this.overlaps_overlap_position = true;
 				/* no need to continue checking */
 				break;
 			}
 			if (oligo_type.OT_RIGHT == otype
-					&& ((this.start - this.length + pa.min_3_prime_overlap_of_junction) 
+					&& ((this.start - this.length + pa.getMin3PrimeOverlapOfJunction()) 
 							<= sa.primer_overlap_junctions[for_i])
-							&& ((this.start - pa.min_5_prime_overlap_of_junction + 1))
+							&& ((this.start - pa.getMin5PrimeOverlapOfJunction() + 1))
 							> sa.primer_overlap_junctions[for_i]) {
 				this.overlaps_overlap_position = true;
 				/* no need to continue checking */
@@ -1023,10 +1031,10 @@ public class primer_rec {
 		/* Calculate failure rate */
 		/* Added by M. Lepamets */
 		this.failure_rate = 0.0;
-		if (pa.mask_template && this.length >= pa.mp.window_size) {
-			op.fwd = masker.string_to_word (oligo_seq, this.length, pa.mp.window_size);
+		if (pa.isMaskTemplate() && this.length >= pa.getMaskingParameters().window_size) {
+			op.fwd = masker.string_to_word (oligo_seq, this.length, pa.getMaskingParameters().window_size);
 			op.rev = op.fwd; /* not used in this calculation */
-			op.calculate_scores ( pa.mp, pa.mp.window_size);
+			op.calculate_scores ( pa.getMaskingParameters(), pa.getMaskingParameters().window_size);
 			this.failure_rate = op.score_fwd;
 		}
 		/* FIX ME FIXME Steve, is this really needed? */
@@ -1036,14 +1044,14 @@ public class primer_rec {
 
 	
 	public void oligo_template_mispriming(
-			p3_global_settings pa, seq_args sa, oligo_type l,
+			P3GlobalSettings pa, seq_args sa, oligo_type l,
 			oligo_stats ostats, 
 			dpal_args d_align_args,
 			thal_args t_align_args) throws AlignmentException, ThermodynamicAlignmentException {
 		/* Check if we already did this and the oligo was ok. */
 		  
 		
-		primer_rec h = this;
+		PrimerReccord h = this;
 		if (h.template_mispriming_ok != 0) {
 		    return;
 		  }
@@ -1059,11 +1067,11 @@ public class primer_rec {
 
 		  /* Calculate maximum similarity to ectopic sites in the template. */
 		  if (l == oligo_type.OT_RIGHT || l == oligo_type.OT_LEFT) {
-		    if (pa.thermodynamic_template_alignment == 0 && pa._pr_need_template_mispriming())
+		    if (!pa.isThermodynamicTemplateAlignment()  && pa.needTemplateMispriming())
 		     LibPrimer3.primer_mispriming_to_template(h, pa, sa, l,
 		                                    ostats, first,
 		                                    last, s, s_r, d_align_args);
-		    if (pa.thermodynamic_template_alignment == 1 && pa._pr_need_template_mispriming_thermod())
+		    if (pa.isThermodynamicTemplateAlignment()  && pa.needTemplateMisprimingTH())
 		    	LibPrimer3.primer_mispriming_to_template_thermod(h, pa, sa, l,
 		                                            ostats, first,
 		                                            last, s, s_r, t_align_args);
@@ -1088,10 +1096,10 @@ public class primer_rec {
 	
 	
 	public void oligo_repeat_library_mispriming(
-			p3_global_settings pa, seq_args sa, oligo_type l,
+			P3GlobalSettings pa, seq_args sa, oligo_type l,
 			oligo_stats ostats, dpal_arg_holder dpal_arg_to_use,
 			StringBuilder glob_err) throws AlignmentException {
-		primer_rec h = this;
+		PrimerReccord h = this;
 		double w;
 		seq_lib lib;
 		int i;
@@ -1101,11 +1109,11 @@ public class primer_rec {
 
 		/* First, check the oligo against the repeat library. */
 		if (l == oligo_type.OT_INTL) {
-			lib = pa.o_args.repeat_lib;
-			max_lib_compl =  (int)pa.o_args.getMaxRepeatCompl();
+			lib = pa.oligosArgs.repeat_lib;
+			max_lib_compl =  (int)pa.oligosArgs.getMaxRepeatCompl();
 		} else {
-			lib = pa.p_args.repeat_lib;
-			max_lib_compl =  (int)pa.p_args.getMaxRepeatCompl();
+			lib = pa.primersArgs.repeat_lib;
+			max_lib_compl =  (int)pa.primersArgs.getMaxRepeatCompl();
 		}	
 		
 		char[] s   = oligo_compute_sequence_and_reverse( sa, l);
@@ -1130,21 +1138,21 @@ public class primer_rec {
 				if (l == oligo_type.OT_LEFT )
 					w = lib.weight.get(i) *
 					LibPrimer3.align(s, lib.seqs.get(i),
-							(pa.lib_ambiguity_codes_consensus
+							(pa.isLibAmbiguityCodesConsensus()
 									? dpal_arg_to_use.local_end_ambig
 											: dpal_arg_to_use.local_end));
 
 				else if (l == oligo_type.OT_INTL )
 					w = lib.weight.get(i) *
 					LibPrimer3.align(s, lib.seqs.get(i),
-							(pa.lib_ambiguity_codes_consensus
+							(pa.isLibAmbiguityCodesConsensus()
 									? dpal_arg_to_use.local_ambig
 											: dpal_arg_to_use.local));
 
 				else
 					w = lib.weight.get(i) *
 					LibPrimer3.align(s_r, lib.rev_compl_seqs.get(i),
-							(pa.lib_ambiguity_codes_consensus
+							(pa.isLibAmbiguityCodesConsensus()
 									? dpal_arg_to_use.local_end_ambig
 											: dpal_arg_to_use.local));
 
@@ -1266,7 +1274,7 @@ public class primer_rec {
 	   if h.seq_quality and h.seq_end_quality are within
 	   range, or else return 0.
 	 */
-	private boolean sequence_quality_is_ok(p3_global_settings pa,
+	private boolean sequence_quality_is_ok(P3GlobalSettings pa,
 			oligo_type l, seq_args sa, int j, int k, oligo_stats global_oligo_stats,
 			PrimersOligosArguments po_args) {
 
@@ -1274,11 +1282,11 @@ public class primer_rec {
 		boolean  retval = true;
 
 		if (null == sa.quality) {
-			this.seq_end_quality = this.seq_quality = pa.quality_range_max;
+			this.seq_end_quality = this.seq_quality = pa.getQualityRangeMax();
 			return true;
 		}
 
-		q = pa.quality_range_max;
+		q = pa.getQualityRangeMax();
 
 		min_q = po_args.getMinQuality();
 		if (oligo_type.OT_LEFT == l || oligo_type.OT_RIGHT == l) {
@@ -1342,7 +1350,7 @@ public class primer_rec {
 
 
 
-	private void compute_position_penalty(p3_global_settings pa, seq_args sa,
+	private void compute_position_penalty(P3GlobalSettings pa, seq_args sa,
 			oligo_type o_type) {
 		int three_prime_base;
 		boolean inside_flag = false;
@@ -1379,9 +1387,9 @@ public class primer_rec {
 			}
 		}
 		if (!inside_flag  )
-			this.position_penalty *= pa.outside_penalty;
+			this.position_penalty *= pa.getOutsidePenalty();
 		else {
-			this.position_penalty *= pa.inside_penalty;
+			this.position_penalty *= pa.getInsidePenalty();
 		}		
 	}
 
@@ -1397,7 +1405,7 @@ public class primer_rec {
 
 
 
-	private boolean primer_must_match(p3_global_settings pa, oligo_stats global_oligo_stats,
+	private boolean primer_must_match(P3GlobalSettings pa, oligo_stats global_oligo_stats,
 			/* This is 5'.3' on the template sequence: */
 			char[] input_oligo_seq, char[] match_three_prime,
 			char[] match_five_prime) {

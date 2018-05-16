@@ -16,7 +16,7 @@ public class oligo_pair {
 	/* abs_score is a number of given k-mers in a k-mer list */
 	int abs_score = 0;
 
-	public void calculate_scores(masker_parameters mp, int word_length) {
+	public void calculate_scores(MaskerParameters mp, int word_length) {
 		// TODO Auto-generated method stub
 		for(formula_parameters fp : mp.fp)
 		{

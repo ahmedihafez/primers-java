@@ -19,7 +19,7 @@ public class output_sequence {
 	
 	
 
-	public void write_char_to_output(char c, char c_other, masker_parameters mp) {
+	public void write_char_to_output(char c, char c_other, MaskerParameters mp) {
 		
 		if (mp.print_sequence) {
 			System.err.print(c);
@@ -34,7 +34,7 @@ public class output_sequence {
 			this.pos += 1;
 		}
 	}
-	void  write_header_to_output (String header_name,masker_parameters mp)
+	void  write_header_to_output (String header_name,MaskerParameters mp)
 	{
 		if (mp.print_sequence) 
 			System.err.println(header_name);

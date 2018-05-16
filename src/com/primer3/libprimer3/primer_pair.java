@@ -61,9 +61,9 @@ public class primer_pair {
 	 *  sequence from given file in fasta format.
 	 */
 	double repeat_sim;    
-	public primer_rec left;     /* Left primer. */
-	public primer_rec right;    /* Right primer. */
-	public primer_rec intl;     /* Internal oligo. */
+	public PrimerReccord left;     /* Left primer. */
+	public PrimerReccord right;    /* Right primer. */
+	public PrimerReccord intl;     /* Internal oligo. */
 
 	boolean   must_use;
 
@@ -81,7 +81,7 @@ public class primer_pair {
 	 * We must know that the pair is acceptable before calling obj_fn.
 	 * @throws Exception 
 	 */
-	public double obj_fn(p3_global_settings pa) throws Exception {
+	public double obj_fn(P3GlobalSettings pa) throws Exception {
 		double sum;
 		double lower_tm;
 
@@ -89,69 +89,69 @@ public class primer_pair {
 		lower_tm = this.right.temp;
 		if(this.left.temp < this.right.temp) lower_tm = this.left.temp;
 
-		if(pa.pr_pair_weights.primer_quality > 0)   /*  HERE 1 */
-			sum += pa.pr_pair_weights.primer_quality * (this.left.quality + this.right.quality);
+		if(pa.getPrPairWeights().primer_quality > 0)   /*  HERE 1 */
+			sum += pa.getPrPairWeights().primer_quality * (this.left.quality + this.right.quality);
 
-		if(pa.pr_pair_weights.io_quality > 0 && pa.pick_right_primer
-				&& pa.pick_left_primer && pa.pick_internal_oligo)
-			sum += pa.pr_pair_weights.io_quality * this.intl.quality;
+		if(pa.getPrPairWeights().io_quality > 0 && pa.isPickRightPrimer()
+				&& pa.isPickLeftPrimer() && pa.isPickInternalOligo())
+			sum += pa.getPrPairWeights().io_quality * this.intl.quality;
 
-		if(pa.pr_pair_weights.diff_tm > 0)
-			sum += pa.pr_pair_weights.diff_tm * this.diff_tm;
+		if(pa.getPrPairWeights().diff_tm > 0)
+			sum += pa.getPrPairWeights().diff_tm * this.diff_tm;
 
-		if (pa.thermodynamic_oligo_alignment==0) {
-			if (pa.pr_pair_weights.compl_any > 0)
-				sum += pa.pr_pair_weights.compl_any * this.compl_any;
-			if (pa.pr_pair_weights.compl_end > 0)
-				sum += pa.pr_pair_weights.compl_end * this.compl_end;
-		} else if (pa.thermodynamic_oligo_alignment == 1) {
+		if (!pa.isThermodynamicOligoAlignment()) {
+			if (pa.getPrPairWeights().compl_any > 0)
+				sum += pa.getPrPairWeights().compl_any * this.compl_any;
+			if (pa.getPrPairWeights().compl_end > 0)
+				sum += pa.getPrPairWeights().compl_end * this.compl_end;
+		} else if (pa.isThermodynamicOligoAlignment() ) {
 
-			if (pa.pr_pair_weights.compl_any_th > 0 && ((lower_tm - pa.pr_pair_weights.temp_cutoff) <= this.compl_any))
-				sum += pa.pr_pair_weights.compl_any_th * (this.compl_any - (lower_tm - pa.pr_pair_weights.temp_cutoff - 1.0));
-			if (pa.pr_pair_weights.compl_any_th  > 0 && ((lower_tm - pa.pr_pair_weights.temp_cutoff) > this.compl_any))
-				sum += pa.pr_pair_weights.compl_any_th * (1/(lower_tm - pa.pr_pair_weights.temp_cutoff + 1.0 - this.compl_any));
+			if (pa.getPrPairWeights().compl_any_th > 0 && ((lower_tm - pa.getPrPairWeights().temp_cutoff) <= this.compl_any))
+				sum += pa.getPrPairWeights().compl_any_th * (this.compl_any - (lower_tm - pa.getPrPairWeights().temp_cutoff - 1.0));
+			if (pa.getPrPairWeights().compl_any_th  > 0 && ((lower_tm - pa.getPrPairWeights().temp_cutoff) > this.compl_any))
+				sum += pa.getPrPairWeights().compl_any_th * (1/(lower_tm - pa.getPrPairWeights().temp_cutoff + 1.0 - this.compl_any));
 
-			if (pa.pr_pair_weights.compl_end_th > 0 && ((lower_tm - pa.pr_pair_weights.temp_cutoff) <= this.compl_end))
-				sum += pa.pr_pair_weights.compl_end_th * (this.compl_end - (lower_tm - pa.pr_pair_weights.temp_cutoff - 1.0));
-			if (pa.pr_pair_weights.compl_end_th > 0 && ((lower_tm - pa.pr_pair_weights.temp_cutoff) > this.compl_end))
-				sum += pa.pr_pair_weights.compl_end_th * (1/(lower_tm - pa.pr_pair_weights.temp_cutoff + 1.0 - this.compl_end));
+			if (pa.getPrPairWeights().compl_end_th > 0 && ((lower_tm - pa.getPrPairWeights().temp_cutoff) <= this.compl_end))
+				sum += pa.getPrPairWeights().compl_end_th * (this.compl_end - (lower_tm - pa.getPrPairWeights().temp_cutoff - 1.0));
+			if (pa.getPrPairWeights().compl_end_th > 0 && ((lower_tm - pa.getPrPairWeights().temp_cutoff) > this.compl_end))
+				sum += pa.getPrPairWeights().compl_end_th * (1/(lower_tm - pa.getPrPairWeights().temp_cutoff + 1.0 - this.compl_end));
 		}
 
-		if(pa.pr_pair_weights.product_tm_lt > 0 && this.product_tm < pa.product_opt_tm)
-			sum += pa.pr_pair_weights.product_tm_lt *
-			(pa.product_opt_tm - this.product_tm);
+		if(pa.getPrPairWeights().product_tm_lt > 0 && this.product_tm < pa.getProductOptTM())
+			sum += pa.getPrPairWeights().product_tm_lt *
+			(pa.getProductOptTM() - this.product_tm);
 
-		if(pa.pr_pair_weights.product_tm_gt  > 0 && this.product_tm > pa.product_opt_tm)
-			sum += pa.pr_pair_weights.product_tm_gt *
-			(this.product_tm - pa.product_opt_tm);
+		if(pa.getPrPairWeights().product_tm_gt  > 0 && this.product_tm > pa.getProductOptTM())
+			sum += pa.getPrPairWeights().product_tm_gt *
+			(this.product_tm - pa.getProductOptTM());
 
-		if(pa.pr_pair_weights.product_size_lt > 0 &&
-				this.product_size < pa.product_opt_size)
-			sum += pa.pr_pair_weights.product_size_lt *
-			(pa.product_opt_size - this.product_size);
+		if(pa.getPrPairWeights().product_size_lt > 0 &&
+				this.product_size < pa.getProductOptSize())
+			sum += pa.getPrPairWeights().product_size_lt *
+			(pa.getProductOptSize() - this.product_size);
 
-		if(pa.pr_pair_weights.product_size_gt > 0 &&
-				this.product_size > pa.product_opt_size)
-			sum += pa.pr_pair_weights.product_size_gt *
-			(this.product_size - pa.product_opt_size);
+		if(pa.getPrPairWeights().product_size_gt > 0 &&
+				this.product_size > pa.getProductOptSize())
+			sum += pa.getPrPairWeights().product_size_gt *
+			(this.product_size - pa.getProductOptSize());
 
-		if(pa.pr_pair_weights.repeat_sim > 0)
-			sum += pa.pr_pair_weights.repeat_sim * this.repeat_sim;
+		if(pa.getPrPairWeights().repeat_sim > 0)
+			sum += pa.getPrPairWeights().repeat_sim * this.repeat_sim;
 
-		if (pa.pr_pair_weights.template_mispriming > 0 && pa.thermodynamic_template_alignment==0) {
+		if (pa.getPrPairWeights().template_mispriming > 0 && !pa.isThermodynamicTemplateAlignment()) {
 			//			PR_ASSERT(pa.pr_pair_weights.template_mispriming >= 0.0);
 			//			TODO :: PR_ASSERT(this.template_mispriming >= 0.0);
-			sum += pa.pr_pair_weights.template_mispriming * this.template_mispriming;
+			sum += pa.getPrPairWeights().template_mispriming * this.template_mispriming;
 		}
-		if (pa.pr_pair_weights.template_mispriming_th > 0 && pa.thermodynamic_template_alignment==1) {
+		if (pa.getPrPairWeights().template_mispriming_th > 0 && pa.isThermodynamicTemplateAlignment()) {
 			//			PR_ASSERT(pa.pr_pair_weights.template_mispriming_th >= 0.0);
 			//			TODO :: PR_ASSERT(this.template_mispriming >= 0.0);
-			if((lower_tm - pa.pr_pair_weights.temp_cutoff) <= this.template_mispriming)
-				sum += pa.pr_pair_weights.template_mispriming_th * 
-				(this.template_mispriming - (lower_tm - pa.pr_pair_weights.temp_cutoff - 1.0));
-			if((lower_tm - pa.pr_pair_weights.temp_cutoff) > this.template_mispriming)
-				sum += pa.pr_pair_weights.template_mispriming_th *
-				(1/(lower_tm - pa.pr_pair_weights.temp_cutoff + 1.0 - this.template_mispriming));
+			if((lower_tm - pa.getPrPairWeights().temp_cutoff) <= this.template_mispriming)
+				sum += pa.getPrPairWeights().template_mispriming_th * 
+				(this.template_mispriming - (lower_tm - pa.getPrPairWeights().temp_cutoff - 1.0));
+			if((lower_tm - pa.getPrPairWeights().temp_cutoff) > this.template_mispriming)
+				sum += pa.getPrPairWeights().template_mispriming_th *
+				(1/(lower_tm - pa.getPrPairWeights().temp_cutoff + 1.0 - this.template_mispriming));
 		}
 		if( !(sum >= 0.0) ) 
 			throw new Exception("calculation error in obj_fn@primer_pair");
@@ -192,7 +192,7 @@ public class primer_pair {
 	 * @throws AlignmentException 
 	 */
 	public  int characterize_pair(p3retval retval,
-			p3_global_settings pa,
+			P3GlobalSettings pa,
 			seq_args sa,
 			int m,
 			int n,
@@ -221,7 +221,7 @@ public class primer_pair {
 			pair_expl.considered++;
 		}
 
-		if (pa.primer_task == task.check_primers) {
+		if (pa.getPrimerTask() == P3Task.CHECK_PRIMERS) {
 			must_use = true;
 		}
 
@@ -300,9 +300,9 @@ public class primer_pair {
 		ppair.product_tm =  oligo_tm.long_seq_tm(sa.trimmed_seq, ppair.left.start,
 				ppair.right.start - ppair.left.start + 1,
 				/* TO DO -- skewed, it would be better to not use p_args elements here */
-				pa.p_args.getSaltConcentration(),
-				pa.p_args.getDivalentConcentration(),
-				pa.p_args.getDntpConcentration());
+				pa.primersArgs.getSaltConcentration(),
+				pa.primersArgs.getDivalentConcentration(),
+				pa.primersArgs.getDntpConcentration());
 
 		//		  PR_ASSERT(ppair.product_tm != oligo_tm.OLIGOTM_ERROR);
 
@@ -311,20 +311,20 @@ public class primer_pair {
 		ppair.product_tm_oligo_tm_diff = ppair.product_tm - min_oligo_tm;
 		ppair.t_opt_a  = 0.3 * min_oligo_tm + 0.7 * ppair.product_tm - 14.9;
 
-		if (pa.product_min_tm != LibPrimer3.PR_DEFAULT_PRODUCT_MIN_TM
-				&& ppair.product_tm < pa.product_min_tm) {
+		if (pa.getProductMinTM() != LibPrimer3.PR_DEFAULT_PRODUCT_MIN_TM
+				&& ppair.product_tm < pa.getProductMinTM()) {
 			if (update_stats) { pair_expl.low_tm++; }
 			if (!must_use) return PAIR_FAILED;
 		}
 
-		if (pa.product_max_tm != LibPrimer3.PR_DEFAULT_PRODUCT_MAX_TM
-				&& ppair.product_tm > pa.product_max_tm) {
+		if (pa.getProductMaxTM() != LibPrimer3.PR_DEFAULT_PRODUCT_MAX_TM
+				&& ppair.product_tm > pa.getProductMaxTM()) {
 			if (update_stats) { pair_expl.high_tm++; }
 			if (!must_use) return PAIR_FAILED;
 		}
 
 		ppair.diff_tm =  Math.abs(retval.fwd.oligo.get(m).temp - retval.rev.oligo.get(n).temp);
-		if (ppair.diff_tm > pa.max_diff_tm) {
+		if (ppair.diff_tm > pa.getMaxDiffTm()) {
 			if (update_stats) { pair_expl.temp_diff++; }
 			if (!must_use) return PAIR_FAILED;
 		}
@@ -353,11 +353,11 @@ public class primer_pair {
 
 
 		if (retval.fwd.oligo.get(m).self_any == LibPrimer3.ALIGN_SCORE_UNDEF 
-				&& pa.thermodynamic_oligo_alignment==0) {
+				&& !pa.isThermodynamicOligoAlignment()) {
 			/* We have not yet computed the 'self_any' paramter,
 			       which is an estimate of self primer-dimer and secondary
 			       structure propensity. */
-			retval.fwd.oligo.get(m).oligo_compl( pa.p_args, retval.fwd.expl, dpal_arg_to_use, s1, s1_rev);
+			retval.fwd.oligo.get(m).oligo_compl( pa.primersArgs, retval.fwd.expl, dpal_arg_to_use, s1, s1_rev);
 
 			if (!retval.fwd.oligo.get(m).OK_OR_MUST_USE()) {
 				pair_expl.considered--;
@@ -366,8 +366,8 @@ public class primer_pair {
 		}
 		/* Thermodynamic approach, fwd-primer */
 		if (retval.fwd.oligo.get(m).self_any == LibPrimer3.ALIGN_SCORE_UNDEF 
-				&& pa.thermodynamic_oligo_alignment==1) {
-			retval.fwd.oligo.get(m).oligo_compl_thermod(pa.p_args,
+				&& pa.isThermodynamicOligoAlignment()) {
+			retval.fwd.oligo.get(m).oligo_compl_thermod(pa.primersArgs,
 					retval.fwd.expl, thal_arg_to_use, s1, s1); /* ! s1, s1_rev */
 
 			if (!retval.fwd.oligo.get(m).OK_OR_MUST_USE()) {
@@ -376,8 +376,8 @@ public class primer_pair {
 			}
 		}   
 		if (retval.fwd.oligo.get(m).hairpin_th == LibPrimer3.ALIGN_SCORE_UNDEF 
-				&& pa.thermodynamic_oligo_alignment==1) {
-			retval.fwd.oligo.get(m).oligo_hairpin( pa.p_args,
+				&& pa.isThermodynamicOligoAlignment()) {
+			retval.fwd.oligo.get(m).oligo_hairpin( pa.primersArgs,
 					retval.fwd.expl, thal_arg_to_use, s1);
 			if (!retval.fwd.oligo.get(m).OK_OR_MUST_USE()) {
 				pair_expl.considered--;
@@ -390,8 +390,8 @@ public class primer_pair {
 		
 		
 		
-		  if (retval.rev.oligo.get(n).self_any == LibPrimer3.ALIGN_SCORE_UNDEF && pa.thermodynamic_oligo_alignment==0) {
-			  retval.rev.oligo.get(n).oligo_compl( pa.p_args, retval.rev.expl, dpal_arg_to_use, s2_rev, s2);
+		  if (retval.rev.oligo.get(n).self_any == LibPrimer3.ALIGN_SCORE_UNDEF && !pa.isThermodynamicOligoAlignment()) {
+			  retval.rev.oligo.get(n).oligo_compl( pa.primersArgs, retval.rev.expl, dpal_arg_to_use, s2_rev, s2);
 
 			    if (!retval.rev.oligo.get(n).OK_OR_MUST_USE()) {
 			      pair_expl.considered--;
@@ -399,8 +399,8 @@ public class primer_pair {
 			    }
 			  }
 			   /* Thermodynamic approach */
-			   if (retval.rev.oligo.get(n).self_any == LibPrimer3.ALIGN_SCORE_UNDEF && pa.thermodynamic_oligo_alignment==1) {
-				   retval.rev.oligo.get(n).oligo_compl_thermod( pa.p_args,
+			   if (retval.rev.oligo.get(n).self_any == LibPrimer3.ALIGN_SCORE_UNDEF && pa.isThermodynamicOligoAlignment()) {
+				   retval.rev.oligo.get(n).oligo_compl_thermod( pa.primersArgs,
 			                          retval.rev.expl, thal_arg_to_use, s2_rev, s2_rev); /* s2_rev, s2 */
 			      
 			      if (!retval.rev.oligo.get(n).OK_OR_MUST_USE()) {
@@ -408,8 +408,8 @@ public class primer_pair {
 			         if (!must_use) return PAIR_FAILED;
 			      }  
 			   }
-			   if (retval.rev.oligo.get(n).hairpin_th == LibPrimer3.ALIGN_SCORE_UNDEF && pa.thermodynamic_oligo_alignment==1) {
-				   retval.rev.oligo.get(n).oligo_hairpin( pa.p_args,
+			   if (retval.rev.oligo.get(n).hairpin_th == LibPrimer3.ALIGN_SCORE_UNDEF && pa.isThermodynamicOligoAlignment()) {
+				   retval.rev.oligo.get(n).oligo_hairpin( pa.primersArgs,
 			                    retval.rev.expl, thal_arg_to_use, s2_rev);
 			      if (!retval.rev.oligo.get(n).OK_OR_MUST_USE()) {
 			         pair_expl.considered--;
@@ -467,22 +467,22 @@ public class primer_pair {
 			   * Similarity between s1 and s2 is equivalent to complementarity between
 			   * s2's complement and s1.  (Both s1 and s2 are taken from the same strand.)
 			   */
-			   if(pa.thermodynamic_oligo_alignment==0) {
+			   if(!pa.isThermodynamicOligoAlignment()) {
 			      ppair.compl_any = LibPrimer3.align(s1, s2, dpal_arg_to_use.local);
-			      if (ppair.compl_any > pa.pair_compl_any) {
+			      if (ppair.compl_any > pa.getPairComplAny()) {
 			         if (update_stats) { pair_expl.compl_any++; }
 			         if (!must_use) return PAIR_FAILED;
 			      }
 			      
 			      ppair.compl_end = LibPrimer3.align(s1, s2, dpal_arg_to_use.end);
-			      if (ppair.compl_end > pa.pair_compl_end) {
+			      if (ppair.compl_end > pa.getPairComplEnd()) {
 			         if (update_stats) { pair_expl.compl_end++; }
 			         if (!must_use) return PAIR_FAILED;
 			      }
 			   } else {
 			      /* thermodynamical approach */
 			      ppair.compl_any = LibPrimer3.align_thermod(s1, s2_rev, thal_arg_to_use.any);
-			      if (ppair.compl_any > pa.pair_compl_any_th) {
+			      if (ppair.compl_any > pa.getPairComplAnyTH()) {
 			         if (update_stats) {
 			            pair_expl.compl_any++; 
 			         }
@@ -493,7 +493,7 @@ public class primer_pair {
 			      if (ppair.compl_end < compl_end) {
 			         ppair.compl_end = compl_end;
 			      }
-			      if (ppair.compl_end > pa.pair_compl_end_th) {
+			      if (ppair.compl_end > pa.getPairComplEndTH()) {
 			         if (update_stats) {
 			            pair_expl.compl_end++; 
 			         }
@@ -505,9 +505,9 @@ public class primer_pair {
 			   * It is conceivable (though unlikely) that
 			   * align(s2_rev, s1_rev, end_args) > align(s1,s2,end_args).
 			   */
-			  if (pa.thermodynamic_oligo_alignment==0 && (compl_end = LibPrimer3.align(s2_rev, s1_rev, dpal_arg_to_use.end))
+			  if (!pa.isThermodynamicOligoAlignment() && (compl_end = LibPrimer3.align(s2_rev, s1_rev, dpal_arg_to_use.end))
 			      > ppair.compl_end) {
-			    if (compl_end > pa.p_args.getMaxSelfEnd()) {
+			    if (compl_end > pa.primersArgs.getMaxSelfEnd()) {
 			      if (update_stats) { pair_expl.compl_end++; }
 			      if (!must_use) return PAIR_FAILED;
 			    }
@@ -515,12 +515,12 @@ public class primer_pair {
 			  }
 
 			  if ((ppair.repeat_sim = ppair.pair_repeat_sim( pa))
-			      > pa.pair_repeat_compl) {
+			      > pa.getPairRepeatCompl()) {
 			    if (update_stats) { pair_expl.repeat_sim++; }
 			    if (!must_use) return PAIR_FAILED;
 			  }
 			   /* thermodynamic approach */
-			   if (pa.thermodynamic_oligo_alignment == 1 ) {
+			   if (pa.isThermodynamicOligoAlignment() ) {
 				   // I think this is better than prev inline check
 				   // maybe the second call will return a greater value
 				   double compl_end1 = LibPrimer3.align_thermod(s2, s1_rev, thal_arg_to_use.end1) ; // ) > ppair.compl_end || 
@@ -533,7 +533,7 @@ public class primer_pair {
 						   compl_end = compl_end2;
 					   }
 					  
-				      if (compl_end > pa.p_args.getMaxSelfEndTH()) {
+				      if (compl_end > pa.primersArgs.getMaxSelfEndTH()) {
 				         if (update_stats) {
 				            pair_expl.compl_end++; 
 				         }
@@ -549,8 +549,8 @@ public class primer_pair {
 			  /* ============================================================= */
 			  /* Calculate _pair_ mispriming, if necessary. */
 			 
-			   if (pa.thermodynamic_template_alignment == 0) {
-			     if (!pa._pr_need_pair_template_mispriming())
+			   if (!pa.isThermodynamicTemplateAlignment() ) {
+			     if (!pa.needPairTemplateMispriming())
 			        ppair.template_mispriming = LibPrimer3.ALIGN_SCORE_UNDEF;
 			     else {
 //			        PR_ASSERT(ppair.left.template_mispriming != LibPrimer3.ALIGN_SCORE_UNDEF);
@@ -564,14 +564,14 @@ public class primer_pair {
 			           ppair.template_mispriming
 			           = ppair.left.template_mispriming_r + ppair.right.template_mispriming;
 
-			        if (pa.pair_max_template_mispriming >= 0.0
-			             && ppair.template_mispriming > pa.pair_max_template_mispriming) {
+			        if (pa.getPairMaxTemplateMispriming() >= 0.0
+			             && ppair.template_mispriming > pa.getPairMaxTemplateMispriming()) {
 			            if (update_stats) { pair_expl.template_mispriming++; }
 			            if (!must_use) return PAIR_FAILED;
 			        }
 			     }
 			   } else { /* thermodynamic approach */
-			     if (!pa._pr_need_pair_template_mispriming_thermod())
+			     if (!pa.needPairTemplateMisprimingTH())
 			       ppair.template_mispriming = LibPrimer3.ALIGN_SCORE_UNDEF;
 			     else {
 //			       PR_ASSERT(ppair.left.template_mispriming != LibPrimer3.ALIGN_SCORE_UNDEF);
@@ -585,7 +585,7 @@ public class primer_pair {
 			           ppair.template_mispriming
 			           = ppair.left.template_mispriming_r + ppair.right.template_mispriming;
 
-			       if (pa.pair_max_template_mispriming_th > 0  && ppair.template_mispriming > pa.pair_max_template_mispriming_th) {
+			       if (pa.getPairMaxTemplateMisprimingTH() > 0  && ppair.template_mispriming > pa.getPairMaxTemplateMisprimingTH()) {
 			            if (update_stats) {
 			               pair_expl.template_mispriming++;
 			            }
@@ -601,22 +601,22 @@ public class primer_pair {
 	}
 
 
-	private double pair_repeat_sim(p3_global_settings pa) {
+	private double pair_repeat_sim(P3GlobalSettings pa) {
 		int i, n, max, w;
-		  primer_rec fw, rev;
+		  PrimerReccord fw, rev;
 
 		  fw = this.left;
 		  rev = this.right;
 
 		  max = 0;
-		  n = seq_lib.seq_lib_num_seq(pa.p_args.repeat_lib);
+		  n = seq_lib.seq_lib_num_seq(pa.primersArgs.repeat_lib);
 		  if(n == 0) return 0;
-		  this.rep_name =  pa.p_args.repeat_lib.names.get(0) ;
+		  this.rep_name =  pa.primersArgs.repeat_lib.names.get(0) ;
 		  for (i = 0; i < n; i++) {
 			  w = (int) (fw.repeat_sim.score[i] + rev.repeat_sim.score[i]);
 			  if (w > max) {
 				  max = w;
-				  this.rep_name =  pa.p_args.repeat_lib.names.get(i) ;
+				  this.rep_name =  pa.primersArgs.repeat_lib.names.get(i) ;
 		    }
 		  }
 		  return max;

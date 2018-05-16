@@ -22,18 +22,30 @@ package com.primer3.oligotm;
    duplexes in solutions containing magnesium and monovalent cations", 
    Biochemistry 47:5336-53 http://dx.doi.org/10.1021/bi702363u] is used.
  */
-public enum salt_correction_type {
+public enum SaltCorrectionMethod {
 	 
 	
-	schildkraut(0),
-	santalucia(1),
-	owczarzy(2);
+	schildkraut(0,"schildkraut"),
+	santalucia(1,"Santalucia 1998"),
+	owczarzy(2,"owczarzy");
 	
 	
 	private int id ;
-	salt_correction_type(int id ) {
+	private String name;
+	SaltCorrectionMethod(int id,String name ) {
 		this.id = id;
+		this.name = name;
     }
     public int getValue() { return id; }
      
+    public String getName()
+    {
+    	return name;
+    }
+    
+    
+    public String toString()
+    {
+    	return name;
+    }
 }
