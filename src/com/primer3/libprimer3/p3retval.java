@@ -105,7 +105,7 @@ public class p3retval {
 		String suffix ;
 
 		/* Pointers for the primer set just printing */
-		PrimerReccord fwd, rev, intl;
+		PrimerRecord fwd, rev, intl;
 
 		/* Variables only used for Primer Lists */
 		int num_fwd, num_rev, num_int, num_pair, num_print;

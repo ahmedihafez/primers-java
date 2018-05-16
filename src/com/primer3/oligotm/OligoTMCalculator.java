@@ -35,7 +35,7 @@ public class OligoTMCalculator {
 			    return OLIGOTM_ERROR;
 		int x = s.length();
 		
-		return x < len ? oligodg(s,tm_method) : oligodg(s.subSeqRange(x-len,x-1),tm_method);
+		return x < len ? oligoDeltaG(s,tm_method) : oligoDeltaG(s.subSeqRange(x-len,x-1),tm_method);
 	}
 
 	public static double end_oligodg(char[] seq, int len, MeltingTemperatureMethod tm_method) {
@@ -64,7 +64,7 @@ public class OligoTMCalculator {
 	   since mM is the usual units in PCR applications.
 
 	 */
-	static double long_seq_tm(Sequence seq, 
+	static double longSeqTM(Sequence seq, 
 	                   int start, 
 	                   int length, 
 	                   double salt_conc, 
@@ -72,10 +72,10 @@ public class OligoTMCalculator {
 	                   double dntp_conc) {
 		
 		
-		if (divalent_to_monovalent(divalent_conc, dntp_conc) == OLIGOTM_ERROR)
+		if (divalentToMonovalent(divalent_conc, dntp_conc) == OLIGOTM_ERROR)
 			return OLIGOTM_ERROR;
 		int GC_count = 0;
-		salt_conc = salt_conc + divalent_to_monovalent(divalent_conc, dntp_conc);
+		salt_conc = salt_conc + divalentToMonovalent(divalent_conc, dntp_conc);
 
 		if ((start + length) > seq.length() || start < 0 || length <= 0)
 			    return OLIGOTM_ERROR;
@@ -91,17 +91,17 @@ public class OligoTMCalculator {
 	
 	
 	
-	public static double long_seq_tm(char[] seq, 
+	public static double longSeqTM(char[] seq, 
             int start, 
             int length, 
             double salt_conc, 
             double divalent_conc, 
             double dntp_conc) {
 	
-		if (divalent_to_monovalent(divalent_conc, dntp_conc) == OLIGOTM_ERROR)
+		if (divalentToMonovalent(divalent_conc, dntp_conc) == OLIGOTM_ERROR)
 			return OLIGOTM_ERROR;
 		int GC_count = 0;
-		salt_conc = salt_conc + divalent_to_monovalent(divalent_conc, dntp_conc);
+		salt_conc = salt_conc + divalentToMonovalent(divalent_conc, dntp_conc);
 
 		if ((start + length) > seq.length || start < 0 || length <= 0)
 			    return OLIGOTM_ERROR;
@@ -144,7 +144,7 @@ public class OligoTMCalculator {
 	 * @param salt_corrections
 	 * @return
 	 */
-	static double oligotm(Sequence seq,    
+	static double oligoTM(Sequence seq,    
             double DNA_nM,     
             double K_mM,     
             double divalent_conc,
@@ -162,7 +162,7 @@ public class OligoTMCalculator {
 		boolean sym;
 		
 		
-		 if(divalent_to_monovalent(divalent_conc, dntp_conc) == OLIGOTM_ERROR)
+		 if(divalentToMonovalent(divalent_conc, dntp_conc) == OLIGOTM_ERROR)
 			     return OLIGOTM_ERROR;
 		  /** K_mM = K_mM + divalent_to_monovalent(divalent_conc, dntp_conc); **/
 		 if (tm_method != MeltingTemperatureMethod.breslauer_auto
@@ -247,11 +247,11 @@ public class OligoTMCalculator {
 		
 		
 		if (salt_corrections == SaltCorrectionMethod.schildkraut) {
-		     K_mM = K_mM + divalent_to_monovalent(divalent_conc, dntp_conc);
+		     K_mM = K_mM + divalentToMonovalent(divalent_conc, dntp_conc);
 		     correction = 16.6 * Math.log10(K_mM/1000.0) - T_KELVIN;
 		     Tm = delta_H / (delta_S + 1.987 * Math.log(DNA_nM/4000000000.0)) + correction;
 		} else if (salt_corrections== SaltCorrectionMethod.santalucia) {
-		    K_mM = K_mM + divalent_to_monovalent(divalent_conc, dntp_conc);
+		    K_mM = K_mM + divalentToMonovalent(divalent_conc, dntp_conc);
 		    delta_S = delta_S + 0.368 * (len - 1) * Math.log(K_mM / 1000.0 );
 		    if(sym ) { /* primer is symmetrical */
 		      /* Equation A */
@@ -346,7 +346,7 @@ public class OligoTMCalculator {
 	 * @param salt_corrections :
 	 * @return
 	 */
-	static double seqtm(Sequence seq,  
+	static double sequenceTM(Sequence seq,  
           double dna_conc,  
           double salt_conc,  
           double divalent_conc, 
@@ -358,24 +358,25 @@ public class OligoTMCalculator {
 		
 		int len = seq.length();
 		
-		if (tm_method != MeltingTemperatureMethod.breslauer_auto
-			      && tm_method != MeltingTemperatureMethod.santalucia_auto)
-			return OLIGOTM_ERROR;
-		if (salt_corrections != SaltCorrectionMethod.schildkraut
-			      && salt_corrections != SaltCorrectionMethod.santalucia
-			      && salt_corrections != SaltCorrectionMethod.owczarzy)
-			return OLIGOTM_ERROR;
+		// No need for the check here
+//		if (tm_method != MeltingTemperatureMethod.breslauer_auto
+//			      && tm_method != MeltingTemperatureMethod.santalucia_auto)
+//			return OLIGOTM_ERROR;
+//		if (salt_corrections != SaltCorrectionMethod.schildkraut
+//			      && salt_corrections != SaltCorrectionMethod.santalucia
+//			      && salt_corrections != SaltCorrectionMethod.owczarzy)
+//			return OLIGOTM_ERROR;
 		
 		
 		 if (len > nn_max_len) {
-			  return long_seq_tm(seq, 0, len, salt_conc, divalent_conc, dntp_conc);
+			  return longSeqTM(seq, 0, len, salt_conc, divalent_conc, dntp_conc);
 		  } else {
-			  return oligotm(seq, dna_conc, salt_conc, 
+			  return oligoTM(seq, dna_conc, salt_conc, 
 				      divalent_conc, dntp_conc, tm_method, salt_corrections);
 		  }
 	}
 	
-	public static double seqtm(char[] seq,  
+	public static double sequenceTM(char[] seq,  
 	          double dna_conc,  
 	          double salt_conc,  
 	          double divalent_conc, 
@@ -384,7 +385,7 @@ public class OligoTMCalculator {
 	          MeltingTemperatureMethod  tm_method,       
 	          SaltCorrectionMethod salt_corrections 
 	          ) {
-		return seqtm(new Sequence(seq),  
+		return sequenceTM(new Sequence(seq),  
 		           dna_conc,  
 		           salt_conc,  
 		           divalent_conc, 
@@ -400,14 +401,12 @@ public class OligoTMCalculator {
 	   given the characteristics of the nearest
 	   neighbor model.
 	*/
-	static double oligodg(Sequence seq, 
-			MeltingTemperatureMethod tm_method 
-	               ) {
+	static double oligoDeltaG(Sequence seq,  MeltingTemperatureMethod tm_method  ) {
 		
-		// FIXME :: unwanted Check
-		if (tm_method != MeltingTemperatureMethod.breslauer_auto
-				&& tm_method != MeltingTemperatureMethod.santalucia_auto)
-			return OLIGOTM_ERROR;
+		// unwanted Check
+//		if (tm_method != MeltingTemperatureMethod.breslauer_auto
+//				&& tm_method != MeltingTemperatureMethod.santalucia_auto)
+//			return OLIGOTM_ERROR;
 				
 		double dg = 0;
 		SequenceIterator s = (SequenceIterator) seq.iterator();
@@ -461,7 +460,7 @@ public class OligoTMCalculator {
 	
 
 	/** Converts divalent salt concentration to monovalent salt concentration */
-	static double divalent_to_monovalent(double divalent, double dntp) {
+	static double divalentToMonovalent(double divalent, double dntp) {
 		if(divalent==0) dntp=0;
 		if(divalent<0 || dntp<0) return OLIGOTM_ERROR;
 		/* According to theory, melting temperature does not depend on
@@ -712,7 +711,7 @@ public class OligoTMCalculator {
 		double mv = 100, d = 50;
 		double dv = 0, n = 0;
 		
-		double tm = oligotm(seq, d, mv, dv, n, MeltingTemperatureMethod.santalucia_auto, SaltCorrectionMethod.schildkraut);
+		double tm = oligoTM(seq, d, mv, dv, n, MeltingTemperatureMethod.santalucia_auto, SaltCorrectionMethod.schildkraut);
 		System.out.println("Tm = " + tm);
 	}
 	

@@ -5,7 +5,7 @@ import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
 import com.primer3.libprimer3.oligo_type;
-import com.primer3.libprimer3.PrimerReccord;
+import com.primer3.libprimer3.PrimerRecord;
 import com.primer3.libprimer3.seq_args;
 
 /**
@@ -380,6 +380,10 @@ public class Sequence  implements Iterable<Character>{
 	}
 	
 	
+	public static char[] _pr_substr(char[] seq, int start, int len) {
+		return subSeq(seq, start, len);
+	}
+
 	public static char[] p3_reverse_complement(char[] seq)
 	{
 		char[] revSeq = new char[seq.length];

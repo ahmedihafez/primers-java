@@ -10,7 +10,7 @@ import com.primer3.libprimer3.oligo_type;
 import com.primer3.libprimer3.P3GlobalSettings;
 import com.primer3.libprimer3.p3_output_type;
 import com.primer3.libprimer3.p3retval;
-import com.primer3.libprimer3.PrimerReccord;
+import com.primer3.libprimer3.PrimerRecord;
 import com.primer3.libprimer3.seq_args;
 import com.primer3.oligotm.OligoTMCalculator;
 import com.primer3.thal.thallib;

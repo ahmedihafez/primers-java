@@ -10,7 +10,7 @@ import com.primer3.sequence.Sequence;
 import com.primer3.thal.ThermodynamicAlignmentException;
 import com.primer3.thal.thal_args;
 
-public class PrimerReccord {
+public class PrimerRecord {
 	// new add here and should be maintained
 	public oligo_type rec_type;
 
@@ -1035,7 +1035,7 @@ public class PrimerReccord {
 			}
 		}
 
-		this.temp = OligoTMCalculator.seqtm(oligo_seq, po_args.getDnaConcentration(),
+		this.temp = OligoTMCalculator.sequenceTM(oligo_seq, po_args.getDnaConcentration(),
 				po_args.getSaltConcentration(),
 				po_args.getDivalentConcentration(),
 				po_args.getDntpConcentration(), LibPrimer3.MAX_NN_TM_LENGTH,
@@ -1209,7 +1209,7 @@ public class PrimerReccord {
 			ThermodynamicAlignmentException {
 		/* Check if we already did this and the oligo was ok. */
 
-		PrimerReccord h = this;
+		PrimerRecord h = this;
 		if (h.template_mispriming_ok != 0) {
 			return;
 		}
@@ -1254,7 +1254,7 @@ public class PrimerReccord {
 			seq_args sa, oligo_type l, oligo_stats ostats,
 			dpal_arg_holder dpal_arg_to_use, StringBuilder glob_err)
 			throws AlignmentException {
-		PrimerReccord h = this;
+		PrimerRecord h = this;
 		double w;
 		seq_lib lib;
 		int i;
@@ -1359,7 +1359,7 @@ public class PrimerReccord {
 		int last = (l == oligo_type.OT_LEFT || l == oligo_type.OT_INTL) ? this.start
 				+ this.length - 1
 				: this.start;
-		return seq_args._pr_substr(sa.trimmed_seq, first, this.length);
+		return Sequence._pr_substr(sa.trimmed_seq, first, this.length);
 	}
 
 	/**
@@ -1677,7 +1677,7 @@ public class PrimerReccord {
 		// PR_ASSERT(oligo.start + sa.incl_s >= 0);
 		// PR_ASSERT(oligo.start + sa.incl_s + oligo.length <= seq_len);
 
-		char[] s = seq_args._pr_substr(sa.sequence, sa.incl_s + this.start,
+		char[] s = Sequence._pr_substr(sa.sequence, sa.incl_s + this.start,
 				this.length);
 		return s;
 		// return null;
@@ -1692,7 +1692,7 @@ public class PrimerReccord {
 		start = sa.incl_s + this.start - this.length + 1;
 		// PR_ASSERT(start >= 0);
 		// PR_ASSERT(start + o.length <= seq_len);
-		char[] s = seq_args._pr_substr(sa.sequence, start, this.length);
+		char[] s = Sequence._pr_substr(sa.sequence, start, this.length);
 		return Sequence.p3_reverse_complement(s);
 	}
 

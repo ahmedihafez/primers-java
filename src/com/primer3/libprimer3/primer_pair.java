@@ -61,9 +61,9 @@ public class primer_pair {
 	 *  sequence from given file in fasta format.
 	 */
 	double repeat_sim;    
-	public PrimerReccord left;     /* Left primer. */
-	public PrimerReccord right;    /* Right primer. */
-	public PrimerReccord intl;     /* Internal oligo. */
+	public PrimerRecord left;     /* Left primer. */
+	public PrimerRecord right;    /* Right primer. */
+	public PrimerRecord intl;     /* Internal oligo. */
 
 	boolean   must_use;
 
@@ -297,7 +297,7 @@ public class primer_pair {
 			System.err.print("temporary");
 		}
 		//		  PR_ASSERT(ppair.right.start - ppair.left.start + 1 > 0)
-		ppair.product_tm =  OligoTMCalculator.long_seq_tm(sa.trimmed_seq, ppair.left.start,
+		ppair.product_tm =  OligoTMCalculator.longSeqTM(sa.trimmed_seq, ppair.left.start,
 				ppair.right.start - ppair.left.start + 1,
 				/* TO DO -- skewed, it would be better to not use p_args elements here */
 				pa.primersArgs.getSaltConcentration(),
@@ -343,10 +343,10 @@ public class primer_pair {
 		     primers if not already calculated. */
 
 		/* s1 is the forward oligo. */
-		s1 = seq_args._pr_substr(sa.trimmed_seq, retval.fwd.oligo.get(m).start, retval.fwd.oligo.get(m).length );
+		s1 = Sequence._pr_substr(sa.trimmed_seq, retval.fwd.oligo.get(m).start, retval.fwd.oligo.get(m).length );
 
 		/* s2 is the reverse oligo. */
-		s2 = seq_args._pr_substr(sa.trimmed_seq, retval.rev.oligo.get(n).start - retval.rev.oligo.get(n).length + 1, retval.rev.oligo.get(n).length);
+		s2 = Sequence._pr_substr(sa.trimmed_seq, retval.rev.oligo.get(n).start - retval.rev.oligo.get(n).length + 1, retval.rev.oligo.get(n).length);
 
 		s1_rev = Sequence.p3_reverse_complement(s1);
 		s2_rev = Sequence.p3_reverse_complement(s2);
@@ -603,7 +603,7 @@ public class primer_pair {
 
 	private double pair_repeat_sim(P3GlobalSettings pa) {
 		int i, n, max, w;
-		  PrimerReccord fw, rev;
+		  PrimerRecord fw, rev;
 
 		  fw = this.left;
 		  rev = this.right;

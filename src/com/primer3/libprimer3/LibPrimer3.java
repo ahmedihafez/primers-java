@@ -387,7 +387,7 @@ public class LibPrimer3 {
 			for (int i = 0; i < retval.rev.num_elem; i++) {
 				
 				// keep retval.rev.oligo.get(i) in right
-				PrimerReccord right = retval.rev.oligo.get(i);
+				PrimerRecord right = retval.rev.oligo.get(i);
 				hmap = pairs[i];  
 				/* Pairs[i] is NULL if there has never been an assignment to
 				 pairs[i] because pairs was allocated by calloc, which
@@ -454,7 +454,7 @@ public class LibPrimer3 {
 				/* Loop over forward primers */
 				for (int j=0; j<retval.fwd.num_elem; j++) {
 					
-					PrimerReccord left = retval.fwd.oligo.get(j);
+					PrimerRecord left = retval.fwd.oligo.get(j);
 
 					/* We check the reverse oligo again, because we may
 			           have determined that it is "not ok", even though
@@ -698,7 +698,7 @@ public class LibPrimer3 {
 
 				/* Update the overlaps flags */
 				for (int i = 0; i < retval.rev.num_elem; i++) {
-					PrimerReccord right = retval.rev.oligo.get(i);
+					PrimerRecord right = retval.rev.oligo.get(i);
 					if (right_oligo_in_pair_overlaps_used_oligo(right,
 							the_best_pair,
 							pa.getMinRight3PrimeDistance())) {
@@ -706,7 +706,7 @@ public class LibPrimer3 {
 					}
 				}
 				for (int j = 0; j < retval.fwd.num_elem; j++) {
-					PrimerReccord left = retval.fwd.oligo.get(j);
+					PrimerRecord left = retval.fwd.oligo.get(j);
 					if (left_oligo_in_pair_overlaps_used_oligo(left,
 							the_best_pair,
 							pa.getMinLeft3PrimeDistance())) {
@@ -727,7 +727,7 @@ public class LibPrimer3 {
 
 
 	private static boolean left_oligo_in_pair_overlaps_used_oligo(
-			PrimerReccord left, primer_pair best_pair,
+			PrimerRecord left, primer_pair best_pair,
 			int min_dist) {
 		int best_pos, pair_pos;
 
@@ -752,7 +752,7 @@ public class LibPrimer3 {
 
 
 	private static boolean right_oligo_in_pair_overlaps_used_oligo(
-			PrimerReccord right, primer_pair best_pair,
+			PrimerRecord right, primer_pair best_pair,
 			int min_dist) {
 		int best_pos, pair_pos;
 
@@ -781,8 +781,8 @@ public class LibPrimer3 {
 	 * return -1 if it did not found one
 	 */
 	private static int choose_internal_oligo(p3retval retval,
-			PrimerReccord left,
-			PrimerReccord right,
+			PrimerRecord left,
+			PrimerRecord right,
 			seq_args sa,
 			P3GlobalSettings pa,
 			dpal_arg_holder dpal_arg_to_use,
@@ -791,7 +791,7 @@ public class LibPrimer3 {
 		int k;
 		double min;
 		char[] oligo_seq, revc_oligo_seq;
-		PrimerReccord h;
+		PrimerRecord h;
 		min = 1000000.0;
 		//		i = -1;
 		int nm = -1;
@@ -807,7 +807,7 @@ public class LibPrimer3 {
 
 				if (h.self_any == ALIGN_SCORE_UNDEF && !pa.isThermodynamicOligoAlignment()) {
 
-					oligo_seq =  seq_args._pr_substr(sa.trimmed_seq, h.start, h.length);
+					oligo_seq =  Sequence._pr_substr(sa.trimmed_seq, h.start, h.length);
 					revc_oligo_seq = Sequence.p3_reverse_complement(oligo_seq);
 
 					h.oligo_compl( pa.oligosArgs, retval.intl.expl,
@@ -816,7 +816,7 @@ public class LibPrimer3 {
 				}
 
 				if (h.self_any == ALIGN_SCORE_UNDEF && pa.isThermodynamicOligoAlignment()) {
-					oligo_seq=  seq_args._pr_substr(sa.trimmed_seq, h.start, h.length);
+					oligo_seq=  Sequence._pr_substr(sa.trimmed_seq, h.start, h.length);
 					revc_oligo_seq = Sequence.p3_reverse_complement(oligo_seq);
 
 					h.oligo_compl_thermod( pa.oligosArgs, retval.intl.expl,
@@ -824,7 +824,7 @@ public class LibPrimer3 {
 					if (!h.OK_OR_MUST_USE()) continue;
 				}
 				if(h.hairpin_th == ALIGN_SCORE_UNDEF && pa.isThermodynamicOligoAlignment()) {
-					oligo_seq = seq_args._pr_substr(sa.trimmed_seq, h.start, h.length);
+					oligo_seq = Sequence._pr_substr(sa.trimmed_seq, h.start, h.length);
 					h.oligo_hairpin( pa.oligosArgs,
 							retval.intl.expl, thal_oligo_arg_to_use,
 							oligo_seq);
@@ -1144,7 +1144,7 @@ public class LibPrimer3 {
 		char[] oligo_seq;
 
 		/* Struct to store the primer parameters in */
-		PrimerReccord h = new PrimerReccord();
+		PrimerRecord h = new PrimerRecord();
 		//		  memset(&h, 0, sizeof(primer_rec));
 
 		/* Retun 1 for no primer found */
@@ -1181,7 +1181,7 @@ public class LibPrimer3 {
 			h.start = start;
 
 			/* Put the real primer sequence in s */
-			oligo_seq = seq_args._pr_substr(sa.trimmed_seq, h.start, length);
+			oligo_seq = Sequence._pr_substr(sa.trimmed_seq, h.start, length);
 		}
 		/* Figure out positions for reverse primers */
 		else {
@@ -1190,7 +1190,7 @@ public class LibPrimer3 {
 			h.start = start;
 
 			/* Put the real primer sequence in s */
-			oligo_seq = seq_args._pr_substr(sa.trimmed_seq, i, length);
+			oligo_seq = Sequence._pr_substr(sa.trimmed_seq, i, length);
 		}
 
 		/* Force primer3 to use this oligo */
@@ -1261,7 +1261,7 @@ public class LibPrimer3 {
 		char[] oligo_seq , test_oligo;
 
 		/* Struct to store the primer parameters in */
-		PrimerReccord h = new PrimerReccord();
+		PrimerRecord h = new PrimerRecord();
 		//		  memset(&h, 0, sizeof(primer_rec));
 
 		/* Copy *primer into test_oligo */
@@ -1293,7 +1293,7 @@ public class LibPrimer3 {
 				h.start = i - j +1;
 
 				/* Put the real primer sequence in s */
-				oligo_seq =  seq_args._pr_substr(sa.trimmed_seq, h.start, j );
+				oligo_seq =  Sequence._pr_substr(sa.trimmed_seq, h.start, j );
 			}
 			/* Figure out positions for reverse primers */
 			else {
@@ -1304,7 +1304,7 @@ public class LibPrimer3 {
 				h.start=i+j-1;
 
 				/* Put the real primer sequence in s */
-				oligo_seq =  seq_args._pr_substr(sa.trimmed_seq,  i, j);
+				oligo_seq =  Sequence._pr_substr(sa.trimmed_seq,  i, j);
 			}
 
 			/* Compare the primer with the sequence */
@@ -1548,8 +1548,8 @@ public class LibPrimer3 {
 		char[] oligo_seq ;//[MAX_PRIMER_LENGTH+1];
 
 		/* Struct to store the primer parameters in */
-		PrimerReccord h;
-		PrimerReccord best = null;
+		PrimerRecord h;
+		PrimerRecord best = null;
 		//		  memset(&h, 0, sizeof(primer_rec));
 		//		  memset(&best, 0, sizeof(primer_rec));
 		//		  best.quality = 1000.00;
@@ -1576,7 +1576,7 @@ public class LibPrimer3 {
 
 			/* Loop over possible primer lengths, from min to max */
 			for (j = primer_size_small; j <= primer_size_large; j++) {
-				h = new PrimerReccord();  
+				h = new PrimerRecord();  
 				/* Set the length of the primer */
 				h.length = j;
 
@@ -1593,7 +1593,7 @@ public class LibPrimer3 {
 					h.start = i - j + 1;
 
 					/* Put the real primer sequence in oligo_seq */
-					oligo_seq =  seq_args._pr_substr(sa.trimmed_seq, h.start, j);
+					oligo_seq =  Sequence._pr_substr(sa.trimmed_seq, h.start, j);
 				} else {
 					/* Figure out positions for reverse primers */
 					/* Break if the primer is bigger than the sequence left*/
@@ -1603,7 +1603,7 @@ public class LibPrimer3 {
 					h.start = i+j-1;
 
 					/* Put the real primer sequence in s */
-					oligo_seq =  seq_args._pr_substr(sa.trimmed_seq,  i, j);
+					oligo_seq =  Sequence._pr_substr(sa.trimmed_seq,  i, j);
 
 				}
 
@@ -1753,7 +1753,7 @@ public class LibPrimer3 {
 		char[] oligo_seq = null ; //  new char[MAX_PRIMER_LENGTH+1];
 
 		/* Struct to store the primer parameters in */
-		PrimerReccord h = new PrimerReccord();
+		PrimerRecord h = new PrimerRecord();
 		//		memset(&h, 0, sizeof(primer_rec));
 
 		/* Set pr_min to the very smallest
@@ -1782,7 +1782,7 @@ public class LibPrimer3 {
 
 			/* Loop over possible primer lengths, from min to max */
 			for (j = primer_size_small; j <= primer_size_large; j++) {
-				h = new PrimerReccord();
+				h = new PrimerRecord();
 				/* Set the length of the primer */
 				h.length = j;
 
@@ -1799,7 +1799,7 @@ public class LibPrimer3 {
 					h.start = i - j + 1;
 
 					/* Put the real primer sequence in oligo_seq */
-					oligo_seq = seq_args._pr_substr(sa.trimmed_seq, h.start, j);
+					oligo_seq = Sequence._pr_substr(sa.trimmed_seq, h.start, j);
 				} else {
 					/* Figure out positions for reverse primers */
 					/* Check if the product is of sufficient size */
@@ -1812,7 +1812,7 @@ public class LibPrimer3 {
 					h.start = i+j-1;
 
 					/* Put the real primer sequence in s */
-					oligo_seq = seq_args._pr_substr(sa.trimmed_seq,  i, j);
+					oligo_seq = Sequence._pr_substr(sa.trimmed_seq,  i, j);
 
 				}
 
@@ -2673,7 +2673,7 @@ public class LibPrimer3 {
 
 
 
-	public static void primer_mispriming_to_template(PrimerReccord h,
+	public static void primer_mispriming_to_template(PrimerRecord h,
 			P3GlobalSettings pa,
 			seq_args sa,
 			oligo_type l,
@@ -2785,7 +2785,7 @@ public class LibPrimer3 {
 
 
 	public static void primer_mispriming_to_template_thermod(
-			PrimerReccord h,
+			PrimerRecord h,
 			P3GlobalSettings pa,
 			seq_args sa,
 			oligo_type l,

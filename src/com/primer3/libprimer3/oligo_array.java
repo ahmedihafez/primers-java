@@ -7,7 +7,7 @@ import java.util.List;
 public class oligo_array {
 
 	 /* Array of oligo (primer) records. */
-	 public List<PrimerReccord> oligo = new ArrayList<PrimerReccord>();
+	 public List<PrimerRecord> oligo = new ArrayList<PrimerRecord>();
 
 	 /* Number of initialized elements */
 	 public int num_elem = 0;
@@ -53,7 +53,7 @@ public class oligo_array {
 	 * add is updated to set and update extreme as new recorded are added to the array
 	 * @param h
 	 */
-	public void add_oligo_to_oligo_array(PrimerReccord h) {
+	public void add_oligo_to_oligo_array(PrimerRecord h) {
 		
 		oligo.add(h);
 		num_elem++;
@@ -73,10 +73,10 @@ public class oligo_array {
 	}
 
 	public void sort_primer_array() {
-		oligo.sort(new Comparator<PrimerReccord>() {
+		oligo.sort(new Comparator<PrimerRecord>() {
 
 			@Override
-			public int compare(PrimerReccord a1, PrimerReccord a2) {
+			public int compare(PrimerRecord a1, PrimerRecord a2) {
 				if(a1.quality < a2.quality) return -1;
 				if (a1.quality > a2.quality) return 1;
 

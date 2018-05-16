@@ -123,12 +123,6 @@ public class seq_args {
 	}
 
 
-	public static char[] _pr_substr(char[] seq, int start, int len) {
-		return Sequence.subSeq(seq, start, len);
-	}
-
-
-
 	public boolean PR_START_CODON_POS_IS_NULL() {
 		return this.start_codon_pos <= LibPrimer3.PR_NULL_START_CODON_POS;
 	}
@@ -657,12 +651,12 @@ public class seq_args {
 		if ((sa.incl_l < Integer.MAX_VALUE) && (sa.incl_s > -1)
 				&& (sa.incl_l > -1) && (inc_len < seq_len) ) {
 			/* Copies inluded region into trimmed_seq */
-			sa.trimmed_seq = seq_args._pr_substr(sa.sequence, sa.incl_s, sa.incl_l);
+			sa.trimmed_seq = Sequence._pr_substr(sa.sequence, sa.incl_s, sa.incl_l);
 
 			/* Copies inluded region into trimmed_orig_seq */
 			/* edited by T. Koressaar for lowercase masking */
 			//		    sa.trimmed_orig_seq = (char *) pr_safe_malloc(sa.incl_l + 1);
-			sa.trimmed_orig_seq = seq_args._pr_substr(sa.sequence, sa.incl_s, sa.incl_l);
+			sa.trimmed_orig_seq = Sequence._pr_substr(sa.sequence, sa.incl_s, sa.incl_l);
 
 			/* Masks original trimmed sequence */
 			/* edited by M. Lepamets */
@@ -689,7 +683,7 @@ public class seq_args {
 			}
 
 			/* Copies the whole sequence into upcased_seq */
-			sa.upcased_seq = seq_args._pr_substr(sa.sequence, 0, sa.sequence.length);
+			sa.upcased_seq = Sequence._pr_substr(sa.sequence, 0, sa.sequence.length);
 			LibPrimer3.dna_to_upper(sa.upcased_seq, 1);
 			/* We do not need to check for illegal characters in the return
 		       from dna_to_upper(), because errors are checked in
