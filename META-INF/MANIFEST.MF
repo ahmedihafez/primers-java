@@ -7,12 +7,12 @@ Require-Bundle: org.eclipse.wb.core.lib,
  org.apache.commons.cli,
  org.apache.commons.lang3
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Export-Package: com.primer3,
- com.primer3.dpal,
- com.primer3.libprimer3,
- com.primer3.masker,
- com.primer3.oligotm,
- com.primer3.p3_seq_lib,
- com.primer3.primers,
- com.primer3.sequence,
- com.primer3.thal
+Export-Package: org.primer3,
+ org.primer3.dpal,
+ org.primer3.libprimer3,
+ org.primer3.masker,
+ org.primer3.oligotm,
+ org.primer3.p3_seq_lib,
+ org.primer3.primers,
+ org.primer3.sequence,
+ org.primer3.thal
