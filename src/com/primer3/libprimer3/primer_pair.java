@@ -1,7 +1,7 @@
 package com.primer3.libprimer3;
 
 import com.primer3.dpal.AlignmentException;
-import com.primer3.oligotm.oligo_tm;
+import com.primer3.oligotm.OligoTMCalculator;
 import com.primer3.p3_seq_lib.seq_lib;
 import com.primer3.sequence.Sequence;
 import com.primer3.thal.ThermodynamicAlignmentException;
@@ -297,7 +297,7 @@ public class primer_pair {
 			System.err.print("temporary");
 		}
 		//		  PR_ASSERT(ppair.right.start - ppair.left.start + 1 > 0)
-		ppair.product_tm =  oligo_tm.long_seq_tm(sa.trimmed_seq, ppair.left.start,
+		ppair.product_tm =  OligoTMCalculator.long_seq_tm(sa.trimmed_seq, ppair.left.start,
 				ppair.right.start - ppair.left.start + 1,
 				/* TO DO -- skewed, it would be better to not use p_args elements here */
 				pa.primersArgs.getSaltConcentration(),

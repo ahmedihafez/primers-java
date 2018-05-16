@@ -12,7 +12,7 @@ import com.primer3.libprimer3.p3_output_type;
 import com.primer3.libprimer3.p3retval;
 import com.primer3.libprimer3.PrimerReccord;
 import com.primer3.libprimer3.seq_args;
-import com.primer3.oligotm.oligo_tm;
+import com.primer3.oligotm.OligoTMCalculator;
 import com.primer3.thal.thallib;
 
 public class SimplePrimerFinder {

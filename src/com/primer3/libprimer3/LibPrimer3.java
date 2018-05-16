@@ -14,7 +14,7 @@ import com.primer3.masker.input_sequence;
 import com.primer3.masker.masker;
 import com.primer3.masker.masking_direction;
 import com.primer3.masker.output_sequence;
-import com.primer3.oligotm.oligo_tm;
+import com.primer3.oligotm.OligoTMCalculator;
 import com.primer3.p3_seq_lib.seq_lib;
 import com.primer3.sequence.Sequence;
 import com.primer3.thal.ThermodynamicAlignmentException;

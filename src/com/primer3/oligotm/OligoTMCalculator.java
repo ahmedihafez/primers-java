@@ -5,7 +5,7 @@ import java.util.HashMap;
 import com.primer3.sequence.Sequence;
 import com.primer3.sequence.Sequence.SequenceIterator;
 
-public class oligo_tm {
+public class OligoTMCalculator {
 
 	
 // 	#define OLIGOTM_ERROR -999999.9999
