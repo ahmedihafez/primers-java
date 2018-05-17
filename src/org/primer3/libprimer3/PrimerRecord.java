@@ -1,7 +1,7 @@
 package org.primer3.libprimer3;
 
 import org.primer3.dpal.AlignmentException;
-import org.primer3.dpal.dpal_args;
+import org.primer3.dpal.DPAlignmentArgs;
 import org.primer3.masker.masker;
 import org.primer3.masker.oligo_pair;
 import org.primer3.oligotm.OligoTMCalculator;
@@ -1204,7 +1204,7 @@ public class PrimerRecord {
 	}
 
 	public void oligo_template_mispriming(P3GlobalSettings pa, seq_args sa,
-			oligo_type l, oligo_stats ostats, dpal_args d_align_args,
+			oligo_type l, oligo_stats ostats, DPAlignmentArgs d_align_args,
 			ThermodynamicAlignmentArguments t_align_args) throws AlignmentException,
 			ThermodynamicAlignmentException {
 		/* Check if we already did this and the oligo was ok. */

@@ -11,7 +11,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.primer3.sequence.Sequence;
 
-public class dpallib {
+public class DPAlignment {
 	
 	public static int DPAL_ERROR_SCORE = Integer.MIN_VALUE;
 	
@@ -58,9 +58,9 @@ public class dpallib {
 	
 	
 	
-	public static dpal_results dpal(Sequence s1 , Sequence s2, dpal_args in	) throws AlignmentException
+	public static DPAlignmentResults dpAlign(Sequence s1 , Sequence s2, DPAlignmentArgs in	) throws AlignmentException
 	{
-		dpal_results out = new dpal_results();
+		DPAlignmentResults out = new DPAlignmentResults();
 		int xlen, ylen;
 //		  char msg = "Illegal character in input: ?";
 
@@ -146,12 +146,12 @@ public class dpallib {
 	}
 	
 	
-	public static dpal_results dpal(char[] s1, char[] s2, dpal_args a) throws AlignmentException {
-		return dpal(new Sequence(s1),new Sequence(s2),a);		
+	public static DPAlignmentResults dpAlign(char[] s1, char[] s2, DPAlignmentArgs a) throws AlignmentException {
+		return dpAlign(new Sequence(s1),new Sequence(s2),a);		
 	}
 	
 	
-	public static void _dpal_generic(char[] X , char[] Y, dpal_args in , dpal_results out	) throws AlignmentException {
+	private static void _dpal_generic(char[] X , char[] Y, DPAlignmentArgs in , DPAlignmentResults out	) throws AlignmentException {
 	    
 		
 		int xlen =  X.length,ylen =Y.length;
@@ -381,7 +381,7 @@ public class dpallib {
 	
 	
 	/* Linear space, no path, for any value of maxgap and for any alignment. */
-	public static void _dpal_long_nopath_generic(char[] X , char[] Y, dpal_args in , dpal_results out	) throws AlignmentException {
+	private static void _dpal_long_nopath_generic(char[] X , char[] Y, DPAlignmentArgs in , DPAlignmentResults out	) throws AlignmentException {
 		int xlen =  X.length,ylen =Y.length;
 	    int i, j, k, mg, mgy, c;
 	    int gap = in.gap, gapl = in.gapl, max_gap = in.max_gap;
@@ -522,7 +522,7 @@ public class dpallib {
 	    }   
 	}
 	
-	static void _dpal_long_nopath_maxgap1_local(char[] X , char[] Y, dpal_args in , dpal_results out	) throws AlignmentException {
+	private static void _dpal_long_nopath_maxgap1_local(char[] X , char[] Y, DPAlignmentArgs in , DPAlignmentResults out	) throws AlignmentException {
 		int xlen =  X.length,ylen =Y.length;
 		 
 		int i, j;
@@ -596,7 +596,7 @@ public class dpallib {
 	}
 	
 	
-	static void _dpal_long_nopath_maxgap1_global_end(char[] X , char[] Y, dpal_args in , dpal_results out	) throws AlignmentException {
+	private static void _dpal_long_nopath_maxgap1_global_end(char[] X , char[] Y, DPAlignmentArgs in , DPAlignmentResults out	) throws AlignmentException {
 		int xlen =  X.length,ylen =Y.length;
 		int i, j,k;
 		int gap = in.gap;
@@ -685,7 +685,7 @@ public class dpallib {
 	    
 	}
 	
-	static void _dpal_long_nopath_maxgap1_local_end(char[] X , char[] Y, dpal_args in , dpal_results out) throws AlignmentException
+	private static void _dpal_long_nopath_maxgap1_local_end(char[] X , char[] Y, DPAlignmentArgs in , DPAlignmentResults out) throws AlignmentException
 	{
 		int xlen =  X.length,ylen =Y.length;
 		/* The "score matrix" (matrix of best scores). */
@@ -781,7 +781,7 @@ public class dpallib {
 	
 	
 	private static void print_align(char[] X, char[] Y, int[][][] P, int I,
-			int J, dpal_args dargs) {
+			int J, DPAlignmentArgs dargs) {
 		 
 		
 		int xlen =  X.length,ylen =Y.length;
@@ -899,8 +899,8 @@ public class dpallib {
 		
 		String s1 = null, s2 = null;
 		
-		dpal_args a = new dpal_args();
-	    dpal_results r;
+		DPAlignmentArgs a = new DPAlignmentArgs();
+	    DPAlignmentResults r;
 	    int tmp_ret;
 	    int i;
 	    int print_align_end = 0; /* 
@@ -946,7 +946,7 @@ public class dpallib {
 		    if(print_align_end == 1) a.force_long_generic = 1;
 
 			try {
-				r = dpallib.dpal(new Sequence(s1.toCharArray()),new Sequence(s2.toCharArray()), a);
+				r = DPAlignment.dpAlign(new Sequence(s1.toCharArray()),new Sequence(s2.toCharArray()), a);
 				if (r.score == DPAL_ERROR_SCORE) {
 				      System.err.format("Error: %s\n", r.msg);
 				      System.exit(-1);

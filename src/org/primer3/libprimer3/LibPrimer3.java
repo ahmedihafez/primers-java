@@ -7,9 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.primer3.dpal.AlignmentException;
-import org.primer3.dpal.dpal_args;
-import org.primer3.dpal.dpal_results;
-import org.primer3.dpal.dpallib;
+import org.primer3.dpal.DPAlignmentArgs;
+import org.primer3.dpal.DPAlignmentResults;
+import org.primer3.dpal.DPAlignment;
 import org.primer3.masker.input_sequence;
 import org.primer3.masker.masker;
 import org.primer3.masker.masking_direction;
@@ -147,7 +147,8 @@ public class LibPrimer3 {
 
 	static public int use_end_for_th_template_mispriming = 1;
 
-	static public double DEFAULT_OPT_GC_PERCENT = PR_UNDEFINED_INT_OPT;
+	// TODO :: check this value
+	static public double DEFAULT_OPT_GC_PERCENT = 55;// PR_UNDEFINED_INT_OPT;
 
 
 
@@ -2647,12 +2648,12 @@ public class LibPrimer3 {
 	}
 
 
-	public static double align(char[] s1, char[] s2, dpal_args a) throws AlignmentException {
+	public static double align(char[] s1, char[] s2, DPAlignmentArgs a) throws AlignmentException {
 
 
-		dpal_results r =  null;
+		DPAlignmentResults r =  null;
 
-		if(a.flag == dpallib.DPAL_LOCAL || a.flag == dpallib.DPAL_LOCAL_END) {
+		if(a.flag == DPAlignment.DPAL_LOCAL || a.flag == DPAlignment.DPAL_LOCAL_END) {
 			if (s2.length < 3) {
 				/* For extremely short alignments we simply
 		         max out the score, because the dpal subroutines
@@ -2662,9 +2663,9 @@ public class LibPrimer3 {
 			}
 		}
 		//		  dpal((const unsigned char *) s1, (const unsigned char *) s2, a, &r);
-		r = dpallib.dpal(s1, s2, a);
+		r = DPAlignment.dpAlign(s1, s2, a);
 		//		  PR_ASSERT(r.score <= Short.MAX_VALUE);
-		if (r.score == dpallib.DPAL_ERROR_SCORE) {
+		if (r.score == DPAlignment.DPAL_ERROR_SCORE) {
 			throw new AlignmentException(r.msg)	;
 		}
 		return ((r.score < 0.0) ? 0.0 : r.score / LibPrimer3.PR_ALIGN_SCORE_PRECISION);
@@ -2682,7 +2683,7 @@ public class LibPrimer3 {
 			int last,
 			char[] s,
 			char[] s_r,
-			dpal_args align_args) throws AlignmentException {
+			DPAlignmentArgs align_args) throws AlignmentException {
 
 		char[] oseq;
 		char[] target, target_r;

@@ -5,7 +5,7 @@ import java.util.HashMap;
 /**
  *  Structure for passing in arguments to the main function, dpal. 
  */
-public class dpal_args {
+public class DPAlignmentArgs {
 	
 	/** 
      * If non-0, check for and raise an error on an
@@ -65,10 +65,14 @@ public class dpal_args {
 	   */
 	int score_only;
 	/**
-	 *  The scoring system matrix. 
+	 *   
 	 */
 //	dpal_ssm ssm = new dpal_ssm();      
-	
+	/** 
+	 * The scoring system matrix.
+	 * The data structure that stores the "scoring system matrix". (The socring
+	 * system matrix data structure is of size UCHAR_MAX + 1 by UCHAR_MAX + 1.)
+	 */
 	static int UCHAR_MAX = 255;
 	int[][] ssm = new int[UCHAR_MAX + 1][UCHAR_MAX + 1];
 	
@@ -80,7 +84,7 @@ public class dpal_args {
 		set_dpal_args( );
 		this.check_chars        = 1;
 		this.debug              = 0;
-		this.fail_stop          = dpallib.DPAL_EXIT_ON_ERROR;
+		this.fail_stop          = DPAlignment.DPAL_EXIT_ON_ERROR;
 		this.gap                = -100;
 		this.gapl               = -100;
 		this.max_gap            = 3;
@@ -160,7 +164,7 @@ public class dpal_args {
 		init_ssm();
 		this.gap                = -200;
 		this.gapl               = -200;
-		this.flag               = dpallib.DPAL_LOCAL;
+		this.flag               = DPAlignment.DPAL_LOCAL;
 		this.max_gap            = 1;
 		this.fail_stop          = 1;
 		this.check_chars        = 0;
