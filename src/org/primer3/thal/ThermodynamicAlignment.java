@@ -4,7 +4,7 @@ import java.util.Stack;
 
 import org.primer3.sequence.Sequence;
 
-public class thal {
+public class ThermodynamicAlignment {
 
 	// statics 
 
@@ -68,7 +68,7 @@ public class thal {
 	
 	Sequence oligo_f;
 	Sequence oligo_r;
-	thal_args a;
+	ThermodynamicAlignmentArguments a;
 	
 	
 	
@@ -90,14 +90,14 @@ public class thal {
 	char[] oligo1 = null;
 	char[] oligo2 = null;
 	
-	public thal(Sequence oligo_f,Sequence oligo_r, thal_args a){
+	public ThermodynamicAlignment(Sequence oligo_f,Sequence oligo_r, ThermodynamicAlignmentArguments a){
 		this.a = a;
 		this.oligo_f =oligo_f;
 		this.oligo_r = oligo_r;
 	}
 
 
-	public thal(char[] s1, char[] s2, thal_args a) {
+	public ThermodynamicAlignment(char[] s1, char[] s2, ThermodynamicAlignmentArguments a) {
 		this.a = a;			
 		this.oligo_f = new Sequence(s1);
 		if(s1 != s2)
@@ -107,15 +107,15 @@ public class thal {
 
 	}
 
-	public thal(char[] s, thal_args a) {
+	public ThermodynamicAlignment(char[] s, ThermodynamicAlignmentArguments a) {
 		this.a = a;
 		this.oligo_f = new Sequence(s);
 		this.oligo_r = this.oligo_f;
 
 	}
-	public thal_results calc_thal() throws ThermodynamicAlignmentException
+	public ThermodynamicAlignmentResult calc_thal() throws ThermodynamicAlignmentException
 	{
-		thal_results o = new thal_results();
+		ThermodynamicAlignmentResult o = new ThermodynamicAlignmentResult();
 		
 		// TODO :: check inputs 
 		
@@ -152,7 +152,7 @@ public class thal {
 //		char[] oligo2 = null;
 		char[] oligo2_rev = null;
 
-		if(a.type != thal_alignment_type.thal_end2) // !=3 
+		if(a.type != ThermodynamicAlignmentType.thal_end2) // !=3 
 		{
 			oligo1 = oligo_f.getSequence();
 			oligo2 = oligo_r.getSequence();
@@ -167,7 +167,7 @@ public class thal {
 		
 		
 		/*** INIT values for unimolecular and bimolecular structures ***/
-		if(a.type == thal_alignment_type.thal_hairpin) // == 4
+		if(a.type == ThermodynamicAlignmentType.thal_hairpin) // == 4
 		{ /* unimolecular folding */
 			len2 = oligo2.length;
 		    len3 = len2 -1;
@@ -175,7 +175,7 @@ public class thal {
 		    dplx_init_S = -0.00000000001;
 		    RC = 0;
 		} 
-		else if (a.type != thal_alignment_type.thal_hairpin)  // != 4
+		else if (a.type != ThermodynamicAlignmentType.thal_hairpin)  // != 4
 		{
 			/* hybridization of two oligos */
 			dplx_init_H = 200;
@@ -187,7 +187,7 @@ public class thal {
 		    	RC = R  * Math.log(a.dna_conc/4000000000.0);
 		    }
 		    
-		    if(a.type != thal_alignment_type.thal_end2) // != 3
+		    if(a.type != ThermodynamicAlignmentType.thal_end2) // != 3
 		    {
 		    	oligo2_rev = oligo_r.getReverse().getSequence(); 
 		    } else {
@@ -219,7 +219,7 @@ public class thal {
 		
 
 		
-		if(a.type == thal_alignment_type.thal_hairpin) // == 4 /* monomer */
+		if(a.type == ThermodynamicAlignmentType.thal_hairpin) // == 4 /* monomer */
 		{
 			/* terminal basepairs */
 			// init
@@ -235,7 +235,7 @@ public class thal {
 
 		
 		double mh,ms;
-		if(a.type == thal_alignment_type.thal_hairpin) /* calculate structure of monomer */
+		if(a.type == ThermodynamicAlignmentType.thal_hairpin) /* calculate structure of monomer */
 		{
 			enthalpyDPT = new double[len1*len2];
 			entropyDPT  = new double[len1*len2];
@@ -268,7 +268,7 @@ public class thal {
 			double[] SH = new double[2];
 			int bestI = 0, bestJ = 0; 
 			double G1 = Double.POSITIVE_INFINITY, bestG = Double.POSITIVE_INFINITY;
-			if(a.type == thal_alignment_type.thal_any) // == 1
+			if(a.type == ThermodynamicAlignmentType.thal_any) // == 1
 			{
 				for (int i = 1; i <= len1; i++) {
 					for (int j = 1; j <= len2; j++) {
@@ -289,7 +289,7 @@ public class thal {
 			int[] ps1 = new int[len1];
 			int[] ps2 = new int[len2];
 			
-			if(a.type == thal_alignment_type.thal_end1 || a.type ==thal_alignment_type.thal_end2) // 2 or 3
+			if(a.type == ThermodynamicAlignmentType.thal_end1 || a.type ==ThermodynamicAlignmentType.thal_end2) // 2 or 3
 			{
 				/* THAL_END1 */
 				bestI = bestJ = 0;
@@ -341,14 +341,14 @@ public class thal {
 		int[] seq = new int[charSeq.length + padSize*2];
 		for(int i = padSize,j=0 ; j < charSeq.length  ;j++, i++)
 		{
-			seq[i] =  thallib.str2int(Character.toUpperCase(charSeq[j]));
+			seq[i] =  ThAlParameters.str2int(Character.toUpperCase(charSeq[j]));
 		}
 		
 		return seq;
 	}
 
 
-	private void drawDimer(int[] ps1, int[] ps2, double temp, double H, double S, thal_results o) {
+	private void drawDimer(int[] ps1, int[] ps2, double temp, double H, double S, ThermodynamicAlignmentResult o) {
 
 		int temponly = a.temponly;
 		double t37 = a.temp;
@@ -536,7 +536,7 @@ public class thal {
 	/**
 	 *   prints ascii output of hairpin structure 
 	 */
-	private void drawHairpin(int[] bp,  double mh, double ms, thal_results o) {
+	private void drawHairpin(int[] bp,  double mh, double ms, ThermodynamicAlignmentResult o) {
 		int temponly = a.temponly;
 		double temp = a.temp;
 		int i, N;
@@ -597,7 +597,7 @@ public class thal {
 		int maxLoop = a.maxLoop;
 		int i, j;
 		int ii, jj, k;
-		Stack<thal.tracer> stack = new Stack<thal.tracer>();//
+		Stack<ThermodynamicAlignment.tracer> stack = new Stack<ThermodynamicAlignment.tracer>();//
 		double[] SH1 = new double[2];
 		double[] SH2 = new double[2];
 		double[] EntropyEnthalpy = new double[2];
@@ -614,13 +614,13 @@ public class thal {
 					continue;
 				if (equal(send5[i], END5_1(i,2)) && equal(hend5[i], END5_1(i,1))) {
 					for (k = 0; k <= i - MIN_HRPN_LOOP - 2; ++k)
-						if (equal(send5[i], thallib.atpS[numSeq1[k + 1]][numSeq1[i]] + EntropyDPT(k + 1,i)) &&
-								equal(hend5[i], thallib.atpH[numSeq1[k + 1]][numSeq1[i]] + EnthalpyDPT(k + 1,i))) {
+						if (equal(send5[i], ThAlParameters.atpS[numSeq1[k + 1]][numSeq1[i]] + EntropyDPT(k + 1,i)) &&
+								equal(hend5[i], ThAlParameters.atpH[numSeq1[k + 1]][numSeq1[i]] + EnthalpyDPT(k + 1,i))) {
 							stack.push(new tracer(k + 1, i,0));
 							break;
 						}
-						else if (equal(send5[i], send5[k] + thallib.atpS[numSeq1[k + 1]][numSeq1[i]] + EntropyDPT(k + 1,i)) &&
-								equal(hend5[i], hend5[k] + thallib.atpH[numSeq1[k + 1]][numSeq1[i]] + EnthalpyDPT(k + 1,i))) {
+						else if (equal(send5[i], send5[k] + ThAlParameters.atpS[numSeq1[k + 1]][numSeq1[i]] + EntropyDPT(k + 1,i)) &&
+								equal(hend5[i], hend5[k] + ThAlParameters.atpH[numSeq1[k + 1]][numSeq1[i]] + EnthalpyDPT(k + 1,i))) {
 							stack.push(new tracer(k + 1, i, 0));
 							stack.push(new tracer(k, 0, 1));
 							break;
@@ -628,13 +628,13 @@ public class thal {
 				}
 				else if (equal(send5[i], END5_2(i,2)) && equal(hend5[i], END5_2(i,1))) {
 					for (k = 0; k <= i - MIN_HRPN_LOOP - 3; ++k)
-						if (equal(send5[i], thallib.atpS[numSeq1[k + 2]][numSeq1[i]] + Sd5(i, k + 2) + EntropyDPT(k + 2,i)) &&
-								equal(hend5[i], thallib.atpH[numSeq1[k + 2]][numSeq1[i]] + Hd5(i, k + 2) + EnthalpyDPT(k + 2,i))) {
+						if (equal(send5[i], ThAlParameters.atpS[numSeq1[k + 2]][numSeq1[i]] + Sd5(i, k + 2) + EntropyDPT(k + 2,i)) &&
+								equal(hend5[i], ThAlParameters.atpH[numSeq1[k + 2]][numSeq1[i]] + Hd5(i, k + 2) + EnthalpyDPT(k + 2,i))) {
 							stack.push(new tracer (k + 2, i, 0));
 							break;
 						}
-						else if (equal(send5[i], send5[k] + thallib.atpS[numSeq1[k + 2]][numSeq1[i]] + Sd5(i, k + 2) + EntropyDPT(k + 2,i)) &&
-								equal(hend5[i], hend5[k] + thallib.atpH[numSeq1[k + 2]][numSeq1[i]] + Hd5(i, k + 2) + EnthalpyDPT(k + 2,i))) {
+						else if (equal(send5[i], send5[k] + ThAlParameters.atpS[numSeq1[k + 2]][numSeq1[i]] + Sd5(i, k + 2) + EntropyDPT(k + 2,i)) &&
+								equal(hend5[i], hend5[k] + ThAlParameters.atpH[numSeq1[k + 2]][numSeq1[i]] + Hd5(i, k + 2) + EnthalpyDPT(k + 2,i))) {
 							stack.push(new tracer(k + 2, i, 0));
 							stack.push(new tracer(k, 0, 1));
 							break;
@@ -714,11 +714,11 @@ public class thal {
 	}
 
 	private double atPenaltyS(int i, int j) {
-		return thallib.atpS[i][j];
+		return ThAlParameters.atpS[i][j];
 	}
 
 	private double atPenaltyH(int i, int j) {
-		return thallib.atpH[i][j];
+		return ThAlParameters.atpH[i][j];
 	}
 
 	private double EntropyDPT(int i, int j) {
@@ -918,28 +918,28 @@ public class thal {
 
 
 	private double Sd5(int i, int j) {
-		return thallib.dangleEntropies5[numSeq1[i]][numSeq1[j]][numSeq1[j - 1]];
+		return ThAlParameters.dangleEntropies5[numSeq1[i]][numSeq1[j]][numSeq1[j - 1]];
 	}
 	
 	private double Hd5(int i, int j) {
-		return thallib.dangleEnthalpies5[numSeq1[i]][numSeq1[j]][numSeq1[j - 1]];
+		return ThAlParameters.dangleEnthalpies5[numSeq1[i]][numSeq1[j]][numSeq1[j - 1]];
 	}
 
 	private double Sd3(int i, int j) {
-		return thallib.dangleEntropies3[numSeq1[i]][numSeq1[i+1]][numSeq1[j]];
+		return ThAlParameters.dangleEntropies3[numSeq1[i]][numSeq1[i+1]][numSeq1[j]];
 
 	}
 	private double Hd3(int i, int j) {
-		return thallib.dangleEnthalpies3[numSeq1[i]][numSeq1[i+1]][numSeq1[j]];
+		return ThAlParameters.dangleEnthalpies3[numSeq1[i]][numSeq1[i+1]][numSeq1[j]];
 	}
 	
 	
 
 	private double Ststack(int i, int j) {
-		return thallib.tstack2Entropies[numSeq1[i]][numSeq1[i+1]][numSeq1[j]][numSeq1[j-1]];
+		return ThAlParameters.tstack2Entropies[numSeq1[i]][numSeq1[i+1]][numSeq1[j]][numSeq1[j-1]];
 	}
 	private double Htstack(int i, int j) {
-		return thallib.tstack2Enthalpies[numSeq1[i]][numSeq1[i+1]][numSeq1[j]][numSeq1[j-1]];
+		return ThAlParameters.tstack2Enthalpies[numSeq1[i]][numSeq1[i+1]][numSeq1[j]][numSeq1[j-1]];
 	}
 	
 
@@ -970,15 +970,15 @@ public class thal {
 			j -= len2;
 		}
 		if(loopSize <= 30) {
-			EntropyEnthalpy[1] = thallib.hairpinLoopEnthalpies[loopSize - 1];
-			EntropyEnthalpy[0] = thallib.hairpinLoopEntropies[loopSize - 1];
+			EntropyEnthalpy[1] = ThAlParameters.hairpinLoopEnthalpies[loopSize - 1];
+			EntropyEnthalpy[0] = ThAlParameters.hairpinLoopEntropies[loopSize - 1];
 		} else {
-			EntropyEnthalpy[1] = thallib.hairpinLoopEnthalpies[29];
-			EntropyEnthalpy[0] = thallib.hairpinLoopEntropies[29];
+			EntropyEnthalpy[1] = ThAlParameters.hairpinLoopEnthalpies[29];
+			EntropyEnthalpy[0] = ThAlParameters.hairpinLoopEntropies[29];
 		}
 		if (loopSize > 3) { /* for loops 4 bp and more in length, terminal mm are accounted */
-			EntropyEnthalpy[1] += thallib.tstack2Enthalpies[numSeq1[i]][numSeq1[i + 1]][numSeq1[j]][numSeq1[j - 1]];
-			EntropyEnthalpy[0] += thallib.tstack2Entropies[numSeq1[i]][numSeq1[i + 1]][numSeq1[j]][numSeq1[j - 1]];
+			EntropyEnthalpy[1] += ThAlParameters.tstack2Enthalpies[numSeq1[i]][numSeq1[i + 1]][numSeq1[j]][numSeq1[j - 1]];
+			EntropyEnthalpy[0] += ThAlParameters.tstack2Entropies[numSeq1[i]][numSeq1[i + 1]][numSeq1[j]][numSeq1[j - 1]];
 		} else if(loopSize == 3){ /* for loops 3 bp in length at-penalty is considered */
 			EntropyEnthalpy[1] += atPenaltyH(numSeq1[i], numSeq1[j]);
 			EntropyEnthalpy[0] += atPenaltyS(numSeq1[i], numSeq1[j]);
@@ -990,11 +990,11 @@ public class thal {
 			{
 				// (loop = (struct triloop*) bsearch(numSeq1 + i, triloopEnthalpies, numTriloops, sizeof(struct triloop), comp3loop))
 				int loopKey = getHashkey(numSeq1,i,5);
-				if (thallib.triloopEnthalpies.containsKey(loopKey))
-					EntropyEnthalpy[1] += thallib.triloopEnthalpies.get(loopKey);
+				if (ThAlParameters.triloopEnthalpies.containsKey(loopKey))
+					EntropyEnthalpy[1] += ThAlParameters.triloopEnthalpies.get(loopKey);
 				// (loop = (struct triloop*) bsearch(numSeq1 + i, triloopEntropies, numTriloops, sizeof(struct triloop), comp3loop))
-				if (thallib.triloopEntropies.containsKey(loopKey))
-					EntropyEnthalpy[0] += thallib.triloopEntropies.get(loopKey);
+				if (ThAlParameters.triloopEntropies.containsKey(loopKey))
+					EntropyEnthalpy[0] += ThAlParameters.triloopEntropies.get(loopKey);
 			}
 		} else if (loopSize == 4) { /* terminal mismatch, tetraloop bonus, hairpin of 4 */
 //			tetraloop loop = null;
@@ -1002,12 +1002,12 @@ public class thal {
 			{
 				//(loop = (struct tetraloop*) bsearch(numSeq1 + i, tetraloopEnthalpies, numTetraloops, sizeof(struct tetraloop), comp4loop))
 				int loopKey = getHashkey(numSeq1,i,6);
-				if (thallib.tetraloopEnthalpies.containsKey(loopKey)) {
-					EntropyEnthalpy[1] += thallib.tetraloopEnthalpies.get(loopKey);
+				if (ThAlParameters.tetraloopEnthalpies.containsKey(loopKey)) {
+					EntropyEnthalpy[1] += ThAlParameters.tetraloopEnthalpies.get(loopKey);
 				}
 				// (loop = (struct tetraloop*) bsearch(numSeq1 + i, tetraloopEntropies, numTetraloops, sizeof(struct tetraloop), comp4loop))
-				if (thallib.tetraloopEntropies.containsKey(loopKey)) {
-					EntropyEnthalpy[0] += thallib.tetraloopEntropies.get(loopKey);
+				if (ThAlParameters.tetraloopEntropies.containsKey(loopKey)) {
+					EntropyEnthalpy[0] += ThAlParameters.tetraloopEntropies.get(loopKey);
 				}
 			}
 		}
@@ -1117,10 +1117,10 @@ public class thal {
 				 /* bulge loop of size one is treated differently
 					the intervening nn-pair must be added */
 				 if((loopSize2 == 1 && loopSize1 == 0) || (loopSize2 == 0 && loopSize1 == 1)) {
-					 H = thallib.bulgeLoopEnthalpies[loopSize] +
-							 thallib.stackEnthalpies[numSeq1[i]][numSeq1[ii]][numSeq2[j]][numSeq2[jj]];
-					 S = thallib.bulgeLoopEntropies[loopSize] +
-							 thallib.stackEntropies[numSeq1[i]][numSeq1[ii]][numSeq2[j]][numSeq2[jj]];
+					 H = ThAlParameters.bulgeLoopEnthalpies[loopSize] +
+							 ThAlParameters.stackEnthalpies[numSeq1[i]][numSeq1[ii]][numSeq2[j]][numSeq2[jj]];
+					 S = ThAlParameters.bulgeLoopEntropies[loopSize] +
+							 ThAlParameters.stackEntropies[numSeq1[i]][numSeq1[ii]][numSeq2[j]][numSeq2[jj]];
 				 }
 				 if(!traceback) {
 					 H += EnthalpyDPT(ii, jj); /* bulge koos otsaga, st bulge i,j-ni */
@@ -1142,11 +1142,11 @@ public class thal {
 
 			 } else { /* we have _not_ implemented Jacobson-Stockaymayer equation; the maximum bulgeloop size is 30 */
 
-				 H = thallib.bulgeLoopEnthalpies[loopSize] + atPenaltyH(numSeq1[i], numSeq2[j]) + atPenaltyH(numSeq1[ii], numSeq2[jj]);
+				 H = ThAlParameters.bulgeLoopEnthalpies[loopSize] + atPenaltyH(numSeq1[i], numSeq2[j]) + atPenaltyH(numSeq1[ii], numSeq2[jj]);
 				 if(!traceback)
 					 H += EnthalpyDPT(ii, jj);
 
-				 S = thallib.bulgeLoopEntropies[loopSize] + atPenaltyS(numSeq1[i], numSeq2[j]) + atPenaltyS(numSeq1[ii], numSeq2[jj]);
+				 S = ThAlParameters.bulgeLoopEntropies[loopSize] + atPenaltyS(numSeq1[i], numSeq2[j]) + atPenaltyS(numSeq1[ii], numSeq2[jj]);
 				 if(!traceback)
 					 S += EntropyDPT(ii, jj);
 				 if(!Double.isFinite(H)) {
@@ -1166,13 +1166,13 @@ public class thal {
 		 else if (loopSize1 == 1 && loopSize2 == 1) {
 			 /* mismatch nearest neighbor parameters */
 
-			 S = thallib.stackint2Entropies[numSeq1[i]][numSeq1[i+1]][numSeq2[j]][numSeq2[j-1]] +
-		    		  thallib.stackint2Entropies[numSeq2[jj]][numSeq2[jj+1]][numSeq1[ii]][numSeq1[ii-1]];
+			 S = ThAlParameters.stackint2Entropies[numSeq1[i]][numSeq1[i+1]][numSeq2[j]][numSeq2[j-1]] +
+		    		  ThAlParameters.stackint2Entropies[numSeq2[jj]][numSeq2[jj+1]][numSeq1[ii]][numSeq1[ii-1]];
 			 if(!traceback)
 				 S += EntropyDPT(ii, jj);
 
-			 H = thallib.stackint2Enthalpies[numSeq1[i]][numSeq1[i+1]][numSeq2[j]][numSeq2[j-1]] +
-		    		  thallib.stackint2Enthalpies[numSeq2[jj]][numSeq2[jj+1]][numSeq1[ii]][numSeq1[ii-1]];
+			 H = ThAlParameters.stackint2Enthalpies[numSeq1[i]][numSeq1[i+1]][numSeq2[j]][numSeq2[j-1]] +
+		    		  ThAlParameters.stackint2Enthalpies[numSeq2[jj]][numSeq2[jj+1]][numSeq1[ii]][numSeq1[ii-1]];
 			 if(!traceback)
 				 H += EnthalpyDPT(ii, jj);
 			 if(!Double.isFinite(H)) {
@@ -1192,14 +1192,14 @@ public class thal {
 			 return;
 		 } else { /* only internal loops */
 
-			 H = thallib.interiorLoopEnthalpies[loopSize] + thallib.tstackEnthalpies[numSeq1[i]][numSeq1[i+1]][numSeq2[j]][numSeq2[j-1]] +
-					 thallib.tstackEnthalpies[numSeq2[jj]][numSeq2[jj+1]][numSeq1[ii]][numSeq1[ii-1]]
+			 H = ThAlParameters.interiorLoopEnthalpies[loopSize] + ThAlParameters.tstackEnthalpies[numSeq1[i]][numSeq1[i+1]][numSeq2[j]][numSeq2[j-1]] +
+					 ThAlParameters.tstackEnthalpies[numSeq2[jj]][numSeq2[jj+1]][numSeq1[ii]][numSeq1[ii-1]]
 							 + (ILAH * Math.abs(loopSize1 - loopSize2));
 			 if(!traceback)
 				 H += EnthalpyDPT(ii, jj);
 
-			 S = thallib.interiorLoopEntropies[loopSize] + thallib.tstackEntropies[numSeq1[i]][numSeq1[i+1]][numSeq2[j]][numSeq2[j-1]] +
-		    		  thallib.tstackEntropies[numSeq2[jj]][numSeq2[jj+1]][numSeq1[ii]][numSeq1[ii-1]] + (ILAS * Math.abs(loopSize1 - loopSize2));
+			 S = ThAlParameters.interiorLoopEntropies[loopSize] + ThAlParameters.tstackEntropies[numSeq1[i]][numSeq1[i+1]][numSeq2[j]][numSeq2[j-1]] +
+		    		  ThAlParameters.tstackEntropies[numSeq2[jj]][numSeq2[jj+1]][numSeq1[ii]][numSeq1[ii-1]] + (ILAS * Math.abs(loopSize1 - loopSize2));
 			 if(!traceback)
 				 S += EntropyDPT(ii, jj);
 			 if(!Double.isFinite(H)) {
@@ -1416,10 +1416,10 @@ public class thal {
 							      the intervening nn-pair must be added */
 
 				if((loopSize2 == 1 && loopSize1 == 0) || (loopSize2 == 0 && loopSize1 == 1)) {
-					H = thallib.bulgeLoopEnthalpies[loopSize] +
-							thallib.stackEnthalpies[numSeq1[i]][numSeq1[ii]][numSeq2[j]][numSeq2[jj]];
-					S = thallib.bulgeLoopEntropies[loopSize] +
-							thallib.stackEntropies[numSeq1[i]][numSeq1[ii]][numSeq2[j]][numSeq2[jj]];
+					H = ThAlParameters.bulgeLoopEnthalpies[loopSize] +
+							ThAlParameters.stackEnthalpies[numSeq1[i]][numSeq1[ii]][numSeq2[j]][numSeq2[jj]];
+					S = ThAlParameters.bulgeLoopEntropies[loopSize] +
+							ThAlParameters.stackEntropies[numSeq1[i]][numSeq1[ii]][numSeq2[j]][numSeq2[jj]];
 				}
 				if(isPositive(H) || isPositive(S)){
 					H = Double.POSITIVE_INFINITY;
@@ -1440,10 +1440,10 @@ public class thal {
 			 }
 			} else { /* we have _not_ implemented Jacobson-Stockaymayer equation; the maximum bulgeloop size is 30 */
 
-				H = thallib.bulgeLoopEnthalpies[loopSize] + atPenaltyH(numSeq1[i], numSeq2[j]) + atPenaltyH(numSeq1[ii], numSeq2[jj]);
+				H = ThAlParameters.bulgeLoopEnthalpies[loopSize] + atPenaltyH(numSeq1[i], numSeq2[j]) + atPenaltyH(numSeq1[ii], numSeq2[jj]);
 				H += EnthalpyDPT(i, j);
 
-				S = thallib.bulgeLoopEntropies[loopSize] + atPenaltyS(numSeq1[i], numSeq2[j]) + atPenaltyS(numSeq1[ii], numSeq2[jj]);
+				S = ThAlParameters.bulgeLoopEntropies[loopSize] + atPenaltyS(numSeq1[i], numSeq2[j]) + atPenaltyS(numSeq1[ii], numSeq2[jj]);
 				S += EntropyDPT(i, j);
 				if(!Double.isFinite(H)) {
 					H = Double.POSITIVE_INFINITY;
@@ -1464,12 +1464,12 @@ public class thal {
 			 
 			}
 		} else if (loopSize1 == 1 && loopSize2 == 1) {
-			S = thallib.stackint2Entropies[numSeq1[i]][numSeq1[i+1]][numSeq2[j]][numSeq2[j+1]] +
-					thallib.stackint2Entropies[numSeq2[jj]][numSeq2[jj-1]][numSeq1[ii]][numSeq1[ii-1]];
+			S = ThAlParameters.stackint2Entropies[numSeq1[i]][numSeq1[i+1]][numSeq2[j]][numSeq2[j+1]] +
+					ThAlParameters.stackint2Entropies[numSeq2[jj]][numSeq2[jj-1]][numSeq1[ii]][numSeq1[ii-1]];
 			S += EntropyDPT(i, j);
 
-			H = thallib.stackint2Enthalpies[numSeq1[i]][numSeq1[i+1]][numSeq2[j]][numSeq2[j+1]] +
-					thallib.stackint2Enthalpies[numSeq2[jj]][numSeq2[jj-1]][numSeq1[ii]][numSeq1[ii-1]];
+			H = ThAlParameters.stackint2Enthalpies[numSeq1[i]][numSeq1[i+1]][numSeq2[j]][numSeq2[j+1]] +
+					ThAlParameters.stackint2Enthalpies[numSeq2[jj]][numSeq2[jj-1]][numSeq1[ii]][numSeq1[ii-1]];
 			H += EnthalpyDPT(i, j);
 			if(!Double.isFinite(H)) {
 				H = Double.POSITIVE_INFINITY;
@@ -1488,13 +1488,13 @@ public class thal {
 			}
 			return;
 		} else { /* only internal loops */
-			H = thallib.interiorLoopEnthalpies[loopSize] + thallib.tstackEnthalpies[numSeq1[i]][numSeq1[i+1]][numSeq2[j]][numSeq2[j+1]] +
-					thallib.tstackEnthalpies[numSeq2[jj]][numSeq2[jj-1]][numSeq1[ii]][numSeq1[ii-1]]
+			H = ThAlParameters.interiorLoopEnthalpies[loopSize] + ThAlParameters.tstackEnthalpies[numSeq1[i]][numSeq1[i+1]][numSeq2[j]][numSeq2[j+1]] +
+					ThAlParameters.tstackEnthalpies[numSeq2[jj]][numSeq2[jj-1]][numSeq1[ii]][numSeq1[ii-1]]
 							+ (ILAH * Math.abs(loopSize1 - loopSize2));
 			H += EnthalpyDPT(i, j);
 
-			S = thallib.interiorLoopEntropies[loopSize] + thallib.tstackEntropies[numSeq1[i]][numSeq1[i+1]][numSeq2[j]][numSeq2[j+1]] +
-		    		  thallib.tstackEntropies[numSeq2[jj]][numSeq2[jj-1]][numSeq1[ii]][numSeq1[ii-1]] + (ILAS * Math.abs(loopSize1 - loopSize2));
+			S = ThAlParameters.interiorLoopEntropies[loopSize] + ThAlParameters.tstackEntropies[numSeq1[i]][numSeq1[i+1]][numSeq2[j]][numSeq2[j+1]] +
+		    		  ThAlParameters.tstackEntropies[numSeq2[jj]][numSeq2[jj-1]][numSeq1[ii]][numSeq1[ii-1]] + (ILAS * Math.abs(loopSize1 - loopSize2));
 			S += EntropyDPT(i, j);
 			if(!Double.isFinite(H)) {
 				H = Double.POSITIVE_INFINITY;
@@ -1571,9 +1571,9 @@ public class thal {
 				i -= len1;
 			if (j > len2)
 				j -= len2;
-			return thallib.stackEntropies[numSeq1[i]][numSeq1[i+1]][numSeq2[j]][numSeq2[j-1]];
+			return ThAlParameters.stackEntropies[numSeq1[i]][numSeq1[i+1]][numSeq2[j]][numSeq2[j-1]];
 		} else {
-			return thallib.stackEntropies[numSeq1[i]][numSeq1[i + 1]][numSeq2[j]][numSeq2[j + 1]];
+			return ThAlParameters.stackEntropies[numSeq1[i]][numSeq1[i + 1]][numSeq2[j]][numSeq2[j + 1]];
 		}
 	}
 
@@ -1595,13 +1595,13 @@ public class thal {
 				i -= len1;
 			if (j > len2)
 				j -= len2;
-			if(Double.isFinite(thallib.stackEnthalpies[numSeq1[i]][numSeq1[i+1]][numSeq2[j]][numSeq2[j-1]])) {
-				return thallib.stackEnthalpies[numSeq1[i]][numSeq1[i+1]][numSeq2[j]][numSeq2[j-1]];
+			if(Double.isFinite(ThAlParameters.stackEnthalpies[numSeq1[i]][numSeq1[i+1]][numSeq2[j]][numSeq2[j-1]])) {
+				return ThAlParameters.stackEnthalpies[numSeq1[i]][numSeq1[i+1]][numSeq2[j]][numSeq2[j-1]];
 			} else {
 				return Double.POSITIVE_INFINITY;
 			}
 		} else {
-			return thallib.stackEnthalpies[numSeq1[i]][numSeq1[i + 1]][numSeq2[j]][numSeq2[j + 1]];
+			return ThAlParameters.stackEnthalpies[numSeq1[i]][numSeq1[i + 1]][numSeq2[j]][numSeq2[j + 1]];
 		}
 	}
 
@@ -1617,8 +1617,8 @@ public class thal {
 			setEnthalpyDPT(i,j, Double.POSITIVE_INFINITY);
 			return;
 		}
-		S1 = thallib.atpS[numSeq1[i]][numSeq2[j]] + thallib.tstack2Entropies[numSeq2[j]][numSeq2[j-1]][numSeq1[i]][numSeq1[i-1]];
-		H1 = thallib.atpH[numSeq1[i]][numSeq2[j]] + thallib.tstack2Enthalpies[numSeq2[j]][numSeq2[j-1]][numSeq1[i]][numSeq1[i-1]];
+		S1 = ThAlParameters.atpS[numSeq1[i]][numSeq2[j]] + ThAlParameters.tstack2Entropies[numSeq2[j]][numSeq2[j-1]][numSeq1[i]][numSeq1[i-1]];
+		H1 = ThAlParameters.atpH[numSeq1[i]][numSeq2[j]] + ThAlParameters.tstack2Enthalpies[numSeq2[j]][numSeq2[j-1]][numSeq1[i]][numSeq1[i-1]];
 		G1 = H1 - TEMP_KELVIN*S1;
 		if(!Double.isFinite(H1) || G1>0) {
 			H1 = Double.POSITIVE_INFINITY;
@@ -1626,11 +1626,11 @@ public class thal {
 			G1 = 1.0;
 		}
 		/** If there is two dangling ends at the same end of duplex **/
-		if((BPI[numSeq1[i-1]][numSeq2[j-1]] != 1 ) && Double.isFinite(thallib.dangleEnthalpies3[numSeq2[j]][numSeq2[j - 1]][numSeq1[i]]) && Double.isFinite(thallib.dangleEnthalpies5[numSeq2[j]][numSeq1[i]][numSeq1[i - 1]])) {
-			S2 = thallib.atpS[numSeq1[i]][numSeq2[j]] + thallib.dangleEntropies3[numSeq2[j]][numSeq2[j - 1]][numSeq1[i]] +
-					thallib.dangleEntropies5[numSeq2[j]][numSeq1[i]][numSeq1[i - 1]];
-			H2 = thallib.atpH[numSeq1[i]][numSeq2[j]] + thallib.dangleEnthalpies3[numSeq2[j]][numSeq2[j - 1]][numSeq1[i]] +
-					thallib.dangleEnthalpies5[numSeq2[j]][numSeq1[i]][numSeq1[i - 1]];
+		if((BPI[numSeq1[i-1]][numSeq2[j-1]] != 1 ) && Double.isFinite(ThAlParameters.dangleEnthalpies3[numSeq2[j]][numSeq2[j - 1]][numSeq1[i]]) && Double.isFinite(ThAlParameters.dangleEnthalpies5[numSeq2[j]][numSeq1[i]][numSeq1[i - 1]])) {
+			S2 = ThAlParameters.atpS[numSeq1[i]][numSeq2[j]] + ThAlParameters.dangleEntropies3[numSeq2[j]][numSeq2[j - 1]][numSeq1[i]] +
+					ThAlParameters.dangleEntropies5[numSeq2[j]][numSeq1[i]][numSeq1[i - 1]];
+			H2 = ThAlParameters.atpH[numSeq1[i]][numSeq2[j]] + ThAlParameters.dangleEnthalpies3[numSeq2[j]][numSeq2[j - 1]][numSeq1[i]] +
+					ThAlParameters.dangleEnthalpies5[numSeq2[j]][numSeq1[i]][numSeq1[i - 1]];
 			G2 = H2 - TEMP_KELVIN*S2;
 			if(!Double.isFinite(H2) || G2>0) {
 				H2 = Double.POSITIVE_INFINITY;
@@ -1650,9 +1650,9 @@ public class thal {
 				H1 = H2;
 				T1 = T2;
 			}
-		} else if ((BPI[numSeq1[i-1]][numSeq2[j-1]] != 1) && Double.isFinite(thallib.dangleEnthalpies3[numSeq2[j]][numSeq2[j - 1]][numSeq1[i]])) {
-			S2 = thallib.atpS[numSeq1[i]][numSeq2[j]] + thallib.dangleEntropies3[numSeq2[j]][numSeq2[j - 1]][numSeq1[i]];
-			H2 = thallib.atpH[numSeq1[i]][numSeq2[j]] + thallib.dangleEnthalpies3[numSeq2[j]][numSeq2[j - 1]][numSeq1[i]];
+		} else if ((BPI[numSeq1[i-1]][numSeq2[j-1]] != 1) && Double.isFinite(ThAlParameters.dangleEnthalpies3[numSeq2[j]][numSeq2[j - 1]][numSeq1[i]])) {
+			S2 = ThAlParameters.atpS[numSeq1[i]][numSeq2[j]] + ThAlParameters.dangleEntropies3[numSeq2[j]][numSeq2[j - 1]][numSeq1[i]];
+			H2 = ThAlParameters.atpH[numSeq1[i]][numSeq2[j]] + ThAlParameters.dangleEnthalpies3[numSeq2[j]][numSeq2[j - 1]][numSeq1[i]];
 			G2 = H2 - TEMP_KELVIN*S2;
 			if(!Double.isFinite(H2) || G2>0) {
 				H2 = Double.POSITIVE_INFINITY;
@@ -1672,9 +1672,9 @@ public class thal {
 				H1 = H2;
 				T1 = T2;
 			}
-		} else if ((BPI[numSeq1[i-1]][numSeq2[j-1]] != 1) && Double.isFinite(thallib.dangleEnthalpies5[numSeq2[j]][numSeq1[i]][numSeq1[i - 1]])) {
-			S2 = thallib.atpS[numSeq1[i]][numSeq2[j]] + thallib.dangleEntropies5[numSeq2[j]][numSeq1[i]][numSeq1[i - 1]];
-			H2 = thallib.atpH[numSeq1[i]][numSeq2[j]] + thallib.dangleEnthalpies5[numSeq2[j]][numSeq1[i]][numSeq1[i - 1]];
+		} else if ((BPI[numSeq1[i-1]][numSeq2[j-1]] != 1) && Double.isFinite(ThAlParameters.dangleEnthalpies5[numSeq2[j]][numSeq1[i]][numSeq1[i - 1]])) {
+			S2 = ThAlParameters.atpS[numSeq1[i]][numSeq2[j]] + ThAlParameters.dangleEntropies5[numSeq2[j]][numSeq1[i]][numSeq1[i - 1]];
+			H2 = ThAlParameters.atpH[numSeq1[i]][numSeq2[j]] + ThAlParameters.dangleEnthalpies5[numSeq2[j]][numSeq1[i]][numSeq1[i - 1]];
 			G2 = H2 - TEMP_KELVIN*S2;
 			if(!Double.isFinite(H2) || G2>0) {
 				H2 = Double.POSITIVE_INFINITY;
@@ -1695,8 +1695,8 @@ public class thal {
 				T1 = T2;
 			}
 		}
-		S2 = thallib.atpS[numSeq1[i]][numSeq2[j]];
-		H2 = thallib.atpH[numSeq1[i]][numSeq2[j]];
+		S2 = ThAlParameters.atpS[numSeq1[i]][numSeq2[j]];
+		H2 = ThAlParameters.atpH[numSeq1[i]][numSeq2[j]];
 		T2 = (H2 + dplx_init_H) / (S2 + dplx_init_S + RC);
 		G1 = H1 -TEMP_KELVIN*S1;   
 		G2 = H2 -TEMP_KELVIN*S2;
@@ -1732,8 +1732,8 @@ public class thal {
 			EntropyEnthalpy[1] = Double.POSITIVE_INFINITY;
 			return;
 		}
-		S1 = thallib.atpS[numSeq1[i]][ numSeq2[j]] + thallib.tstack2Entropies[numSeq1[i]][numSeq1[i + 1]][numSeq2[j]][numSeq2[j + 1]];
-		H1 = thallib.atpH[numSeq1[i]][ numSeq2[j]] + thallib.tstack2Enthalpies[numSeq1[i]][numSeq1[i + 1]][numSeq2[j]][numSeq2[j + 1]];
+		S1 = ThAlParameters.atpS[numSeq1[i]][ numSeq2[j]] + ThAlParameters.tstack2Entropies[numSeq1[i]][numSeq1[i + 1]][numSeq2[j]][numSeq2[j + 1]];
+		H1 = ThAlParameters.atpH[numSeq1[i]][ numSeq2[j]] + ThAlParameters.tstack2Enthalpies[numSeq1[i]][numSeq1[i + 1]][numSeq2[j]][numSeq2[j + 1]];
 		G1 = H1 - TEMP_KELVIN*S1;
 		if(!Double.isFinite(H1) || G1>0) {
 			H1 = Double.POSITIVE_INFINITY;
@@ -1741,11 +1741,11 @@ public class thal {
 			G1 = 1.0;
 		}
 		   
-		if(BPI[numSeq1[i+1]][numSeq2[j+1]] == 0 && Double.isFinite(thallib.dangleEnthalpies3[numSeq1[i]][numSeq1[i + 1]][numSeq2[j]]) && Double.isFinite(thallib.dangleEnthalpies5[numSeq1[i]][numSeq2[j]][numSeq2[j + 1]])) {
-			S2 = thallib.atpS[numSeq1[i]][numSeq2[j]] + thallib.dangleEntropies3[numSeq1[i]][numSeq1[i + 1]][numSeq2[j]] +
-					thallib.dangleEntropies5[numSeq1[i]][numSeq2[j]][numSeq2[j + 1]];
-			H2 = thallib.atpH[numSeq1[i]][numSeq2[j]] + thallib.dangleEnthalpies3[numSeq1[i]][numSeq1[i + 1]][numSeq2[j]] +
-					thallib.dangleEnthalpies5[numSeq1[i]][numSeq2[j]][numSeq2[j + 1]];
+		if(BPI[numSeq1[i+1]][numSeq2[j+1]] == 0 && Double.isFinite(ThAlParameters.dangleEnthalpies3[numSeq1[i]][numSeq1[i + 1]][numSeq2[j]]) && Double.isFinite(ThAlParameters.dangleEnthalpies5[numSeq1[i]][numSeq2[j]][numSeq2[j + 1]])) {
+			S2 = ThAlParameters.atpS[numSeq1[i]][numSeq2[j]] + ThAlParameters.dangleEntropies3[numSeq1[i]][numSeq1[i + 1]][numSeq2[j]] +
+					ThAlParameters.dangleEntropies5[numSeq1[i]][numSeq2[j]][numSeq2[j + 1]];
+			H2 = ThAlParameters.atpH[numSeq1[i]][numSeq2[j]] + ThAlParameters.dangleEnthalpies3[numSeq1[i]][numSeq1[i + 1]][numSeq2[j]] +
+					ThAlParameters.dangleEnthalpies5[numSeq1[i]][numSeq2[j]][numSeq2[j + 1]];
 			G2 = H2 - TEMP_KELVIN*S2;
 			if(!Double.isFinite(H2) || G2>0) {
 				H2 = Double.POSITIVE_INFINITY;
@@ -1768,9 +1768,9 @@ public class thal {
 			}
 		}
 
-		else if(BPI[numSeq1[i+1]][numSeq2[j+1]] == 0 && Double.isFinite(thallib.dangleEnthalpies3[numSeq1[i]][numSeq1[i + 1]][numSeq2[j]])) {
-			S2 = thallib.atpS[numSeq1[i]][numSeq2[j]] + thallib.dangleEntropies3[numSeq1[i]][numSeq1[i + 1]][numSeq2[j]];
-			H2 = thallib.atpH[numSeq1[i]][numSeq2[j]] + thallib.dangleEnthalpies3[numSeq1[i]][numSeq1[i + 1]][numSeq2[j]];
+		else if(BPI[numSeq1[i+1]][numSeq2[j+1]] == 0 && Double.isFinite(ThAlParameters.dangleEnthalpies3[numSeq1[i]][numSeq1[i + 1]][numSeq2[j]])) {
+			S2 = ThAlParameters.atpS[numSeq1[i]][numSeq2[j]] + ThAlParameters.dangleEntropies3[numSeq1[i]][numSeq1[i + 1]][numSeq2[j]];
+			H2 = ThAlParameters.atpH[numSeq1[i]][numSeq2[j]] + ThAlParameters.dangleEnthalpies3[numSeq1[i]][numSeq1[i + 1]][numSeq2[j]];
 			G2 = H2 - TEMP_KELVIN*S2;
 			if(!Double.isFinite(H2) || G2 >0) {
 				H2 = Double.POSITIVE_INFINITY;
@@ -1790,9 +1790,9 @@ public class thal {
 				H1 = H2;
 				T1 = T2;
 			}
-		} else if(BPI[numSeq1[i+1]][numSeq2[j+1]] == 0 && Double.isFinite(thallib.dangleEnthalpies5[numSeq1[i]][numSeq2[j]][numSeq2[j + 1]])) {
-			S2 = thallib.atpS[numSeq1[i]][numSeq2[j]] + thallib.dangleEntropies5[numSeq1[i]][numSeq2[j]][numSeq2[j + 1]];
-			H2 = thallib.atpH[numSeq1[i]][numSeq2[j]] + thallib.dangleEnthalpies5[numSeq1[i]][numSeq2[j]][numSeq2[j + 1]];
+		} else if(BPI[numSeq1[i+1]][numSeq2[j+1]] == 0 && Double.isFinite(ThAlParameters.dangleEnthalpies5[numSeq1[i]][numSeq2[j]][numSeq2[j + 1]])) {
+			S2 = ThAlParameters.atpS[numSeq1[i]][numSeq2[j]] + ThAlParameters.dangleEntropies5[numSeq1[i]][numSeq2[j]][numSeq2[j + 1]];
+			H2 = ThAlParameters.atpH[numSeq1[i]][numSeq2[j]] + ThAlParameters.dangleEnthalpies5[numSeq1[i]][numSeq2[j]][numSeq2[j + 1]];
 			G2 = H2 - TEMP_KELVIN*S2;
 			if(!Double.isFinite(H2) || G2>0) {
 				H2 = Double.POSITIVE_INFINITY;
@@ -1813,8 +1813,8 @@ public class thal {
 				T1 = T2;
 			}
 		}
-		S2 = thallib.atpS[numSeq1[i]][numSeq2[j]];
-		H2 = thallib.atpH[numSeq1[i]][numSeq2[j]];
+		S2 = ThAlParameters.atpS[numSeq1[i]][numSeq2[j]];
+		H2 = ThAlParameters.atpH[numSeq1[i]][numSeq2[j]];
 		T2 = (H2 + dplx_init_H) / (S2 + dplx_init_S + RC);
 		G1 = H1 -TEMP_KELVIN*S1;
 		G2 =  H2 -TEMP_KELVIN*S2;
@@ -1984,7 +1984,7 @@ public class thal {
 		{
 			seqLoop[j] = seq[i];
 		}
-		return thallib.hashLoop(seqLoop);
+		return ThAlParameters.hashLoop(seqLoop);
 	}
 }
 

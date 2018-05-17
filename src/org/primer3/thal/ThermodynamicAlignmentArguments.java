@@ -1,13 +1,15 @@
 package org.primer3.thal;
 
 
-public class thal_args {
+public class ThermodynamicAlignmentArguments {
 	int debug; /* if non zero, print debugging info to stderr */
-	public thal_alignment_type type; /* one of the
-		      1 THAL_ANY, (by default)
-		      2 THAL_END1,
-		      3 THAL_END2,
-		      4 THAL_HAIRPIN */
+	
+	/* one of the
+    1 THAL_ANY, (by default)
+    2 THAL_END1,
+    3 THAL_END2,
+    4 THAL_HAIRPIN */
+	public ThermodynamicAlignmentType type; 
 	public int maxLoop;  /* maximum size of loop to consider; longer than 30 bp are not allowed */
 	public double mv; /* concentration of monovalent cations */
 	public double dv; /* concentration of divalent cations */
@@ -20,13 +22,13 @@ public class thal_args {
 	
 	public void set_thal_default_args() {
 		this.debug = 0;
-		this.type = thal_alignment_type.thal_any; /* thal_alignment_type THAL_ANY */
-		this.maxLoop = thal.MAX_LOOP;
+		this.type = ThermodynamicAlignmentType.thal_any; /* thal_alignment_type THAL_ANY */
+		this.maxLoop = ThermodynamicAlignment.MAX_LOOP;
 		this.mv = 50; /* mM */
 		this.dv = 0.0; /* mM */
 		this.dntp = 0.8; /* mM */
 		this.dna_conc = 50; /* nM */
-		this.temp = thal.TEMP_KELVIN; /* Kelvin */
+		this.temp = ThermodynamicAlignment.TEMP_KELVIN; /* Kelvin */
 		this.temponly = 1; /* return only melting temperature of predicted structure */
 		this.dimer = 1; /* by default dimer structure is calculated */
 	}
@@ -36,13 +38,13 @@ public class thal_args {
 	 */
 	public void set_thal_oligo_default_args(){
 		this.debug = 0;
-		this.type = thal_alignment_type.thal_any; /* thal_alignment_type THAL_ANY */
-		this.maxLoop = thal.MAX_LOOP;
+		this.type = ThermodynamicAlignmentType.thal_any; /* thal_alignment_type THAL_ANY */
+		this.maxLoop = ThermodynamicAlignment.MAX_LOOP;
 		this.mv = 50; /* mM */
 		this.dv = 0.0; /* mM */
 		this.dntp = 0.0; /* mM */
 		this.dna_conc = 50; /* nM */
-		this.temp = thal.TEMP_KELVIN; /* Kelvin */
+		this.temp = ThermodynamicAlignment.TEMP_KELVIN; /* Kelvin */
 		this.temponly = 1; /* return only melting temperature of predicted structure */
 		this.dimer = 1; /* by default dimer structure is calculated */
 	}

@@ -18,10 +18,10 @@ import org.primer3.oligotm.OligoTMCalculator;
 import org.primer3.p3_seq_lib.seq_lib;
 import org.primer3.sequence.Sequence;
 import org.primer3.thal.ThermodynamicAlignmentException;
-import org.primer3.thal.thal;
-import org.primer3.thal.thal_args;
-import org.primer3.thal.thal_results;
-import org.primer3.thal.thallib;
+import org.primer3.thal.ThermodynamicAlignment;
+import org.primer3.thal.ThermodynamicAlignmentArguments;
+import org.primer3.thal.ThermodynamicAlignmentResult;
+import org.primer3.thal.ThAlParameters;
 
 
 /**
@@ -2603,10 +2603,10 @@ public class LibPrimer3 {
 
 
 	public static double align_thermod(char[] s1, char[] s2,
-			thal_args a) throws ThermodynamicAlignmentException {
+			ThermodynamicAlignmentArguments a) throws ThermodynamicAlignmentException {
 		int thal_trace = 0;
-		thal_results r = null;
-		thal thal = new thal(s1, s2, a);
+		ThermodynamicAlignmentResult r = null;
+		ThermodynamicAlignment thal = new ThermodynamicAlignment(s1, s2, a);
 		try {
 			r = thal.calc_thal();
 
@@ -2794,7 +2794,7 @@ public class LibPrimer3 {
 			int last,
 			char[] s,
 			char[] s_r,
-			thal_args align_args) throws ThermodynamicAlignmentException {
+			ThermodynamicAlignmentArguments align_args) throws ThermodynamicAlignmentException {
 
 		char[] oseq;
 		char[] target, target_r;

@@ -18,7 +18,7 @@ import org.apache.commons.io.IOUtils;
 import org.primer3.sequence.Sequence;
 
 
-public class thallib {
+public class ThAlParameters {
 	
 	
 	private static final boolean debug = false;
@@ -60,7 +60,7 @@ public class thallib {
 	   in the directory specified by 'path'.  Return 0 on success and -1
 	   on error. The thermodynamic values are stored in multiple static
 	   variables. */
-	public static int  get_thermodynamic_values(String path, thal_results o)
+	public static int  get_thermodynamic_values(String path, ThermodynamicAlignmentResult o)
 	{
 		if(path == null || path.isEmpty())
 		{
@@ -93,7 +93,7 @@ public class thallib {
 		for (int i = 0; i < 5; ++i)
 			for (int j = 0; j < 5; ++j)
 				atpS[i][j] = 0.00000000001;
-		atpS[0][3] = atpS[3][0] = thal.AT_S;
+		atpS[0][3] = atpS[3][0] = ThermodynamicAlignment.AT_S;
 	}
 
 
@@ -104,7 +104,7 @@ public class thallib {
 		for (int i = 0; i < 5; ++i)
 			for (int j = 0; j < 5; ++j)
 				atpH[i][j] = 0.0;
-		atpH[0][3] = atpH[3][0] = thal.AT_H;
+		atpH[0][3] = atpH[3][0] = ThermodynamicAlignment.AT_H;
 	}
 	
 	static void  getStack()
@@ -426,7 +426,7 @@ public class thallib {
 
 	static  List<String> loadResource(String res_name) {
 		String resourceFolder = "resources/";
-		ClassLoader classLoader = thallib.class .getClassLoader();
+		ClassLoader classLoader = ThAlParameters.class .getClassLoader();
 		String resourceName = resourceFolder + res_name;		
 		InputStream file = classLoader.getResourceAsStream(resourceName);
 		List<String> fileText = null;
@@ -460,7 +460,7 @@ public class thallib {
 		CommandLine commandLine = setArgs(args);
 		if(commandLine != null)
 		{
-			thal_args a = new thal_args();
+			ThermodynamicAlignmentArguments a = new ThermodynamicAlignmentArguments();
 			a.set_thal_default_args();
 			a.temponly=0;
 			if(commandLine.hasOption("mv"))
@@ -489,10 +489,10 @@ public class thallib {
 						      this value can not be larger than 30 */
 			{
 				a.maxLoop = Integer.parseInt(commandLine.getOptionValue("maxloop"));
-				 if(a.maxLoop > thal.MAX_LOOP ) {
-					 a.maxLoop = thal.MAX_LOOP;
-				 }  else if(a.maxLoop < thal.MIN_LOOP) {	 
-					 a.maxLoop = thal.MIN_LOOP;
+				 if(a.maxLoop > ThermodynamicAlignment.MAX_LOOP ) {
+					 a.maxLoop = ThermodynamicAlignment.MAX_LOOP;
+				 }  else if(a.maxLoop < ThermodynamicAlignment.MIN_LOOP) {	 
+					 a.maxLoop = ThermodynamicAlignment.MIN_LOOP;
 				 }
 			}
 			if(commandLine.hasOption("a"))
@@ -502,13 +502,13 @@ public class thallib {
 				{
 					if(type.equals("ANY"))
 					{
-						a.type =thal_alignment_type.thal_any;
+						a.type =ThermodynamicAlignmentType.thal_any;
 					} else if(type.equals("END1")) { 
-						a.type =thal_alignment_type.thal_end1;
+						a.type =ThermodynamicAlignmentType.thal_end1;
 					} else if(type.equals("END2")) {
-						a.type =thal_alignment_type.thal_end2;
+						a.type =ThermodynamicAlignmentType.thal_end2;
 					} else if(type.equals("HAIRPIN")) {
-						a.type =thal_alignment_type.thal_hairpin;
+						a.type =ThermodynamicAlignmentType.thal_hairpin;
 						 a.dimer = 0;
 					}
 				}	
@@ -525,7 +525,7 @@ public class thallib {
 			}
 			if(commandLine.hasOption("t")) // temperature at which sec str are calculated in C
 			{
-				a.temp = Double.parseDouble(commandLine.getOptionValue("t")) + thal.ABSOLUTE_ZERO;	
+				a.temp = Double.parseDouble(commandLine.getOptionValue("t")) + ThermodynamicAlignment.ABSOLUTE_ZERO;	
 			}
 			if(commandLine.hasOption("s1")) //s1
 			{
@@ -550,7 +550,7 @@ public class thallib {
 			   }			
 			
 			
-			thal_results o = null;
+			ThermodynamicAlignmentResult o = null;
 			int thal_trace = 1;
 			// run 
 			get_thermodynamic_values(null,null);
@@ -558,7 +558,7 @@ public class thallib {
 				if(a.dimer == 0 && s1 != null)
 				{
 					Sequence oligo1 = new Sequence(s1.toCharArray());
-					thal thal_1 = new thal(oligo1, oligo1, a);
+					ThermodynamicAlignment thal_1 = new ThermodynamicAlignment(oligo1, oligo1, a);
 					o = thal_1.calc_thal();
 					if (thal_trace != 0) {
 						System.out.format(  "thal, thal_args, type=%s maxLoop=%d mv=%f dv=%f dntp=%f dna_conc=%f, temp=%f, temponly=%d dimer=%d\n",
@@ -571,12 +571,12 @@ public class thallib {
 				} else if (a.dimer == 0 && s1 == null && s2 != null)
 				{
 					Sequence oligo2 = new Sequence(s2.toCharArray());
-					thal thal_1 = new thal(oligo2, oligo2, a);
+					ThermodynamicAlignment thal_1 = new ThermodynamicAlignment(oligo2, oligo2, a);
 					o = thal_1.calc_thal();
 				} else {
 					Sequence oligo1 = new Sequence(s1.toCharArray());
 					Sequence oligo2 = new Sequence(s2.toCharArray());
-					thal thal_1 = new thal(oligo1, oligo2, a);
+					ThermodynamicAlignment thal_1 = new ThermodynamicAlignment(oligo1, oligo2, a);
 					o = thal_1.calc_thal();
 					
 					if (thal_trace != 0) {

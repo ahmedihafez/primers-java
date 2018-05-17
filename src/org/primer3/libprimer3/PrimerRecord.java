@@ -8,7 +8,7 @@ import org.primer3.oligotm.OligoTMCalculator;
 import org.primer3.p3_seq_lib.seq_lib;
 import org.primer3.sequence.Sequence;
 import org.primer3.thal.ThermodynamicAlignmentException;
-import org.primer3.thal.thal_args;
+import org.primer3.thal.ThermodynamicAlignmentArguments;
 
 public class PrimerRecord {
 	// new add here and should be maintained
@@ -729,7 +729,7 @@ public class PrimerRecord {
 		boolean must_use = this.must_use;
 		boolean three_conditions = (must_use || pa.file_flag != 0 || retval.output_type == p3_output_type.primer_list);
 		char[] seq = sa.trimmed_seq;
-		thal_args thal_args_for_template_mispriming = LibPrimer3.use_end_for_th_template_mispriming == 1 ? thal_arg_to_use.end1
+		ThermodynamicAlignmentArguments thal_args_for_template_mispriming = LibPrimer3.use_end_for_th_template_mispriming == 1 ? thal_arg_to_use.end1
 				: thal_arg_to_use.any;
 
 		char[] s1_rev;
@@ -1205,7 +1205,7 @@ public class PrimerRecord {
 
 	public void oligo_template_mispriming(P3GlobalSettings pa, seq_args sa,
 			oligo_type l, oligo_stats ostats, dpal_args d_align_args,
-			thal_args t_align_args) throws AlignmentException,
+			ThermodynamicAlignmentArguments t_align_args) throws AlignmentException,
 			ThermodynamicAlignmentException {
 		/* Check if we already did this and the oligo was ok. */
 

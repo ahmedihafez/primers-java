@@ -5,7 +5,7 @@ import org.primer3.oligotm.OligoTMCalculator;
 import org.primer3.p3_seq_lib.seq_lib;
 import org.primer3.sequence.Sequence;
 import org.primer3.thal.ThermodynamicAlignmentException;
-import org.primer3.thal.thal_args;
+import org.primer3.thal.ThermodynamicAlignmentArguments;
 
 public class primer_pair {
 
@@ -209,7 +209,7 @@ public class primer_pair {
 		boolean must_use = false;
 		double min_oligo_tm;
 		int i;
-		thal_args thal_args_for_template_mispriming  = LibPrimer3.use_end_for_th_template_mispriming != 0  ? 
+		ThermodynamicAlignmentArguments thal_args_for_template_mispriming  = LibPrimer3.use_end_for_th_template_mispriming != 0  ? 
 				thal_arg_to_use.end1 : thal_arg_to_use.any;
 		ppair.left = retval.fwd.oligo.get( m);
 		ppair.right = retval.rev.oligo.get(n);
