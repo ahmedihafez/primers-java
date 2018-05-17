@@ -66,9 +66,9 @@ public class ThermodynamicAlignment {
 	
 	
 	
-	Sequence oligo_f;
-	Sequence oligo_r;
-	ThermodynamicAlignmentArguments a;
+	private Sequence oligo_f;
+	private Sequence oligo_r;
+	private ThermodynamicAlignmentArguments a;
 	
 	
 	
@@ -78,17 +78,17 @@ public class ThermodynamicAlignment {
 	// for calculation
 	int len1, len2, len3; /* length of sequense 1 and 2 *//* 17.02.2009 int temponly;*/ /* print only temperature of the predicted structure */
 
-	double[] send5;
-	double[] hend5;
-	int[] numSeq1 ;
-	int[] numSeq2 ;  /* same as oligo1 and oligo2 but converted to numbers */
-	double[] enthalpyDPT; /* matrix for values of enthalpy */
-	double[] entropyDPT; /* matrix for values of entropy */
-	double SHleft; /* var that helps to find str w highest melting temperature */
-	double RC = 0,dplx_init_H = 0 ,dplx_init_S = 0;
-	double saltCorrection ;
-	char[] oligo1 = null;
-	char[] oligo2 = null;
+	private double[] send5;
+	private  double[] hend5;
+	private int[] numSeq1 ;
+	private int[] numSeq2 ;  /* same as oligo1 and oligo2 but converted to numbers */
+	private double[] enthalpyDPT; /* matrix for values of enthalpy */
+	private double[] entropyDPT; /* matrix for values of entropy */
+	private double SHleft; /* var that helps to find str w highest melting temperature */
+	private  double RC = 0,dplx_init_H = 0 ,dplx_init_S = 0;
+	private double saltCorrection ;
+	private char[] oligo1 = null;
+	private char[] oligo2 = null;
 	
 	public ThermodynamicAlignment(Sequence oligo_f,Sequence oligo_r, ThermodynamicAlignmentArguments a){
 		this.a = a;
@@ -113,7 +113,7 @@ public class ThermodynamicAlignment {
 		this.oligo_r = this.oligo_f;
 
 	}
-	public ThermodynamicAlignmentResult calc_thal() throws ThermodynamicAlignmentException
+	public ThermodynamicAlignmentResult thAlign() throws ThermodynamicAlignmentException
 	{
 		ThermodynamicAlignmentResult o = new ThermodynamicAlignmentResult();
 		
@@ -152,7 +152,7 @@ public class ThermodynamicAlignment {
 //		char[] oligo2 = null;
 		char[] oligo2_rev = null;
 
-		if(a.type != ThermodynamicAlignmentType.thal_end2) // !=3 
+		if(a.getAlignmentType() != ThermodynamicAlignmentType.thal_end2) // !=3 
 		{
 			oligo1 = oligo_f.getSequence();
 			oligo2 = oligo_r.getSequence();
@@ -167,7 +167,7 @@ public class ThermodynamicAlignment {
 		
 		
 		/*** INIT values for unimolecular and bimolecular structures ***/
-		if(a.type == ThermodynamicAlignmentType.thal_hairpin) // == 4
+		if(a.getAlignmentType() == ThermodynamicAlignmentType.thal_hairpin) // == 4
 		{ /* unimolecular folding */
 			len2 = oligo2.length;
 		    len3 = len2 -1;
@@ -175,19 +175,19 @@ public class ThermodynamicAlignment {
 		    dplx_init_S = -0.00000000001;
 		    RC = 0;
 		} 
-		else if (a.type != ThermodynamicAlignmentType.thal_hairpin)  // != 4
+		else if (a.getAlignmentType() != ThermodynamicAlignmentType.thal_hairpin)  // != 4
 		{
 			/* hybridization of two oligos */
 			dplx_init_H = 200;
 		    dplx_init_S = -5.7;
 		    // (symmetry_thermo(oligo1) && symmetry_thermo(oligo2)
 		    if(oligo_f.symmetry() && oligo_r.symmetry()) {
-		    	RC = R  * Math.log(a.dna_conc/1000000000.0);
+		    	RC = R  * Math.log(a.getDnaConc()/1000000000.0);
 		    } else {
-		    	RC = R  * Math.log(a.dna_conc/4000000000.0);
+		    	RC = R  * Math.log(a.getDnaConc()/4000000000.0);
 		    }
 		    
-		    if(a.type != ThermodynamicAlignmentType.thal_end2) // != 3
+		    if(a.getAlignmentType() != ThermodynamicAlignmentType.thal_end2) // != 3
 		    {
 		    	oligo2_rev = oligo_r.getReverse().getSequence(); 
 		    } else {
@@ -214,12 +214,12 @@ public class ThermodynamicAlignment {
 		numSeq1 = seqToInt(oligo1,1);
 		numSeq2 = seqToInt(oligo2,1);// new int[len2+2];
 		/*** Calc part of the salt correction ***/
-		saltCorrection = saltCorrectS(a.mv,a.dv,a.dntp); /* salt correction for entropy, must be multiplied with N, which is
+		saltCorrection = saltCorrectS(a.getMonovalentConc(),a.getDivalentConc(),a.getDntpConc()); /* salt correction for entropy, must be multiplied with N, which is
 								   the total number of phosphates in the duplex divided by 2; 8bp dplx N=7 */
 		
 
 		
-		if(a.type == ThermodynamicAlignmentType.thal_hairpin) // == 4 /* monomer */
+		if(a.getAlignmentType() == ThermodynamicAlignmentType.thal_hairpin) // == 4 /* monomer */
 		{
 			/* terminal basepairs */
 			// init
@@ -235,13 +235,13 @@ public class ThermodynamicAlignment {
 
 		
 		double mh,ms;
-		if(a.type == ThermodynamicAlignmentType.thal_hairpin) /* calculate structure of monomer */
+		if(a.getAlignmentType() == ThermodynamicAlignmentType.thal_hairpin) /* calculate structure of monomer */
 		{
 			enthalpyDPT = new double[len1*len2];
 			entropyDPT  = new double[len1*len2];
 			initMatrix2();
 		    fillMatrix2();
-		    calc_terminal_bp(a.temp);
+		    calc_terminal_bp(a.getTemperature());
 		    mh = hend5[len1];
 		    ms = send5[len1];
 		    o.align_end_1 = (int) mh;
@@ -251,7 +251,7 @@ public class ThermodynamicAlignment {
 		    	tracebacku(bp);
 		    	/* traceback for unimolecular structure */
 		    	drawHairpin(bp, mh, ms, o); /* if temponly=1 then return after printing basic therm data */
-		    } else if(a.temponly == 0) {
+		    } else if(!a.isTempOnly() ) {
 		    	System.err.println("No secondary structure could be calculated\n");
 		    }
 		    if(o.temp == Double.NEGATIVE_INFINITY && o.msg.isEmpty() ) 
@@ -268,7 +268,7 @@ public class ThermodynamicAlignment {
 			double[] SH = new double[2];
 			int bestI = 0, bestJ = 0; 
 			double G1 = Double.POSITIVE_INFINITY, bestG = Double.POSITIVE_INFINITY;
-			if(a.type == ThermodynamicAlignmentType.thal_any) // == 1
+			if(a.getAlignmentType() == ThermodynamicAlignmentType.thal_any) // == 1
 			{
 				for (int i = 1; i <= len1; i++) {
 					for (int j = 1; j <= len2; j++) {
@@ -289,7 +289,7 @@ public class ThermodynamicAlignment {
 			int[] ps1 = new int[len1];
 			int[] ps2 = new int[len2];
 			
-			if(a.type == ThermodynamicAlignmentType.thal_end1 || a.type ==ThermodynamicAlignmentType.thal_end2) // 2 or 3
+			if(a.getAlignmentType() == ThermodynamicAlignmentType.thal_end1 || a.getAlignmentType() ==ThermodynamicAlignmentType.thal_end2) // 2 or 3
 			{
 				/* THAL_END1 */
 				bestI = bestJ = 0;
@@ -341,7 +341,7 @@ public class ThermodynamicAlignment {
 		int[] seq = new int[charSeq.length + padSize*2];
 		for(int i = padSize,j=0 ; j < charSeq.length  ;j++, i++)
 		{
-			seq[i] =  ThAlParameters.str2int(Character.toUpperCase(charSeq[j]));
+			seq[i] =  ThAl.str2int(Character.toUpperCase(charSeq[j]));
 		}
 		
 		return seq;
@@ -350,14 +350,14 @@ public class ThermodynamicAlignment {
 
 	private void drawDimer(int[] ps1, int[] ps2, double temp, double H, double S, ThermodynamicAlignmentResult o) {
 
-		int temponly = a.temponly;
-		double t37 = a.temp;
+		boolean temponly = a.isTempOnly();
+		double t37 = a.getTemperature();
 		int i, j, k, numSS1, numSS2, N;
 //		char* duplex[4];
 		double G, t;
 		t = G = 0;
 		  if (!Double.isFinite(temp)){
-			  if(temponly==0) {
+			  if(!temponly) {
 				  System.out.println("No predicted secondary structures for given sequences\n");
 			  }
 			  o.temp = 0.0; /* lets use generalization here; this should rather be very negative value */
@@ -373,7 +373,7 @@ public class ThermodynamicAlignment {
 			  }
 			  N = (N/2) -1;
 			  t = ((H) / (S + (N * saltCorrection) + RC)) - ABSOLUTE_ZERO;
-			  if(temponly==0) {
+			  if(!temponly) {
 				  G = (H) - (t37 * (S + (N * saltCorrection)));
 				  S = S + (N * saltCorrection);
 				  o.temp = (double) t;
@@ -470,7 +470,7 @@ public class ThermodynamicAlignment {
 	 */
 	private void traceback(int i, int j, double RT, int[] ps1,
 			int[] ps2) {
-		int maxLoop = a.maxLoop;
+		int maxLoop = a.getMaxLoop();
 		int d, ii, jj;
 		boolean done;
 		double[] SH = new double[2];
@@ -537,20 +537,20 @@ public class ThermodynamicAlignment {
 	 *   prints ascii output of hairpin structure 
 	 */
 	private void drawHairpin(int[] bp,  double mh, double ms, ThermodynamicAlignmentResult o) {
-		int temponly = a.temponly;
-		double temp = a.temp;
+		boolean temponly = a.isTempOnly();
+		double temp = a.getTemperature();
 		int i, N;
 		N = 0;
 		double mg, t;
 		if (!Double.isFinite(ms) || !Double.isFinite(mh)) {
-			if(temponly == 0) {
+			if(!temponly) {
 				System.out.format("0\tdS = %g\tdH = %g\tinf\tinf\n", (double) ms,(double) mh);
 			} else {
 				o.temp = 0.0; /* lets use generalization here */
 				o.msg= "No predicted sec struc for given seq\n";
 			}
 		} else {
-			if(temponly == 0) {
+			if(!temponly ) {
 				for (i = 1; i < len1; ++i) {
 					if(bp[i-1] > 0) N++;
 				}
@@ -560,7 +560,7 @@ public class ThermodynamicAlignment {
 				}
 			}
 			t = (mh / (ms + (((N/2)-1) * saltCorrection))) - ABSOLUTE_ZERO;
-			if(temponly == 0) {
+			if(!temponly ) {
 				mg = mh - (temp * (ms + (((N/2)-1) * saltCorrection)));
 				ms = ms + (((N/2)-1) * saltCorrection);
 				o.temp = (double) t;
@@ -594,7 +594,7 @@ public class ThermodynamicAlignment {
 	 * traceback for hairpins 
 	 */
 	private void tracebacku(int[] bp) {
-		int maxLoop = a.maxLoop;
+		int maxLoop = a.getMaxLoop();
 		int i, j;
 		int ii, jj, k;
 		Stack<ThermodynamicAlignment.tracer> stack = new Stack<ThermodynamicAlignment.tracer>();//
@@ -614,13 +614,13 @@ public class ThermodynamicAlignment {
 					continue;
 				if (equal(send5[i], END5_1(i,2)) && equal(hend5[i], END5_1(i,1))) {
 					for (k = 0; k <= i - MIN_HRPN_LOOP - 2; ++k)
-						if (equal(send5[i], ThAlParameters.atpS[numSeq1[k + 1]][numSeq1[i]] + EntropyDPT(k + 1,i)) &&
-								equal(hend5[i], ThAlParameters.atpH[numSeq1[k + 1]][numSeq1[i]] + EnthalpyDPT(k + 1,i))) {
+						if (equal(send5[i], ThAl.atpS[numSeq1[k + 1]][numSeq1[i]] + EntropyDPT(k + 1,i)) &&
+								equal(hend5[i], ThAl.atpH[numSeq1[k + 1]][numSeq1[i]] + EnthalpyDPT(k + 1,i))) {
 							stack.push(new tracer(k + 1, i,0));
 							break;
 						}
-						else if (equal(send5[i], send5[k] + ThAlParameters.atpS[numSeq1[k + 1]][numSeq1[i]] + EntropyDPT(k + 1,i)) &&
-								equal(hend5[i], hend5[k] + ThAlParameters.atpH[numSeq1[k + 1]][numSeq1[i]] + EnthalpyDPT(k + 1,i))) {
+						else if (equal(send5[i], send5[k] + ThAl.atpS[numSeq1[k + 1]][numSeq1[i]] + EntropyDPT(k + 1,i)) &&
+								equal(hend5[i], hend5[k] + ThAl.atpH[numSeq1[k + 1]][numSeq1[i]] + EnthalpyDPT(k + 1,i))) {
 							stack.push(new tracer(k + 1, i, 0));
 							stack.push(new tracer(k, 0, 1));
 							break;
@@ -628,13 +628,13 @@ public class ThermodynamicAlignment {
 				}
 				else if (equal(send5[i], END5_2(i,2)) && equal(hend5[i], END5_2(i,1))) {
 					for (k = 0; k <= i - MIN_HRPN_LOOP - 3; ++k)
-						if (equal(send5[i], ThAlParameters.atpS[numSeq1[k + 2]][numSeq1[i]] + Sd5(i, k + 2) + EntropyDPT(k + 2,i)) &&
-								equal(hend5[i], ThAlParameters.atpH[numSeq1[k + 2]][numSeq1[i]] + Hd5(i, k + 2) + EnthalpyDPT(k + 2,i))) {
+						if (equal(send5[i], ThAl.atpS[numSeq1[k + 2]][numSeq1[i]] + Sd5(i, k + 2) + EntropyDPT(k + 2,i)) &&
+								equal(hend5[i], ThAl.atpH[numSeq1[k + 2]][numSeq1[i]] + Hd5(i, k + 2) + EnthalpyDPT(k + 2,i))) {
 							stack.push(new tracer (k + 2, i, 0));
 							break;
 						}
-						else if (equal(send5[i], send5[k] + ThAlParameters.atpS[numSeq1[k + 2]][numSeq1[i]] + Sd5(i, k + 2) + EntropyDPT(k + 2,i)) &&
-								equal(hend5[i], hend5[k] + ThAlParameters.atpH[numSeq1[k + 2]][numSeq1[i]] + Hd5(i, k + 2) + EnthalpyDPT(k + 2,i))) {
+						else if (equal(send5[i], send5[k] + ThAl.atpS[numSeq1[k + 2]][numSeq1[i]] + Sd5(i, k + 2) + EntropyDPT(k + 2,i)) &&
+								equal(hend5[i], hend5[k] + ThAl.atpH[numSeq1[k + 2]][numSeq1[i]] + Hd5(i, k + 2) + EnthalpyDPT(k + 2,i))) {
 							stack.push(new tracer(k + 2, i, 0));
 							stack.push(new tracer(k, 0, 1));
 							break;
@@ -714,11 +714,11 @@ public class ThermodynamicAlignment {
 	}
 
 	private double atPenaltyS(int i, int j) {
-		return ThAlParameters.atpS[i][j];
+		return ThAl.atpS[i][j];
 	}
 
 	private double atPenaltyH(int i, int j) {
-		return ThAlParameters.atpH[i][j];
+		return ThAl.atpH[i][j];
 	}
 
 	private double EntropyDPT(int i, int j) {
@@ -918,28 +918,28 @@ public class ThermodynamicAlignment {
 
 
 	private double Sd5(int i, int j) {
-		return ThAlParameters.dangleEntropies5[numSeq1[i]][numSeq1[j]][numSeq1[j - 1]];
+		return ThAl.dangleEntropies5[numSeq1[i]][numSeq1[j]][numSeq1[j - 1]];
 	}
 	
 	private double Hd5(int i, int j) {
-		return ThAlParameters.dangleEnthalpies5[numSeq1[i]][numSeq1[j]][numSeq1[j - 1]];
+		return ThAl.dangleEnthalpies5[numSeq1[i]][numSeq1[j]][numSeq1[j - 1]];
 	}
 
 	private double Sd3(int i, int j) {
-		return ThAlParameters.dangleEntropies3[numSeq1[i]][numSeq1[i+1]][numSeq1[j]];
+		return ThAl.dangleEntropies3[numSeq1[i]][numSeq1[i+1]][numSeq1[j]];
 
 	}
 	private double Hd3(int i, int j) {
-		return ThAlParameters.dangleEnthalpies3[numSeq1[i]][numSeq1[i+1]][numSeq1[j]];
+		return ThAl.dangleEnthalpies3[numSeq1[i]][numSeq1[i+1]][numSeq1[j]];
 	}
 	
 	
 
 	private double Ststack(int i, int j) {
-		return ThAlParameters.tstack2Entropies[numSeq1[i]][numSeq1[i+1]][numSeq1[j]][numSeq1[j-1]];
+		return ThAl.tstack2Entropies[numSeq1[i]][numSeq1[i+1]][numSeq1[j]][numSeq1[j-1]];
 	}
 	private double Htstack(int i, int j) {
-		return ThAlParameters.tstack2Enthalpies[numSeq1[i]][numSeq1[i+1]][numSeq1[j]][numSeq1[j-1]];
+		return ThAl.tstack2Enthalpies[numSeq1[i]][numSeq1[i+1]][numSeq1[j]][numSeq1[j-1]];
 	}
 	
 
@@ -970,15 +970,15 @@ public class ThermodynamicAlignment {
 			j -= len2;
 		}
 		if(loopSize <= 30) {
-			EntropyEnthalpy[1] = ThAlParameters.hairpinLoopEnthalpies[loopSize - 1];
-			EntropyEnthalpy[0] = ThAlParameters.hairpinLoopEntropies[loopSize - 1];
+			EntropyEnthalpy[1] = ThAl.hairpinLoopEnthalpies[loopSize - 1];
+			EntropyEnthalpy[0] = ThAl.hairpinLoopEntropies[loopSize - 1];
 		} else {
-			EntropyEnthalpy[1] = ThAlParameters.hairpinLoopEnthalpies[29];
-			EntropyEnthalpy[0] = ThAlParameters.hairpinLoopEntropies[29];
+			EntropyEnthalpy[1] = ThAl.hairpinLoopEnthalpies[29];
+			EntropyEnthalpy[0] = ThAl.hairpinLoopEntropies[29];
 		}
 		if (loopSize > 3) { /* for loops 4 bp and more in length, terminal mm are accounted */
-			EntropyEnthalpy[1] += ThAlParameters.tstack2Enthalpies[numSeq1[i]][numSeq1[i + 1]][numSeq1[j]][numSeq1[j - 1]];
-			EntropyEnthalpy[0] += ThAlParameters.tstack2Entropies[numSeq1[i]][numSeq1[i + 1]][numSeq1[j]][numSeq1[j - 1]];
+			EntropyEnthalpy[1] += ThAl.tstack2Enthalpies[numSeq1[i]][numSeq1[i + 1]][numSeq1[j]][numSeq1[j - 1]];
+			EntropyEnthalpy[0] += ThAl.tstack2Entropies[numSeq1[i]][numSeq1[i + 1]][numSeq1[j]][numSeq1[j - 1]];
 		} else if(loopSize == 3){ /* for loops 3 bp in length at-penalty is considered */
 			EntropyEnthalpy[1] += atPenaltyH(numSeq1[i], numSeq1[j]);
 			EntropyEnthalpy[0] += atPenaltyS(numSeq1[i], numSeq1[j]);
@@ -990,11 +990,11 @@ public class ThermodynamicAlignment {
 			{
 				// (loop = (struct triloop*) bsearch(numSeq1 + i, triloopEnthalpies, numTriloops, sizeof(struct triloop), comp3loop))
 				int loopKey = getHashkey(numSeq1,i,5);
-				if (ThAlParameters.triloopEnthalpies.containsKey(loopKey))
-					EntropyEnthalpy[1] += ThAlParameters.triloopEnthalpies.get(loopKey);
+				if (ThAl.triloopEnthalpies.containsKey(loopKey))
+					EntropyEnthalpy[1] += ThAl.triloopEnthalpies.get(loopKey);
 				// (loop = (struct triloop*) bsearch(numSeq1 + i, triloopEntropies, numTriloops, sizeof(struct triloop), comp3loop))
-				if (ThAlParameters.triloopEntropies.containsKey(loopKey))
-					EntropyEnthalpy[0] += ThAlParameters.triloopEntropies.get(loopKey);
+				if (ThAl.triloopEntropies.containsKey(loopKey))
+					EntropyEnthalpy[0] += ThAl.triloopEntropies.get(loopKey);
 			}
 		} else if (loopSize == 4) { /* terminal mismatch, tetraloop bonus, hairpin of 4 */
 //			tetraloop loop = null;
@@ -1002,12 +1002,12 @@ public class ThermodynamicAlignment {
 			{
 				//(loop = (struct tetraloop*) bsearch(numSeq1 + i, tetraloopEnthalpies, numTetraloops, sizeof(struct tetraloop), comp4loop))
 				int loopKey = getHashkey(numSeq1,i,6);
-				if (ThAlParameters.tetraloopEnthalpies.containsKey(loopKey)) {
-					EntropyEnthalpy[1] += ThAlParameters.tetraloopEnthalpies.get(loopKey);
+				if (ThAl.tetraloopEnthalpies.containsKey(loopKey)) {
+					EntropyEnthalpy[1] += ThAl.tetraloopEnthalpies.get(loopKey);
 				}
 				// (loop = (struct tetraloop*) bsearch(numSeq1 + i, tetraloopEntropies, numTetraloops, sizeof(struct tetraloop), comp4loop))
-				if (ThAlParameters.tetraloopEntropies.containsKey(loopKey)) {
-					EntropyEnthalpy[0] += ThAlParameters.tetraloopEntropies.get(loopKey);
+				if (ThAl.tetraloopEntropies.containsKey(loopKey)) {
+					EntropyEnthalpy[0] += ThAl.tetraloopEntropies.get(loopKey);
 				}
 			}
 		}
@@ -1117,10 +1117,10 @@ public class ThermodynamicAlignment {
 				 /* bulge loop of size one is treated differently
 					the intervening nn-pair must be added */
 				 if((loopSize2 == 1 && loopSize1 == 0) || (loopSize2 == 0 && loopSize1 == 1)) {
-					 H = ThAlParameters.bulgeLoopEnthalpies[loopSize] +
-							 ThAlParameters.stackEnthalpies[numSeq1[i]][numSeq1[ii]][numSeq2[j]][numSeq2[jj]];
-					 S = ThAlParameters.bulgeLoopEntropies[loopSize] +
-							 ThAlParameters.stackEntropies[numSeq1[i]][numSeq1[ii]][numSeq2[j]][numSeq2[jj]];
+					 H = ThAl.bulgeLoopEnthalpies[loopSize] +
+							 ThAl.stackEnthalpies[numSeq1[i]][numSeq1[ii]][numSeq2[j]][numSeq2[jj]];
+					 S = ThAl.bulgeLoopEntropies[loopSize] +
+							 ThAl.stackEntropies[numSeq1[i]][numSeq1[ii]][numSeq2[j]][numSeq2[jj]];
 				 }
 				 if(!traceback) {
 					 H += EnthalpyDPT(ii, jj); /* bulge koos otsaga, st bulge i,j-ni */
@@ -1142,11 +1142,11 @@ public class ThermodynamicAlignment {
 
 			 } else { /* we have _not_ implemented Jacobson-Stockaymayer equation; the maximum bulgeloop size is 30 */
 
-				 H = ThAlParameters.bulgeLoopEnthalpies[loopSize] + atPenaltyH(numSeq1[i], numSeq2[j]) + atPenaltyH(numSeq1[ii], numSeq2[jj]);
+				 H = ThAl.bulgeLoopEnthalpies[loopSize] + atPenaltyH(numSeq1[i], numSeq2[j]) + atPenaltyH(numSeq1[ii], numSeq2[jj]);
 				 if(!traceback)
 					 H += EnthalpyDPT(ii, jj);
 
-				 S = ThAlParameters.bulgeLoopEntropies[loopSize] + atPenaltyS(numSeq1[i], numSeq2[j]) + atPenaltyS(numSeq1[ii], numSeq2[jj]);
+				 S = ThAl.bulgeLoopEntropies[loopSize] + atPenaltyS(numSeq1[i], numSeq2[j]) + atPenaltyS(numSeq1[ii], numSeq2[jj]);
 				 if(!traceback)
 					 S += EntropyDPT(ii, jj);
 				 if(!Double.isFinite(H)) {
@@ -1166,13 +1166,13 @@ public class ThermodynamicAlignment {
 		 else if (loopSize1 == 1 && loopSize2 == 1) {
 			 /* mismatch nearest neighbor parameters */
 
-			 S = ThAlParameters.stackint2Entropies[numSeq1[i]][numSeq1[i+1]][numSeq2[j]][numSeq2[j-1]] +
-		    		  ThAlParameters.stackint2Entropies[numSeq2[jj]][numSeq2[jj+1]][numSeq1[ii]][numSeq1[ii-1]];
+			 S = ThAl.stackint2Entropies[numSeq1[i]][numSeq1[i+1]][numSeq2[j]][numSeq2[j-1]] +
+		    		  ThAl.stackint2Entropies[numSeq2[jj]][numSeq2[jj+1]][numSeq1[ii]][numSeq1[ii-1]];
 			 if(!traceback)
 				 S += EntropyDPT(ii, jj);
 
-			 H = ThAlParameters.stackint2Enthalpies[numSeq1[i]][numSeq1[i+1]][numSeq2[j]][numSeq2[j-1]] +
-		    		  ThAlParameters.stackint2Enthalpies[numSeq2[jj]][numSeq2[jj+1]][numSeq1[ii]][numSeq1[ii-1]];
+			 H = ThAl.stackint2Enthalpies[numSeq1[i]][numSeq1[i+1]][numSeq2[j]][numSeq2[j-1]] +
+		    		  ThAl.stackint2Enthalpies[numSeq2[jj]][numSeq2[jj+1]][numSeq1[ii]][numSeq1[ii-1]];
 			 if(!traceback)
 				 H += EnthalpyDPT(ii, jj);
 			 if(!Double.isFinite(H)) {
@@ -1192,14 +1192,14 @@ public class ThermodynamicAlignment {
 			 return;
 		 } else { /* only internal loops */
 
-			 H = ThAlParameters.interiorLoopEnthalpies[loopSize] + ThAlParameters.tstackEnthalpies[numSeq1[i]][numSeq1[i+1]][numSeq2[j]][numSeq2[j-1]] +
-					 ThAlParameters.tstackEnthalpies[numSeq2[jj]][numSeq2[jj+1]][numSeq1[ii]][numSeq1[ii-1]]
+			 H = ThAl.interiorLoopEnthalpies[loopSize] + ThAl.tstackEnthalpies[numSeq1[i]][numSeq1[i+1]][numSeq2[j]][numSeq2[j-1]] +
+					 ThAl.tstackEnthalpies[numSeq2[jj]][numSeq2[jj+1]][numSeq1[ii]][numSeq1[ii-1]]
 							 + (ILAH * Math.abs(loopSize1 - loopSize2));
 			 if(!traceback)
 				 H += EnthalpyDPT(ii, jj);
 
-			 S = ThAlParameters.interiorLoopEntropies[loopSize] + ThAlParameters.tstackEntropies[numSeq1[i]][numSeq1[i+1]][numSeq2[j]][numSeq2[j-1]] +
-		    		  ThAlParameters.tstackEntropies[numSeq2[jj]][numSeq2[jj+1]][numSeq1[ii]][numSeq1[ii-1]] + (ILAS * Math.abs(loopSize1 - loopSize2));
+			 S = ThAl.interiorLoopEntropies[loopSize] + ThAl.tstackEntropies[numSeq1[i]][numSeq1[i+1]][numSeq2[j]][numSeq2[j-1]] +
+		    		  ThAl.tstackEntropies[numSeq2[jj]][numSeq2[jj+1]][numSeq1[ii]][numSeq1[ii-1]] + (ILAS * Math.abs(loopSize1 - loopSize2));
 			 if(!traceback)
 				 S += EntropyDPT(ii, jj);
 			 if(!Double.isFinite(H)) {
@@ -1416,10 +1416,10 @@ public class ThermodynamicAlignment {
 							      the intervening nn-pair must be added */
 
 				if((loopSize2 == 1 && loopSize1 == 0) || (loopSize2 == 0 && loopSize1 == 1)) {
-					H = ThAlParameters.bulgeLoopEnthalpies[loopSize] +
-							ThAlParameters.stackEnthalpies[numSeq1[i]][numSeq1[ii]][numSeq2[j]][numSeq2[jj]];
-					S = ThAlParameters.bulgeLoopEntropies[loopSize] +
-							ThAlParameters.stackEntropies[numSeq1[i]][numSeq1[ii]][numSeq2[j]][numSeq2[jj]];
+					H = ThAl.bulgeLoopEnthalpies[loopSize] +
+							ThAl.stackEnthalpies[numSeq1[i]][numSeq1[ii]][numSeq2[j]][numSeq2[jj]];
+					S = ThAl.bulgeLoopEntropies[loopSize] +
+							ThAl.stackEntropies[numSeq1[i]][numSeq1[ii]][numSeq2[j]][numSeq2[jj]];
 				}
 				if(isPositive(H) || isPositive(S)){
 					H = Double.POSITIVE_INFINITY;
@@ -1440,10 +1440,10 @@ public class ThermodynamicAlignment {
 			 }
 			} else { /* we have _not_ implemented Jacobson-Stockaymayer equation; the maximum bulgeloop size is 30 */
 
-				H = ThAlParameters.bulgeLoopEnthalpies[loopSize] + atPenaltyH(numSeq1[i], numSeq2[j]) + atPenaltyH(numSeq1[ii], numSeq2[jj]);
+				H = ThAl.bulgeLoopEnthalpies[loopSize] + atPenaltyH(numSeq1[i], numSeq2[j]) + atPenaltyH(numSeq1[ii], numSeq2[jj]);
 				H += EnthalpyDPT(i, j);
 
-				S = ThAlParameters.bulgeLoopEntropies[loopSize] + atPenaltyS(numSeq1[i], numSeq2[j]) + atPenaltyS(numSeq1[ii], numSeq2[jj]);
+				S = ThAl.bulgeLoopEntropies[loopSize] + atPenaltyS(numSeq1[i], numSeq2[j]) + atPenaltyS(numSeq1[ii], numSeq2[jj]);
 				S += EntropyDPT(i, j);
 				if(!Double.isFinite(H)) {
 					H = Double.POSITIVE_INFINITY;
@@ -1464,12 +1464,12 @@ public class ThermodynamicAlignment {
 			 
 			}
 		} else if (loopSize1 == 1 && loopSize2 == 1) {
-			S = ThAlParameters.stackint2Entropies[numSeq1[i]][numSeq1[i+1]][numSeq2[j]][numSeq2[j+1]] +
-					ThAlParameters.stackint2Entropies[numSeq2[jj]][numSeq2[jj-1]][numSeq1[ii]][numSeq1[ii-1]];
+			S = ThAl.stackint2Entropies[numSeq1[i]][numSeq1[i+1]][numSeq2[j]][numSeq2[j+1]] +
+					ThAl.stackint2Entropies[numSeq2[jj]][numSeq2[jj-1]][numSeq1[ii]][numSeq1[ii-1]];
 			S += EntropyDPT(i, j);
 
-			H = ThAlParameters.stackint2Enthalpies[numSeq1[i]][numSeq1[i+1]][numSeq2[j]][numSeq2[j+1]] +
-					ThAlParameters.stackint2Enthalpies[numSeq2[jj]][numSeq2[jj-1]][numSeq1[ii]][numSeq1[ii-1]];
+			H = ThAl.stackint2Enthalpies[numSeq1[i]][numSeq1[i+1]][numSeq2[j]][numSeq2[j+1]] +
+					ThAl.stackint2Enthalpies[numSeq2[jj]][numSeq2[jj-1]][numSeq1[ii]][numSeq1[ii-1]];
 			H += EnthalpyDPT(i, j);
 			if(!Double.isFinite(H)) {
 				H = Double.POSITIVE_INFINITY;
@@ -1488,13 +1488,13 @@ public class ThermodynamicAlignment {
 			}
 			return;
 		} else { /* only internal loops */
-			H = ThAlParameters.interiorLoopEnthalpies[loopSize] + ThAlParameters.tstackEnthalpies[numSeq1[i]][numSeq1[i+1]][numSeq2[j]][numSeq2[j+1]] +
-					ThAlParameters.tstackEnthalpies[numSeq2[jj]][numSeq2[jj-1]][numSeq1[ii]][numSeq1[ii-1]]
+			H = ThAl.interiorLoopEnthalpies[loopSize] + ThAl.tstackEnthalpies[numSeq1[i]][numSeq1[i+1]][numSeq2[j]][numSeq2[j+1]] +
+					ThAl.tstackEnthalpies[numSeq2[jj]][numSeq2[jj-1]][numSeq1[ii]][numSeq1[ii-1]]
 							+ (ILAH * Math.abs(loopSize1 - loopSize2));
 			H += EnthalpyDPT(i, j);
 
-			S = ThAlParameters.interiorLoopEntropies[loopSize] + ThAlParameters.tstackEntropies[numSeq1[i]][numSeq1[i+1]][numSeq2[j]][numSeq2[j+1]] +
-		    		  ThAlParameters.tstackEntropies[numSeq2[jj]][numSeq2[jj-1]][numSeq1[ii]][numSeq1[ii-1]] + (ILAS * Math.abs(loopSize1 - loopSize2));
+			S = ThAl.interiorLoopEntropies[loopSize] + ThAl.tstackEntropies[numSeq1[i]][numSeq1[i+1]][numSeq2[j]][numSeq2[j+1]] +
+		    		  ThAl.tstackEntropies[numSeq2[jj]][numSeq2[jj-1]][numSeq1[ii]][numSeq1[ii-1]] + (ILAS * Math.abs(loopSize1 - loopSize2));
 			S += EntropyDPT(i, j);
 			if(!Double.isFinite(H)) {
 				H = Double.POSITIVE_INFINITY;
@@ -1571,9 +1571,9 @@ public class ThermodynamicAlignment {
 				i -= len1;
 			if (j > len2)
 				j -= len2;
-			return ThAlParameters.stackEntropies[numSeq1[i]][numSeq1[i+1]][numSeq2[j]][numSeq2[j-1]];
+			return ThAl.stackEntropies[numSeq1[i]][numSeq1[i+1]][numSeq2[j]][numSeq2[j-1]];
 		} else {
-			return ThAlParameters.stackEntropies[numSeq1[i]][numSeq1[i + 1]][numSeq2[j]][numSeq2[j + 1]];
+			return ThAl.stackEntropies[numSeq1[i]][numSeq1[i + 1]][numSeq2[j]][numSeq2[j + 1]];
 		}
 	}
 
@@ -1595,13 +1595,13 @@ public class ThermodynamicAlignment {
 				i -= len1;
 			if (j > len2)
 				j -= len2;
-			if(Double.isFinite(ThAlParameters.stackEnthalpies[numSeq1[i]][numSeq1[i+1]][numSeq2[j]][numSeq2[j-1]])) {
-				return ThAlParameters.stackEnthalpies[numSeq1[i]][numSeq1[i+1]][numSeq2[j]][numSeq2[j-1]];
+			if(Double.isFinite(ThAl.stackEnthalpies[numSeq1[i]][numSeq1[i+1]][numSeq2[j]][numSeq2[j-1]])) {
+				return ThAl.stackEnthalpies[numSeq1[i]][numSeq1[i+1]][numSeq2[j]][numSeq2[j-1]];
 			} else {
 				return Double.POSITIVE_INFINITY;
 			}
 		} else {
-			return ThAlParameters.stackEnthalpies[numSeq1[i]][numSeq1[i + 1]][numSeq2[j]][numSeq2[j + 1]];
+			return ThAl.stackEnthalpies[numSeq1[i]][numSeq1[i + 1]][numSeq2[j]][numSeq2[j + 1]];
 		}
 	}
 
@@ -1617,8 +1617,8 @@ public class ThermodynamicAlignment {
 			setEnthalpyDPT(i,j, Double.POSITIVE_INFINITY);
 			return;
 		}
-		S1 = ThAlParameters.atpS[numSeq1[i]][numSeq2[j]] + ThAlParameters.tstack2Entropies[numSeq2[j]][numSeq2[j-1]][numSeq1[i]][numSeq1[i-1]];
-		H1 = ThAlParameters.atpH[numSeq1[i]][numSeq2[j]] + ThAlParameters.tstack2Enthalpies[numSeq2[j]][numSeq2[j-1]][numSeq1[i]][numSeq1[i-1]];
+		S1 = ThAl.atpS[numSeq1[i]][numSeq2[j]] + ThAl.tstack2Entropies[numSeq2[j]][numSeq2[j-1]][numSeq1[i]][numSeq1[i-1]];
+		H1 = ThAl.atpH[numSeq1[i]][numSeq2[j]] + ThAl.tstack2Enthalpies[numSeq2[j]][numSeq2[j-1]][numSeq1[i]][numSeq1[i-1]];
 		G1 = H1 - TEMP_KELVIN*S1;
 		if(!Double.isFinite(H1) || G1>0) {
 			H1 = Double.POSITIVE_INFINITY;
@@ -1626,11 +1626,11 @@ public class ThermodynamicAlignment {
 			G1 = 1.0;
 		}
 		/** If there is two dangling ends at the same end of duplex **/
-		if((BPI[numSeq1[i-1]][numSeq2[j-1]] != 1 ) && Double.isFinite(ThAlParameters.dangleEnthalpies3[numSeq2[j]][numSeq2[j - 1]][numSeq1[i]]) && Double.isFinite(ThAlParameters.dangleEnthalpies5[numSeq2[j]][numSeq1[i]][numSeq1[i - 1]])) {
-			S2 = ThAlParameters.atpS[numSeq1[i]][numSeq2[j]] + ThAlParameters.dangleEntropies3[numSeq2[j]][numSeq2[j - 1]][numSeq1[i]] +
-					ThAlParameters.dangleEntropies5[numSeq2[j]][numSeq1[i]][numSeq1[i - 1]];
-			H2 = ThAlParameters.atpH[numSeq1[i]][numSeq2[j]] + ThAlParameters.dangleEnthalpies3[numSeq2[j]][numSeq2[j - 1]][numSeq1[i]] +
-					ThAlParameters.dangleEnthalpies5[numSeq2[j]][numSeq1[i]][numSeq1[i - 1]];
+		if((BPI[numSeq1[i-1]][numSeq2[j-1]] != 1 ) && Double.isFinite(ThAl.dangleEnthalpies3[numSeq2[j]][numSeq2[j - 1]][numSeq1[i]]) && Double.isFinite(ThAl.dangleEnthalpies5[numSeq2[j]][numSeq1[i]][numSeq1[i - 1]])) {
+			S2 = ThAl.atpS[numSeq1[i]][numSeq2[j]] + ThAl.dangleEntropies3[numSeq2[j]][numSeq2[j - 1]][numSeq1[i]] +
+					ThAl.dangleEntropies5[numSeq2[j]][numSeq1[i]][numSeq1[i - 1]];
+			H2 = ThAl.atpH[numSeq1[i]][numSeq2[j]] + ThAl.dangleEnthalpies3[numSeq2[j]][numSeq2[j - 1]][numSeq1[i]] +
+					ThAl.dangleEnthalpies5[numSeq2[j]][numSeq1[i]][numSeq1[i - 1]];
 			G2 = H2 - TEMP_KELVIN*S2;
 			if(!Double.isFinite(H2) || G2>0) {
 				H2 = Double.POSITIVE_INFINITY;
@@ -1650,9 +1650,9 @@ public class ThermodynamicAlignment {
 				H1 = H2;
 				T1 = T2;
 			}
-		} else if ((BPI[numSeq1[i-1]][numSeq2[j-1]] != 1) && Double.isFinite(ThAlParameters.dangleEnthalpies3[numSeq2[j]][numSeq2[j - 1]][numSeq1[i]])) {
-			S2 = ThAlParameters.atpS[numSeq1[i]][numSeq2[j]] + ThAlParameters.dangleEntropies3[numSeq2[j]][numSeq2[j - 1]][numSeq1[i]];
-			H2 = ThAlParameters.atpH[numSeq1[i]][numSeq2[j]] + ThAlParameters.dangleEnthalpies3[numSeq2[j]][numSeq2[j - 1]][numSeq1[i]];
+		} else if ((BPI[numSeq1[i-1]][numSeq2[j-1]] != 1) && Double.isFinite(ThAl.dangleEnthalpies3[numSeq2[j]][numSeq2[j - 1]][numSeq1[i]])) {
+			S2 = ThAl.atpS[numSeq1[i]][numSeq2[j]] + ThAl.dangleEntropies3[numSeq2[j]][numSeq2[j - 1]][numSeq1[i]];
+			H2 = ThAl.atpH[numSeq1[i]][numSeq2[j]] + ThAl.dangleEnthalpies3[numSeq2[j]][numSeq2[j - 1]][numSeq1[i]];
 			G2 = H2 - TEMP_KELVIN*S2;
 			if(!Double.isFinite(H2) || G2>0) {
 				H2 = Double.POSITIVE_INFINITY;
@@ -1672,9 +1672,9 @@ public class ThermodynamicAlignment {
 				H1 = H2;
 				T1 = T2;
 			}
-		} else if ((BPI[numSeq1[i-1]][numSeq2[j-1]] != 1) && Double.isFinite(ThAlParameters.dangleEnthalpies5[numSeq2[j]][numSeq1[i]][numSeq1[i - 1]])) {
-			S2 = ThAlParameters.atpS[numSeq1[i]][numSeq2[j]] + ThAlParameters.dangleEntropies5[numSeq2[j]][numSeq1[i]][numSeq1[i - 1]];
-			H2 = ThAlParameters.atpH[numSeq1[i]][numSeq2[j]] + ThAlParameters.dangleEnthalpies5[numSeq2[j]][numSeq1[i]][numSeq1[i - 1]];
+		} else if ((BPI[numSeq1[i-1]][numSeq2[j-1]] != 1) && Double.isFinite(ThAl.dangleEnthalpies5[numSeq2[j]][numSeq1[i]][numSeq1[i - 1]])) {
+			S2 = ThAl.atpS[numSeq1[i]][numSeq2[j]] + ThAl.dangleEntropies5[numSeq2[j]][numSeq1[i]][numSeq1[i - 1]];
+			H2 = ThAl.atpH[numSeq1[i]][numSeq2[j]] + ThAl.dangleEnthalpies5[numSeq2[j]][numSeq1[i]][numSeq1[i - 1]];
 			G2 = H2 - TEMP_KELVIN*S2;
 			if(!Double.isFinite(H2) || G2>0) {
 				H2 = Double.POSITIVE_INFINITY;
@@ -1695,8 +1695,8 @@ public class ThermodynamicAlignment {
 				T1 = T2;
 			}
 		}
-		S2 = ThAlParameters.atpS[numSeq1[i]][numSeq2[j]];
-		H2 = ThAlParameters.atpH[numSeq1[i]][numSeq2[j]];
+		S2 = ThAl.atpS[numSeq1[i]][numSeq2[j]];
+		H2 = ThAl.atpH[numSeq1[i]][numSeq2[j]];
 		T2 = (H2 + dplx_init_H) / (S2 + dplx_init_S + RC);
 		G1 = H1 -TEMP_KELVIN*S1;   
 		G2 = H2 -TEMP_KELVIN*S2;
@@ -1732,8 +1732,8 @@ public class ThermodynamicAlignment {
 			EntropyEnthalpy[1] = Double.POSITIVE_INFINITY;
 			return;
 		}
-		S1 = ThAlParameters.atpS[numSeq1[i]][ numSeq2[j]] + ThAlParameters.tstack2Entropies[numSeq1[i]][numSeq1[i + 1]][numSeq2[j]][numSeq2[j + 1]];
-		H1 = ThAlParameters.atpH[numSeq1[i]][ numSeq2[j]] + ThAlParameters.tstack2Enthalpies[numSeq1[i]][numSeq1[i + 1]][numSeq2[j]][numSeq2[j + 1]];
+		S1 = ThAl.atpS[numSeq1[i]][ numSeq2[j]] + ThAl.tstack2Entropies[numSeq1[i]][numSeq1[i + 1]][numSeq2[j]][numSeq2[j + 1]];
+		H1 = ThAl.atpH[numSeq1[i]][ numSeq2[j]] + ThAl.tstack2Enthalpies[numSeq1[i]][numSeq1[i + 1]][numSeq2[j]][numSeq2[j + 1]];
 		G1 = H1 - TEMP_KELVIN*S1;
 		if(!Double.isFinite(H1) || G1>0) {
 			H1 = Double.POSITIVE_INFINITY;
@@ -1741,11 +1741,11 @@ public class ThermodynamicAlignment {
 			G1 = 1.0;
 		}
 		   
-		if(BPI[numSeq1[i+1]][numSeq2[j+1]] == 0 && Double.isFinite(ThAlParameters.dangleEnthalpies3[numSeq1[i]][numSeq1[i + 1]][numSeq2[j]]) && Double.isFinite(ThAlParameters.dangleEnthalpies5[numSeq1[i]][numSeq2[j]][numSeq2[j + 1]])) {
-			S2 = ThAlParameters.atpS[numSeq1[i]][numSeq2[j]] + ThAlParameters.dangleEntropies3[numSeq1[i]][numSeq1[i + 1]][numSeq2[j]] +
-					ThAlParameters.dangleEntropies5[numSeq1[i]][numSeq2[j]][numSeq2[j + 1]];
-			H2 = ThAlParameters.atpH[numSeq1[i]][numSeq2[j]] + ThAlParameters.dangleEnthalpies3[numSeq1[i]][numSeq1[i + 1]][numSeq2[j]] +
-					ThAlParameters.dangleEnthalpies5[numSeq1[i]][numSeq2[j]][numSeq2[j + 1]];
+		if(BPI[numSeq1[i+1]][numSeq2[j+1]] == 0 && Double.isFinite(ThAl.dangleEnthalpies3[numSeq1[i]][numSeq1[i + 1]][numSeq2[j]]) && Double.isFinite(ThAl.dangleEnthalpies5[numSeq1[i]][numSeq2[j]][numSeq2[j + 1]])) {
+			S2 = ThAl.atpS[numSeq1[i]][numSeq2[j]] + ThAl.dangleEntropies3[numSeq1[i]][numSeq1[i + 1]][numSeq2[j]] +
+					ThAl.dangleEntropies5[numSeq1[i]][numSeq2[j]][numSeq2[j + 1]];
+			H2 = ThAl.atpH[numSeq1[i]][numSeq2[j]] + ThAl.dangleEnthalpies3[numSeq1[i]][numSeq1[i + 1]][numSeq2[j]] +
+					ThAl.dangleEnthalpies5[numSeq1[i]][numSeq2[j]][numSeq2[j + 1]];
 			G2 = H2 - TEMP_KELVIN*S2;
 			if(!Double.isFinite(H2) || G2>0) {
 				H2 = Double.POSITIVE_INFINITY;
@@ -1768,9 +1768,9 @@ public class ThermodynamicAlignment {
 			}
 		}
 
-		else if(BPI[numSeq1[i+1]][numSeq2[j+1]] == 0 && Double.isFinite(ThAlParameters.dangleEnthalpies3[numSeq1[i]][numSeq1[i + 1]][numSeq2[j]])) {
-			S2 = ThAlParameters.atpS[numSeq1[i]][numSeq2[j]] + ThAlParameters.dangleEntropies3[numSeq1[i]][numSeq1[i + 1]][numSeq2[j]];
-			H2 = ThAlParameters.atpH[numSeq1[i]][numSeq2[j]] + ThAlParameters.dangleEnthalpies3[numSeq1[i]][numSeq1[i + 1]][numSeq2[j]];
+		else if(BPI[numSeq1[i+1]][numSeq2[j+1]] == 0 && Double.isFinite(ThAl.dangleEnthalpies3[numSeq1[i]][numSeq1[i + 1]][numSeq2[j]])) {
+			S2 = ThAl.atpS[numSeq1[i]][numSeq2[j]] + ThAl.dangleEntropies3[numSeq1[i]][numSeq1[i + 1]][numSeq2[j]];
+			H2 = ThAl.atpH[numSeq1[i]][numSeq2[j]] + ThAl.dangleEnthalpies3[numSeq1[i]][numSeq1[i + 1]][numSeq2[j]];
 			G2 = H2 - TEMP_KELVIN*S2;
 			if(!Double.isFinite(H2) || G2 >0) {
 				H2 = Double.POSITIVE_INFINITY;
@@ -1790,9 +1790,9 @@ public class ThermodynamicAlignment {
 				H1 = H2;
 				T1 = T2;
 			}
-		} else if(BPI[numSeq1[i+1]][numSeq2[j+1]] == 0 && Double.isFinite(ThAlParameters.dangleEnthalpies5[numSeq1[i]][numSeq2[j]][numSeq2[j + 1]])) {
-			S2 = ThAlParameters.atpS[numSeq1[i]][numSeq2[j]] + ThAlParameters.dangleEntropies5[numSeq1[i]][numSeq2[j]][numSeq2[j + 1]];
-			H2 = ThAlParameters.atpH[numSeq1[i]][numSeq2[j]] + ThAlParameters.dangleEnthalpies5[numSeq1[i]][numSeq2[j]][numSeq2[j + 1]];
+		} else if(BPI[numSeq1[i+1]][numSeq2[j+1]] == 0 && Double.isFinite(ThAl.dangleEnthalpies5[numSeq1[i]][numSeq2[j]][numSeq2[j + 1]])) {
+			S2 = ThAl.atpS[numSeq1[i]][numSeq2[j]] + ThAl.dangleEntropies5[numSeq1[i]][numSeq2[j]][numSeq2[j + 1]];
+			H2 = ThAl.atpH[numSeq1[i]][numSeq2[j]] + ThAl.dangleEnthalpies5[numSeq1[i]][numSeq2[j]][numSeq2[j + 1]];
 			G2 = H2 - TEMP_KELVIN*S2;
 			if(!Double.isFinite(H2) || G2>0) {
 				H2 = Double.POSITIVE_INFINITY;
@@ -1813,8 +1813,8 @@ public class ThermodynamicAlignment {
 				T1 = T2;
 			}
 		}
-		S2 = ThAlParameters.atpS[numSeq1[i]][numSeq2[j]];
-		H2 = ThAlParameters.atpH[numSeq1[i]][numSeq2[j]];
+		S2 = ThAl.atpS[numSeq1[i]][numSeq2[j]];
+		H2 = ThAl.atpH[numSeq1[i]][numSeq2[j]];
 		T2 = (H2 + dplx_init_H) / (S2 + dplx_init_S + RC);
 		G1 = H1 -TEMP_KELVIN*S1;
 		G2 =  H2 -TEMP_KELVIN*S2;
@@ -1876,7 +1876,7 @@ public class ThermodynamicAlignment {
 	 * calc-s thermod values into dynamic progr table (dimer) 
 	 */
 	private void fillMatrix() {
-		int maxLoop	= a.maxLoop;
+		int maxLoop	= a.getMaxLoop();
 		double[] SH = new double[2];
 		for (int i = 1; i <= len1; ++i) {
 			for (int j = 1; j <= len2; ++j) {
@@ -1924,7 +1924,7 @@ public class ThermodynamicAlignment {
 	 * calc-s thermod values into dynamic progr table (monomer)
 	 */
 	private void fillMatrix2() {
-		int maxLoop	= a.maxLoop;
+		int maxLoop	= a.getMaxLoop();
 		double[] SH = new double[2];
 		for (int j = 2; j <= len2; ++j) {
 			for (int i = j - MIN_HRPN_LOOP - 1; i >= 1; --i) {
@@ -1984,7 +1984,7 @@ public class ThermodynamicAlignment {
 		{
 			seqLoop[j] = seq[i];
 		}
-		return ThAlParameters.hashLoop(seqLoop);
+		return ThAl.hashLoop(seqLoop);
 	}
 }
 

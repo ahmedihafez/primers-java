@@ -21,7 +21,7 @@ import org.primer3.thal.ThermodynamicAlignmentException;
 import org.primer3.thal.ThermodynamicAlignment;
 import org.primer3.thal.ThermodynamicAlignmentArguments;
 import org.primer3.thal.ThermodynamicAlignmentResult;
-import org.primer3.thal.ThAlParameters;
+import org.primer3.thal.ThAl;
 
 
 /**
@@ -2608,12 +2608,12 @@ public class LibPrimer3 {
 		ThermodynamicAlignmentResult r = null;
 		ThermodynamicAlignment thal = new ThermodynamicAlignment(s1, s2, a);
 		try {
-			r = thal.calc_thal();
+			r = thal.thAlign();
 
 			if (thal_trace != 0) {
 				System.out.format(  "thal, thal_args, type=%s maxLoop=%d mv=%f dv=%f dntp=%f dna_conc=%f, temp=%f, temponly=%d dimer=%d\n",
-						a.type, a.maxLoop, a.mv, a.dv, a.dntp, a.dna_conc, 
-						a.temp, a.temponly, a.dimer);
+						a.getAlignmentType(), a.getMaxLoop(), a.getMonovalentConc(), a.getDivalentConc(), a.getDntpConc(), a.getDnaConc(), 
+						a.getTemperature(), a.isTempOnly(), a.getCalcDimer());
 				System.out.format(  "thal: s1=%s s2=%s temp=%f msg=%s end1=%d end2=%d\n", 
 					string(s1), string(s2), r.temp, r.msg, r.align_end_1, r.align_end_2);
 			}

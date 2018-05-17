@@ -18,7 +18,7 @@ import org.apache.commons.io.IOUtils;
 import org.primer3.sequence.Sequence;
 
 
-public class ThAlParameters {
+public class ThAl {
 	
 	
 	private static final boolean debug = false;
@@ -97,8 +97,7 @@ public class ThAlParameters {
 	}
 
 
-	static void 
-	tableStartATH()
+	static void  tableStartATH()
 	{
 		//
 		for (int i = 0; i < 5; ++i)
@@ -223,6 +222,7 @@ public class ThAlParameters {
 			}
 		}
 	}
+	
 	static void getLoop() {
 		List<String> sFileList = loadResource("loops.ds");
 		List<String> hFileList = loadResource("loops.dh");
@@ -240,6 +240,7 @@ public class ThAlParameters {
 			hairpinLoopEnthalpies[k]	= loopEnthalpies[2];
 		}
 	}
+	
 	static void  getTstack()
 	{
 		List<String> sFileList = loadResource("tstack_tm_inf.ds");
@@ -332,6 +333,7 @@ public class ThAlParameters {
 		}
 		
 	}
+	
 	static void getTetraloop()
 	{
 		List<String> sFileList = loadResource("tetraloop.ds");
@@ -356,6 +358,7 @@ public class ThAlParameters {
 		}
 		
 	}
+	
 	public static int hashLoop(char[] loop)
 	{
 		int hash = 0;
@@ -369,6 +372,7 @@ public class ThAlParameters {
 		
 		return hash;
 	}
+	
 	public static int hashLoop(int[] loop)
 	{
 		
@@ -426,7 +430,7 @@ public class ThAlParameters {
 
 	static  List<String> loadResource(String res_name) {
 		String resourceFolder = "resources/";
-		ClassLoader classLoader = ThAlParameters.class .getClassLoader();
+		ClassLoader classLoader = ThAl.class .getClassLoader();
 		String resourceName = resourceFolder + res_name;		
 		InputStream file = classLoader.getResourceAsStream(resourceName);
 		List<String> fileText = null;
@@ -461,16 +465,16 @@ public class ThAlParameters {
 		if(commandLine != null)
 		{
 			ThermodynamicAlignmentArguments a = new ThermodynamicAlignmentArguments();
-			a.set_thal_default_args();
-			a.temponly=0;
+			a.setThAlDefaultArgs();
+			a.setTempOnly(false);
 			if(commandLine.hasOption("mv"))
 			{
-				a.mv = Double.parseDouble(commandLine.getOptionValue("mv"));
+				a.setMonovalentConc(Double.parseDouble(commandLine.getOptionValue("mv")));
 			}
 			if(commandLine.hasOption("dv"))
 			{
-				a.dv = Double.parseDouble(commandLine.getOptionValue("dv"));
-				if(a.dv < 0 )
+				a.setDivalentConc(Double.parseDouble(commandLine.getOptionValue("dv")));
+				if(a.getDivalentConc() < 0 )
 				{
 					System.err.println("divalent_conc can not be less than 0");
 					System.exit(-1);
@@ -478,8 +482,8 @@ public class ThAlParameters {
 			}
 			if(commandLine.hasOption("n"))  /* concentration of dNTPs */
 			{
-				a.dntp = Double.parseDouble(commandLine.getOptionValue("n"));
-				if(a.dntp < 0 )
+				a.setDntpConc(Double.parseDouble(commandLine.getOptionValue("n")));
+				if(a.getDntpConc() < 0 )
 				{
 					System.err.println("(n) concentration of dNTPs can not be less than 0");
 					System.exit(-1);
@@ -488,11 +492,11 @@ public class ThAlParameters {
 			if(commandLine.hasOption("maxloop"))  /* maximum size of loop calculated; 
 						      this value can not be larger than 30 */
 			{
-				a.maxLoop = Integer.parseInt(commandLine.getOptionValue("maxloop"));
-				 if(a.maxLoop > ThermodynamicAlignment.MAX_LOOP ) {
-					 a.maxLoop = ThermodynamicAlignment.MAX_LOOP;
-				 }  else if(a.maxLoop < ThermodynamicAlignment.MIN_LOOP) {	 
-					 a.maxLoop = ThermodynamicAlignment.MIN_LOOP;
+				a.setMaxLoop(Integer.parseInt(commandLine.getOptionValue("maxloop")));
+				 if(a.getMaxLoop() > ThermodynamicAlignment.MAX_LOOP ) {
+					 a.setMaxLoop(ThermodynamicAlignment.MAX_LOOP);
+				 }  else if(a.getMaxLoop() < ThermodynamicAlignment.MIN_LOOP) {	 
+					 a.setMaxLoop(ThermodynamicAlignment.MIN_LOOP);
 				 }
 			}
 			if(commandLine.hasOption("a"))
@@ -502,21 +506,21 @@ public class ThAlParameters {
 				{
 					if(type.equals("ANY"))
 					{
-						a.type =ThermodynamicAlignmentType.thal_any;
+						a.setAlignmentType(ThermodynamicAlignmentType.thal_any);
 					} else if(type.equals("END1")) { 
-						a.type =ThermodynamicAlignmentType.thal_end1;
+						a.setAlignmentType(ThermodynamicAlignmentType.thal_end1);
 					} else if(type.equals("END2")) {
-						a.type =ThermodynamicAlignmentType.thal_end2;
+						a.setAlignmentType(ThermodynamicAlignmentType.thal_end2);
 					} else if(type.equals("HAIRPIN")) {
-						a.type =ThermodynamicAlignmentType.thal_hairpin;
-						 a.dimer = 0;
+						a.setAlignmentType(ThermodynamicAlignmentType.thal_hairpin);
+						 a.setCalcDimer(0);
 					}
 				}	
 			}
 			if(commandLine.hasOption("d")) // dna conc
 			{
-				a.dna_conc = Double.parseDouble(commandLine.getOptionValue("d"));
-				if(a.dna_conc <= 0 )
+				a.setDnaConc(Double.parseDouble(commandLine.getOptionValue("d")));
+				if(a.getDnaConc() <= 0 )
 				{
 					System.err.println("dna conc can not be less than or eqaul 0");
 					System.exit(-1);
@@ -525,7 +529,7 @@ public class ThAlParameters {
 			}
 			if(commandLine.hasOption("t")) // temperature at which sec str are calculated in C
 			{
-				a.temp = Double.parseDouble(commandLine.getOptionValue("t")) + ThermodynamicAlignment.ABSOLUTE_ZERO;	
+				a.setTemperature(Double.parseDouble(commandLine.getOptionValue("t")) + ThermodynamicAlignment.ABSOLUTE_ZERO);	
 			}
 			if(commandLine.hasOption("s1")) //s1
 			{
@@ -538,12 +542,12 @@ public class ThAlParameters {
 			
 			
 			 /* check the input correctness */
-			if(a.dimer == 1 && (s2==null || s1==null)) { /* if user wants to calculate structure 
+			if(a.getCalcDimer() == 1 && (s2==null || s1==null)) { /* if user wants to calculate structure 
 									       of dimer then two sequences must be defined*/
 				System.err.println("two sequences must be defined");
 				System.exit(-1);
 			   }
-			   if(a.dimer==0 && (s2==null && s1==null)) { /* if user wants to calculate structure
+			   if(a.getCalcDimer()==0 && (s2==null && s1==null)) { /* if user wants to calculate structure
 									       of monomer then only one sequence must be defined */
 					System.err.println("two sequences must be defined");
 					System.exit(-1);
@@ -555,34 +559,34 @@ public class ThAlParameters {
 			// run 
 			get_thermodynamic_values(null,null);
 			try {
-				if(a.dimer == 0 && s1 != null)
+				if(a.getCalcDimer() == 0 && s1 != null)
 				{
 					Sequence oligo1 = new Sequence(s1.toCharArray());
 					ThermodynamicAlignment thal_1 = new ThermodynamicAlignment(oligo1, oligo1, a);
-					o = thal_1.calc_thal();
+					o = thal_1.thAlign();
 					if (thal_trace != 0) {
 						System.out.format(  "thal, thal_args, type=%s maxLoop=%d mv=%f dv=%f dntp=%f dna_conc=%f, temp=%f, temponly=%d dimer=%d\n",
-								a.type, a.maxLoop, a.mv, a.dv, a.dntp, a.dna_conc, 
-								a.temp, a.temponly, a.dimer);
+								a.getAlignmentType(), a.getMaxLoop(), a.getMonovalentConc(), a.getDivalentConc(), a.getDntpConc(), a.getDnaConc(), 
+								a.getTemperature(), a.isTempOnly(), a.getCalcDimer());
 						System.out.format(  "thal: s1=%s s2=%s temp=%f msg=%s end1=%d end2=%d\n", 
 							s1, s2, o.temp, o.msg, o.align_end_1, o.align_end_2);
 					}
 					 
-				} else if (a.dimer == 0 && s1 == null && s2 != null)
+				} else if (a.getCalcDimer() == 0 && s1 == null && s2 != null)
 				{
 					Sequence oligo2 = new Sequence(s2.toCharArray());
 					ThermodynamicAlignment thal_1 = new ThermodynamicAlignment(oligo2, oligo2, a);
-					o = thal_1.calc_thal();
+					o = thal_1.thAlign();
 				} else {
 					Sequence oligo1 = new Sequence(s1.toCharArray());
 					Sequence oligo2 = new Sequence(s2.toCharArray());
 					ThermodynamicAlignment thal_1 = new ThermodynamicAlignment(oligo1, oligo2, a);
-					o = thal_1.calc_thal();
+					o = thal_1.thAlign();
 					
 					if (thal_trace != 0) {
 						System.out.format(  "thal, thal_args, type=%s maxLoop=%d mv=%f dv=%f dntp=%f dna_conc=%f, temp=%f, temponly=%d dimer=%d\n",
-								a.type, a.maxLoop, a.mv, a.dv, a.dntp, a.dna_conc, 
-								a.temp, a.temponly, a.dimer);
+								a.getAlignmentType(), a.getMaxLoop(), a.getMonovalentConc(), a.getDivalentConc(), a.getDntpConc(), a.getDnaConc(), 
+								a.getTemperature(), a.isTempOnly(), a.getCalcDimer());
 						System.out.format(  "thal: s1=%s s2=%s temp=%f msg=%s end1=%d end2=%d\n", 
 							s1, s2, o.temp, o.msg, o.align_end_1, o.align_end_2);
 					}

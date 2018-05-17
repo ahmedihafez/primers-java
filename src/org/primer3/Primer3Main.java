@@ -28,7 +28,7 @@ import org.primer3.libprimer3.seq_args;
 import org.primer3.masker.formula_parameters;
 import org.primer3.masker.masker;
 import org.primer3.masker.masking_direction;
-import org.primer3.thal.ThAlParameters;
+import org.primer3.thal.ThAl;
 
 public class Primer3Main {
 
@@ -526,7 +526,7 @@ public class Primer3Main {
 	}
 	private static void read_thermodynamic_parameters() {
 
-		ThAlParameters.get_thermodynamic_values();
+		ThAl.get_thermodynamic_values();
 
 		// FIXME :: remove this
 		thermodynamic_params_path = "";
