@@ -74,7 +74,7 @@ public class PrimerRecord {
 					 * best pairs.
 					 */
 
-	OligoProblems problems;
+	long oligoProblems;
 	boolean overlaps_overlap_position;
 
 	char template_mispriming_ok; /*
@@ -100,8 +100,7 @@ public class PrimerRecord {
 	}
 
 	public void initialize_op() {
-		this.problems = new OligoProblems();
-		this.problems.prob = 0L; /* 0UL is the unsigned long zero */
+		this.oligoProblems = 0L; /* 0UL is the unsigned long zero */
 	}
 
 	/*
@@ -151,11 +150,11 @@ public class PrimerRecord {
 	static long five_prime_problem = 310297344L;
 
 	boolean p3_ol_is_uninitialized() {
-		return (this.problems.prob == 0L);
+		return (this.oligoProblems == 0L);
 	}
 
 	boolean p3_ol_is_ok() {
-		return (this.problems.prob & OP_COMPLETELY_WRITTEN) != 0;
+		return (this.oligoProblems & OP_COMPLETELY_WRITTEN) != 0;
 	}
 
 	/**
@@ -163,11 +162,11 @@ public class PrimerRecord {
 	 * design constraints.
 	 */
 	public boolean p3_ol_has_any_problem() {
-		return (this.problems.prob & any_problem) != 0;
+		return (this.oligoProblems & any_problem) != 0;
 	}
 
 	public boolean any_5_prime_ol_extension_has_problem() {
-		return (this.problems.prob & five_prime_problem) != 0;
+		return (this.oligoProblems & five_prime_problem) != 0;
 	}
 
 	/**
@@ -176,7 +175,7 @@ public class PrimerRecord {
 	 * which is over-written on next call. p3_primer_rec_problems_to_string
 	 */
 	String p3_get_ol_problem_string() {
-		long prob = this.problems.prob;
+		long prob = this.oligoProblems;
 
 		StringBuilder output = new StringBuilder();
 		// (prob & OP_PARTIALLY_WRITTEN) && !(prob & OP_COMPLETELY_WRITTEN))
@@ -238,166 +237,166 @@ public class PrimerRecord {
 
 	public void bf_set_overlaps_target(int val) {
 		if (val == 0) {
-			this.problems.prob |= BF_OVERLAPS_TARGET;
-			this.problems.prob ^= BF_OVERLAPS_TARGET;
+			this.oligoProblems |= BF_OVERLAPS_TARGET;
+			this.oligoProblems ^= BF_OVERLAPS_TARGET;
 		} else {
-			this.problems.prob |= BF_OVERLAPS_TARGET;
+			this.oligoProblems |= BF_OVERLAPS_TARGET;
 		}
 	}
 
 	public boolean bf_get_overlaps_target() {
-		return (this.problems.prob & BF_OVERLAPS_TARGET) != 0;
+		return (this.oligoProblems & BF_OVERLAPS_TARGET) != 0;
 	}
 
 	public void bf_set_overlaps_excl_region(int val) {
 		if (val == 0) {
-			this.problems.prob |= BF_OVERLAPS_EXCL_REGION;
-			this.problems.prob ^= BF_OVERLAPS_EXCL_REGION;
+			this.oligoProblems |= BF_OVERLAPS_EXCL_REGION;
+			this.oligoProblems ^= BF_OVERLAPS_EXCL_REGION;
 		} else {
-			this.problems.prob |= BF_OVERLAPS_EXCL_REGION;
+			this.oligoProblems |= BF_OVERLAPS_EXCL_REGION;
 		}
 	}
 
 	public boolean bf_get_overlaps_excl_region() {
-		return (this.problems.prob & BF_OVERLAPS_EXCL_REGION) != 0;
+		return (this.oligoProblems & BF_OVERLAPS_EXCL_REGION) != 0;
 	}
 
 	public void bf_set_infinite_pos_penalty(int val) {
 		if (val == 0) {
-			this.problems.prob |= BF_INFINITE_POSITION_PENALTY;
-			this.problems.prob ^= BF_INFINITE_POSITION_PENALTY;
+			this.oligoProblems |= BF_INFINITE_POSITION_PENALTY;
+			this.oligoProblems ^= BF_INFINITE_POSITION_PENALTY;
 		} else {
-			this.problems.prob |= BF_INFINITE_POSITION_PENALTY;
+			this.oligoProblems |= BF_INFINITE_POSITION_PENALTY;
 		}
 	}
 
 	public boolean bf_get_infinite_pos_penalty() {
-		return (this.problems.prob & BF_INFINITE_POSITION_PENALTY) != 0;
+		return (this.oligoProblems & BF_INFINITE_POSITION_PENALTY) != 0;
 	}
 
 	public void op_set_does_not_amplify_orf() {
-		this.problems.prob |= OP_DOES_NOT_AMPLIFY_ORF;
-		this.problems.prob |= OP_PARTIALLY_WRITTEN;
+		this.oligoProblems |= OP_DOES_NOT_AMPLIFY_ORF;
+		this.oligoProblems |= OP_PARTIALLY_WRITTEN;
 	}
 
 	public void op_set_completely_written() {
-		this.problems.prob |= OP_COMPLETELY_WRITTEN;
+		this.oligoProblems |= OP_COMPLETELY_WRITTEN;
 	}
 
 	public void op_set_must_match_err() {
-		this.problems.prob |= OP_MUST_MATCH_ERR;
-		this.problems.prob |= OP_PARTIALLY_WRITTEN;
+		this.oligoProblems |= OP_MUST_MATCH_ERR;
+		this.oligoProblems |= OP_PARTIALLY_WRITTEN;
 	}
 
 	public void op_set_too_many_ns() {
-		this.problems.prob |= OP_TOO_MANY_NS;
-		this.problems.prob |= OP_PARTIALLY_WRITTEN;
+		this.oligoProblems |= OP_TOO_MANY_NS;
+		this.oligoProblems |= OP_PARTIALLY_WRITTEN;
 	}
 
 	public void op_set_overlaps_target() {
-		this.problems.prob |= OP_OVERLAPS_TARGET;
-		this.problems.prob |= OP_PARTIALLY_WRITTEN;
+		this.oligoProblems |= OP_OVERLAPS_TARGET;
+		this.oligoProblems |= OP_PARTIALLY_WRITTEN;
 	}
 
 	public void op_set_high_gc_content() {
-		this.problems.prob |= OP_HIGH_GC_CONTENT;
-		this.problems.prob |= OP_PARTIALLY_WRITTEN;
+		this.oligoProblems |= OP_HIGH_GC_CONTENT;
+		this.oligoProblems |= OP_PARTIALLY_WRITTEN;
 	}
 
 	public void op_set_low_gc_content() {
-		this.problems.prob |= OP_LOW_GC_CONTENT;
-		this.problems.prob |= OP_PARTIALLY_WRITTEN;
+		this.oligoProblems |= OP_LOW_GC_CONTENT;
+		this.oligoProblems |= OP_PARTIALLY_WRITTEN;
 	}
 
 	public void op_set_high_tm() {
-		this.problems.prob |= OP_HIGH_TM;
-		this.problems.prob |= OP_PARTIALLY_WRITTEN;
+		this.oligoProblems |= OP_HIGH_TM;
+		this.oligoProblems |= OP_PARTIALLY_WRITTEN;
 	}
 
 	public void op_set_low_tm() {
-		this.problems.prob |= OP_LOW_TM;
-		this.problems.prob |= OP_PARTIALLY_WRITTEN;
+		this.oligoProblems |= OP_LOW_TM;
+		this.oligoProblems |= OP_PARTIALLY_WRITTEN;
 	}
 
 	public void op_set_overlaps_excluded_region() {
-		this.problems.prob |= OP_OVERLAPS_EXCL_REGION;
-		this.problems.prob |= OP_PARTIALLY_WRITTEN;
+		this.oligoProblems |= OP_OVERLAPS_EXCL_REGION;
+		this.oligoProblems |= OP_PARTIALLY_WRITTEN;
 	}
 
 	public void op_set_not_in_any_ok_region() {
-		this.problems.prob |= OP_NOT_IN_ANY_OK_REGION;
-		this.problems.prob |= OP_PARTIALLY_WRITTEN;
+		this.oligoProblems |= OP_NOT_IN_ANY_OK_REGION;
+		this.oligoProblems |= OP_PARTIALLY_WRITTEN;
 	}
 
 	public void op_set_high_self_any() {
-		this.problems.prob |= OP_HIGH_SELF_ANY;
-		this.problems.prob |= OP_PARTIALLY_WRITTEN;
+		this.oligoProblems |= OP_HIGH_SELF_ANY;
+		this.oligoProblems |= OP_PARTIALLY_WRITTEN;
 	}
 
 	public void op_set_high_self_end() {
-		this.problems.prob |= OP_HIGH_SELF_END;
-		this.problems.prob |= OP_PARTIALLY_WRITTEN;
+		this.oligoProblems |= OP_HIGH_SELF_END;
+		this.oligoProblems |= OP_PARTIALLY_WRITTEN;
 	}
 
 	public void op_set_high_hairpin_th() {
-		this.problems.prob |= OP_HIGH_HAIRPIN;
-		this.problems.prob |= OP_PARTIALLY_WRITTEN;
+		this.oligoProblems |= OP_HIGH_HAIRPIN;
+		this.oligoProblems |= OP_PARTIALLY_WRITTEN;
 	}
 
 	public void op_set_no_gc_glamp() {
-		this.problems.prob |= OP_NO_GC_CLAMP;
-		this.problems.prob |= OP_PARTIALLY_WRITTEN;
+		this.oligoProblems |= OP_NO_GC_CLAMP;
+		this.oligoProblems |= OP_PARTIALLY_WRITTEN;
 	}
 
 	public void op_set_too_many_gc_at_end() {
-		this.problems.prob |= OP_TOO_MANY_GC_AT_END;
-		this.problems.prob |= OP_PARTIALLY_WRITTEN;
+		this.oligoProblems |= OP_TOO_MANY_GC_AT_END;
+		this.oligoProblems |= OP_PARTIALLY_WRITTEN;
 	}
 
 	/* Must not be called on a hybridization probe / internal oligo */
 	public void op_set_high_end_stability() {
-		this.problems.prob |= OP_HIGH_END_STABILITY;
-		this.problems.prob |= OP_PARTIALLY_WRITTEN;
+		this.oligoProblems |= OP_HIGH_END_STABILITY;
+		this.oligoProblems |= OP_PARTIALLY_WRITTEN;
 	}
 
 	public void op_set_high_poly_x() {
-		this.problems.prob |= OP_HIGH_POLY_X;
-		this.problems.prob |= OP_PARTIALLY_WRITTEN;
+		this.oligoProblems |= OP_HIGH_POLY_X;
+		this.oligoProblems |= OP_PARTIALLY_WRITTEN;
 	}
 
 	public void op_set_low_sequence_quality() {
-		this.problems.prob |= OP_LOW_SEQUENCE_QUALITY;
-		this.problems.prob |= OP_PARTIALLY_WRITTEN;
+		this.oligoProblems |= OP_LOW_SEQUENCE_QUALITY;
+		this.oligoProblems |= OP_PARTIALLY_WRITTEN;
 	}
 
 	public void op_set_low_end_sequence_quality() {
-		this.problems.prob |= OP_LOW_END_SEQUENCE_QUALITY;
-		this.problems.prob |= OP_PARTIALLY_WRITTEN;
+		this.oligoProblems |= OP_LOW_END_SEQUENCE_QUALITY;
+		this.oligoProblems |= OP_PARTIALLY_WRITTEN;
 	}
 
 	public void op_set_high_similarity_to_non_template_seq() {
-		this.problems.prob |= OP_HIGH_SIM_TO_NON_TEMPLATE_SEQ;
-		this.problems.prob |= OP_PARTIALLY_WRITTEN;
+		this.oligoProblems |= OP_HIGH_SIM_TO_NON_TEMPLATE_SEQ;
+		this.oligoProblems |= OP_PARTIALLY_WRITTEN;
 	}
 
 	public void op_set_high_similarity_to_multiple_template_sites() {
-		this.problems.prob |= OP_HIGH_SIM_TO_MULTI_TEMPLATE_SITES;
-		this.problems.prob |= OP_PARTIALLY_WRITTEN;
+		this.oligoProblems |= OP_HIGH_SIM_TO_MULTI_TEMPLATE_SITES;
+		this.oligoProblems |= OP_PARTIALLY_WRITTEN;
 	}
 
 	public void op_set_overlaps_masked_sequence() {
-		this.problems.prob |= OP_OVERLAPS_MASKED_SEQ;
-		this.problems.prob |= OP_PARTIALLY_WRITTEN;
+		this.oligoProblems |= OP_OVERLAPS_MASKED_SEQ;
+		this.oligoProblems |= OP_PARTIALLY_WRITTEN;
 	}
 
 	public void op_set_too_long() {
-		this.problems.prob |= OP_TOO_LONG;
-		this.problems.prob |= OP_PARTIALLY_WRITTEN;
+		this.oligoProblems |= OP_TOO_LONG;
+		this.oligoProblems |= OP_PARTIALLY_WRITTEN;
 	}
 
 	public void op_set_too_short() {
-		this.problems.prob |= OP_TOO_SHORT;
-		this.problems.prob |= OP_PARTIALLY_WRITTEN;
+		this.oligoProblems |= OP_TOO_SHORT;
+		this.oligoProblems |= OP_PARTIALLY_WRITTEN;
 	}
 
 	/**
