@@ -197,7 +197,7 @@ public class primer_pair {
 			int m,
 			int n,
 			int int_num,
-			dpal_arg_holder dpal_arg_to_use,
+			DPAlArgHolder dpal_arg_to_use,
 			thal_arg_holder thal_arg_to_use,
 			boolean update_stats) throws ThermodynamicAlignmentException, AlignmentException {
 		

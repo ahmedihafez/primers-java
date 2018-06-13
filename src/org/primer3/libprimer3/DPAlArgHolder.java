@@ -3,7 +3,7 @@ package org.primer3.libprimer3;
 import org.primer3.dpal.DPAlignmentArgs;
 import org.primer3.dpal.DPAlignment;
 
-public class dpal_arg_holder {
+public class DPAlArgHolder {
 	DPAlignmentArgs local;
 	DPAlignmentArgs end;
 	DPAlignmentArgs local_end;
@@ -14,8 +14,8 @@ public class dpal_arg_holder {
 //	PRIMER_RIGHT_0_SEQUENCE= CTCTGTCGACTTTGCCACCA
 	
 	/* Create the dpal arg holder */
-	public static dpal_arg_holder create_dpal_arg_holder (){
-		dpal_arg_holder h = new dpal_arg_holder();
+	public static DPAlArgHolder create_dpal_arg_holder (){
+		DPAlArgHolder h = new DPAlArgHolder();
 		
 		
 		h.local = new DPAlignmentArgs();

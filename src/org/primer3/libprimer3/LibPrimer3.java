@@ -91,7 +91,7 @@ public class LibPrimer3 {
 
 
 
-	static dpal_arg_holder dpal_arg_to_use =  null;
+	static DPAlArgHolder dpal_arg_to_use =  null;
 	static thal_arg_holder thal_arg_to_use =  null;
 	static thal_arg_holder thal_oligo_arg_to_use = null;
 
@@ -242,7 +242,7 @@ public class LibPrimer3 {
 		     if dpal_arg_to_use, a static variable that has 'file'
 		     scope, has not yet been initialized. */
 			if (dpal_arg_to_use == null)
-				dpal_arg_to_use = new dpal_arg_holder();// create_dpal_arg_holder();
+				dpal_arg_to_use = new DPAlArgHolder();// create_dpal_arg_holder();
 
 			// TODO :: Refactor and clean
 			if(thal_arg_to_use == null) {
@@ -339,7 +339,7 @@ public class LibPrimer3 {
 			p3retval retval,
 			P3GlobalSettings pa,
 			seq_args sa,
-			dpal_arg_holder dpal_arg_to_use,
+			DPAlArgHolder dpal_arg_to_use,
 			thal_arg_holder thal_arg_to_use,
 			thal_arg_holder thal_oligo_arg_to_use
 			) throws Exception {
@@ -786,7 +786,7 @@ public class LibPrimer3 {
 			PrimerRecord right,
 			seq_args sa,
 			P3GlobalSettings pa,
-			dpal_arg_holder dpal_arg_to_use,
+			DPAlArgHolder dpal_arg_to_use,
 			thal_arg_holder thal_oligo_arg_to_use) throws AlignmentException, ThermodynamicAlignmentException {
 		//		int i;
 		int k;
@@ -898,7 +898,7 @@ public class LibPrimer3 {
 
 	private static int make_internal_oligo_list(p3retval retval,
 			P3GlobalSettings pa, seq_args sa,
-			dpal_arg_holder dpal_arg_to_use2,
+			DPAlArgHolder dpal_arg_to_use2,
 			thal_arg_holder thal_oligo_arg_to_use2) {
 		System.err.println("make_internal_oligo_list");
 		return 0;
@@ -921,7 +921,7 @@ public class LibPrimer3 {
 			p3retval retval,
 			P3GlobalSettings pa,
 			seq_args sa,
-			dpal_arg_holder dpal_arg_to_use,
+			DPAlArgHolder dpal_arg_to_use,
 			thal_arg_holder thal_arg_to_use) throws AlignmentException, ThermodynamicAlignmentException, PrimerRecordException 
 			{
 		int left, right;
@@ -1077,10 +1077,10 @@ public class LibPrimer3 {
 
 	private static int pick_primers_by_position(int start,
 			int end, 
-			oligo_array oligo,
+			OligoArray oligo,
 			P3GlobalSettings pa,
 			seq_args sa,
-			dpal_arg_holder dpal_arg_to_use,
+			DPAlArgHolder dpal_arg_to_use,
 			thal_arg_holder thal_arg_to_use,
 			p3retval retval) throws AlignmentException, ThermodynamicAlignmentException, PrimerRecordException {
 		int found_primer, length, j, ret, new_start;
@@ -1134,8 +1134,8 @@ public class LibPrimer3 {
 
 
 	private static int add_one_primer_by_position(int start, int length,
-			oligo_array oligo, P3GlobalSettings pa, seq_args sa,
-			dpal_arg_holder dpal_arg_to_use, thal_arg_holder thal_arg_to_use,
+			OligoArray oligo, P3GlobalSettings pa, seq_args sa,
+			DPAlArgHolder dpal_arg_to_use, thal_arg_holder thal_arg_to_use,
 			p3retval retval) throws AlignmentException, ThermodynamicAlignmentException, PrimerRecordException {
 		/* Variables for the loop */
 		int i;
@@ -1247,10 +1247,10 @@ public class LibPrimer3 {
 	 */
 	private static int add_one_primer(char[] primer, 
 			//			int extreme,
-			oligo_array oligo,
+			OligoArray oligo,
 			P3GlobalSettings pa,
 			seq_args sa,
-			dpal_arg_holder dpal_arg_to_use,
+			DPAlArgHolder dpal_arg_to_use,
 			thal_arg_holder thal_arg_to_use,
 			p3retval retval) throws AlignmentException, ThermodynamicAlignmentException, PrimerRecordException {
 
@@ -1368,7 +1368,7 @@ public class LibPrimer3 {
 	 * @throws AlignmentException 
 	 */
 	private static int add_primers_to_check(p3retval retval, P3GlobalSettings pa,
-			seq_args sa, dpal_arg_holder dpal_arg_to_use,
+			seq_args sa, DPAlArgHolder dpal_arg_to_use,
 			thal_arg_holder thal_arg_to_use,
 			thal_arg_holder thal_oligo_arg_to_use) throws AlignmentException, ThermodynamicAlignmentException, PrimerRecordException {
 	      
@@ -1405,7 +1405,7 @@ public class LibPrimer3 {
 	 */
 	private static void pick_sequencing_primer_list(p3retval retval,
 			P3GlobalSettings pa, seq_args sa,
-			dpal_arg_holder dpal_arg_to_use,
+			DPAlArgHolder dpal_arg_to_use,
 			thal_arg_holder thal_arg_to_use) throws AlignmentException, ThermodynamicAlignmentException, PrimerRecordException {
 		int length, start;
 		int n, rest_accuracy;
@@ -1536,8 +1536,8 @@ public class LibPrimer3 {
 	 * @throws PrimerRecordException 
 	 */
 	private static int pick_only_best_primer(int start, int length,
-			oligo_array oligo, P3GlobalSettings pa, seq_args sa,
-			dpal_arg_holder dpal_arg_to_use, thal_arg_holder thal_arg_to_use,
+			OligoArray oligo, P3GlobalSettings pa, seq_args sa,
+			DPAlArgHolder dpal_arg_to_use, thal_arg_holder thal_arg_to_use,
 			p3retval retval) throws AlignmentException, ThermodynamicAlignmentException, PrimerRecordException {
 		/* Variables for the loop */
 		int i, j, primer_size_small, primer_size_large;
@@ -1682,7 +1682,7 @@ public class LibPrimer3 {
 	 */
 	private static int make_complete_primer_lists(p3retval retval,
 			P3GlobalSettings pa, seq_args sa,
-			dpal_arg_holder dpal_arg_to_use2, thal_arg_holder thal_arg_to_use2,
+			DPAlArgHolder dpal_arg_to_use2, thal_arg_holder thal_arg_to_use2,
 			thal_arg_holder thal_oligo_arg_to_use2) throws PrimerRecordException, AlignmentException, ThermodynamicAlignmentException {
 
 
@@ -1739,10 +1739,10 @@ public class LibPrimer3 {
 	 * @throws AlignmentException 
 	 */
 	private static int pick_primer_range(int start, int length,
-			oligo_array oligo,
+			OligoArray oligo,
 			P3GlobalSettings pa,
 			seq_args sa,
-			dpal_arg_holder dpal_arg_to_use,
+			DPAlArgHolder dpal_arg_to_use,
 			thal_arg_holder thal_arg_to_use,
 			p3retval retval) throws PrimerRecordException, AlignmentException, ThermodynamicAlignmentException {
 		/* Variables for the loop */

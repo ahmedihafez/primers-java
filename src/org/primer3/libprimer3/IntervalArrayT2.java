@@ -2,7 +2,7 @@ package org.primer3.libprimer3;
 
 import java.util.regex.Pattern;
 
-public class interval_array_t2 {
+public class IntervalArrayT2 {
 
 	// refactor to a list array
 	int[][] pairs = new int[LibPrimer3.PR_MAX_INTERVAL_ARRAY][2];
@@ -34,8 +34,8 @@ public class interval_array_t2 {
 
 	static final String numSep = ",";
 	static final String intervalSep = " ";
-	static public interval_array_t2 create_interval(String datum) {
-		interval_array_t2 tar2 = new interval_array_t2();
+	static public IntervalArrayT2 create_interval(String datum) {
+		IntervalArrayT2 tar2 = new IntervalArrayT2();
 
 
 		String[] intervalStrs = datum.split(Pattern.quote(intervalSep));

@@ -20,16 +20,16 @@ public class seq_args {
 	 * "included region").
 	 */
 
-	interval_array_t2 tar2 = new interval_array_t2(); /* The targets.  tar2.pairs[i][0] is the start
+	IntervalArrayT2 tar2 = new IntervalArrayT2(); /* The targets.  tar2.pairs[i][0] is the start
 	 * of the ith target, tar2.pairs[i][1] its length.  */
 
-	interval_array_t2 excl2 = new interval_array_t2();/* The number of excluded regions. */
+	IntervalArrayT2 excl2 = new IntervalArrayT2();/* The number of excluded regions. */
 
-	interval_array_t2 excl_internal2 = new interval_array_t2(); 
+	IntervalArrayT2 excl_internal2 = new IntervalArrayT2(); 
 	/* Number of excluded regions for internal
 	           oligo; similar to excl2.*/
 
-	interval_array_t4 ok_regions = new interval_array_t4();
+	IntervalArrayT4 ok_regions = new IntervalArrayT4();
 
 	int[] primer_overlap_junctions= new int[LibPrimer3.PR_MAX_INTERVAL_ARRAY]; 
 	/* List of overlap junction positions. */
@@ -190,7 +190,7 @@ public class seq_args {
 	 * @param datum
 	 */
 	public void p3_set_sa_ok_regions(String datum) {
-		this.ok_regions = new interval_array_t4();
+		this.ok_regions = new IntervalArrayT4();
 		String numSep = ",";
 		String intervalSep = ";";
 
@@ -217,7 +217,7 @@ public class seq_args {
 	 * @param datum
 	 */
 	public void p3_set_sa_tar2(String datum) {
-		this.tar2 = interval_array_t2.create_interval(datum);	
+		this.tar2 = IntervalArrayT2.create_interval(datum);	
 	}
 
 
@@ -227,7 +227,7 @@ public class seq_args {
 	 * @param datum
 	 */
 	public void p3_set_sa_excl2(String datum) {
-		this.excl2 = interval_array_t2.create_interval(datum);	
+		this.excl2 = IntervalArrayT2.create_interval(datum);	
 
 	}
 	/**
@@ -235,7 +235,7 @@ public class seq_args {
 	 * @param datum
 	 */
 	public void p3_set_sa_excl_internal2(String datum) {
-		this.excl_internal2 = interval_array_t2.create_interval(datum);	
+		this.excl_internal2 = IntervalArrayT2.create_interval(datum);	
 
 	}
 	/**
@@ -512,14 +512,14 @@ public class seq_args {
 				first_index,
 				nonfatal_err, this, warning, false)) 
 			return true;
-		if (interval_array_t2._check_and_adjust_1_interval("PRIMER_PAIR_OK_REGION_LIST",
+		if (IntervalArrayT2._check_and_adjust_1_interval("PRIMER_PAIR_OK_REGION_LIST",
 				this.ok_regions.count, 
 				this.ok_regions.left_pairs,
 				seq_len,
 				first_index,
 				nonfatal_err, this, warning, true)) 
 			return true;
-		if (interval_array_t2._check_and_adjust_1_interval("PRIMER_PAIR_OK_REGION_LIST",
+		if (IntervalArrayT2._check_and_adjust_1_interval("PRIMER_PAIR_OK_REGION_LIST",
 				this.ok_regions.count, 
 				this.ok_regions.right_pairs,
 				seq_len,

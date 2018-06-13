@@ -1,6 +1,6 @@
 package org.primer3.libprimer3;
 
-public class interval_array_t4 {
+public class IntervalArrayT4 {
 	  int[][] left_pairs = new int[LibPrimer3.PR_MAX_INTERVAL_ARRAY][2];
 	  int[][] right_pairs= new int[LibPrimer3.PR_MAX_INTERVAL_ARRAY][2];
 	  boolean any_left = false ;  /* set to 1 if the empty pair ",," is given for any

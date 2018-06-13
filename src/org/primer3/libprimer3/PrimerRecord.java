@@ -74,7 +74,7 @@ public class PrimerRecord {
 					 * best pairs.
 					 */
 
-	oligo_problems problems;
+	OligoProblems problems;
 	boolean overlaps_overlap_position;
 
 	char template_mispriming_ok; /*
@@ -100,7 +100,7 @@ public class PrimerRecord {
 	}
 
 	public void initialize_op() {
-		this.problems = new oligo_problems();
+		this.problems = new OligoProblems();
 		this.problems.prob = 0L; /* 0UL is the unsigned long zero */
 	}
 
@@ -710,7 +710,7 @@ public class PrimerRecord {
 	 * @throws ThermodynamicAlignmentException
 	 */
 	public void calc_and_check_oligo_features(P3GlobalSettings pa,
-			oligo_type otype, dpal_arg_holder dpal_arg_to_use,
+			oligo_type otype, DPAlArgHolder dpal_arg_to_use,
 			thal_arg_holder thal_arg_to_use, seq_args sa, oligo_stats stats,
 			p3retval retval,
 			/* This is 5'.3' on the template sequence: */
@@ -1252,7 +1252,7 @@ public class PrimerRecord {
 
 	public void oligo_repeat_library_mispriming(P3GlobalSettings pa,
 			seq_args sa, oligo_type l, oligo_stats ostats,
-			dpal_arg_holder dpal_arg_to_use, StringBuilder glob_err)
+			DPAlArgHolder dpal_arg_to_use, StringBuilder glob_err)
 			throws AlignmentException {
 		PrimerRecord h = this;
 		double w;
@@ -1404,7 +1404,7 @@ public class PrimerRecord {
 	}
 
 	void oligo_compl(PrimersOligosArguments po_args, oligo_stats ostats,
-			dpal_arg_holder dpal_arg_to_use, char[] oligo_seq,
+			DPAlArgHolder dpal_arg_to_use, char[] oligo_seq,
 			char[] revc_oligo_seq) throws AlignmentException {
 		this.self_any = LibPrimer3.align(oligo_seq, revc_oligo_seq,
 				dpal_arg_to_use.local);

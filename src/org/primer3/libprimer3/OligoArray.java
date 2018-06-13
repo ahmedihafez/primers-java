@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class oligo_array {
+public class OligoArray {
 
 	 /* Array of oligo (primer) records. */
 	 public List<PrimerRecord> oligo = new ArrayList<PrimerRecord>();
@@ -26,7 +26,7 @@ public class oligo_array {
 	public int extreme;
 
 
-	public oligo_array(oligo_type otType) {
+	public OligoArray(oligo_type otType) {
 		this.type = otType;
 //		if(type == oligo_type.OT_LEFT)
 //		{

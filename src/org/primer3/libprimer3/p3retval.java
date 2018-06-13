@@ -11,11 +11,11 @@ import org.primer3.sequence.Sequence;
 public class p3retval {
 
 	/* Arrays of oligo (primer) records. */
-	public oligo_array fwd;
+	public OligoArray fwd;
 
-	public oligo_array intl;
+	public OligoArray intl;
 
-	public oligo_array rev;
+	public OligoArray rev;
 
 	/* Array of best primer pairs */
 	public pair_array_t best_pairs ;
@@ -47,9 +47,9 @@ public class p3retval {
 
 	public p3retval ()
 	{
-		this.fwd = new oligo_array(oligo_type.OT_LEFT);
-		this.intl = new oligo_array( oligo_type.OT_INTL);
-		this.rev = new oligo_array(oligo_type.OT_RIGHT);
+		this.fwd = new OligoArray(oligo_type.OT_LEFT);
+		this.intl = new OligoArray( oligo_type.OT_INTL);
+		this.rev = new OligoArray(oligo_type.OT_RIGHT);
 
 		this.fwd.type  = oligo_type.OT_LEFT;
 		this.intl.type = oligo_type.OT_INTL;
@@ -58,16 +58,16 @@ public class p3retval {
 		best_pairs = new pair_array_t() ;
 	}
 
-	public oligo_array p3_get_rv_rev()
+	public OligoArray p3_get_rv_rev()
 	{
 		return rev;
 	}
 
-	public oligo_array p3_get_rv_fwd()
+	public OligoArray p3_get_rv_fwd()
 	{
 		return fwd;
 	}
-	public oligo_array p3_get_rv_intl()
+	public OligoArray p3_get_rv_intl()
 	{
 		return intl;
 	}
@@ -566,7 +566,7 @@ public class p3retval {
 	
 
 
-	public void add_must_use_warnings(String text, oligo_array oarray) {
+	public void add_must_use_warnings(String text, OligoArray oarray) {
 
 
 		oligo_stats stats = oarray.expl;
