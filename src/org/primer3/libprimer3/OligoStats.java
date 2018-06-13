@@ -3,7 +3,7 @@ package org.primer3.libprimer3;
 import java.util.Formatter;
 
 
-public class oligo_stats {
+public class OligoStats {
 	int considered;          /* Total number of tested oligos of given type   */
 	int ns;                  /* Number of oligos rejected because of Ns       */
 	int target;              /* Overlapping targets.                          */

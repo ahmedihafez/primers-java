@@ -11,7 +11,7 @@ import org.primer3.sequence.Sequence;
  * Arguments relating to a single particular source sequence (for which
  * we will pick primer(s), etc.
  */
-public class seq_args {
+public class SeqArgs {
 
 	/* The net next 3 slots are presented as
 	 * indexes within the sequence slot, but
@@ -87,7 +87,7 @@ public class seq_args {
 	/** 
 	 * default init from create_seq_arg()
 	 */
-	public seq_args()
+	public SeqArgs()
 	{
 		this.start_codon_pos = LibPrimer3.PR_DEFAULT_START_CODON_POS;
 		this.incl_l = -1; /* Indicates logical NULL. */
@@ -103,9 +103,9 @@ public class seq_args {
 	}
 	
 	
-	static public seq_args create_seq_arg() 
+	static public SeqArgs create_seq_arg() 
 	{
-		seq_args r = new seq_args();
+		SeqArgs r = new SeqArgs();
 
 //		r.start_codon_pos = LibPrimer3.PR_DEFAULT_START_CODON_POS;
 //		r.incl_l = -1; /* Indicates logical NULL. */
@@ -558,11 +558,11 @@ public class seq_args {
 	 */
 	public void _adjust_seq_args(
 			P3GlobalSettings pa,
-			p3retval retval) {
+			P3RetVal retval) {
 
 
 
-		seq_args sa = this;
+		SeqArgs sa = this;
 		StringBuilder nonfatal_err = retval.per_sequence_err;
 		StringBuilder warning = retval .warnings;
 
@@ -716,7 +716,7 @@ public class seq_args {
 
 
 
-	static boolean _check_and_adjust_overlap_pos(seq_args sa,
+	static boolean _check_and_adjust_overlap_pos(SeqArgs sa,
 			int[] list,
 			int count, 
 			String tag,
@@ -765,7 +765,7 @@ public class seq_args {
 	public void p3_print_args() {
 		
 		
-		seq_args  s =  this;
+		SeqArgs  s =  this;
 		System.out.format("=============\n");
 		System.out.format("BEGIN SEQUENCE ARGS\n") ;
 		/* TODO: complete the statments for dumping this data

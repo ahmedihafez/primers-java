@@ -8,16 +8,16 @@ import javax.swing.text.AbstractDocument.LeafElement;
 import org.primer3.libprimer3.LibPrimer3;
 import org.primer3.libprimer3.P3GlobalSettings;
 import org.primer3.libprimer3.PrimerRecord;
-import org.primer3.libprimer3.oligo_type;
-import org.primer3.libprimer3.p3_output_type;
-import org.primer3.libprimer3.p3retval;
-import org.primer3.libprimer3.seq_args;
+import org.primer3.libprimer3.OligoType;
+import org.primer3.libprimer3.P3OutputType;
+import org.primer3.libprimer3.P3RetVal;
+import org.primer3.libprimer3.SeqArgs;
 import org.primer3.oligotm.OligoTMCalculator;
 import org.primer3.thal.ThAl;
 
 public class SimplePrimerFinder {
 	protected int default_version = 2;
-	protected seq_args sarg  = new seq_args();
+	protected SeqArgs sarg  = new SeqArgs();
 	protected P3GlobalSettings global_pa = P3GlobalSettings.p3_create_global_settings(default_version);
 	
 	

@@ -6,8 +6,8 @@ import java.util.Scanner;
 
 import org.primer3.libprimer3.P3GlobalSettings;
 import org.primer3.libprimer3.P3Task;
-import org.primer3.libprimer3.p3retval;
-import org.primer3.libprimer3.seq_args;
+import org.primer3.libprimer3.P3RetVal;
+import org.primer3.libprimer3.SeqArgs;
 import org.primer3.p3_seq_lib.seq_lib;
 
 public class boulder {
@@ -25,7 +25,7 @@ public class boulder {
 	                        boolean echo_output,
 	                        p3_file_type file_type,
 	                        P3GlobalSettings pa, 
-	                        seq_args sa,
+	                        SeqArgs sa,
 	                        StringBuilder glob_err,
 	                        StringBuilder non_fatal_err,
 	                        StringBuilder warnings,
@@ -872,7 +872,7 @@ public class boulder {
 	                 boolean echo_output,
 	                 boolean strict_tags,
 	                 P3GlobalSettings pa, 
-	                 seq_args sarg,
+	                 SeqArgs sarg,
 	                 StringBuilder fatal_err,
 	                 StringBuilder nonfatal_err,
 	                 StringBuilder warnings,
@@ -1017,7 +1017,7 @@ public class boulder {
 
 
 	public static void print_format_output(int io_version,
-			P3GlobalSettings global_pa, seq_args sarg, p3retval retval,
+			P3GlobalSettings global_pa, SeqArgs sarg, P3RetVal retval,
 			String pr_release, int explain_flag) {
 		// TODO Auto-generated method stub
 		

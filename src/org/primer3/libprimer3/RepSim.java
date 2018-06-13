@@ -3,7 +3,7 @@ package org.primer3.libprimer3;
 /* This struct captures informatin about the similarity of
    an oligo (primer) to elements in a mispriming (repeat)
    library (which is read in from a fasta file). */
-public class rep_sim {
+public class RepSim {
 	/** Name of the sequence format with maximum
        similarity to the oligo. */
 	String name;       

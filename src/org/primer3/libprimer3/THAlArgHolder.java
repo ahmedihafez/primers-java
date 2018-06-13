@@ -3,7 +3,7 @@ package org.primer3.libprimer3;
 import org.primer3.thal.ThermodynamicAlignmentType;
 import org.primer3.thal.ThermodynamicAlignmentArguments;
 
-public class thal_arg_holder {
+public class THAlArgHolder {
 	
 	ThermodynamicAlignmentArguments any;
 	ThermodynamicAlignmentArguments end1;
@@ -13,8 +13,8 @@ public class thal_arg_holder {
 	
 	
 	
-	static public thal_arg_holder   create_thal_arg_holder (PrimersOligosArguments po_args) {
-		thal_arg_holder h = new thal_arg_holder();
+	static public THAlArgHolder   create_thal_arg_holder (PrimersOligosArguments po_args) {
+		THAlArgHolder h = new THAlArgHolder();
 		
 		h.any = new  ThermodynamicAlignmentArguments();
 		h.any.setThAlDefaultArgs();

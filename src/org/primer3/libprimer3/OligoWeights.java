@@ -5,7 +5,7 @@ package org.primer3.libprimer3;
  * retained _across_ different input records.  (These are the so-called
  * "Global" arguments in the documentation.)
  */
-public class oligo_weights {
+public class OligoWeights {
 
 	double compl_any;
 	double compl_any_th;

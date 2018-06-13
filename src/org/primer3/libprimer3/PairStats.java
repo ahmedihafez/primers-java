@@ -2,7 +2,7 @@ package org.primer3.libprimer3;
 
 import java.util.Formatter;
 
-public class pair_stats {
+public class PairStats {
   int considered;          /* Total number of pairs or triples tested.      */
   int product;             /* Pairs providing incorrect product size.       */
   int target;              /* Pairs without any target between primers.     */

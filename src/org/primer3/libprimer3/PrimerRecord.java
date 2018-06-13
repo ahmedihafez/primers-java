@@ -12,9 +12,9 @@ import org.primer3.thal.ThermodynamicAlignmentArguments;
 
 public class PrimerRecord {
 	// new add here and should be maintained
-	public oligo_type rec_type;
+	public OligoType rec_type;
 
-	rep_sim repeat_sim = new rep_sim();
+	RepSim repeat_sim = new RepSim();
 	/*
 	 * Information on the best repeat library (mispriming library) match for
 	 * this oligo (primer), plus additional scores.
@@ -402,11 +402,11 @@ public class PrimerRecord {
 	/**
 	 * Calculate the part of the objective function due to one primer.
 	 */
-	public double p_obj_fn(P3GlobalSettings pa, oligo_type type)
+	public double p_obj_fn(P3GlobalSettings pa, OligoType type)
 			throws PrimerRecordException {
 		double sum = 0;
 
-		if (type == oligo_type.OT_LEFT || type == oligo_type.OT_RIGHT) {
+		if (type == OligoType.OT_LEFT || type == OligoType.OT_RIGHT) {
 			if (pa.primersArgs.weights.temp_gt > 0
 					&& this.temp > pa.primersArgs.getOptTm())
 				sum += pa.primersArgs.weights.temp_gt
@@ -570,7 +570,7 @@ public class PrimerRecord {
 										.oligo_max_template_mispriming_thermod()));
 			}
 			return sum;
-		} else if (type == oligo_type.OT_INTL) {
+		} else if (type == OligoType.OT_INTL) {
 			if (pa.oligosArgs.weights.temp_gt > 0
 					&& this.temp > pa.oligosArgs.getOptTm())
 				sum += pa.oligosArgs.weights.temp_gt
@@ -709,9 +709,9 @@ public class PrimerRecord {
 	 * @throws ThermodynamicAlignmentException
 	 */
 	public void calc_and_check_oligo_features(P3GlobalSettings pa,
-			oligo_type otype, DPAlArgHolder dpal_arg_to_use,
-			thal_arg_holder thal_arg_to_use, seq_args sa, oligo_stats stats,
-			p3retval retval,
+			OligoType otype, DPAlArgHolder dpal_arg_to_use,
+			THAlArgHolder thal_arg_to_use, SeqArgs sa, OligoStats stats,
+			P3RetVal retval,
 			/* This is 5'.3' on the template sequence: */
 			char[] input_oligo_seq) throws AlignmentException,
 			ThermodynamicAlignmentException {
@@ -726,7 +726,7 @@ public class PrimerRecord {
 		// oligo_type l = otype;
 		int poly_x, max_poly_x;
 		boolean must_use = this.must_use;
-		boolean three_conditions = (must_use || pa.file_flag != 0 || retval.output_type == p3_output_type.primer_list);
+		boolean three_conditions = (must_use || pa.file_flag != 0 || retval.output_type == P3OutputType.primer_list);
 		char[] seq = sa.trimmed_seq;
 		ThermodynamicAlignmentArguments thal_args_for_template_mispriming = LibPrimer3.use_end_for_th_template_mispriming == 1 ? thal_arg_to_use.end1
 				: thal_arg_to_use.any;
@@ -758,7 +758,7 @@ public class PrimerRecord {
 
 		s1_rev = Sequence.p3_reverse_complement(input_oligo_seq);
 
-		if (oligo_type.OT_RIGHT == otype) {
+		if (OligoType.OT_RIGHT == otype) {
 			oligo_seq = s1_rev;
 			revc_oligo_seq = input_oligo_seq;
 		} else {
@@ -766,14 +766,14 @@ public class PrimerRecord {
 			revc_oligo_seq = s1_rev;
 		}
 
-		if (oligo_type.OT_INTL == otype) {
+		if (OligoType.OT_INTL == otype) {
 			po_args = pa.oligosArgs;
 		} else {
 			po_args = pa.primersArgs;
 		}
 
 		/* Set j and k, and sanity check */
-		if (oligo_type.OT_LEFT == otype || oligo_type.OT_INTL == otype) {
+		if (OligoType.OT_LEFT == otype || OligoType.OT_INTL == otype) {
 			j = this.start;
 			three_prime_pos = k = j + this.length - 1;
 		} else {
@@ -786,7 +786,7 @@ public class PrimerRecord {
 		if (k < sa.incl_l)
 			; // PR_ASSERT TRIMMED_SEQ_LEN
 
-		if ((otype == oligo_type.OT_LEFT)
+		if ((otype == OligoType.OT_LEFT)
 				&& !(sa.start_codon_pos <= LibPrimer3.PR_DEFAULT_START_CODON_POS)
 				/*
 				 * Make sure the primer would amplify at least part of the ORF.
@@ -803,9 +803,9 @@ public class PrimerRecord {
 		if (pa.isLowercaseMasking()) {
 			char[] sequence_check = sa.trimmed_orig_seq;
 			if (pa.isMaskTemplate()) {
-				if (otype == oligo_type.OT_LEFT)
+				if (otype == OligoType.OT_LEFT)
 					sequence_check = sa.trimmed_masked_seq;
-				else if (otype == oligo_type.OT_RIGHT)
+				else if (otype == OligoType.OT_RIGHT)
 					sequence_check = sa.trimmed_masked_seq_r;
 			}
 			// is_lowercase_masked(three_prime_pos,sequence_check,this, stats)
@@ -851,13 +851,13 @@ public class PrimerRecord {
 
 		if (pa.getPrimerTask() == P3Task.PICK_SEQUENCING_PRIMERS) {
 			this.position_penalty = 0.0;
-		} else if (otype != oligo_type.OT_INTL
+		} else if (otype != OligoType.OT_INTL
 				&& pa.isDefaultPositionPenalties()
 				&& sa.tar2.oligo_overlaps_interval(j, k - j + 1)) {
 			this.position_penalty = 0.0;
 			this.bf_set_infinite_pos_penalty(1);
 			this.bf_set_overlaps_target(1);
-		} else if (otype != oligo_type.OT_INTL
+		} else if (otype != OligoType.OT_INTL
 				&& !pa.isDefaultPositionPenalties() && 1 == sa.tar2.count) {
 			this.compute_position_penalty(pa, sa, otype);
 			if (this.bf_get_infinite_pos_penalty()) {
@@ -869,14 +869,14 @@ public class PrimerRecord {
 		}
 
 		if (!sa.PR_START_CODON_POS_IS_NULL()) {
-			if (oligo_type.OT_LEFT == otype) {
+			if (OligoType.OT_LEFT == otype) {
 				if (sa.start_codon_pos > this.start)
 					this.position_penalty = (sa.start_codon_pos - this.start)
 							* OUTSIDE_START_WT;
 				else
 					this.position_penalty = (this.start - sa.start_codon_pos)
 							* INSIDE_START_WT;
-			} else if (oligo_type.OT_RIGHT == otype) {
+			} else if (OligoType.OT_RIGHT == otype) {
 				if (-1 == retval.stop_codon_pos) {
 					this.position_penalty = ((sa.incl_l) - this.start - 1)
 							* INSIDE_STOP_WT;
@@ -891,15 +891,15 @@ public class PrimerRecord {
 		}
 
 		/* TO DO Simplify logic here */
-		if (otype != oligo_type.OT_INTL
+		if (otype != OligoType.OT_INTL
 				&& sa.excl2.oligo_overlaps_interval(j, k - j + 1))
 			bf_set_overlaps_excl_region(1);
 
-		if (otype == oligo_type.OT_INTL
+		if (otype == OligoType.OT_INTL
 				&& sa.excl_internal2.oligo_overlaps_interval(j, k - j + 1))
 			bf_set_overlaps_excl_region(1);
 
-		if (otype != oligo_type.OT_INTL && bf_get_overlaps_target()) {
+		if (otype != OligoType.OT_INTL && bf_get_overlaps_target()) {
 			op_set_overlaps_target();
 			stats.target++;
 			if (!must_use)
@@ -914,7 +914,7 @@ public class PrimerRecord {
 		}
 
 		/* Check if the oligo is included in any ok region */
-		if ((otype == oligo_type.OT_LEFT) && (sa.ok_regions.count > 0)
+		if ((otype == OligoType.OT_LEFT) && (sa.ok_regions.count > 0)
 				&& (!sa.ok_regions.any_left)) {
 			boolean included = false;
 			for (i = 0; i < sa.ok_regions.count; i++) {
@@ -932,7 +932,7 @@ public class PrimerRecord {
 					return;
 			}
 		}
-		if ((otype == oligo_type.OT_RIGHT) && (sa.ok_regions.count > 0)
+		if ((otype == OligoType.OT_RIGHT) && (sa.ok_regions.count > 0)
 				&& (!sa.ok_regions.any_right)) {
 			boolean included = false;
 			for (i = 0; i < sa.ok_regions.count; i++) {
@@ -963,7 +963,7 @@ public class PrimerRecord {
 				return;
 		}
 
-		if (oligo_type.OT_LEFT == otype || oligo_type.OT_RIGHT == otype) {
+		if (OligoType.OT_LEFT == otype || OligoType.OT_RIGHT == otype) {
 			/*
 			 * gc_clamp is applicable only to primers (as opposed to primers and
 			 * hybridzations oligos.
@@ -985,7 +985,7 @@ public class PrimerRecord {
 		}
 
 		if (pa.getMaxEndGC() < 5
-				&& (oligo_type.OT_LEFT == otype || oligo_type.OT_RIGHT == otype)) {
+				&& (OligoType.OT_LEFT == otype || OligoType.OT_RIGHT == otype)) {
 			/*
 			 * The CGs are only counted in the END of primers (as opposed to
 			 * primers and hybridzations oligos.
@@ -1057,7 +1057,7 @@ public class PrimerRecord {
 		/*
 		 * End stability is applicable only to primers (not to oligos)
 		 */
-		if (oligo_type.OT_LEFT == otype || oligo_type.OT_RIGHT == otype) {
+		if (OligoType.OT_LEFT == otype || OligoType.OT_RIGHT == otype) {
 			if ((this.end_stability = OligoTMCalculator.end_oligodg(oligo_seq, 5,
 					pa.mtMethod)) > pa.getMaxEndStability()) {
 				/* Must not be called on a hybridization probe / internal oligo: */
@@ -1069,7 +1069,7 @@ public class PrimerRecord {
 		}
 
 		if ((must_use || pa.file_flag != 0
-				|| retval.output_type == p3_output_type.primer_list
+				|| retval.output_type == P3OutputType.primer_list
 				|| po_args.weights.compl_any > 0 || po_args.weights.compl_end > 0)
 				&& !pa.isThermodynamicOligoAlignment()) {
 
@@ -1085,7 +1085,7 @@ public class PrimerRecord {
 		} else {
 			/* Thermodynamical approach: for primers only */
 			if ((must_use || pa.file_flag != 0
-					|| retval.output_type == p3_output_type.primer_list
+					|| retval.output_type == P3OutputType.primer_list
 					|| po_args.weights.compl_any_th > 0 || po_args.weights.compl_end_th > 0)
 					&& pa.isThermodynamicOligoAlignment()) {
 				oligo_compl_thermod(po_args, stats, thal_arg_to_use, oligo_seq,
@@ -1142,7 +1142,7 @@ public class PrimerRecord {
 
 		if (three_conditions
 				|| ( /* Do we need template mispriming for the penalty function? */
-				(oligo_type.OT_RIGHT == otype || oligo_type.OT_LEFT == otype) && ((pa.primersArgs.weights.template_mispriming > 0 && !pa
+				(OligoType.OT_RIGHT == otype || OligoType.OT_LEFT == otype) && ((pa.primersArgs.weights.template_mispriming > 0 && !pa
 						.isThermodynamicTemplateAlignment()) || (pa.primersArgs.weights.template_mispriming_th > 0 && pa
 						.isThermodynamicTemplateAlignment())))) {
 			if (OK_OR_MUST_USE()) {
@@ -1168,7 +1168,7 @@ public class PrimerRecord {
 		}
 
 		for (for_i = 0; for_i < sa.primer_overlap_junctions_count; for_i++) {
-			if (oligo_type.OT_LEFT == otype
+			if (OligoType.OT_LEFT == otype
 					&& ((this.start + pa.getMin5PrimeOverlapOfJunction() - 1) <= sa.primer_overlap_junctions[for_i])
 					&& ((this.start + this.length - pa
 							.getMin3PrimeOverlapOfJunction())) > sa.primer_overlap_junctions[for_i]) {
@@ -1176,7 +1176,7 @@ public class PrimerRecord {
 				/* no need to continue checking */
 				break;
 			}
-			if (oligo_type.OT_RIGHT == otype
+			if (OligoType.OT_RIGHT == otype
 					&& ((this.start - this.length + pa
 							.getMin3PrimeOverlapOfJunction()) <= sa.primer_overlap_junctions[for_i])
 					&& ((this.start - pa.getMin5PrimeOverlapOfJunction() + 1)) > sa.primer_overlap_junctions[for_i]) {
@@ -1202,8 +1202,8 @@ public class PrimerRecord {
 
 	}
 
-	public void oligo_template_mispriming(P3GlobalSettings pa, seq_args sa,
-			oligo_type l, oligo_stats ostats, DPAlignmentArgs d_align_args,
+	public void oligo_template_mispriming(P3GlobalSettings pa, SeqArgs sa,
+			OligoType l, OligoStats ostats, DPAlignmentArgs d_align_args,
 			ThermodynamicAlignmentArguments t_align_args) throws AlignmentException,
 			ThermodynamicAlignmentException {
 		/* Check if we already did this and the oligo was ok. */
@@ -1224,7 +1224,7 @@ public class PrimerRecord {
 		char[] s_r = Sequence.p3_reverse_complement(s);
 
 		/* Calculate maximum similarity to ectopic sites in the template. */
-		if (l == oligo_type.OT_RIGHT || l == oligo_type.OT_LEFT) {
+		if (l == OligoType.OT_RIGHT || l == OligoType.OT_LEFT) {
 			if (!pa.isThermodynamicTemplateAlignment()
 					&& pa.needTemplateMispriming())
 				LibPrimer3.primer_mispriming_to_template(h, pa, sa, l, ostats,
@@ -1236,21 +1236,21 @@ public class PrimerRecord {
 		}
 	}
 
-	int[] getIndeces(oligo_type l) {
+	int[] getIndeces(OligoType l) {
 		/*
 		 * Indexes of first and last bases of the oligo in sa.trimmed_seq, that
 		 * is, WITHIN THE INCLUDED REGION.
 		 */
-		int first = (l == oligo_type.OT_LEFT || l == oligo_type.OT_INTL) ? this.start
+		int first = (l == OligoType.OT_LEFT || l == OligoType.OT_INTL) ? this.start
 				: this.start - this.length + 1;
-		int last = (l == oligo_type.OT_LEFT || l == oligo_type.OT_INTL) ? this.start
+		int last = (l == OligoType.OT_LEFT || l == OligoType.OT_INTL) ? this.start
 				+ this.length - 1
 				: this.start;
 		return new int[] { first, last };
 	}
 
 	public void oligo_repeat_library_mispriming(P3GlobalSettings pa,
-			seq_args sa, oligo_type l, oligo_stats ostats,
+			SeqArgs sa, OligoType l, OligoStats ostats,
 			DPAlArgHolder dpal_arg_to_use, StringBuilder glob_err)
 			throws AlignmentException {
 		PrimerRecord h = this;
@@ -1262,7 +1262,7 @@ public class PrimerRecord {
 		int max_lib_compl;
 
 		/* First, check the oligo against the repeat library. */
-		if (l == oligo_type.OT_INTL) {
+		if (l == OligoType.OT_INTL) {
 			lib = pa.oligosArgs.repeat_lib;
 			max_lib_compl = (int) pa.oligosArgs.getMaxRepeatCompl();
 		} else {
@@ -1287,7 +1287,7 @@ public class PrimerRecord {
 			h.repeat_sim.name = lib.names.get(0);
 
 			for (i = 0; i < lib.seq_num; i++) {
-				if (l == oligo_type.OT_LEFT)
+				if (l == OligoType.OT_LEFT)
 					w = lib.weight.get(i)
 							* LibPrimer3
 									.align(s,
@@ -1295,7 +1295,7 @@ public class PrimerRecord {
 											(pa.isLibAmbiguityCodesConsensus() ? dpal_arg_to_use.local_end_ambig
 													: dpal_arg_to_use.local_end));
 
-				else if (l == oligo_type.OT_INTL)
+				else if (l == OligoType.OT_INTL)
 					w = lib.weight.get(i)
 							* LibPrimer3
 									.align(s,
@@ -1351,11 +1351,11 @@ public class PrimerRecord {
 	 * @param l
 	 * @return
 	 */
-	private char[] oligo_compute_sequence_and_reverse(seq_args sa, oligo_type l) {
+	private char[] oligo_compute_sequence_and_reverse(SeqArgs sa, OligoType l) {
 
-		int first = (l == oligo_type.OT_LEFT || l == oligo_type.OT_INTL) ? this.start
+		int first = (l == OligoType.OT_LEFT || l == OligoType.OT_INTL) ? this.start
 				: this.start - this.length + 1;
-		int last = (l == oligo_type.OT_LEFT || l == oligo_type.OT_INTL) ? this.start
+		int last = (l == OligoType.OT_LEFT || l == OligoType.OT_INTL) ? this.start
 				+ this.length - 1
 				: this.start;
 		return Sequence._pr_substr(sa.trimmed_seq, first, this.length);
@@ -1366,8 +1366,8 @@ public class PrimerRecord {
 	 * we use as an approximation for both secondary structure and self
 	 * primer-dimer.
 	 */
-	void oligo_hairpin(PrimersOligosArguments po_args, oligo_stats ostats,
-			thal_arg_holder thal_arg_to_use, char[] oligo_seq)
+	void oligo_hairpin(PrimersOligosArguments po_args, OligoStats ostats,
+			THAlArgHolder thal_arg_to_use, char[] oligo_seq)
 			throws ThermodynamicAlignmentException {
 		this.hairpin_th = LibPrimer3.align_thermod(oligo_seq, oligo_seq,
 				thal_arg_to_use.hairpin_th);
@@ -1379,7 +1379,7 @@ public class PrimerRecord {
 	}
 
 	void oligo_compl_thermod(PrimersOligosArguments po_args,
-			oligo_stats ostats, thal_arg_holder thal_arg_to_use,
+			OligoStats ostats, THAlArgHolder thal_arg_to_use,
 			char[] oligo_seq, char[] revc_oligo_seq)
 			throws ThermodynamicAlignmentException {
 		this.self_any = LibPrimer3.align_thermod(oligo_seq, revc_oligo_seq,
@@ -1402,7 +1402,7 @@ public class PrimerRecord {
 		}
 	}
 
-	void oligo_compl(PrimersOligosArguments po_args, oligo_stats ostats,
+	void oligo_compl(PrimersOligosArguments po_args, OligoStats ostats,
 			DPAlArgHolder dpal_arg_to_use, char[] oligo_seq,
 			char[] revc_oligo_seq) throws AlignmentException {
 		this.self_any = LibPrimer3.align(oligo_seq, revc_oligo_seq,
@@ -1433,8 +1433,8 @@ public class PrimerRecord {
 	 * undefined. Otherwise, return 1 (ok) if h.seq_quality and
 	 * h.seq_end_quality are within range, or else return 0.
 	 */
-	private boolean sequence_quality_is_ok(P3GlobalSettings pa, oligo_type l,
-			seq_args sa, int j, int k, oligo_stats global_oligo_stats,
+	private boolean sequence_quality_is_ok(P3GlobalSettings pa, OligoType l,
+			SeqArgs sa, int j, int k, OligoStats global_oligo_stats,
 			PrimersOligosArguments po_args) {
 
 		int i, min_q, min_q_end, m, q;
@@ -1448,13 +1448,13 @@ public class PrimerRecord {
 		q = pa.getQualityRangeMax();
 
 		min_q = po_args.getMinQuality();
-		if (oligo_type.OT_LEFT == l || oligo_type.OT_RIGHT == l) {
+		if (OligoType.OT_LEFT == l || OligoType.OT_RIGHT == l) {
 			min_q_end = po_args.getMinEndQuality();
 		} else {
 			min_q_end = min_q;
 		}
 
-		if (oligo_type.OT_LEFT == l || oligo_type.OT_INTL == l) {
+		if (OligoType.OT_LEFT == l || OligoType.OT_INTL == l) {
 
 			for (i = k - 4; i <= k; i++) {
 				if (i < j)
@@ -1472,7 +1472,7 @@ public class PrimerRecord {
 			}
 			min_q = q;
 
-		} else if (oligo_type.OT_RIGHT == l) {
+		} else if (OligoType.OT_RIGHT == l) {
 			for (i = j; i < j + 5; i++) {
 				if (i > k)
 					break;
@@ -1503,7 +1503,7 @@ public class PrimerRecord {
 			return false;
 		}
 
-		if (oligo_type.OT_LEFT == l || oligo_type.OT_RIGHT == l) {
+		if (OligoType.OT_LEFT == l || OligoType.OT_RIGHT == l) {
 			if (this.seq_end_quality < po_args.getMinEndQuality()) {
 				op_set_low_end_sequence_quality();
 				global_oligo_stats.seq_quality++;
@@ -1513,8 +1513,8 @@ public class PrimerRecord {
 		return retval;
 	}
 
-	private void compute_position_penalty(P3GlobalSettings pa, seq_args sa,
-			oligo_type o_type) {
+	private void compute_position_penalty(P3GlobalSettings pa, SeqArgs sa,
+			OligoType o_type) {
 		int three_prime_base;
 		boolean inside_flag = false;
 		int target_begin, target_end;
@@ -1525,12 +1525,12 @@ public class PrimerRecord {
 		target_begin = sa.tar2.pairs[0][0];
 		target_end = target_begin + sa.tar2.pairs[0][1] - 1;
 
-		three_prime_base = oligo_type.OT_LEFT == o_type ? this.start
+		three_prime_base = OligoType.OT_LEFT == o_type ? this.start
 				+ this.length - 1 : this.start - this.length + 1;
 		this.bf_set_infinite_pos_penalty(1);
 		this.position_penalty = 0.0;
 
-		if (oligo_type.OT_LEFT == o_type) {
+		if (OligoType.OT_LEFT == o_type) {
 			if (three_prime_base <= target_end) {
 				this.bf_set_infinite_pos_penalty(0);
 				if (three_prime_base < target_begin)
@@ -1567,7 +1567,7 @@ public class PrimerRecord {
 	}
 
 	private boolean primer_must_match(P3GlobalSettings pa,
-			oligo_stats global_oligo_stats,
+			OligoStats global_oligo_stats,
 			/* This is 5'.3' on the template sequence: */
 			char[] input_oligo_seq, char[] match_three_prime,
 			char[] match_five_prime) {
@@ -1655,7 +1655,7 @@ public class PrimerRecord {
 	 * 3' end of the primer has been masked by lowercase letter. Function
 	 * created/Added by Eric Reppo, July 9, 2002
 	 */
-	private boolean is_lowercase_masked(char p, oligo_stats global_oligo_stats) {
+	private boolean is_lowercase_masked(char p, OligoStats global_oligo_stats) {
 
 		if ('a' == p || 'c' == p || 'g' == p || 't' == p) {
 			op_set_overlaps_masked_sequence();
@@ -1665,7 +1665,7 @@ public class PrimerRecord {
 		return false;
 	}
 
-	public char[] pr_oligo_sequence(seq_args sa) {
+	public char[] pr_oligo_sequence(SeqArgs sa) {
 		// int seq_len;
 
 		// TODO :: add check here
@@ -1682,7 +1682,7 @@ public class PrimerRecord {
 		// return null;
 	}
 
-	public char[] pr_oligo_rev_c_sequence(seq_args sa) {
+	public char[] pr_oligo_rev_c_sequence(SeqArgs sa) {
 		// TODO :: add check
 		int seq_len, start;
 		// PR_ASSERT(NULL != sa);

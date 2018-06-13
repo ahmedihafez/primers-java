@@ -8,7 +8,7 @@ import org.primer3.sequence.Sequence;
  * The return value for for primer3. 
  * After use, free memory with destroy_p3retval().
  */
-public class p3retval {
+public class P3RetVal {
 
 	/* Arrays of oligo (primer) records. */
 	public OligoArray fwd;
@@ -18,10 +18,10 @@ public class p3retval {
 	public OligoArray rev;
 
 	/* Array of best primer pairs */
-	public pair_array_t best_pairs ;
+	public PairArrayT best_pairs ;
 
 	/* Enum to store type of output */
-	public p3_output_type output_type;
+	public P3OutputType output_type;
 
 	/* Place for error messages */
 	// Originally was pr_append_str -. changed to StringBuilder
@@ -45,17 +45,17 @@ public class p3retval {
 	//	  
 	//  }
 
-	public p3retval ()
+	public P3RetVal ()
 	{
-		this.fwd = new OligoArray(oligo_type.OT_LEFT);
-		this.intl = new OligoArray( oligo_type.OT_INTL);
-		this.rev = new OligoArray(oligo_type.OT_RIGHT);
+		this.fwd = new OligoArray(OligoType.OT_LEFT);
+		this.intl = new OligoArray( OligoType.OT_INTL);
+		this.rev = new OligoArray(OligoType.OT_RIGHT);
 
-		this.fwd.type  = oligo_type.OT_LEFT;
-		this.intl.type = oligo_type.OT_INTL;
-		this.rev.type  = oligo_type.OT_RIGHT;
+		this.fwd.type  = OligoType.OT_LEFT;
+		this.intl.type = OligoType.OT_INTL;
+		this.rev.type  = OligoType.OT_RIGHT;
 		
-		best_pairs = new pair_array_t() ;
+		best_pairs = new PairArrayT() ;
 	}
 
 	public OligoArray p3_get_rv_rev()
@@ -72,7 +72,7 @@ public class p3retval {
 		return intl;
 	}
 
-	public pair_array_t p3_get_rv_best_pairs()
+	public PairArrayT p3_get_rv_best_pairs()
 	{
 		return best_pairs;
 	}
@@ -89,9 +89,9 @@ public class p3retval {
 	}
 
 
-	public void print_boulder(int io_version,P3GlobalSettings pa, seq_args sa, boolean   explain_flag) {
+	public void print_boulder(int io_version,P3GlobalSettings pa, SeqArgs sa, boolean   explain_flag) {
 
-		p3retval retval = this;
+		P3RetVal retval = this;
 		/* The pointers to warning tag */
 		String warning;
 
@@ -176,7 +176,7 @@ public class p3retval {
 			System.out.format("PRIMER_STOP_CODON_POSITION=%d\n", retval.stop_codon_pos);
 
 		/* How often has the loop to be done? */
-		if (retval.output_type == p3_output_type.primer_list) {
+		if (retval.output_type == P3OutputType.primer_list) {
 			/* For Primer Lists: Figure out how many primers are in
 			 * the array that can be printed. If more than needed,
 			 * set it to the number requested. */
@@ -225,7 +225,7 @@ public class p3retval {
 			/* What needs to be printed */
 			/* The conditions for primer lists */
 
-			if (retval.output_type == p3_output_type.primer_list) {
+			if (retval.output_type == P3OutputType.primer_list) {
 				/* Attach the selected primers to the pointers */
 				fwd = retval.fwd.oligo.get(i);
 				rev = retval.rev.oligo.get(i);
@@ -269,7 +269,7 @@ public class p3retval {
 			suffix = "_"+ i;
 
 			/* Print out the Pair Penalties */
-			if (retval.output_type == p3_output_type.primer_pairs) {
+			if (retval.output_type == P3OutputType.primer_pairs) {
 				System.out.format("PRIMER_PAIR%s_PENALTY=%f\n", suffix,
 						retval.best_pairs.pairs.get(i).pair_quality);
 			}
@@ -395,7 +395,7 @@ public class p3retval {
 					System.out.format("PRIMER_RIGHT%s_LIBRARY_MISPRIMING=%.2f, %s\n", suffix,
 							rev.repeat_sim.score[rev.repeat_sim.max],
 							rev.repeat_sim.name);
-				if (retval.output_type == p3_output_type.primer_pairs)
+				if (retval.output_type == P3OutputType.primer_pairs)
 					System.out.format("PRIMER_PAIR%s_LIBRARY_MISPRIMING=%.2f, %s\n", suffix,
 							retval.best_pairs.pairs.get(i).repeat_sim,
 							retval.best_pairs.pairs.get(i).rep_name);
@@ -415,7 +415,7 @@ public class p3retval {
 				if (go_rev == 1) 
 					System.out.format("PRIMER_RIGHT%s_MIN_SEQ_QUALITY=%d\n", suffix,
 							rev.seq_quality);
-				if (go_int == 1 && (retval.output_type == p3_output_type.primer_list)) 
+				if (go_int == 1 && (retval.output_type == P3OutputType.primer_list)) 
 					System.out.format("PRIMER_%s%s_MIN_SEQ_QUALITY=%d\n", int_oligo, suffix,
 							intl.seq_quality);
 				/* Has to be here and in primer pairs for backward compatibility */
@@ -468,7 +468,7 @@ public class p3retval {
 			}
 			/************************************************************************************/
 			/* Print the pair parameters*/
-			if (retval.output_type == p3_output_type.primer_pairs) {
+			if (retval.output_type == P3OutputType.primer_pairs) {
 				if (go_int == 1 && null != sa.quality) /* FIX ME - Uptate the tests */
 					System.out.format("PRIMER_%s%s_MIN_SEQ_QUALITY=%d\n", int_oligo,
 							suffix, intl.seq_quality);
@@ -537,7 +537,7 @@ public class p3retval {
 		return warning;
 	}
 
-	private void print_all_explain(P3GlobalSettings pa, seq_args sa,
+	private void print_all_explain(P3GlobalSettings pa, SeqArgs sa,
 			int io_version) {
 		if (pa.isPickLeftPrimer()
 				&& !(pa.isPickAnyway() && sa.left_input != null))
@@ -569,7 +569,7 @@ public class p3retval {
 	public void add_must_use_warnings(String text, OligoArray oarray) {
 
 
-		oligo_stats stats = oarray.expl;
+		OligoStats stats = oarray.expl;
 
 		String sep = "/";
 		StringBuilder s =  new StringBuilder();
@@ -619,7 +619,7 @@ public class p3retval {
 	 * a stop codon to the right of the the start codon in the
 	 * amplicon. 
 	 */
-	public void set_retval_both_stop_codons(seq_args sa) {
+	public void set_retval_both_stop_codons(SeqArgs sa) {
 		
 		  this.upstream_stop_codon = Sequence.find_stop_codon(sa.trimmed_seq,
 		                                                sa.start_codon_pos, -1);

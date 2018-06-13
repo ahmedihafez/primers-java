@@ -23,8 +23,8 @@ import org.apache.commons.cli.ParseException;
 import org.primer3.libprimer3.LibPrimer3;
 import org.primer3.libprimer3.P3GlobalSettings;
 import org.primer3.libprimer3.P3Task;
-import org.primer3.libprimer3.p3retval;
-import org.primer3.libprimer3.seq_args;
+import org.primer3.libprimer3.P3RetVal;
+import org.primer3.libprimer3.SeqArgs;
 import org.primer3.masker.formula_parameters;
 import org.primer3.masker.masker;
 import org.primer3.masker.masking_direction;
@@ -159,14 +159,14 @@ public class Primer3Main {
 
 
 		P3GlobalSettings global_pa;
-		seq_args sarg;
+		SeqArgs sarg;
 		// TODO :: Missing ??
 		read_boulder_record_results read_boulder_record_res ;
 
 
 
 
-		p3retval retval = null;
+		P3RetVal retval = null;
 		int input_found=0;
 
 		/* Get the program name for correct error messages */
@@ -288,7 +288,7 @@ public class Primer3Main {
 
 		/* Settings files have to be read in just below, and
 	    	the functions need a temporary sarg */
-		sarg = new seq_args();
+		sarg = new SeqArgs();
 		read_boulder_record_res = new read_boulder_record_results();
 		/* Read data from the settings file until a "=" line occurs.  Assign
 	     parameter values for primer picking to pa and sa. */
@@ -344,7 +344,7 @@ public class Primer3Main {
 			/* Create and initialize a seq_args data structure. sa (seq_args *) is
 			 * initialized here because Values are _not_ retained across different
 			 * input records. */
-			sarg = new seq_args();
+			sarg = new SeqArgs();
 			read_boulder_record_res = new read_boulder_record_results();
 			/* Reset all errors handlers and the return structure */
 			fatal_parse_err = new StringBuilder();

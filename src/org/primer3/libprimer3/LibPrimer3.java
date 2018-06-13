@@ -92,8 +92,8 @@ public class LibPrimer3 {
 
 
 	static DPAlArgHolder dpal_arg_to_use =  null;
-	static thal_arg_holder thal_arg_to_use =  null;
-	static thal_arg_holder thal_oligo_arg_to_use = null;
+	static THAlArgHolder thal_arg_to_use =  null;
+	static THAlArgHolder thal_oligo_arg_to_use = null;
 
 
 
@@ -160,10 +160,10 @@ public class LibPrimer3 {
 	 * Otherwise return retval (updated).  Errors are returned in 
 	 * in retval.
 	 */
-	public static p3retval choose_primers(P3GlobalSettings pa,  seq_args sa){
+	public static P3RetVal choose_primers(P3GlobalSettings pa,  SeqArgs sa){
 
 		/* Create retval and set were to find the results */
-		p3retval retval = new p3retval();
+		P3RetVal retval = new P3RetVal();
 
 		// 		TODO :: check input parameters
 		//		PR_ASSERT(NULL != pa);
@@ -175,13 +175,13 @@ public class LibPrimer3 {
 
 		/* Set the general output type */
 		if (pa.isPickLeftPrimer() && pa.isPickRightPrimer()) {
-			retval.output_type = p3_output_type.primer_pairs;
+			retval.output_type = P3OutputType.primer_pairs;
 		} else {
-			retval.output_type = p3_output_type.primer_list;
+			retval.output_type = P3OutputType.primer_list;
 		}
 		if (	pa.getPrimerTask() == P3Task.PICK_PRIMER_LIST ||
 				pa.getPrimerTask() == P3Task.PICK_SEQUENCING_PRIMERS) {
-			retval.output_type = p3_output_type.primer_list;
+			retval.output_type = P3OutputType.primer_list;
 		}
 
 
@@ -246,16 +246,16 @@ public class LibPrimer3 {
 
 			// TODO :: Refactor and clean
 			if(thal_arg_to_use == null) {
-				thal_arg_to_use = thal_arg_holder.create_thal_arg_holder(pa.primersArgs);// create_thal_arg_holder(&pa.p_args);
+				thal_arg_to_use = THAlArgHolder.create_thal_arg_holder(pa.primersArgs);// create_thal_arg_holder(&pa.p_args);
 			} else {
 				// destroy_thal_arg_holder(thal_arg_to_use);
-				thal_arg_to_use = thal_arg_holder.create_thal_arg_holder(pa.primersArgs);// create_thal_arg_holder(&pa.p_args);
+				thal_arg_to_use = THAlArgHolder.create_thal_arg_holder(pa.primersArgs);// create_thal_arg_holder(&pa.p_args);
 			}
 			if(thal_oligo_arg_to_use == null) {
-				thal_oligo_arg_to_use = thal_arg_holder.create_thal_arg_holder(pa.oligosArgs);
+				thal_oligo_arg_to_use = THAlArgHolder.create_thal_arg_holder(pa.oligosArgs);
 			} else {
 				// destroy_thal_arg_holder(thal_oligo_arg_to_use);
-				thal_oligo_arg_to_use = thal_arg_holder.create_thal_arg_holder(pa.oligosArgs);
+				thal_oligo_arg_to_use = THAlArgHolder.create_thal_arg_holder(pa.oligosArgs);
 			} 
 			if (pa.getPrimerTask() == P3Task.PICK_PRIMER_LIST) {
 				make_complete_primer_lists(retval, pa, sa,
@@ -292,11 +292,11 @@ public class LibPrimer3 {
 			 * choose_internal_oligo(), which selects the best internal oligo
 			 * for a given primer pair. 
 			 */
-			if (retval.output_type == p3_output_type.primer_list && pa.isPickInternalOligo())
+			if (retval.output_type == P3OutputType.primer_list && pa.isPickInternalOligo())
 				retval.intl.sort_primer_array();
 
 			/* Select primer pairs if needed */
-			if (retval.output_type == p3_output_type.primer_pairs) {
+			if (retval.output_type == P3OutputType.primer_pairs) {
 				choose_pair_or_triple(retval, pa, sa, dpal_arg_to_use, thal_arg_to_use,
 						thal_oligo_arg_to_use);
 			}
@@ -336,14 +336,14 @@ public class LibPrimer3 {
 	 * ============================================================ 
 	 * @throws Exception */
 	private static void choose_pair_or_triple(
-			p3retval retval,
+			P3RetVal retval,
 			P3GlobalSettings pa,
-			seq_args sa,
+			SeqArgs sa,
 			DPAlArgHolder dpal_arg_to_use,
-			thal_arg_holder thal_arg_to_use,
-			thal_arg_holder thal_oligo_arg_to_use
+			THAlArgHolder thal_arg_to_use,
+			THAlArgHolder thal_oligo_arg_to_use
 			) throws Exception {
-		pair_array_t best_pairs = retval.best_pairs;
+		PairArrayT best_pairs = retval.best_pairs;
 
 
 //		int i,j;   /* Loop index. */
@@ -353,9 +353,9 @@ public class LibPrimer3 {
 		                            index (i) -- global variable now */
 		boolean update_stats = true;  /* Flag to indicate whether pair_stats
 		                            should be updated. */
-		primer_pair h;             /* The current pair which is being evaluated. */
-		primer_pair the_best_pair = new primer_pair(); /* The best pair is being "remembered". */
-		pair_stats pair_expl = retval.best_pairs.expl; /* For statistics */
+		PrimerPair h;             /* The current pair which is being evaluated. */
+		PrimerPair the_best_pair = new PrimerPair(); /* The best pair is being "remembered". */
+		PairStats pair_expl = retval.best_pairs.expl; /* For statistics */
 
 		int product_size_range_index = 0;
 		boolean trace_me = false;
@@ -366,15 +366,15 @@ public class LibPrimer3 {
 		/* std::hash_map<int, primer_pair*> **pairs; */
 		/* pairs is an array of pointers to hash maps.  It will be indexed
 		     by the indices of the reverse primers in retval.rev. -- global var now */
-		HashMap<Integer, primer_pair> hmap = null, best_hmap = null;
+		HashMap<Integer, PrimerPair> hmap = null, best_hmap = null;
 		/* hmap and best_hmap will be pointers to hash maps also pointed to
 		by elements of pairs. */
 
 		//		  std::hash_map<int, primer_pair*>::iterator it;
-		primer_pair pp = null, best_pp = null;
+		PrimerPair pp = null, best_pp = null;
 		boolean pair_found = false;
 
-		HashMap<Integer, primer_pair>[] pairs = new HashMap[retval.rev.num_elem];
+		HashMap<Integer, PrimerPair>[] pairs = new HashMap[retval.rev.num_elem];
 		int[] max_j_seen = new int[retval.rev.num_elem];
 		for (int i = 0; i < max_j_seen.length; i++) max_j_seen[i] = -1;
 
@@ -382,7 +382,7 @@ public class LibPrimer3 {
 			the_best_i = -1;
 			the_best_j = -1;
 			/* To start put penalty to the maximum */
-			the_best_pair = new primer_pair();
+			the_best_pair = new PrimerPair();
 			the_best_pair.pair_quality = Double.MAX_VALUE;
 
 			for (int i = 0; i < retval.rev.num_elem; i++) {
@@ -588,18 +588,18 @@ public class LibPrimer3 {
 						}
 					} else {
 						/* Create this hashmap */
-						hmap = new HashMap<Integer, primer_pair>();
+						hmap = new HashMap<Integer, PrimerPair>();
 						pairs[i] = hmap;
 					}
 
 					if (!pair_found) {
 						/* Characterize the pair. h is initialized by this call. */
-						h = new primer_pair();
+						h = new PrimerPair();
 						int tmp =  h.characterize_pair(retval, pa, sa, j, i,
 								product_size_range_index, dpal_arg_to_use,
 								thal_arg_to_use,
 								update_stats);
-						if (tmp == primer_pair.PAIR_OK) {
+						if (tmp == PrimerPair.PAIR_OK) {
 
 							/* Choose internal oligo if needed */
 							if (pa.isPickRightPrimer() && pa.isPickLeftPrimer()
@@ -651,7 +651,7 @@ public class LibPrimer3 {
 							if (the_best_pair.pair_quality == 0) {
 								break;
 							}
-						} else if (tmp == primer_pair.PAIR_FAILED) {
+						} else if (tmp == PrimerPair.PAIR_FAILED) {
 							/* Illegal pair */
 							hmap.put(j,null);
 						} 
@@ -728,7 +728,7 @@ public class LibPrimer3 {
 
 
 	private static boolean left_oligo_in_pair_overlaps_used_oligo(
-			PrimerRecord left, primer_pair best_pair,
+			PrimerRecord left, PrimerPair best_pair,
 			int min_dist) {
 		int best_pos, pair_pos;
 
@@ -753,7 +753,7 @@ public class LibPrimer3 {
 
 
 	private static boolean right_oligo_in_pair_overlaps_used_oligo(
-			PrimerRecord right, primer_pair best_pair,
+			PrimerRecord right, PrimerPair best_pair,
 			int min_dist) {
 		int best_pos, pair_pos;
 
@@ -781,13 +781,13 @@ public class LibPrimer3 {
 	 * Choose best internal oligo for given pair of left and right primers.
 	 * return -1 if it did not found one
 	 */
-	private static int choose_internal_oligo(p3retval retval,
+	private static int choose_internal_oligo(P3RetVal retval,
 			PrimerRecord left,
 			PrimerRecord right,
-			seq_args sa,
+			SeqArgs sa,
 			P3GlobalSettings pa,
 			DPAlArgHolder dpal_arg_to_use,
-			thal_arg_holder thal_oligo_arg_to_use) throws AlignmentException, ThermodynamicAlignmentException {
+			THAlArgHolder thal_oligo_arg_to_use) throws AlignmentException, ThermodynamicAlignmentException {
 		//		int i;
 		int k;
 		double min;
@@ -833,7 +833,7 @@ public class LibPrimer3 {
 				}
 
 				if (h.repeat_sim.score == null) {
-					h.oligo_repeat_library_mispriming( pa, sa, oligo_type.OT_INTL, retval.intl.expl,
+					h.oligo_repeat_library_mispriming( pa, sa, OligoType.OT_INTL, retval.intl.expl,
 							dpal_arg_to_use, retval.glob_err);
 					if (!h.OK_OR_MUST_USE()) continue;
 				}
@@ -857,7 +857,7 @@ public class LibPrimer3 {
 	/**
 	 *  Compare function for sorting primer records.
 	 */
-	private static int compare_primer_pair(primer_pair a1 , primer_pair a2) {
+	private static int compare_primer_pair(PrimerPair a1 , PrimerPair a2) {
 		int y1, y2;
 
 		if ((a1.pair_quality + epsilon) < a2.pair_quality) return -1;
@@ -896,10 +896,10 @@ public class LibPrimer3 {
 
 
 
-	private static int make_internal_oligo_list(p3retval retval,
-			P3GlobalSettings pa, seq_args sa,
+	private static int make_internal_oligo_list(P3RetVal retval,
+			P3GlobalSettings pa, SeqArgs sa,
 			DPAlArgHolder dpal_arg_to_use2,
-			thal_arg_holder thal_oligo_arg_to_use2) {
+			THAlArgHolder thal_oligo_arg_to_use2) {
 		System.err.println("make_internal_oligo_list");
 		return 0;
 	}
@@ -918,17 +918,17 @@ public class LibPrimer3 {
 	 * @throws AlignmentException 
 	 */
 	private static int make_detection_primer_lists(
-			p3retval retval,
+			P3RetVal retval,
 			P3GlobalSettings pa,
-			seq_args sa,
+			SeqArgs sa,
 			DPAlArgHolder dpal_arg_to_use,
-			thal_arg_holder thal_arg_to_use) throws AlignmentException, ThermodynamicAlignmentException, PrimerRecordException 
+			THAlArgHolder thal_arg_to_use) throws AlignmentException, ThermodynamicAlignmentException, PrimerRecordException 
 			{
 		int left, right;
 		int length, start;
 		int i,n, pr_min;
 		int tar_l, tar_r, f_b, r_b;
-		pair_stats pair_expl = retval.best_pairs.expl; /* To store the statistics for pairs */
+		PairStats pair_expl = retval.best_pairs.expl; /* To store the statistics for pairs */
 
 		/* Var to save the very left and very right primer */
 		left = right = 0;
@@ -968,7 +968,7 @@ public class LibPrimer3 {
 		/* We use some global information to restrict the region
 		     of the input sequence in which we generate candidate
 		     oligos. */
-		if (retval.output_type == p3_output_type.primer_list && pa.isPickLeftPrimer())
+		if (retval.output_type == P3OutputType.primer_list && pa.isPickLeftPrimer())
 			f_b = n - 1;
 		else if (tar_r - 1 < n - pr_min + pa.primersArgs.getMaxSize() - 1
 				&& !(pa.isPickAnyway() && sa.left_input != null ))
@@ -1011,7 +1011,7 @@ public class LibPrimer3 {
 			left = retval.fwd.extreme;
 
 		}  /* if (pa.pick_left_primer) */
-		if (retval.output_type == p3_output_type.primer_list && pa.isPickRightPrimer())
+		if (retval.output_type == P3OutputType.primer_list && pa.isPickRightPrimer())
 			r_b = 0;
 		else if (tar_l+1>pr_min - pa.primersArgs.getMaxSize()
 				&& !(pa.isPickAnyway() && sa.right_input != null))
@@ -1079,16 +1079,16 @@ public class LibPrimer3 {
 			int end, 
 			OligoArray oligo,
 			P3GlobalSettings pa,
-			seq_args sa,
+			SeqArgs sa,
 			DPAlArgHolder dpal_arg_to_use,
-			thal_arg_holder thal_arg_to_use,
-			p3retval retval) throws AlignmentException, ThermodynamicAlignmentException, PrimerRecordException {
+			THAlArgHolder thal_arg_to_use,
+			P3RetVal retval) throws AlignmentException, ThermodynamicAlignmentException, PrimerRecordException {
 		int found_primer, length, j, ret, new_start;
 		found_primer = 1;
 		ret = 1;
 
 		if(start > -1 && end > -1) {
-			if (oligo.type != oligo_type.OT_RIGHT) {
+			if (oligo.type != OligoType.OT_RIGHT) {
 				length = end - start + 1;
 			} else {
 				length = start - end + 1;
@@ -1112,7 +1112,7 @@ public class LibPrimer3 {
 			/* Loop over possible primer lengths, from min to max */
 			ret = 0;
 			for (j = pa.primersArgs.getMinSize(); j <= pa.primersArgs.getMaxSize(); j++) {
-				if (oligo.type != oligo_type.OT_RIGHT) {
+				if (oligo.type != OligoType.OT_RIGHT) {
 					new_start = end - j + 1;
 				} else {
 					new_start = end + j - 1;
@@ -1134,9 +1134,9 @@ public class LibPrimer3 {
 
 
 	private static int add_one_primer_by_position(int start, int length,
-			OligoArray oligo, P3GlobalSettings pa, seq_args sa,
-			DPAlArgHolder dpal_arg_to_use, thal_arg_holder thal_arg_to_use,
-			p3retval retval) throws AlignmentException, ThermodynamicAlignmentException, PrimerRecordException {
+			OligoArray oligo, P3GlobalSettings pa, SeqArgs sa,
+			DPAlArgHolder dpal_arg_to_use, THAlArgHolder thal_arg_to_use,
+			P3RetVal retval) throws AlignmentException, ThermodynamicAlignmentException, PrimerRecordException {
 		/* Variables for the loop */
 		int i;
 		int n, found_primer;
@@ -1161,7 +1161,7 @@ public class LibPrimer3 {
 		if (start >= n) {
 			return 1;
 		}
-		if (oligo.type != oligo_type.OT_RIGHT) {
+		if (oligo.type != OligoType.OT_RIGHT) {
 			if ((start + length) > n) {
 				return 1;
 			}
@@ -1177,7 +1177,7 @@ public class LibPrimer3 {
 		h.length = length;
 
 		/* Figure out positions for forward primers */
-		if (oligo.type != oligo_type.OT_RIGHT) {
+		if (oligo.type != OligoType.OT_RIGHT) {
 			/* Set the start of the primer */
 			h.start = start;
 
@@ -1249,10 +1249,10 @@ public class LibPrimer3 {
 			//			int extreme,
 			OligoArray oligo,
 			P3GlobalSettings pa,
-			seq_args sa,
+			SeqArgs sa,
 			DPAlArgHolder dpal_arg_to_use,
-			thal_arg_holder thal_arg_to_use,
-			p3retval retval) throws AlignmentException, ThermodynamicAlignmentException, PrimerRecordException {
+			THAlArgHolder thal_arg_to_use,
+			P3RetVal retval) throws AlignmentException, ThermodynamicAlignmentException, PrimerRecordException {
 
 		/* Variables for the loop */
 		int i, j;
@@ -1267,7 +1267,7 @@ public class LibPrimer3 {
 
 		/* Copy *primer into test_oligo */
 		//		  test_oligo[0] = '\0';
-		if (oligo.type != oligo_type.OT_RIGHT) {
+		if (oligo.type != OligoType.OT_RIGHT) {
 			test_oligo  = Sequence.subSeq(primer,0, primer.length);
 		} else {
 			test_oligo = Sequence.p3_reverse_complement(primer );
@@ -1286,7 +1286,7 @@ public class LibPrimer3 {
 			h.length = j;
 
 			/* Figure out positions for forward primers */
-			if (oligo.type != oligo_type.OT_RIGHT) {
+			if (oligo.type != OligoType.OT_RIGHT) {
 				/* Break if the primer is bigger than the sequence left*/
 				if(i-j < -1) continue;
 
@@ -1367,10 +1367,10 @@ public class LibPrimer3 {
 	 * @throws ThermodynamicAlignmentException 
 	 * @throws AlignmentException 
 	 */
-	private static int add_primers_to_check(p3retval retval, P3GlobalSettings pa,
-			seq_args sa, DPAlArgHolder dpal_arg_to_use,
-			thal_arg_holder thal_arg_to_use,
-			thal_arg_holder thal_oligo_arg_to_use) throws AlignmentException, ThermodynamicAlignmentException, PrimerRecordException {
+	private static int add_primers_to_check(P3RetVal retval, P3GlobalSettings pa,
+			SeqArgs sa, DPAlArgHolder dpal_arg_to_use,
+			THAlArgHolder thal_arg_to_use,
+			THAlArgHolder thal_oligo_arg_to_use) throws AlignmentException, ThermodynamicAlignmentException, PrimerRecordException {
 	      
 
 		if (sa.left_input != null) {
@@ -1403,10 +1403,10 @@ public class LibPrimer3 {
 	 * @throws ThermodynamicAlignmentException 
 	 * @throws AlignmentException 
 	 */
-	private static void pick_sequencing_primer_list(p3retval retval,
-			P3GlobalSettings pa, seq_args sa,
+	private static void pick_sequencing_primer_list(P3RetVal retval,
+			P3GlobalSettings pa, SeqArgs sa,
 			DPAlArgHolder dpal_arg_to_use,
-			thal_arg_holder thal_arg_to_use) throws AlignmentException, ThermodynamicAlignmentException, PrimerRecordException {
+			THAlArgHolder thal_arg_to_use) throws AlignmentException, ThermodynamicAlignmentException, PrimerRecordException {
 		int length, start;
 		int n, rest_accuracy;
 		int primer_nr; /* number of primers we need to pick */
@@ -1536,9 +1536,9 @@ public class LibPrimer3 {
 	 * @throws PrimerRecordException 
 	 */
 	private static int pick_only_best_primer(int start, int length,
-			OligoArray oligo, P3GlobalSettings pa, seq_args sa,
-			DPAlArgHolder dpal_arg_to_use, thal_arg_holder thal_arg_to_use,
-			p3retval retval) throws AlignmentException, ThermodynamicAlignmentException, PrimerRecordException {
+			OligoArray oligo, P3GlobalSettings pa, SeqArgs sa,
+			DPAlArgHolder dpal_arg_to_use, THAlArgHolder thal_arg_to_use,
+			P3RetVal retval) throws AlignmentException, ThermodynamicAlignmentException, PrimerRecordException {
 		/* Variables for the loop */
 		int i, j, primer_size_small, primer_size_large;
 		int n, found_primer;
@@ -1562,7 +1562,7 @@ public class LibPrimer3 {
 		//		  PR_ASSERT(INT_MAX > (n));
 
 		/* Conditions for primer length */
-		if (oligo.type == oligo_type.OT_INTL) {
+		if (oligo.type == OligoType.OT_INTL) {
 			primer_size_small=pa.oligosArgs.getMinSize();
 			primer_size_large=pa.oligosArgs.getMaxSize();
 		}
@@ -1586,7 +1586,7 @@ public class LibPrimer3 {
 				h.repeat_sim.score = null;
 
 				/* Figure out positions for left primers and internal oligos */
-				if (oligo.type != oligo_type.OT_RIGHT) {
+				if (oligo.type != OligoType.OT_RIGHT) {
 					/* Break if the primer is bigger than the sequence left */
 					if(i-j < -1) continue;
 
@@ -1653,7 +1653,7 @@ public class LibPrimer3 {
 			/* Update statistics with how many primers are good */
 			oligo.expl.ok = oligo.expl.ok + 1;
 		} else {
-			if (oligo.type == oligo_type.OT_RIGHT) {
+			if (oligo.type == OligoType.OT_RIGHT) {
 				retval.warnings.append( "No right primer found in range ");
 			} else {
 				retval.warnings.append("No left primer found in range ");
@@ -1680,10 +1680,10 @@ public class LibPrimer3 {
 	 * @throws ThermodynamicAlignmentException 
 	 * @throws AlignmentException 
 	 */
-	private static int make_complete_primer_lists(p3retval retval,
-			P3GlobalSettings pa, seq_args sa,
-			DPAlArgHolder dpal_arg_to_use2, thal_arg_holder thal_arg_to_use2,
-			thal_arg_holder thal_oligo_arg_to_use2) throws PrimerRecordException, AlignmentException, ThermodynamicAlignmentException {
+	private static int make_complete_primer_lists(P3RetVal retval,
+			P3GlobalSettings pa, SeqArgs sa,
+			DPAlArgHolder dpal_arg_to_use2, THAlArgHolder thal_arg_to_use2,
+			THAlArgHolder thal_oligo_arg_to_use2) throws PrimerRecordException, AlignmentException, ThermodynamicAlignmentException {
 
 
 		// extreme moved to oligo_array
@@ -1741,10 +1741,10 @@ public class LibPrimer3 {
 	private static int pick_primer_range(int start, int length,
 			OligoArray oligo,
 			P3GlobalSettings pa,
-			seq_args sa,
+			SeqArgs sa,
 			DPAlArgHolder dpal_arg_to_use,
-			thal_arg_holder thal_arg_to_use,
-			p3retval retval) throws PrimerRecordException, AlignmentException, ThermodynamicAlignmentException {
+			THAlArgHolder thal_arg_to_use,
+			P3RetVal retval) throws PrimerRecordException, AlignmentException, ThermodynamicAlignmentException {
 		/* Variables for the loop */
 		int i, j;
 		int primer_size_small, primer_size_large;
@@ -1768,7 +1768,7 @@ public class LibPrimer3 {
 		n = sa.trimmed_seq.length;
 		//		PR_ASSERT(INT_MAX > (n=strlen(sa.trimmed_seq)));
 
-		if (oligo.type == oligo_type.OT_INTL) {
+		if (oligo.type == OligoType.OT_INTL) {
 			primer_size_small=pa.oligosArgs.getMinSize(); 
 			primer_size_large=pa.oligosArgs.getMaxSize();
 		}
@@ -1788,10 +1788,10 @@ public class LibPrimer3 {
 				h.length = j;
 
 				/* Figure out positions for left primers and internal oligos */
-				if (oligo.type != oligo_type.OT_RIGHT) {
+				if (oligo.type != OligoType.OT_RIGHT) {
 					/* Check if the product is of sufficient size */
-					if (i-j > n-pr_min-1 && retval.output_type == p3_output_type.primer_pairs
-							&& oligo.type == oligo_type.OT_LEFT) continue;
+					if (i-j > n-pr_min-1 && retval.output_type == P3OutputType.primer_pairs
+							&& oligo.type == OligoType.OT_LEFT) continue;
 
 					/* Break if the primer is bigger than the sequence left */
 					if (i-j < -1) break;
@@ -1804,7 +1804,7 @@ public class LibPrimer3 {
 				} else {
 					/* Figure out positions for reverse primers */
 					/* Check if the product is of sufficient size */
-					if (i+j < pr_min && retval.output_type == p3_output_type.primer_pairs) continue;
+					if (i+j < pr_min && retval.output_type == P3OutputType.primer_pairs) continue;
 
 					/* Break if the primer is bigger than the sequence left*/
 					if (i+j > n) break;
@@ -1834,10 +1834,10 @@ public class LibPrimer3 {
 					/* Save the primer in the array */
 					oligo.add_oligo_to_oligo_array( h);
 					/* Update the most extreme primer variable */
-					if (( h.start < oligo.extreme) && (oligo.type != oligo_type.OT_RIGHT))
+					if (( h.start < oligo.extreme) && (oligo.type != OligoType.OT_RIGHT))
 						oligo.extreme = h.start;
 					/* Update the most extreme primer variable */
-					if ((h.start > oligo.extreme) && (oligo.type == oligo_type.OT_RIGHT))
+					if ((h.start > oligo.extreme) && (oligo.type == OligoType.OT_RIGHT))
 						oligo.extreme = h.start;
 				} else {
 					/* Free memory used by this primer. */
@@ -1878,7 +1878,7 @@ public class LibPrimer3 {
 	 * @param warning
 	 * @return false 
 	 */
-	private static boolean _pr_data_control(P3GlobalSettings pa, seq_args sa,
+	private static boolean _pr_data_control(P3GlobalSettings pa, SeqArgs sa,
 			StringBuilder glob_err,
 			StringBuilder nonfatal_err,
 			StringBuilder warning) {
@@ -2573,7 +2573,7 @@ public class LibPrimer3 {
 
 
 
-	private static void p3_print_args(P3GlobalSettings pa, seq_args sa) {
+	private static void p3_print_args(P3GlobalSettings pa, SeqArgs sa) {
 
 		pa.p3_print_args();
 		sa.p3_print_args();
@@ -2676,9 +2676,9 @@ public class LibPrimer3 {
 
 	public static void primer_mispriming_to_template(PrimerRecord h,
 			P3GlobalSettings pa,
-			seq_args sa,
-			oligo_type l,
-			oligo_stats ostats,
+			SeqArgs sa,
+			OligoType l,
+			OligoStats ostats,
 			int first,
 			int last,
 			char[] s,
@@ -2704,7 +2704,7 @@ public class LibPrimer3 {
 		last_untrimmed = sa.incl_s + last;
 
 
-		if (l == oligo_type.OT_LEFT) {
+		if (l == OligoType.OT_LEFT) {
 			oseq = s;
 			target = sa.upcased_seq;
 			target_r = sa.upcased_seq_r;
@@ -2731,7 +2731,7 @@ public class LibPrimer3 {
 		tmp_score = align(oseq, Sequence.subSeqRange(target, 0, first_untrimmed-1)  , align_args);
 
 		if (debug) {
-			if (l == oligo_type.OT_LEFT) 
+			if (l == OligoType.OT_LEFT) 
 				System.err.format("\n************ OLIGO = LEFT\n");
 			else  
 				System.err.format("\n************ OLIGO = RIGHT\n");
@@ -2768,7 +2768,7 @@ public class LibPrimer3 {
 			if (h.oligo_max_template_mispriming()
 					> pa.primersArgs.getMaxTemplateMispriming()) {
 				h.op_set_high_similarity_to_multiple_template_sites();
-				if (l == oligo_type.OT_LEFT  || l == oligo_type.OT_RIGHT  ) {
+				if (l == OligoType.OT_LEFT  || l == OligoType.OT_RIGHT  ) {
 					ostats.template_mispriming++;
 					ostats.ok--;
 				} else {
@@ -2788,9 +2788,9 @@ public class LibPrimer3 {
 	public static void primer_mispriming_to_template_thermod(
 			PrimerRecord h,
 			P3GlobalSettings pa,
-			seq_args sa,
-			oligo_type l,
-			oligo_stats ostats,
+			SeqArgs sa,
+			OligoType l,
+			OligoStats ostats,
 			int first,
 			int last,
 			char[] s,
@@ -2815,7 +2815,7 @@ public class LibPrimer3 {
 		first_untrimmed = sa.incl_s + first;
 		last_untrimmed = sa.incl_s + last;
 
-		if (l == oligo_type.OT_RIGHT) {
+		if (l == OligoType.OT_RIGHT) {
 			oseq = s_r;
 			target = sa.upcased_seq;
 			target_r = sa.upcased_seq_r;
@@ -2843,7 +2843,7 @@ public class LibPrimer3 {
 		tmp_score = align_thermod(oseq, Sequence.subSeqRange(target,0, first_untrimmed-1), align_args);
 
 		if (debug) {
-			if (l == oligo_type.OT_LEFT) 
+			if (l == OligoType.OT_LEFT) 
 				System.err.format( "\n************ OLIGO = LEFT\n");
 			else 
 				System.err.format( "\n************ OLIGO = RIGHT\n");
@@ -2879,7 +2879,7 @@ public class LibPrimer3 {
 			if (h.oligo_max_template_mispriming_thermod()
 					> pa.primersArgs.getMaxTemplateMisprimingTH()) {
 				h.op_set_high_similarity_to_multiple_template_sites();
-				if (l == oligo_type.OT_LEFT|| l == oligo_type.OT_RIGHT  ) {
+				if (l == OligoType.OT_LEFT|| l == OligoType.OT_RIGHT  ) {
 					ostats.template_mispriming++;
 					ostats.ok--;
 				}
@@ -2897,7 +2897,7 @@ public class LibPrimer3 {
 
 
 
-	public static void p3_print_oligo_lists(p3retval retval, seq_args sarg,
+	public static void p3_print_oligo_lists(P3RetVal retval, SeqArgs sarg,
 			P3GlobalSettings global_pa, StringBuilder per_sequence_err,
 			String sequence_name) {
 		// TODO Auto-generated method stub

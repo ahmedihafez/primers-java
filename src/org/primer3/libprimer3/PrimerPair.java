@@ -7,7 +7,7 @@ import org.primer3.sequence.Sequence;
 import org.primer3.thal.ThermodynamicAlignmentException;
 import org.primer3.thal.ThermodynamicAlignmentArguments;
 
-public class primer_pair {
+public class PrimerPair {
 
 
 
@@ -167,7 +167,7 @@ public class primer_pair {
 	 * the right of the first base of t.  Of course the primers must
 	 * still be in a legal position with respect to each other.
 	 */
-	public boolean pair_spans_target(seq_args sa) {
+	public boolean pair_spans_target(SeqArgs sa) {
 		int i;
 		int last_of_left = this.left.start + this.left.length - 1;
 		int first_of_right = this.right.start - this.right.length + 1;
@@ -191,21 +191,21 @@ public class primer_pair {
 	 * @throws ThermodynamicAlignmentException 
 	 * @throws AlignmentException 
 	 */
-	public  int characterize_pair(p3retval retval,
+	public  int characterize_pair(P3RetVal retval,
 			P3GlobalSettings pa,
-			seq_args sa,
+			SeqArgs sa,
 			int m,
 			int n,
 			int int_num,
 			DPAlArgHolder dpal_arg_to_use,
-			thal_arg_holder thal_arg_to_use,
+			THAlArgHolder thal_arg_to_use,
 			boolean update_stats) throws ThermodynamicAlignmentException, AlignmentException {
 		
-		primer_pair ppair = this;
+		PrimerPair ppair = this;
 
 		char[] s1, s2,s1_rev, s2_rev;
 		double compl_end;
-		pair_stats pair_expl = retval.best_pairs.expl;
+		PairStats pair_expl = retval.best_pairs.expl;
 		boolean must_use = false;
 		double min_oligo_tm;
 		int i;
@@ -429,10 +429,10 @@ public class primer_pair {
 
 			  if (retval.fwd.oligo.get(m).repeat_sim.score == null) {
 			    /* We have not yet checked the oligo against the repeat library. */
-				  retval.fwd.oligo.get(m).oligo_repeat_library_mispriming( pa, sa, oligo_type.OT_LEFT,
+				  retval.fwd.oligo.get(m).oligo_repeat_library_mispriming( pa, sa, OligoType.OT_LEFT,
 			                                    retval.fwd.expl,dpal_arg_to_use, retval.glob_err);
 			    if (retval.fwd.oligo.get(m).OK_OR_MUST_USE()) {
-			    	retval.fwd.oligo.get(m).oligo_template_mispriming( pa, sa, oligo_type.OT_LEFT,
+			    	retval.fwd.oligo.get(m).oligo_template_mispriming( pa, sa, OligoType.OT_LEFT,
 							retval.fwd.expl,
 							dpal_arg_to_use.local_end,
 							thal_args_for_template_mispriming);
@@ -444,10 +444,10 @@ public class primer_pair {
 			  }
 			   
 			  if (retval.rev.oligo.get(n).repeat_sim.score == null) {
-				  retval.rev.oligo.get(n).oligo_repeat_library_mispriming(pa, sa, oligo_type.OT_RIGHT,
+				  retval.rev.oligo.get(n).oligo_repeat_library_mispriming(pa, sa, OligoType.OT_RIGHT,
 			                                    retval.rev.expl, dpal_arg_to_use,retval.glob_err);
 			    if (retval.rev.oligo.get(n).OK_OR_MUST_USE()) {
-			    	retval.rev.oligo.get(n).oligo_template_mispriming( pa, sa, oligo_type.OT_RIGHT, retval.rev.expl, 
+			    	retval.rev.oligo.get(n).oligo_template_mispriming( pa, sa, OligoType.OT_RIGHT, retval.rev.expl, 
 							dpal_arg_to_use.local_end,
 							thal_args_for_template_mispriming);
 			    }

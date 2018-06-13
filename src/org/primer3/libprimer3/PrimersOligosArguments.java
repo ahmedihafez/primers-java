@@ -10,7 +10,7 @@ import org.primer3.p3_seq_lib.seq_lib;
 public class PrimersOligosArguments {
 
 	public seq_lib       repeat_lib = null;
-	public oligo_weights weights = new oligo_weights();
+	public OligoWeights weights = new OligoWeights();
 	
 	private double optTm;
 	private double minTm;

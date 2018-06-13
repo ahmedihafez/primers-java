@@ -5,8 +5,8 @@ import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
 import org.primer3.libprimer3.PrimerRecord;
-import org.primer3.libprimer3.oligo_type;
-import org.primer3.libprimer3.seq_args;
+import org.primer3.libprimer3.OligoType;
+import org.primer3.libprimer3.SeqArgs;
 
 /**
  * Sequence Class not part of primer3 lib

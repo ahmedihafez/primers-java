@@ -62,7 +62,7 @@ public class IntervalArrayT2 {
 	 * be relative to the start of the included region.
 	 */
 	public boolean _check_and_adjust_1_interval(String tag_name, int seq_len,
-			int first_index, StringBuilder err, seq_args sa,
+			int first_index, StringBuilder err, SeqArgs sa,
 			StringBuilder warning, boolean empty_allowed) {
 		return _check_and_adjust_1_interval(tag_name,this.count,this.pairs,seq_len,first_index,err,sa,warning,empty_allowed);
 	}
@@ -76,7 +76,7 @@ public class IntervalArrayT2 {
 			int count,
 			int[][] pairs,
 			int seq_len,
-			int first_index, StringBuilder err, seq_args sa,
+			int first_index, StringBuilder err, SeqArgs sa,
 			StringBuilder warning, boolean empty_allowed) {
 		int i;
 		boolean outside_warning_issued = false;

@@ -16,17 +16,17 @@ public class OligoArray {
 	 int storage_size = LibPrimer3.INITIAL_LIST_LEN;
 
 	 /* Type of oligos in the array */
-	 oligo_type type;
+	 OligoType type;
 
 	 /* Primers statistics. */
-	 oligo_stats expl = new oligo_stats();
+	 OligoStats expl = new OligoStats();
 
 	 
 	// this is add here because it is been used a lot ?? : 
 	public int extreme;
 
 
-	public OligoArray(oligo_type otType) {
+	public OligoArray(OligoType otType) {
 		this.type = otType;
 //		if(type == oligo_type.OT_LEFT)
 //		{
@@ -38,7 +38,7 @@ public class OligoArray {
 //		{
 //			extreme = 0;
 //		}
-		if (type == oligo_type.OT_RIGHT) {
+		if (type == OligoType.OT_RIGHT) {
 			extreme = 0;
 		}
 		else
@@ -60,10 +60,10 @@ public class OligoArray {
 		
 		// update extreme while adding
 		/* Update the most extreme primer variable */
-        if (( h.start < this.extreme) && (this.type != oligo_type.OT_RIGHT))
+        if (( h.start < this.extreme) && (this.type != OligoType.OT_RIGHT))
         	this.extreme = h.start;
         /* Update the most extreme primer variable */
-        if ((h.start > this.extreme) && (this.type == oligo_type.OT_RIGHT))
+        if ((h.start > this.extreme) && (this.type == OligoType.OT_RIGHT))
         	this.extreme = h.start;
 	}
 
