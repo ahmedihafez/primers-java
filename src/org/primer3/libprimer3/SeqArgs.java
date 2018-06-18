@@ -217,7 +217,9 @@ public class SeqArgs {
 	 * @param datum
 	 */
 	public void p3_set_sa_tar2(String datum) {
-		this.tar2 = IntervalArrayT2.create_interval(datum);	
+//		this.tar2 = IntervalArrayT2.append_interval(datum);	
+		this.tar2.append_interval(datum);	
+
 	}
 
 
@@ -227,7 +229,8 @@ public class SeqArgs {
 	 * @param datum
 	 */
 	public void p3_set_sa_excl2(String datum) {
-		this.excl2 = IntervalArrayT2.create_interval(datum);	
+//		this.excl2 = IntervalArrayT2.append_interval(datum);	
+		this.excl2.append_interval(datum);	
 
 	}
 	/**
@@ -235,7 +238,9 @@ public class SeqArgs {
 	 * @param datum
 	 */
 	public void p3_set_sa_excl_internal2(String datum) {
-		this.excl_internal2 = IntervalArrayT2.create_interval(datum);	
+//		this.excl_internal2 = IntervalArrayT2.append_interval(datum);	
+		this.excl_internal2.append_interval(datum);	
+
 
 	}
 	/**

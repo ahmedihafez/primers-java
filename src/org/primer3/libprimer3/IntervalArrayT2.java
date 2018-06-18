@@ -34,8 +34,12 @@ public class IntervalArrayT2 {
 
 	static final String numSep = ",";
 	static final String intervalSep = " ";
-	static public IntervalArrayT2 create_interval(String datum) {
-		IntervalArrayT2 tar2 = new IntervalArrayT2();
+	
+	
+	public IntervalArrayT2 append_interval(String datum) {
+		
+//		IntervalArrayT2 tar2 = new IntervalArrayT2();
+		IntervalArrayT2 tar2 = this;
 
 
 		String[] intervalStrs = datum.split(Pattern.quote(intervalSep));
