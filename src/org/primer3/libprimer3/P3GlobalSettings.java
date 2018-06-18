@@ -472,7 +472,11 @@ public class P3GlobalSettings {
 	{
 		return primersArgs;
 	}
-
+	
+	public PrimersOligosArguments getOligosArgs()
+	{
+		return oligosArgs;
+	}
 	/**
 	 * @return the primerTask
 	 */

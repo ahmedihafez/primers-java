@@ -899,9 +899,30 @@ public class LibPrimer3 {
 	private static int make_internal_oligo_list(P3RetVal retval,
 			P3GlobalSettings pa, SeqArgs sa,
 			DPAlArgHolder dpal_arg_to_use2,
-			THAlArgHolder thal_oligo_arg_to_use2) {
-		System.err.println("make_internal_oligo_list");
-		return 0;
+			THAlArgHolder thal_oligo_arg_to_use2) throws PrimerRecordException, AlignmentException, ThermodynamicAlignmentException {
+
+
+		int ret;
+		int left = 0;
+		retval.intl.extreme = 0;
+		  /* Use the primer provided */
+		  if ((sa.internal_input != null ) || (pa.getPrimerTask() == P3Task.CHECK_PRIMERS )){
+		         ret = add_one_primer(sa.internal_input,  retval.intl,
+		                               pa, sa, dpal_arg_to_use, thal_arg_to_use, retval);
+		  }
+		  else {
+		    /* Pick all good in the given range */
+
+		    /* Use the settings to select a proper range */
+		   int length = sa.trimmed_seq.length - pa.getOligosArgs().getMinSize();
+		   int start = pa.getOligosArgs().getMinSize() - 1;
+		   left = 0;
+
+		    ret = pick_primer_range(start, length, retval.intl,
+		                            pa, sa, dpal_arg_to_use, thal_arg_to_use,
+		                            retval);
+		  }
+		  return ret;
 	}
 
 

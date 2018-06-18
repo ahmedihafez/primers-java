@@ -115,12 +115,12 @@ public class Primer3Main {
 			// parse the command line arguments
 			CommandLine line = parser.parse( options, args );
 
-			if(line.getOptions().length == 0 )
-
-			{
-				formatter.printHelp(pr_program_name + " [options] <inputFile>", "head", options, "");
-				//				formatter.printHelp( pr_program_name, options );
-			}
+//			if(line.getOptions().length == 0 )
+//
+//			{
+//				formatter.printHelp(pr_program_name + " [options] <inputFile>", "head", options, "");
+//				//				formatter.printHelp( pr_program_name, options );
+//			}
 
 			return line;		    
 		}
@@ -136,8 +136,12 @@ public class Primer3Main {
 	static public void main(String[] args)
 	{
 
-		args = "/data/softwares/primer3-primer3/test/primer_rat_input".split(" ");
-
+//		args = "/data/softwares/primer3-primer3/test/primer_rat_input".split(" ");
+		
+//		args = "/data/softwares/primer3-primer3/example".split(" ");
+		
+//		args = "/data/softwares/primer3-primer3/test/primer1_input".split(" ");
+		
 		/* Setup the input data structures handlers */
 		boolean format_output = false;
 		boolean strict_tags = false;
@@ -294,7 +298,7 @@ public class Primer3Main {
 	     parameter values for primer picking to pa and sa. */
 		if(p3_settings_path != null && !p3_settings_path.isEmpty())
 		{
-			boulder.read_p3_file(p3_settings_path, p3_file_type.settings,
+			boulder.read_p3_file(p3_settings_path, P3FileType.settings,
 					echo_settings && !format_output, 
 					strict_tags, 
 					global_pa, sarg, 
@@ -358,7 +362,7 @@ public class Primer3Main {
 					strict_tags,
 					io_version,
 					!format_output,
-					p3_file_type.all_parameters,
+					P3FileType.all_parameters,
 					global_pa,
 					sarg,
 					fatal_parse_err,

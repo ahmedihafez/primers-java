@@ -23,7 +23,7 @@ public class boulder {
 	                        boolean strict_tags,
 	                        int io_version,
 	                        boolean echo_output,
-	                        p3_file_type file_type,
+	                        P3FileType file_type,
 	                        P3GlobalSettings pa, 
 	                        SeqArgs sa,
 	                        StringBuilder glob_err,
@@ -45,7 +45,7 @@ public class boulder {
 			if(line.equals("="))
 				break;
 			
-			if (file_type == p3_file_type.settings && ! line.startsWith("PRIMER_") && ! line.startsWith("P3_FILE_ID") )
+			if (file_type == P3FileType.settings && ! line.startsWith("PRIMER_") && ! line.startsWith("P3_FILE_ID") )
 				continue;
 			data_found = true;
 			if (echo_output) 
@@ -868,7 +868,7 @@ public class boulder {
 	/* pr_append_str is an append-only string ADT. */
 	static public boolean read_p3_file(
 					 String file_name,
-	                 p3_file_type expected_file_type,
+	                 P3FileType expected_file_type,
 	                 boolean echo_output,
 	                 boolean strict_tags,
 	                 P3GlobalSettings pa, 
@@ -883,7 +883,7 @@ public class boulder {
 		String line3 = null;
 		Scanner scan = null;
 		int io_version = 4;
-		p3_file_type file_type = p3_file_type.all_parameters;
+		P3FileType file_type = P3FileType.all_parameters;
 		try {
 			scan = new Scanner(new File(file_name));
 			if(scan.hasNext())
@@ -921,11 +921,11 @@ public class boulder {
 			
 			
 			if (line2.equals("P3_FILE_TYPE=all_parameters")) {
-			    file_type = p3_file_type.all_parameters;
+			    file_type = P3FileType.all_parameters;
 			  } else if (line2.equals("P3_FILE_TYPE=sequence")) {
-			    file_type = p3_file_type.sequence;
+			    file_type = P3FileType.sequence;
 			  } else if (line2.equals("P3_FILE_TYPE=settings")) {
-			    file_type = p3_file_type.settings;
+			    file_type = P3FileType.settings;
 			  } else {
 				  fatal_err.append( "Unknown file type in at line 2 (" + line2 + ") in " + file_name);
 				  return false;
