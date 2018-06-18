@@ -140,7 +140,7 @@ public class Primer3Main {
 		
 //		args = "/data/softwares/primer3-primer3/example".split(" ");
 		
-//		args = "/data/softwares/primer3-primer3/test/primer1_input".split(" ");
+//		args = "/data/softwares/primer3-primer3/test/primer_check_input".split(" ");
 		
 		/* Setup the input data structures handlers */
 		boolean format_output = false;

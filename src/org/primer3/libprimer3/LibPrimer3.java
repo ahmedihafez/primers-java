@@ -1282,8 +1282,7 @@ public class LibPrimer3 {
 		/* Array to store one primer sequences in */
 		char[] oligo_seq , test_oligo;
 
-		/* Struct to store the primer parameters in */
-		PrimerRecord h = new PrimerRecord();
+		
 		//		  memset(&h, 0, sizeof(primer_rec));
 
 		/* Copy *primer into test_oligo */
@@ -1302,19 +1301,22 @@ public class LibPrimer3 {
 		/* Loop over the whole sequence */
 		for(i = sa.trimmed_seq.length; i >= 0; i--) {
 			//		    oligo_seq[0] = '\0';
-
+			/* Struct to store the primer parameters in */
+			PrimerRecord h = new PrimerRecord();
 			/* Set the length of the primer */
 			h.length = j;
 
 			/* Figure out positions for forward primers */
 			if (oligo.type != OligoType.OT_RIGHT) {
 				/* Break if the primer is bigger than the sequence left*/
-				if(i-j < -1) continue;
+				if(i-j <= -1) continue;
 
 				/* Set the start of the primer */
-				h.start = i - j +1;
+				h.start = i - j;//  +1;
 
 				/* Put the real primer sequence in s */
+//				if(h.start+ j > sa.trimmed_seq.length)
+//					j = j - ((h.start+ j)- sa.trimmed_seq.length);
 				oligo_seq =  Sequence._pr_substr(sa.trimmed_seq, h.start, j );
 			}
 			/* Figure out positions for reverse primers */
@@ -2633,7 +2635,7 @@ public class LibPrimer3 {
 			r = thal.thAlign();
 
 			if (thal_trace != 0) {
-				System.out.format(  "thal, thal_args, type=%s maxLoop=%d mv=%f dv=%f dntp=%f dna_conc=%f, temp=%f, temponly=%d dimer=%d\n",
+				System.out.format(  "thal, thal_args, type=%s maxLoop=%d mv=%f dv=%f dntp=%f dna_conc=%f, temp=%f, temponly=%b dimer=%d\n",
 						a.getAlignmentType(), a.getMaxLoop(), a.getMonovalentConc(), a.getDivalentConc(), a.getDntpConc(), a.getDnaConc(), 
 						a.getTemperature(), a.isTempOnly(), a.getCalcDimer());
 				System.out.format(  "thal: s1=%s s2=%s temp=%f msg=%s end1=%d end2=%d\n", 
