@@ -32,6 +32,12 @@ import org.primer3.thal.ThAl;
  */
 public class LibPrimer3 {
 
+	
+	
+	// Debug info 
+	static int thal_trace = 0;
+	
+	
 
 	/* ALIGN_SCORE_UNDEF is used only libprimer3 and clients, not in dpal */
 	// #define ALIGN_SCORE_UNDEF            -DBL_MAX
@@ -2628,7 +2634,7 @@ public class LibPrimer3 {
 
 	public static double align_thermod(char[] s1, char[] s2,
 			ThermodynamicAlignmentArguments a) throws ThermodynamicAlignmentException {
-		int thal_trace = 0;
+		
 		ThermodynamicAlignmentResult r = null;
 		ThermodynamicAlignment thal = new ThermodynamicAlignment(s1, s2, a);
 		try {

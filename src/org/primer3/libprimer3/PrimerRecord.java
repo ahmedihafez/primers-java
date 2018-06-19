@@ -787,12 +787,14 @@ public class PrimerRecord {
 			; // PR_ASSERT TRIMMED_SEQ_LEN
 
 		if ((otype == OligoType.OT_LEFT)
-				&& !(sa.start_codon_pos <= LibPrimer3.PR_DEFAULT_START_CODON_POS)
+				// FIXME :: do not depend on this values PR_NULL_START_CODON_POS
+				&& !(sa.start_codon_pos <= LibPrimer3.PR_NULL_START_CODON_POS)
 				/*
 				 * Make sure the primer would amplify at least part of the ORF.
 				 */
 				&& (0 != (this.start - sa.start_codon_pos) % 3
-						|| this.start <= retval.upstream_stop_codon || (retval.stop_codon_pos != -1 && this.start >= retval.stop_codon_pos))) {
+						|| this.start <= retval.upstream_stop_codon 
+						|| (retval.stop_codon_pos != -1 && this.start >= retval.stop_codon_pos))) {
 			stats.no_orf++;
 			this.op_set_does_not_amplify_orf();
 			if (!pa.isPickAnyway())

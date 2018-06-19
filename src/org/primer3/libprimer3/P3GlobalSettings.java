@@ -397,6 +397,14 @@ public class P3GlobalSettings {
 	public int getMinLeft3PrimeDistance() {
 		return minLeft3PrimeDistance;
 	}
+	/**
+	 * 
+	 * @param value
+	 */
+	public void set_min_left_three_prime_distance(int value) {
+		this.minLeft3PrimeDistance = value;
+	}
+
 
 	/**
 	 * @return the minRight3PrimeDistance
@@ -405,6 +413,11 @@ public class P3GlobalSettings {
 		return minRight3PrimeDistance;
 	}
 
+	
+	public void set_min_right_three_prime_distance(int value) {
+		this.minRight3PrimeDistance = value;
+	}
+	
 	/**
 	 * @return the numReturn
 	 */
@@ -1469,19 +1482,7 @@ public class P3GlobalSettings {
 		this.maskingParametersChanged = true;
 	}
 
-	/**
-	 * PRIMER_QUALITY_RANGE_MIN
-	 * @param value
-	 */
-	public void set_min_left_three_prime_distance(int value) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void set_min_right_three_prime_distance(int value) {
-		// TODO Auto-generated method stub
-
-	}
+	
 
 	/**
 	 * @param dump the dump to set
