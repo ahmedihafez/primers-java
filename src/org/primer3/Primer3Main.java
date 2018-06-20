@@ -140,7 +140,7 @@ public class Primer3Main {
 		
 //		args = "/data/softwares/primer3-primer3/example".split(" ");
 		
-//		args = "/data/softwares/primer3-primer3/test/primer_check_input".split(" ");
+//		args = "/data/softwares/primer3-primer3/test/primer_human_input".split(" ");
 //		args = "/data/softwares/primer3-primer3/test/primer_first_base_index_input ".split( " " );
 		
 //		args = "/data/softwares/primer3-primer3/test/primer_high_gc_load_set_input --p3_settings_file /data/softwares/primer3-primer3/test/primer_high_gc_load_set.set".split( " " );
@@ -188,7 +188,7 @@ public class Primer3Main {
 			return;
 		}
 
-		List<String> leftArgs= line.getArgList();
+		List<String> leftArgs = line.getArgList();
 
 
 
@@ -346,14 +346,14 @@ public class Primer3Main {
 		//	    destroy_seq_args(sarg);
 		sarg = null ;
 
-
+		read_boulder_record_res = new read_boulder_record_results();
 		while(true)
 		{
 			/* Create and initialize a seq_args data structure. sa (seq_args *) is
 			 * initialized here because Values are _not_ retained across different
 			 * input records. */
 			sarg = new SeqArgs();
-			read_boulder_record_res = new read_boulder_record_results();
+			
 			/* Reset all errors handlers and the return structure */
 			fatal_parse_err = new StringBuilder();
 			nonfatal_parse_err= new StringBuilder();

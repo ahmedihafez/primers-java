@@ -172,9 +172,9 @@ public class PrimerPair {
 		int last_of_left = this.left.start + this.left.length - 1;
 		int first_of_right = this.right.start - this.right.length + 1;
 		int target_first, target_last;
-		for (i = 0; i < sa.tar2.count; i++) {
-			target_first = sa.tar2.pairs[i][0];
-			target_last = target_first + sa.tar2.pairs[i][1] - 1;
+		for (i = 0; i < sa.tar2.getCount(); i++) {
+			target_first = sa.tar2.getPair(i)[0];
+			target_last = target_first + sa.tar2.getPair(i)[1] - 1;
 			if (last_of_left <= target_last
 					&& first_of_right >= target_first
 					&& last_of_left < first_of_right)
@@ -242,7 +242,7 @@ public class PrimerPair {
 
 		ppair.must_use = must_use;
 
-		if (sa.tar2.count > 0) {
+		if (sa.tar2.getCount() > 0) {
 			if (ppair.pair_spans_target(sa)) {
 				ppair.target = 1;
 			} else {

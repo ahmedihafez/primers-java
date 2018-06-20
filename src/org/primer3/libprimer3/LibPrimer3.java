@@ -972,15 +972,15 @@ public class LibPrimer3 {
 		tar_l = n; /* Target length */
 
 		/* Iterate over target array */
-		for (i=0; i < sa.tar2.count; i++) {
+		for (i=0; i < sa.tar2.getCount(); i++) {
 
 			/* Select the rightmost target start */
-			if (sa.tar2.pairs[i][0] > tar_r)
-				tar_r = sa.tar2.pairs[i][0];
+			if (sa.tar2.getPair(i)[0] > tar_r)
+				tar_r = sa.tar2.getPair(i)[0];
 
 			/* Select the rightmost target end */
-			if (sa.tar2.pairs[i][0] + sa.tar2.pairs[i][1] - 1 < tar_l)
-				tar_l = sa.tar2.pairs[i][0] + sa.tar2.pairs[i][1] - 1;
+			if (sa.tar2.getPair(i)[0] + sa.tar2.getPair(i)[1] - 1 < tar_l)
+				tar_l = sa.tar2.getPair(i)[0] + sa.tar2.getPair(i)[1] - 1;
 		}
 
 		if (pa.isDefaultPositionPenalties()) {
@@ -1454,39 +1454,39 @@ public class LibPrimer3 {
 		//		  PR_ASSERT(INT_MAX > (N));
 
 		/* For each target needed loop*/
-		for (tar_n=0; tar_n < sa.tar2.count; tar_n++) {
+		for (tar_n=0; tar_n < sa.tar2.getCount(); tar_n++) {
 
 			/* Calculate the amount of primers needed */
 			primer_nr = 1;
 			if ((pa.isPickLeftPrimer()) && (pa.isPickRightPrimer())){
 				sequenced_len = pa.getSequencingParameters().getInterval();
-				while(sequenced_len < sa.tar2.pairs[tar_n][1]) {
+				while(sequenced_len < sa.tar2.getPair(tar_n)[1]) {
 					primer_nr++;
 					sequenced_len = pa.getSequencingParameters().getSpacing() * (primer_nr - 1)
 							+ pa.getSequencingParameters().getInterval();
 				}
 			} else {
 				sequenced_len = pa.getSequencingParameters().getSpacing();
-				while(sequenced_len < sa.tar2.pairs[tar_n][1]) {
+				while(sequenced_len < sa.tar2.getPair(tar_n)[1]) {
 					primer_nr++;
 					sequenced_len = pa.getSequencingParameters().getSpacing() * primer_nr;
 				}
 			}
 			/* Calculate the overlap on the sides */
-			extra_seq = (sequenced_len - sa.tar2.pairs[tar_n][1]) / 2;
+			extra_seq = (sequenced_len - sa.tar2.getPair(tar_n)[1]) / 2;
 
 			/* Pick primers for each position */
 			for ( step_nr = 0 ; step_nr < primer_nr ; step_nr++ ) {
-				pr_position_f = sa.tar2.pairs[tar_n][0] - extra_seq
+				pr_position_f = sa.tar2.getPair(tar_n)[0] - extra_seq
 						+ ( pa.getSequencingParameters().getSpacing() * step_nr )
 						- pa.getSequencingParameters().getLead();
 				if ((pa.isPickLeftPrimer()) && (pa.isPickRightPrimer())) {
-					pr_position_r = sa.tar2.pairs[tar_n][0] - extra_seq
+					pr_position_r = sa.tar2.getPair(tar_n)[0] - extra_seq
 							+ ( pa.getSequencingParameters().getSpacing() * step_nr )
 							+ pa.getSequencingParameters().getInterval()
 							+ pa.getSequencingParameters().getLead();
 				} else {
-					pr_position_r = sa.tar2.pairs[tar_n][0] - extra_seq
+					pr_position_r = sa.tar2.getPair(tar_n)[0] - extra_seq
 							+ ( pa.getSequencingParameters().getSpacing() * (step_nr+1))
 							+ pa.getSequencingParameters().getLead();        
 				}
@@ -2255,12 +2255,12 @@ public class LibPrimer3 {
 			return true;
 		}
 
-		if (!pa.isDefaultPositionPenalties() && sa.tar2.count > 1) {
+		if (!pa.isDefaultPositionPenalties() && sa.tar2.getCount() > 1) {
 			nonfatal_err.append(
 					"Non-default inside penalty or outside penalty ");
 			nonfatal_err.append("is valid only when number of targets <= 1");
 		}
-		if (!pa.isDefaultPositionPenalties() && 0 == sa.tar2.count) {
+		if (!pa.isDefaultPositionPenalties() && 0 == sa.tar2.getCount()) {
 			warning.append(
 					"Non-default inside penalty or outside penalty ");
 			warning.append("has no effect when number of targets is 0");

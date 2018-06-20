@@ -4,11 +4,13 @@ import java.util.regex.Pattern;
 
 public class IntervalArrayT2 {
 
+	
+	//	org.apache.commons.lang3.tuple.MutablePair<L, R>
 	// refactor to a list array
-	int[][] pairs = new int[LibPrimer3.PR_MAX_INTERVAL_ARRAY][2];
+	private int[][] pairs = new int[LibPrimer3.PR_MAX_INTERVAL_ARRAY][2];
 
 	// 
-	int count = 0;
+	private int count = 0;
 	public boolean oligo_overlaps_interval(int start, int len) {
 
 		int i;
@@ -21,7 +23,7 @@ public class IntervalArrayT2 {
 	}
 
 	/* Add a pair of integers to an  array of intervals */
-	boolean p3_add_to_interval_array( int i1, int i2)
+	boolean addInterval( int i1, int i2)
 	{
 		int c = this.count;
 		if (c >= LibPrimer3.PR_MAX_INTERVAL_ARRAY) return true;
@@ -52,7 +54,7 @@ public class IntervalArrayT2 {
 			if(!intervalNums[1].isEmpty())
 				i2 = Integer.parseInt(intervalNums[1]);
 
-			if(tar2.p3_add_to_interval_array(i1, i2))
+			if(tar2.addInterval(i1, i2))
 				throw new IndexOutOfBoundsException("Too many elements for tag ");
 		}
 
@@ -122,5 +124,17 @@ public class IntervalArrayT2 {
 		}
 		return false;
 	}
+
+	
+	
+	public int getCount() {
+		return count;
+	}
+
+	public int[] getPair(int i) {
+		return pairs[i];
+	}
+
+	
 
 }

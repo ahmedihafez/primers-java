@@ -614,11 +614,11 @@ public class SeqArgs {
 		/* For pick_discriminative_primers set the forced positions */
 		if (pa.getPrimerTask() == P3Task.PICK_DISCRIMINATIVE_PRIMERS) {
 			/* Changed here from incl_s and incl_l to sa.tar2.pairs[0][0/1] */
-			if (sa.tar2.count != 1) {
+			if (sa.tar2.getCount() != 1) {
 				nonfatal_err.append("Task pick_discriminative_primers requires exactly one SEQUENCE_TARGET");
 			}
-			sa.force_left_end = sa.tar2.pairs[0][0] - 1;
-			sa.force_right_end = sa.tar2.pairs[0][0] + sa.tar2.pairs[0][1];
+			sa.force_left_end = sa.tar2.getPair(0)[0] - 1;
+			sa.force_right_end = sa.tar2.getPair(0)[0] + sa.tar2.getPair(0)[1];
 		}
 
 		/* If no included region is specified,
@@ -629,10 +629,12 @@ public class SeqArgs {
 		}
 
 		/* Generate at least one target */
-		if (pa.getPrimerTask() == P3Task.PICK_SEQUENCING_PRIMERS && sa.tar2.count == 0) {
-			sa.tar2.pairs[0][0] = pa.getFirstBaseIndex();
-			sa.tar2.pairs[0][1] = seq_len;
-			sa.tar2.count = 1;
+		if (pa.getPrimerTask() == P3Task.PICK_SEQUENCING_PRIMERS && sa.tar2.getCount() == 0) {
+			
+			sa.tar2.addInterval(pa.getFirstBaseIndex(),seq_len);
+			//sa.tar2.pairs[0][0] = pa.getFirstBaseIndex();
+			//sa.tar2.pairs[0][1] = seq_len;
+			//sa.tar2.count = 1;
 		}
 
 		/* Fix the start of the included region and start codon */
@@ -824,6 +826,8 @@ public class SeqArgs {
 	}
 
 
+	
+	
 	static String string(char[] str) {
 		if(str == null)
 			return "NULL";

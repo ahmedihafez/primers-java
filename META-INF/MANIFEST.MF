@@ -13,6 +13,5 @@ Export-Package: org.primer3,
  org.primer3.masker,
  org.primer3.oligotm,
  org.primer3.p3_seq_lib,
- org.primer3.primers,
  org.primer3.sequence,
  org.primer3.thal

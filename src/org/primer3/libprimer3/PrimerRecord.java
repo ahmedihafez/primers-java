@@ -860,7 +860,7 @@ public class PrimerRecord {
 			this.bf_set_infinite_pos_penalty(1);
 			this.bf_set_overlaps_target(1);
 		} else if (otype != OligoType.OT_INTL
-				&& !pa.isDefaultPositionPenalties() && 1 == sa.tar2.count) {
+				&& !pa.isDefaultPositionPenalties() && 1 == sa.tar2.getCount()) {
 			this.compute_position_penalty(pa, sa, otype);
 			if (this.bf_get_infinite_pos_penalty()) {
 				this.bf_set_overlaps_target(1);
@@ -1524,8 +1524,8 @@ public class PrimerRecord {
 		// PR_ASSERT(oligo_type.OT_LEFT == o_type || oligo_type.OT_RIGHT ==
 		// o_type);
 		// PR_ASSERT(1 == sa.tar2.count);
-		target_begin = sa.tar2.pairs[0][0];
-		target_end = target_begin + sa.tar2.pairs[0][1] - 1;
+		target_begin = sa.tar2.getPair(0)[0];
+		target_end = target_begin + sa.tar2.getPair(0)[1] - 1;
 
 		three_prime_base = OligoType.OT_LEFT == o_type ? this.start
 				+ this.length - 1 : this.start - this.length + 1;
