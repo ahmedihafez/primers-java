@@ -1468,7 +1468,7 @@ public class P3GlobalSettings {
 		this.mtMethod                    = MeltingTemperatureMethod.santalucia_auto;
 		this.setSaltCorrectionMethod(SaltCorrectionMethod.santalucia);
 		this.thermodynamicOligoAlignment    = true;
-		this.thermodynamicTemplateAlignment = true;
+		this.thermodynamicTemplateAlignment = false;
 		this.primersArgs.setDivalentConcentration(1.5);
 		this.primersArgs.setDntpConcentration(0.6);
 		this.libAmbiguityCodesConsensus    = false;

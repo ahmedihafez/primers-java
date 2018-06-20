@@ -453,11 +453,12 @@ public class ThAl {
 				"-s1 AAAACCCGCTTTGCTAGCTACG -s2 AACCCGCTTGCTAGCAAAAAAAA -a ANY -t 50",
 				"-s1 ccgcagtaagctgcgg -s2 ccgcagtaagctgcgg -a ANY -maxloop 1",
 				"-dv 1.5 -n 0.6 -s1 TGGTGGCAAAGTCGACAGAG -s2 TGCACTACCTGAGGCTTCAC -a END2",
-				"-dv 1.5 -n 0.6 -s1 AACTTCAGGATCCAGTGGGC  -a HAIRPIN"
+				"-dv 1.5 -n 0.6 -s1 AACTTCAGGATCCAGTGGGC  -a HAIRPIN",
+				"-dv 1.5 -n 0.6 -s1 CAGTGCTGCAATGATACCGC  -a HAIRPIN" // this fail
 		}; 
 		
 		
-		args = testCases[5].split(" ");
+		args = testCases[6].split(" ");
 		
 		String s1 = null, s2 = null;
 		
@@ -565,7 +566,7 @@ public class ThAl {
 					ThermodynamicAlignment thal_1 = new ThermodynamicAlignment(oligo1, oligo1, a);
 					o = thal_1.thAlign();
 					if (thal_trace != 0) {
-						System.out.format(  "thal, thal_args, type=%s maxLoop=%d mv=%f dv=%f dntp=%f dna_conc=%f, temp=%f, temponly=%d dimer=%d\n",
+						System.out.format(  "thal, thal_args, type=%s maxLoop=%d mv=%f dv=%f dntp=%f dna_conc=%f, temp=%f, temponly=%b dimer=%d\n",
 								a.getAlignmentType(), a.getMaxLoop(), a.getMonovalentConc(), a.getDivalentConc(), a.getDntpConc(), a.getDnaConc(), 
 								a.getTemperature(), a.isTempOnly(), a.getCalcDimer());
 						System.out.format(  "thal: s1=%s s2=%s temp=%f msg=%s end1=%d end2=%d\n", 

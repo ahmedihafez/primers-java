@@ -36,7 +36,8 @@ public class LibPrimer3 {
 	
 	// Debug info 
 	static int thal_trace = 0;
-	
+	static boolean choose_pair_or_triple_trace_me = false;
+
 	
 
 	/* ALIGN_SCORE_UNDEF is used only libprimer3 and clients, not in dpal */
@@ -364,7 +365,6 @@ public class LibPrimer3 {
 		PairStats pair_expl = retval.best_pairs.expl; /* For statistics */
 
 		int product_size_range_index = 0;
-		boolean trace_me = false;
 		int the_best_i, the_best_j;
 
 		/* Hash maps used to store pairs that were computed */
@@ -437,7 +437,7 @@ public class LibPrimer3 {
 			            have been legal on one pass but become illegal on
 			            a subsequent pass. */
 					if (update_stats) {
-						if (trace_me)
+						if (choose_pair_or_triple_trace_me)
 							System.err.format( "i=%d, j=%d, overlaps_oligo_in_better_pair++\n", i, 0); // this was j
 						pair_expl.overlaps_oligo_in_better_pair++;
 					}
@@ -460,7 +460,6 @@ public class LibPrimer3 {
 
 				/* Loop over forward primers */
 				for (int j=0; j<retval.fwd.num_elem; j++) {
-					
 					PrimerRecord left = retval.fwd.oligo.get(j);
 
 					/* We check the reverse oligo again, because we may
@@ -501,12 +500,12 @@ public class LibPrimer3 {
 			           pair with reverse oligo at i and forward oligo at j. */
 					update_stats = false;
 					if (j > max_j_seen[i]) {
-						if (trace_me)
+						if (choose_pair_or_triple_trace_me)
 							System.err.format("updates ON: i=%d, j=%d, max_j_seen[%d]=%d\n",  i, j, i, max_j_seen[i]);
 						max_j_seen[i] = j;
-						if (trace_me)
+						if (choose_pair_or_triple_trace_me)
 							System.err.format("max_j_seen[%d] -. %d\n", i, max_j_seen[i]);
-						if (trace_me) System.err.format( "updates on\n");
+						if (choose_pair_or_triple_trace_me) System.err.format( "updates on\n");
 						update_stats = true;
 					}
 
@@ -516,7 +515,7 @@ public class LibPrimer3 {
 			             have been legal on one pass but become illegal on
 			             a subsequent pass. */
 						if (update_stats) {
-							if (trace_me)
+							if (choose_pair_or_triple_trace_me)
 								System.err.format("i=%d, j=%d, overlaps_oligo_in_better_pair++\n", i, j);
 							pair_expl.overlaps_oligo_in_better_pair++;
 						}
@@ -573,7 +572,7 @@ public class LibPrimer3 {
 								/* The pair was computed, it isn't illegal and it wasn't selected yet */
 								if (update_stats) {
 									pair_expl.considered++;
-									if (trace_me)
+									if (choose_pair_or_triple_trace_me)
 										System.err.format("ok++\n");
 									pair_expl.ok++;
 								}
@@ -629,7 +628,7 @@ public class LibPrimer3 {
 							}
 
 							if (update_stats) { 
-								if (trace_me)
+								if (choose_pair_or_triple_trace_me)
 									System.err.println("ok++\n");
 								pair_expl.ok++;
 							}
@@ -694,7 +693,7 @@ public class LibPrimer3 {
 			} else {
 				/* Store the best primer for output */
 
-				if (trace_me)
+				if (choose_pair_or_triple_trace_me)
 					System.err.format("ADD pair i=%d, j=%d\n", the_best_i, the_best_j);
 
 				best_pairs.add_pair(the_best_pair);
@@ -1845,7 +1844,8 @@ public class LibPrimer3 {
 					oligo_seq = Sequence._pr_substr(sa.trimmed_seq,  i, j);
 
 				}
-
+				
+				
 				/* Do not force primer3 to use this oligo */
 				h.must_use = false;
 
