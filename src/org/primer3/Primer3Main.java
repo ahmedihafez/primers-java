@@ -143,7 +143,8 @@ public class Primer3Main {
 //		args = "/data/softwares/primer3-primer3/test/primer_check_input".split(" ");
 //		args = "/data/softwares/primer3-primer3/test/primer_first_base_index_input ".split( " " );
 		
-		
+//		args = "/data/softwares/primer3-primer3/test/primer_high_gc_load_set_input --p3_settings_file /data/softwares/primer3-primer3/test/primer_high_gc_load_set.set".split( " " );
+
 		
 		/* Setup the input data structures handlers */
 		boolean format_output = false;

@@ -841,7 +841,7 @@ public class boulder {
 			int_repeat_file_path = null;
 		}
 		
-		if(!scan.hasNext())
+		if(!line.equals("="))
 		{
 			if(data_found)
 			{
@@ -850,7 +850,13 @@ public class boulder {
 			}
 			return false;
 		}
-		
+//		else
+//		{
+//			String nextLine = scan.nextLine();
+//			if(nextLine.isEmpty() && line.equals("="))
+//				// then no problems 
+//				return false;
+//		}
 		return true;
 		
 	}
