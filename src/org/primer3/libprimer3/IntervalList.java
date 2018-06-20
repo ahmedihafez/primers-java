@@ -1,5 +1,7 @@
 package org.primer3.libprimer3;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 public class IntervalList {
@@ -7,17 +9,18 @@ public class IntervalList {
 	
 	//	org.apache.commons.lang3.tuple.MutablePair<L, R>
 	// refactor to a list array
-	private int[][] pairs = new int[LibPrimer3.PR_MAX_INTERVAL_ARRAY][2];
+//	private int[][] pairs = new int[LibPrimer3.PR_MAX_INTERVAL_ARRAY][2];
 
+	private List<int[]> pairs = new ArrayList<int[]>();
 	// 
-	private int count = 0;
-	public boolean oligo_overlaps_interval(int start, int len) {
+//	private int count = 0;
+	public boolean oligoOverlapsInterval(int start, int len) {
 
 		int i;
 		int last = start + len - 1;
-		for (i = 0; i <  count; i++)
-			if (!(last < pairs[i][0]
-					|| start > (pairs[i][0] + pairs[i][1] - 1)))
+		for (i = 0; i <  pairs.size(); i++)
+			if (!(last < pairs.get(i)[0]
+					|| start > (pairs.get(i)[0] + pairs.get(i)[1] - 1)))
 				return true;
 		return false;
 	}
@@ -25,11 +28,16 @@ public class IntervalList {
 	/* Add a pair of integers to an  array of intervals */
 	boolean addInterval( int i1, int i2)
 	{
-		int c = this.count;
-		if (c >= LibPrimer3.PR_MAX_INTERVAL_ARRAY) return true;
-		this.pairs[c][0] = i1;
-		this.pairs[c][1] = i2;
-		this.count++;
+//		int c = this.count;
+//		if (c >= LibPrimer3.PR_MAX_INTERVAL_ARRAY) return true;
+		
+		int[] pair = new int[]{i1,i2};
+		
+		this.pairs.add(pair);
+		
+//		this.pairs[c][0] = i1;
+//		this.pairs[c][1] = i2;
+//		this.count++;
 		return  false;
 	}
 
@@ -67,10 +75,10 @@ public class IntervalList {
 	 * Update the start of each interval to
 	 * be relative to the start of the included region.
 	 */
-	public boolean _check_and_adjust_1_interval(String tag_name, int seq_len,
+	public boolean checkAndAdjustInterval(String tag_name, int seq_len,
 			int first_index, StringBuilder err, SeqArgs sa,
 			StringBuilder warning, boolean empty_allowed) {
-		return _check_and_adjust_1_interval(tag_name,this.count,this.pairs,seq_len,first_index,err,sa,warning,empty_allowed);
+		return checkAndAdjustInterval(tag_name,this.pairs.size(),this.pairs,seq_len,first_index,err,sa,warning,empty_allowed);
 	}
 
 	/**
@@ -78,7 +86,7 @@ public class IntervalList {
 	 * Update the start of each interval to
 	 * be relative to the start of the included region.
 	 */
-	public static boolean _check_and_adjust_1_interval(String tag_name,
+	public static boolean checkAndAdjustInterval(String tag_name,
 			int count,
 			int[][] pairs,
 			int seq_len,
@@ -125,14 +133,64 @@ public class IntervalList {
 		return false;
 	}
 
-	
+	/**
+	 * Check intervals, and add any errors to err.
+	 * Update the start of each interval to
+	 * be relative to the start of the included region.
+	 */
+	public static boolean checkAndAdjustInterval(String tag_name,
+			int count,
+			List<int[]> pairs,
+			int seq_len,
+			int first_index, StringBuilder err, SeqArgs sa,
+			StringBuilder warning, boolean empty_allowed) {
+		int i;
+		boolean outside_warning_issued = false;
+
+		/* Subtract the first_index from the start positions in the interval
+		     array */
+		for (i = 0; i < count; i++) {
+			if (empty_allowed && (pairs.get(i)[0] == -1) && (pairs.get(i)[1] == -1))
+				continue;
+			if (empty_allowed && (((pairs.get(i)[0] == -1) && (pairs.get(i)[1] != -1)) 
+					|| ((pairs.get(i)[0] != -1) && (pairs.get(i)[1] == -1)))) {
+				err.append(tag_name + " illegal interval");
+				return true;
+			}
+			pairs.get(i)[0] -= first_index;
+		}
+
+		for (i=0; i < count; i++) {
+			if (empty_allowed && (pairs.get(i)[0] == -1) && (pairs.get(i)[1] == -1))
+				continue;
+			if (pairs.get(i)[0] + pairs.get(i)[1] > seq_len) {
+				err.append(tag_name + " beyond end of sequence");
+				return true;
+			}
+			/* Cause the interval start to be relative to the included region. */
+			pairs.get(i)[0] -= sa.incl_s;
+			/* Check that intervals are within the included region. */
+			if (pairs.get(i)[0] < 0
+					|| pairs.get(i)[0] + pairs.get(i)[1] > sa.incl_l) {
+				if (!outside_warning_issued) {
+					warning.append(tag_name +  " outside of INCLUDED_REGION");
+					outside_warning_issued = true;
+				}
+			}
+			if (pairs.get(i)[1] < 0) {
+				err.append( "Negative " + tag_name + " length");
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	public int getCount() {
-		return count;
+		return pairs.size();
 	}
 
-	public int[] getPair(int i) {
-		return pairs[i];
+	public int[] getInterval(int i) {
+		return pairs.get(i);
 	}
 
 	

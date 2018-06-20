@@ -504,27 +504,27 @@ public class SeqArgs {
 			int first_index, StringBuilder nonfatal_err,
 			StringBuilder warning) {
 
-		if (this.tar2._check_and_adjust_1_interval("TARGET",
+		if (this.tar2.checkAndAdjustInterval("TARGET",
 				seq_len, first_index, nonfatal_err, this, warning, false)) 
 			return true;
 		this.start_codon_pos -= this.incl_s;
-		if ( this.excl2._check_and_adjust_1_interval("EXCLUDED_REGION",
+		if ( this.excl2.checkAndAdjustInterval("EXCLUDED_REGION",
 				seq_len, first_index, 
 				nonfatal_err, this, warning, false)) return true;
 
-		if (this.excl_internal2._check_and_adjust_1_interval("PRIMER_INTERNAL_OLIGO_EXCLUDED_REGION",
+		if (this.excl_internal2.checkAndAdjustInterval("PRIMER_INTERNAL_OLIGO_EXCLUDED_REGION",
 				seq_len,
 				first_index,
 				nonfatal_err, this, warning, false)) 
 			return true;
-		if (IntervalList._check_and_adjust_1_interval("PRIMER_PAIR_OK_REGION_LIST",
+		if (IntervalList.checkAndAdjustInterval("PRIMER_PAIR_OK_REGION_LIST",
 				this.ok_regions.count, 
 				this.ok_regions.left_pairs,
 				seq_len,
 				first_index,
 				nonfatal_err, this, warning, true)) 
 			return true;
-		if (IntervalList._check_and_adjust_1_interval("PRIMER_PAIR_OK_REGION_LIST",
+		if (IntervalList.checkAndAdjustInterval("PRIMER_PAIR_OK_REGION_LIST",
 				this.ok_regions.count, 
 				this.ok_regions.right_pairs,
 				seq_len,
@@ -617,8 +617,8 @@ public class SeqArgs {
 			if (sa.tar2.getCount() != 1) {
 				nonfatal_err.append("Task pick_discriminative_primers requires exactly one SEQUENCE_TARGET");
 			}
-			sa.force_left_end = sa.tar2.getPair(0)[0] - 1;
-			sa.force_right_end = sa.tar2.getPair(0)[0] + sa.tar2.getPair(0)[1];
+			sa.force_left_end = sa.tar2.getInterval(0)[0] - 1;
+			sa.force_right_end = sa.tar2.getInterval(0)[0] + sa.tar2.getInterval(0)[1];
 		}
 
 		/* If no included region is specified,

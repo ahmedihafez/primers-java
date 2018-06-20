@@ -173,8 +173,8 @@ public class PrimerPair {
 		int first_of_right = this.right.start - this.right.length + 1;
 		int target_first, target_last;
 		for (i = 0; i < sa.tar2.getCount(); i++) {
-			target_first = sa.tar2.getPair(i)[0];
-			target_last = target_first + sa.tar2.getPair(i)[1] - 1;
+			target_first = sa.tar2.getInterval(i)[0];
+			target_last = target_first + sa.tar2.getInterval(i)[1] - 1;
 			if (last_of_left <= target_last
 					&& first_of_right >= target_first
 					&& last_of_left < first_of_right)

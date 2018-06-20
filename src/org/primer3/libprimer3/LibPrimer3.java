@@ -975,12 +975,12 @@ public class LibPrimer3 {
 		for (i=0; i < sa.tar2.getCount(); i++) {
 
 			/* Select the rightmost target start */
-			if (sa.tar2.getPair(i)[0] > tar_r)
-				tar_r = sa.tar2.getPair(i)[0];
+			if (sa.tar2.getInterval(i)[0] > tar_r)
+				tar_r = sa.tar2.getInterval(i)[0];
 
 			/* Select the rightmost target end */
-			if (sa.tar2.getPair(i)[0] + sa.tar2.getPair(i)[1] - 1 < tar_l)
-				tar_l = sa.tar2.getPair(i)[0] + sa.tar2.getPair(i)[1] - 1;
+			if (sa.tar2.getInterval(i)[0] + sa.tar2.getInterval(i)[1] - 1 < tar_l)
+				tar_l = sa.tar2.getInterval(i)[0] + sa.tar2.getInterval(i)[1] - 1;
 		}
 
 		if (pa.isDefaultPositionPenalties()) {
@@ -1460,33 +1460,33 @@ public class LibPrimer3 {
 			primer_nr = 1;
 			if ((pa.isPickLeftPrimer()) && (pa.isPickRightPrimer())){
 				sequenced_len = pa.getSequencingParameters().getInterval();
-				while(sequenced_len < sa.tar2.getPair(tar_n)[1]) {
+				while(sequenced_len < sa.tar2.getInterval(tar_n)[1]) {
 					primer_nr++;
 					sequenced_len = pa.getSequencingParameters().getSpacing() * (primer_nr - 1)
 							+ pa.getSequencingParameters().getInterval();
 				}
 			} else {
 				sequenced_len = pa.getSequencingParameters().getSpacing();
-				while(sequenced_len < sa.tar2.getPair(tar_n)[1]) {
+				while(sequenced_len < sa.tar2.getInterval(tar_n)[1]) {
 					primer_nr++;
 					sequenced_len = pa.getSequencingParameters().getSpacing() * primer_nr;
 				}
 			}
 			/* Calculate the overlap on the sides */
-			extra_seq = (sequenced_len - sa.tar2.getPair(tar_n)[1]) / 2;
+			extra_seq = (sequenced_len - sa.tar2.getInterval(tar_n)[1]) / 2;
 
 			/* Pick primers for each position */
 			for ( step_nr = 0 ; step_nr < primer_nr ; step_nr++ ) {
-				pr_position_f = sa.tar2.getPair(tar_n)[0] - extra_seq
+				pr_position_f = sa.tar2.getInterval(tar_n)[0] - extra_seq
 						+ ( pa.getSequencingParameters().getSpacing() * step_nr )
 						- pa.getSequencingParameters().getLead();
 				if ((pa.isPickLeftPrimer()) && (pa.isPickRightPrimer())) {
-					pr_position_r = sa.tar2.getPair(tar_n)[0] - extra_seq
+					pr_position_r = sa.tar2.getInterval(tar_n)[0] - extra_seq
 							+ ( pa.getSequencingParameters().getSpacing() * step_nr )
 							+ pa.getSequencingParameters().getInterval()
 							+ pa.getSequencingParameters().getLead();
 				} else {
-					pr_position_r = sa.tar2.getPair(tar_n)[0] - extra_seq
+					pr_position_r = sa.tar2.getInterval(tar_n)[0] - extra_seq
 							+ ( pa.getSequencingParameters().getSpacing() * (step_nr+1))
 							+ pa.getSequencingParameters().getLead();        
 				}
