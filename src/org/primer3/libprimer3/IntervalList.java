@@ -2,7 +2,7 @@ package org.primer3.libprimer3;
 
 import java.util.regex.Pattern;
 
-public class IntervalArrayT2 {
+public class IntervalList {
 
 	
 	//	org.apache.commons.lang3.tuple.MutablePair<L, R>
@@ -38,10 +38,10 @@ public class IntervalArrayT2 {
 	static final String intervalSep = " ";
 	
 	
-	public IntervalArrayT2 append_interval(String datum) {
+	public IntervalList append_interval(String datum) {
 		
 //		IntervalArrayT2 tar2 = new IntervalArrayT2();
-		IntervalArrayT2 tar2 = this;
+		IntervalList tar2 = this;
 
 
 		String[] intervalStrs = datum.split(Pattern.quote(intervalSep));

@@ -20,12 +20,12 @@ public class SeqArgs {
 	 * "included region").
 	 */
 
-	IntervalArrayT2 tar2 = new IntervalArrayT2(); /* The targets.  tar2.pairs[i][0] is the start
+	IntervalList tar2 = new IntervalList(); /* The targets.  tar2.pairs[i][0] is the start
 	 * of the ith target, tar2.pairs[i][1] its length.  */
 
-	IntervalArrayT2 excl2 = new IntervalArrayT2();/* The number of excluded regions. */
+	IntervalList excl2 = new IntervalList();/* The number of excluded regions. */
 
-	IntervalArrayT2 excl_internal2 = new IntervalArrayT2(); 
+	IntervalList excl_internal2 = new IntervalList(); 
 	/* Number of excluded regions for internal
 	           oligo; similar to excl2.*/
 
@@ -517,14 +517,14 @@ public class SeqArgs {
 				first_index,
 				nonfatal_err, this, warning, false)) 
 			return true;
-		if (IntervalArrayT2._check_and_adjust_1_interval("PRIMER_PAIR_OK_REGION_LIST",
+		if (IntervalList._check_and_adjust_1_interval("PRIMER_PAIR_OK_REGION_LIST",
 				this.ok_regions.count, 
 				this.ok_regions.left_pairs,
 				seq_len,
 				first_index,
 				nonfatal_err, this, warning, true)) 
 			return true;
-		if (IntervalArrayT2._check_and_adjust_1_interval("PRIMER_PAIR_OK_REGION_LIST",
+		if (IntervalList._check_and_adjust_1_interval("PRIMER_PAIR_OK_REGION_LIST",
 				this.ok_regions.count, 
 				this.ok_regions.right_pairs,
 				seq_len,
