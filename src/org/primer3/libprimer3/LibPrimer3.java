@@ -972,15 +972,15 @@ public class LibPrimer3 {
 		tar_l = n; /* Target length */
 
 		/* Iterate over target array */
-		for (i=0; i < sa.tar2.getCount(); i++) {
+		for (i=0; i < sa.targetRegions.getCount(); i++) {
 
 			/* Select the rightmost target start */
-			if (sa.tar2.getInterval(i)[0] > tar_r)
-				tar_r = sa.tar2.getInterval(i)[0];
+			if (sa.targetRegions.getInterval(i)[0] > tar_r)
+				tar_r = sa.targetRegions.getInterval(i)[0];
 
 			/* Select the rightmost target end */
-			if (sa.tar2.getInterval(i)[0] + sa.tar2.getInterval(i)[1] - 1 < tar_l)
-				tar_l = sa.tar2.getInterval(i)[0] + sa.tar2.getInterval(i)[1] - 1;
+			if (sa.targetRegions.getInterval(i)[0] + sa.targetRegions.getInterval(i)[1] - 1 < tar_l)
+				tar_l = sa.targetRegions.getInterval(i)[0] + sa.targetRegions.getInterval(i)[1] - 1;
 		}
 
 		if (pa.isDefaultPositionPenalties()) {
@@ -1454,39 +1454,39 @@ public class LibPrimer3 {
 		//		  PR_ASSERT(INT_MAX > (N));
 
 		/* For each target needed loop*/
-		for (tar_n=0; tar_n < sa.tar2.getCount(); tar_n++) {
+		for (tar_n=0; tar_n < sa.targetRegions.getCount(); tar_n++) {
 
 			/* Calculate the amount of primers needed */
 			primer_nr = 1;
 			if ((pa.isPickLeftPrimer()) && (pa.isPickRightPrimer())){
 				sequenced_len = pa.getSequencingParameters().getInterval();
-				while(sequenced_len < sa.tar2.getInterval(tar_n)[1]) {
+				while(sequenced_len < sa.targetRegions.getInterval(tar_n)[1]) {
 					primer_nr++;
 					sequenced_len = pa.getSequencingParameters().getSpacing() * (primer_nr - 1)
 							+ pa.getSequencingParameters().getInterval();
 				}
 			} else {
 				sequenced_len = pa.getSequencingParameters().getSpacing();
-				while(sequenced_len < sa.tar2.getInterval(tar_n)[1]) {
+				while(sequenced_len < sa.targetRegions.getInterval(tar_n)[1]) {
 					primer_nr++;
 					sequenced_len = pa.getSequencingParameters().getSpacing() * primer_nr;
 				}
 			}
 			/* Calculate the overlap on the sides */
-			extra_seq = (sequenced_len - sa.tar2.getInterval(tar_n)[1]) / 2;
+			extra_seq = (sequenced_len - sa.targetRegions.getInterval(tar_n)[1]) / 2;
 
 			/* Pick primers for each position */
 			for ( step_nr = 0 ; step_nr < primer_nr ; step_nr++ ) {
-				pr_position_f = sa.tar2.getInterval(tar_n)[0] - extra_seq
+				pr_position_f = sa.targetRegions.getInterval(tar_n)[0] - extra_seq
 						+ ( pa.getSequencingParameters().getSpacing() * step_nr )
 						- pa.getSequencingParameters().getLead();
 				if ((pa.isPickLeftPrimer()) && (pa.isPickRightPrimer())) {
-					pr_position_r = sa.tar2.getInterval(tar_n)[0] - extra_seq
+					pr_position_r = sa.targetRegions.getInterval(tar_n)[0] - extra_seq
 							+ ( pa.getSequencingParameters().getSpacing() * step_nr )
 							+ pa.getSequencingParameters().getInterval()
 							+ pa.getSequencingParameters().getLead();
 				} else {
-					pr_position_r = sa.tar2.getInterval(tar_n)[0] - extra_seq
+					pr_position_r = sa.targetRegions.getInterval(tar_n)[0] - extra_seq
 							+ ( pa.getSequencingParameters().getSpacing() * (step_nr+1))
 							+ pa.getSequencingParameters().getLead();        
 				}
@@ -1815,9 +1815,10 @@ public class LibPrimer3 {
 				/* Set the length of the primer */
 				h.length = j;
 
+				
 				/* Figure out positions for left primers and internal oligos */
 				if (oligo.type != OligoType.OT_RIGHT) {
-					/* Check if the product is of sufficient size */
+					/* Check if the product is of sufficient size -- could be optimized herer */
 					if (i-j > n-pr_min-1 && retval.output_type == P3OutputType.primer_pairs
 							&& oligo.type == OligoType.OT_LEFT) continue;
 
@@ -1872,8 +1873,7 @@ public class LibPrimer3 {
 					/* Free memory used by this primer. */
 					h.free_primer_repeat_sim_score();
 					if (h.any_5_prime_ol_extension_has_problem()) {
-						/* Break from the inner for loop, because there is no
-			     legal longer oligo with the same 3' sequence. */
+						/* Break from the inner for loop, because there is no legal longer oligo with the same 3' sequence. */
 						break;
 					}
 				}
@@ -2255,12 +2255,12 @@ public class LibPrimer3 {
 			return true;
 		}
 
-		if (!pa.isDefaultPositionPenalties() && sa.tar2.getCount() > 1) {
+		if (!pa.isDefaultPositionPenalties() && sa.targetRegions.getCount() > 1) {
 			nonfatal_err.append(
 					"Non-default inside penalty or outside penalty ");
 			nonfatal_err.append("is valid only when number of targets <= 1");
 		}
-		if (!pa.isDefaultPositionPenalties() && 0 == sa.tar2.getCount()) {
+		if (!pa.isDefaultPositionPenalties() && 0 == sa.targetRegions.getCount()) {
 			warning.append(
 					"Non-default inside penalty or outside penalty ");
 			warning.append("has no effect when number of targets is 0");

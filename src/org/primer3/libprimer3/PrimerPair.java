@@ -172,9 +172,9 @@ public class PrimerPair {
 		int last_of_left = this.left.start + this.left.length - 1;
 		int first_of_right = this.right.start - this.right.length + 1;
 		int target_first, target_last;
-		for (i = 0; i < sa.tar2.getCount(); i++) {
-			target_first = sa.tar2.getInterval(i)[0];
-			target_last = target_first + sa.tar2.getInterval(i)[1] - 1;
+		for (i = 0; i < sa.targetRegions.getCount(); i++) {
+			target_first = sa.targetRegions.getInterval(i)[0];
+			target_last = target_first + sa.targetRegions.getInterval(i)[1] - 1;
 			if (last_of_left <= target_last
 					&& first_of_right >= target_first
 					&& last_of_left < first_of_right)
@@ -242,7 +242,7 @@ public class PrimerPair {
 
 		ppair.must_use = must_use;
 
-		if (sa.tar2.getCount() > 0) {
+		if (sa.targetRegions.getCount() > 0) {
 			if (ppair.pair_spans_target(sa)) {
 				ppair.target = 1;
 			} else {
@@ -256,6 +256,10 @@ public class PrimerPair {
 
 		/* Check that the pair is included in one of the specified ok regions */
 		if ((sa.ok_regions.count > 0) && (!sa.ok_regions.any_pair)) {
+			
+			
+//			boolean included = sa.ok_regions.checkIncludedInAny(ppair);
+			// TODO :: Check if it work
 			boolean included = false;
 			int l_start = ppair.left.start, l_end = ppair.left.start + ppair.left.length - 1;
 			int r_start = ppair.right.start - ppair.right.length + 1, r_end = ppair.right.start;
@@ -285,6 +289,8 @@ public class PrimerPair {
 					}  
 				}
 			}
+			
+			
 			if (!included) {
 				if (update_stats) { pair_expl.not_in_any_ok_region++; }
 				if (!must_use) return PAIR_FAILED;

@@ -140,7 +140,7 @@ public class Primer3Main {
 		
 //		args = "/data/softwares/primer3-primer3/example".split(" ");
 		
-//		args = "/data/softwares/primer3-primer3/test/primer_human_input".split(" ");
+//		args = "/data/softwares/primer3-primer3/test/primer_not_ok_regions_input".split(" ");
 //		args = "/data/softwares/primer3-primer3/test/primer_first_base_index_input ".split( " " );
 		
 //		args = "/data/softwares/primer3-primer3/test/primer_high_gc_load_set_input --p3_settings_file /data/softwares/primer3-primer3/test/primer_high_gc_load_set.set".split( " " );

@@ -20,12 +20,12 @@ public class SeqArgs {
 	 * "included region").
 	 */
 
-	IntervalList tar2 = new IntervalList(); /* The targets.  tar2.pairs[i][0] is the start
+	IntervalList targetRegions = new IntervalList(); /* The targets.  tar2.pairs[i][0] is the start
 	 * of the ith target, tar2.pairs[i][1] its length.  */
 
-	IntervalList excl2 = new IntervalList();/* The number of excluded regions. */
+	IntervalList excludedRegions = new IntervalList();/* The number of excluded regions. */
 
-	IntervalList excl_internal2 = new IntervalList(); 
+	IntervalList excludedInternalRegions = new IntervalList(); 
 	/* Number of excluded regions for internal
 	           oligo; similar to excl2.*/
 
@@ -197,16 +197,19 @@ public class SeqArgs {
 		String[] intervalStrs = datum.split(intervalSep);
 		for(String intervalStr : intervalStrs){
 			String[] intervalNums = intervalStr.split(numSep);
+			
+			
+			
 			int i1,i2,i3,i4;
 			i1 = i2 = i3 = i4 = -1;
-			if(!intervalNums[0].isEmpty())
-				i1 = Integer.parseInt(intervalNums[0]);
-			if(!intervalNums[1].isEmpty())
-				i2 = Integer.parseInt(intervalNums[1]);
-			if(!intervalNums[2].isEmpty())
-				i3 = Integer.parseInt(intervalNums[2]);
-			if(!intervalNums[3].isEmpty())
-				i4 = Integer.parseInt(intervalNums[3]);
+			if(intervalNums.length > 0 && !intervalNums[0].trim().isEmpty())
+				i1 = Integer.parseInt(intervalNums[0].trim());
+			if(intervalNums.length > 1 && !intervalNums[1].trim().isEmpty())
+				i2 = Integer.parseInt(intervalNums[1].trim());
+			if(intervalNums.length > 2 && !intervalNums[2].trim().isEmpty())
+				i3 = Integer.parseInt(intervalNums[2].trim());
+			if(intervalNums.length > 3 && !intervalNums[3].trim().isEmpty())
+				i4 = Integer.parseInt(intervalNums[3].trim());
 			this.ok_regions.p3_add_to_2_interval_array(i1, i2, i3, i4);
 		}
 
@@ -218,7 +221,7 @@ public class SeqArgs {
 	 */
 	public void p3_set_sa_tar2(String datum) {
 //		this.tar2 = IntervalArrayT2.append_interval(datum);	
-		this.tar2.append_interval(datum);	
+		this.targetRegions.append_interval(datum);	
 
 	}
 
@@ -230,7 +233,7 @@ public class SeqArgs {
 	 */
 	public void p3_set_sa_excl2(String datum) {
 //		this.excl2 = IntervalArrayT2.append_interval(datum);	
-		this.excl2.append_interval(datum);	
+		this.excludedRegions.append_interval(datum);	
 
 	}
 	/**
@@ -239,7 +242,7 @@ public class SeqArgs {
 	 */
 	public void p3_set_sa_excl_internal2(String datum) {
 //		this.excl_internal2 = IntervalArrayT2.append_interval(datum);	
-		this.excl_internal2.append_interval(datum);	
+		this.excludedInternalRegions.append_interval(datum);	
 
 
 	}
@@ -504,15 +507,15 @@ public class SeqArgs {
 			int first_index, StringBuilder nonfatal_err,
 			StringBuilder warning) {
 
-		if (this.tar2.checkAndAdjustInterval("TARGET",
+		if (this.targetRegions.checkAndAdjustInterval("TARGET",
 				seq_len, first_index, nonfatal_err, this, warning, false)) 
 			return true;
 		this.start_codon_pos -= this.incl_s;
-		if ( this.excl2.checkAndAdjustInterval("EXCLUDED_REGION",
+		if ( this.excludedRegions.checkAndAdjustInterval("EXCLUDED_REGION",
 				seq_len, first_index, 
 				nonfatal_err, this, warning, false)) return true;
 
-		if (this.excl_internal2.checkAndAdjustInterval("PRIMER_INTERNAL_OLIGO_EXCLUDED_REGION",
+		if (this.excludedInternalRegions.checkAndAdjustInterval("PRIMER_INTERNAL_OLIGO_EXCLUDED_REGION",
 				seq_len,
 				first_index,
 				nonfatal_err, this, warning, false)) 
@@ -614,11 +617,11 @@ public class SeqArgs {
 		/* For pick_discriminative_primers set the forced positions */
 		if (pa.getPrimerTask() == P3Task.PICK_DISCRIMINATIVE_PRIMERS) {
 			/* Changed here from incl_s and incl_l to sa.tar2.pairs[0][0/1] */
-			if (sa.tar2.getCount() != 1) {
+			if (sa.targetRegions.getCount() != 1) {
 				nonfatal_err.append("Task pick_discriminative_primers requires exactly one SEQUENCE_TARGET");
 			}
-			sa.force_left_end = sa.tar2.getInterval(0)[0] - 1;
-			sa.force_right_end = sa.tar2.getInterval(0)[0] + sa.tar2.getInterval(0)[1];
+			sa.force_left_end = sa.targetRegions.getInterval(0)[0] - 1;
+			sa.force_right_end = sa.targetRegions.getInterval(0)[0] + sa.targetRegions.getInterval(0)[1];
 		}
 
 		/* If no included region is specified,
@@ -629,9 +632,9 @@ public class SeqArgs {
 		}
 
 		/* Generate at least one target */
-		if (pa.getPrimerTask() == P3Task.PICK_SEQUENCING_PRIMERS && sa.tar2.getCount() == 0) {
+		if (pa.getPrimerTask() == P3Task.PICK_SEQUENCING_PRIMERS && sa.targetRegions.getCount() == 0) {
 			
-			sa.tar2.addInterval(pa.getFirstBaseIndex(),seq_len);
+			sa.targetRegions.addInterval(pa.getFirstBaseIndex(),seq_len);
 			//sa.tar2.pairs[0][0] = pa.getFirstBaseIndex();
 			//sa.tar2.pairs[0][1] = seq_len;
 			//sa.tar2.count = 1;
@@ -765,7 +768,7 @@ public class SeqArgs {
 			}
 		}
 
-		return true;	
+		return false;	
 	}
 
 

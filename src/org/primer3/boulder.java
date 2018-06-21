@@ -723,7 +723,7 @@ public class boulder {
 				} // try
 				catch(Exception ex)
 				{
-					
+					ex.printStackTrace();
 				}
 				// catch  here
 				
