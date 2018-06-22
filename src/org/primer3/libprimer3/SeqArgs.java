@@ -151,7 +151,7 @@ public class SeqArgs {
 	 */
 	public boolean set_n_quality(String datum) {
 
-		String[] qsStr =datum.split(" ");
+		String[] qsStr =datum.trim().split(" ");
 		this.quality  = new int[qsStr.length];
 		for(int i = 0 ; i< qsStr.length;i++)
 		{
