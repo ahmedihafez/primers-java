@@ -13,16 +13,10 @@ public class PairIntervalList {
 	private int count = 0;     /* total number of pairs */
 
 
-	public int interval_array_t2_count()
-	{
-		return getCount();
-	}
-	public int[] interval_array_t2_get_pair(int i)
-	{
-		return null;
-	}
 
-	public boolean p3_add_to_2_interval_array(int i1, int i2, int i3, int i4){
+
+
+	public boolean addIntervalPair(int i1, int i2, int i3, int i4){
 		int c = this.getCount();
 		if (c >= LibPrimer3.PR_MAX_INTERVAL_ARRAY) 
 			throw new  IndexOutOfBoundsException("Too many elements for tag");
@@ -166,7 +160,7 @@ public class PairIntervalList {
 	 * oligo length in order to reduce the ranges of the ok regions. On
 	 * some imputs this improves speed dramatically.
 	 */
-	public void _optimize_ok_regions_list(P3GlobalSettings pa, SeqArgs sa) {
+	public void optimizeOkRegionsList(P3GlobalSettings pa, SeqArgs sa) {
 		/* We do this only if we enabled the optimization and
 		 * the primers were NOT specified. */
 		if (!LibPrimer3.OPTIMIZE_OK_REGIONS || (sa.left_input != null) || (sa.right_input!= null)) {
@@ -262,11 +256,9 @@ public class PairIntervalList {
 		this.any_right = false;
 	}
 	public int[][] getLeftPairs() {
-		// TODO Auto-generated method stub
 		return left_pairs;
 	}
 	public int[][] getRightPairs() {
-		// TODO Auto-generated method stub
 		return right_pairs;
 	}
 	/**

@@ -210,7 +210,7 @@ public class SeqArgs {
 				i3 = Integer.parseInt(intervalNums[2].trim());
 			if(intervalNums.length > 3 && !intervalNums[3].trim().isEmpty())
 				i4 = Integer.parseInt(intervalNums[3].trim());
-			this.ok_regions.p3_add_to_2_interval_array(i1, i2, i3, i4);
+			this.ok_regions.addIntervalPair(i1, i2, i3, i4);
 		}
 
 
@@ -718,7 +718,7 @@ public class SeqArgs {
 
 		/* Update ok regions, if non empty */
 		if (sa.ok_regions.getCount() > 0) {
-			sa.ok_regions._optimize_ok_regions_list(pa, sa);
+			sa.ok_regions.optimizeOkRegionsList(pa, sa);
 //			sa._optimize_ok_regions_list(pa);
 		}
 	}
