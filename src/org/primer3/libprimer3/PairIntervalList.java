@@ -1,6 +1,6 @@
 package org.primer3.libprimer3;
 
-public class IntervalArrayT4 {
+public class PairIntervalList {
 
 
 	private int[][] left_pairs = new int[LibPrimer3.PR_MAX_INTERVAL_ARRAY][2];

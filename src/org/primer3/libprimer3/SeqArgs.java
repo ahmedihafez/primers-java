@@ -29,7 +29,7 @@ public class SeqArgs {
 	/* Number of excluded regions for internal
 	           oligo; similar to excl2.*/
 
-	IntervalArrayT4 ok_regions = new IntervalArrayT4();
+	PairIntervalList ok_regions = new PairIntervalList();
 
 	int[] primer_overlap_junctions= new int[LibPrimer3.PR_MAX_INTERVAL_ARRAY]; 
 	/* List of overlap junction positions. */
@@ -190,7 +190,7 @@ public class SeqArgs {
 	 * @param datum
 	 */
 	public void p3_set_sa_ok_regions(String datum) {
-		this.ok_regions = new IntervalArrayT4();
+		this.ok_regions = new PairIntervalList();
 		String numSep = ",";
 		String intervalSep = ";";
 
