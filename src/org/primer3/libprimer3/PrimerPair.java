@@ -255,40 +255,40 @@ public class PrimerPair {
 		/* ============================================================= */
 
 		/* Check that the pair is included in one of the specified ok regions */
-		if ((sa.ok_regions.count > 0) && (!sa.ok_regions.any_pair)) {
+		if ((sa.ok_regions.getCount() > 0) && (!sa.ok_regions.any_pair)) {
 			
 			
-//			boolean included = sa.ok_regions.checkIncludedInAny(ppair);
+			boolean included = sa.ok_regions.checkIncludedInAny(ppair);
 			// TODO :: Check if it work
-			boolean included = false;
-			int l_start = ppair.left.start, l_end = ppair.left.start + ppair.left.length - 1;
-			int r_start = ppair.right.start - ppair.right.length + 1, r_end = ppair.right.start;
-			for (i=0; i<sa.ok_regions.count; i++) {
-				if (sa.ok_regions.left_pairs[i][0] == -1) {
-					/* any left primer, check right primer */
-					if ((r_start >= sa.ok_regions.right_pairs[i][0]) &&
-							(r_end <= sa.ok_regions.right_pairs[i][0] + sa.ok_regions.right_pairs[i][1] - 1)) {
-						included = true;
-						break;
-					}
-				} else if (sa.ok_regions.right_pairs[i][0] == -1) {
-					/* any right primer, check the left primer */
-					if ((l_start >= sa.ok_regions.left_pairs[i][0]) && 
-							(l_end <= sa.ok_regions.left_pairs[i][0] + sa.ok_regions.left_pairs[i][1] - 1)) {
-						included = true;
-						break;
-					}
-				} else {
-					/* check both primers */
-					if ((l_start >= sa.ok_regions.left_pairs[i][0]) && 
-							(l_end <= sa.ok_regions.left_pairs[i][0] + sa.ok_regions.left_pairs[i][1] - 1) &&
-							(r_start >= sa.ok_regions.right_pairs[i][0]) &&
-							(r_end <= sa.ok_regions.right_pairs[i][0] + sa.ok_regions.right_pairs[i][1] - 1)) {
-						included = true;
-						break;
-					}  
-				}
-			}
+//			boolean included = false;
+//			int l_start = ppair.left.start, l_end = ppair.left.start + ppair.left.length - 1;
+//			int r_start = ppair.right.start - ppair.right.length + 1, r_end = ppair.right.start;
+//			for (i=0; i<sa.ok_regions.count; i++) {
+//				if (sa.ok_regions.left_pairs[i][0] == -1) {
+//					/* any left primer, check right primer */
+//					if ((r_start >= sa.ok_regions.right_pairs[i][0]) &&
+//							(r_end <= sa.ok_regions.right_pairs[i][0] + sa.ok_regions.right_pairs[i][1] - 1)) {
+//						included = true;
+//						break;
+//					}
+//				} else if (sa.ok_regions.right_pairs[i][0] == -1) {
+//					/* any right primer, check the left primer */
+//					if ((l_start >= sa.ok_regions.left_pairs[i][0]) && 
+//							(l_end <= sa.ok_regions.left_pairs[i][0] + sa.ok_regions.left_pairs[i][1] - 1)) {
+//						included = true;
+//						break;
+//					}
+//				} else {
+//					/* check both primers */
+//					if ((l_start >= sa.ok_regions.left_pairs[i][0]) && 
+//							(l_end <= sa.ok_regions.left_pairs[i][0] + sa.ok_regions.left_pairs[i][1] - 1) &&
+//							(r_start >= sa.ok_regions.right_pairs[i][0]) &&
+//							(r_end <= sa.ok_regions.right_pairs[i][0] + sa.ok_regions.right_pairs[i][1] - 1)) {
+//						included = true;
+//						break;
+//					}  
+//				}
+//			}
 			
 			
 			if (!included) {

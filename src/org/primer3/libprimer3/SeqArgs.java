@@ -406,101 +406,101 @@ public class SeqArgs {
 	 * oligo length in order to reduce the ranges of the ok regions. On
 	 * some imputs this improves speed dramatically.
 	 */
-	public void _optimize_ok_regions_list(P3GlobalSettings pa) {
-		/* We do this only if we enabled the optimization and
-		 * the primers were NOT specified. */
-		if (!LibPrimer3.OPTIMIZE_OK_REGIONS || (this.left_input != null) || (this.right_input!= null)) {
-			return;
-		}
-
-		/* If any pair is allowed, no point in doing this */
-		if (this.ok_regions.any_pair) {
-			return;
-		}
-
-		int pmin = Integer.MAX_VALUE;
-		int pmax = 0;
-		int omin = pa.primersArgs.getMinSize();
-		int omax = pa.primersArgs.getMaxSize();
-
-		/* Determine min/max product size */
-		for (int i=0; i<pa.getProductSizeRangesNumber(); i++) {
-			if (pa.getProductSizeRange(i).getLeft() < pmin) { 
-				pmin = pa.getProductSizeRange(i).getLeft(); 
-			}
-			if (pa.getProductSizeRange(i).getRight() > pmax) { 
-				pmax = pa.getProductSizeRange(i).getRight(); 
-			}
-		}
-
-		/* Update each region */
-		for (int i=0; i<this.ok_regions.count; i++) {
-			int ls = -1, le = -1, rs = -1, re = -1;
-			int new_ls = -1, new_le = -1, new_rs = -1, new_re = -1;
-			if (this.ok_regions.left_pairs[i][0] != -1) {
-				ls = this.ok_regions.left_pairs[i][0];
-				le = this.ok_regions.left_pairs[i][0] + this.ok_regions.left_pairs[i][1] - 1;
-			}
-			if (this.ok_regions.right_pairs[i][0] != -1) {
-				rs = this.ok_regions.right_pairs[i][0];
-				re = this.ok_regions.right_pairs[i][0]	+ this.ok_regions.right_pairs[i][1] - 1;
-			}
-			/* Compute new right region based on left range and min/max values
-		       of product size and oligo length */
-			if (ls != -1) {
-				new_rs = ls + pmin - omax - 1; /* -1 just to be safe */
-				new_re = le - omin + pmax + 1; /* +1 just to be safe */
-				/* Adjust the ranges */
-				if ((rs == -1) || (new_rs > rs)) { 
-					rs = new_rs; 
-				}
-				if ((re == -1) || (new_re < re)) { 
-					re = new_re; 
-				}
-				if (rs < 0) { 
-					rs = 0; 
-				}
-				if (re > (this.sequence.length)) { 
-					re = (this.sequence.length); 
-				}
-			}
-			/* Compute new left region based on right range and min/max values
-		       of product size and oligo length */
-			if (rs != -1) {
-				new_ls = rs + omin - pmax - 1; /* -1 just to be safe */
-				new_le = re - pmin + omax + 1; /* +1 just to be safe */
-				/* Adjust the ranges */
-				if ((ls == -1) || (new_ls > ls)) { 
-					ls = new_ls; 
-				}
-				if ((le == -1) || (new_le < le)) { 
-					le = new_le; 
-				}
-				if (ls < 0) { ls = 0; }
-				if (le > (this.sequence.length)) { 
-					le = (this.sequence.length); 
-				}
-			}
-			/* Temporary testing fSystem.out.format: */
-			/* fSystem.out.format(stderr, "Adjusted range [%d,%d,%d,%d] to [%d,%d,%d,%d],
-			    pmin is %d, pmax is %d, omin is %d, omax is %d\n",
-			    this.ok_regions.left_pairs[i][0],
-			    this.ok_regions.left_pairs[i][0] +
-			    this.ok_regions.left_pairs[i][1] - 1,
-			    this.ok_regions.right_pairs[i][0],
-			    this.ok_regions.right_pairs[i][0] +
-			    this.ok_regions.right_pairs[i][1] - 1, ls, le, rs, re,
-			    pmin, pmax, omin, omax);
-			 */
-			this.ok_regions.left_pairs[i][0]  = ls;
-			this.ok_regions.left_pairs[i][1]  = le - ls + 1;
-			this.ok_regions.right_pairs[i][0] = rs;
-			this.ok_regions.right_pairs[i][1] = re - rs + 1;
-		}
-		/* any_left and any_right not true anymore */
-		this.ok_regions.any_left = false;
-		this.ok_regions.any_right = false;
-	}
+//	public void _optimize_ok_regions_list(P3GlobalSettings pa) {
+//		/* We do this only if we enabled the optimization and
+//		 * the primers were NOT specified. */
+//		if (!LibPrimer3.OPTIMIZE_OK_REGIONS || (this.left_input != null) || (this.right_input!= null)) {
+//			return;
+//		}
+//
+//		/* If any pair is allowed, no point in doing this */
+//		if (this.ok_regions.any_pair) {
+//			return;
+//		}
+//
+//		int pmin = Integer.MAX_VALUE;
+//		int pmax = 0;
+//		int omin = pa.primersArgs.getMinSize();
+//		int omax = pa.primersArgs.getMaxSize();
+//
+//		/* Determine min/max product size */
+//		for (int i=0; i<pa.getProductSizeRangesNumber(); i++) {
+//			if (pa.getProductSizeRange(i).getLeft() < pmin) { 
+//				pmin = pa.getProductSizeRange(i).getLeft(); 
+//			}
+//			if (pa.getProductSizeRange(i).getRight() > pmax) { 
+//				pmax = pa.getProductSizeRange(i).getRight(); 
+//			}
+//		}
+//
+//		/* Update each region */
+//		for (int i=0; i<this.ok_regions.count; i++) {
+//			int ls = -1, le = -1, rs = -1, re = -1;
+//			int new_ls = -1, new_le = -1, new_rs = -1, new_re = -1;
+//			if (this.ok_regions.left_pairs[i][0] != -1) {
+//				ls = this.ok_regions.left_pairs[i][0];
+//				le = this.ok_regions.left_pairs[i][0] + this.ok_regions.left_pairs[i][1] - 1;
+//			}
+//			if (this.ok_regions.right_pairs[i][0] != -1) {
+//				rs = this.ok_regions.right_pairs[i][0];
+//				re = this.ok_regions.right_pairs[i][0]	+ this.ok_regions.right_pairs[i][1] - 1;
+//			}
+//			/* Compute new right region based on left range and min/max values
+//		       of product size and oligo length */
+//			if (ls != -1) {
+//				new_rs = ls + pmin - omax - 1; /* -1 just to be safe */
+//				new_re = le - omin + pmax + 1; /* +1 just to be safe */
+//				/* Adjust the ranges */
+//				if ((rs == -1) || (new_rs > rs)) { 
+//					rs = new_rs; 
+//				}
+//				if ((re == -1) || (new_re < re)) { 
+//					re = new_re; 
+//				}
+//				if (rs < 0) { 
+//					rs = 0; 
+//				}
+//				if (re > (this.sequence.length)) { 
+//					re = (this.sequence.length); 
+//				}
+//			}
+//			/* Compute new left region based on right range and min/max values
+//		       of product size and oligo length */
+//			if (rs != -1) {
+//				new_ls = rs + omin - pmax - 1; /* -1 just to be safe */
+//				new_le = re - pmin + omax + 1; /* +1 just to be safe */
+//				/* Adjust the ranges */
+//				if ((ls == -1) || (new_ls > ls)) { 
+//					ls = new_ls; 
+//				}
+//				if ((le == -1) || (new_le < le)) { 
+//					le = new_le; 
+//				}
+//				if (ls < 0) { ls = 0; }
+//				if (le > (this.sequence.length)) { 
+//					le = (this.sequence.length); 
+//				}
+//			}
+//			/* Temporary testing fSystem.out.format: */
+//			/* fSystem.out.format(stderr, "Adjusted range [%d,%d,%d,%d] to [%d,%d,%d,%d],
+//			    pmin is %d, pmax is %d, omin is %d, omax is %d\n",
+//			    this.ok_regions.left_pairs[i][0],
+//			    this.ok_regions.left_pairs[i][0] +
+//			    this.ok_regions.left_pairs[i][1] - 1,
+//			    this.ok_regions.right_pairs[i][0],
+//			    this.ok_regions.right_pairs[i][0] +
+//			    this.ok_regions.right_pairs[i][1] - 1, ls, le, rs, re,
+//			    pmin, pmax, omin, omax);
+//			 */
+//			this.ok_regions.left_pairs[i][0]  = ls;
+//			this.ok_regions.left_pairs[i][1]  = le - ls + 1;
+//			this.ok_regions.right_pairs[i][0] = rs;
+//			this.ok_regions.right_pairs[i][1] = re - rs + 1;
+//		}
+//		/* any_left and any_right not true anymore */
+//		this.ok_regions.any_left = false;
+//		this.ok_regions.any_right = false;
+//	}
 
 
 	public boolean _check_and_adjust_intervals(int seq_len,
@@ -521,15 +521,15 @@ public class SeqArgs {
 				nonfatal_err, this, warning, false)) 
 			return true;
 		if (IntervalList.checkAndAdjustInterval("PRIMER_PAIR_OK_REGION_LIST",
-				this.ok_regions.count, 
-				this.ok_regions.left_pairs,
+				this.ok_regions.getCount(), 
+				this.ok_regions.getLeftPairs(),
 				seq_len,
 				first_index,
 				nonfatal_err, this, warning, true)) 
 			return true;
 		if (IntervalList.checkAndAdjustInterval("PRIMER_PAIR_OK_REGION_LIST",
-				this.ok_regions.count, 
-				this.ok_regions.right_pairs,
+				this.ok_regions.getCount(), 
+				this.ok_regions.getRightPairs(),
 				seq_len,
 				first_index,
 				nonfatal_err, this, warning, true)) 
@@ -717,8 +717,9 @@ public class SeqArgs {
 		}
 
 		/* Update ok regions, if non empty */
-		if (sa.ok_regions.count > 0) {
-			sa._optimize_ok_regions_list(pa);
+		if (sa.ok_regions.getCount() > 0) {
+			sa.ok_regions._optimize_ok_regions_list(pa, sa);
+//			sa._optimize_ok_regions_list(pa);
 		}
 	}
 

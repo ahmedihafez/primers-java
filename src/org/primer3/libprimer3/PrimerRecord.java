@@ -916,42 +916,55 @@ public class PrimerRecord {
 		}
 
 		/* Check if the oligo is included in any ok region */
-		if ((otype == OligoType.OT_LEFT) && (sa.ok_regions.count > 0)
-				&& (!sa.ok_regions.any_left)) {
-			boolean included = false;
-			for (i = 0; i < sa.ok_regions.count; i++) {
-				if ((j >= sa.ok_regions.left_pairs[i][0])
-						&& (k <= sa.ok_regions.left_pairs[i][0]
-								+ sa.ok_regions.left_pairs[i][1] - 1)) {
-					included = true;
-					break;
-				}
-			}
-			if (!included) {
-				op_set_not_in_any_ok_region();
+		
+		boolean included = false;
+		included = sa.ok_regions.chechIncludedInAny(otype,j,k);
+		if (!included) {
+			op_set_not_in_any_ok_region();
+			if(otype == OligoType.OT_LEFT)
 				stats.not_in_any_left_ok_region++;
-				if (!must_use)
-					return;
-			}
-		}
-		if ((otype == OligoType.OT_RIGHT) && (sa.ok_regions.count > 0)
-				&& (!sa.ok_regions.any_right)) {
-			boolean included = false;
-			for (i = 0; i < sa.ok_regions.count; i++) {
-				if ((j >= sa.ok_regions.right_pairs[i][0])
-						&& (k <= sa.ok_regions.right_pairs[i][0]
-								+ sa.ok_regions.right_pairs[i][1] - 1)) {
-					included = true;
-					break;
-				}
-			}
-			if (!included) {
-				op_set_not_in_any_ok_region();
+			else
 				stats.not_in_any_right_ok_region++;
-				if (!must_use)
-					return;
-			}
+			if (!must_use)
+				return;
 		}
+//		if ((otype == OligoType.OT_LEFT) && (sa.ok_regions.count > 0)
+//				&& (!sa.ok_regions.any_left)) {
+//			boolean included = false;
+//			for (i = 0; i < sa.ok_regions.count; i++) {
+//				if ((j >= sa.ok_regions.left_pairs[i][0])
+//						&& (k <= sa.ok_regions.left_pairs[i][0]
+//								+ sa.ok_regions.left_pairs[i][1] - 1)) {
+//					included = true;
+//					break;
+//				}
+//			}
+//			if (!included) {
+//				op_set_not_in_any_ok_region();
+//				stats.not_in_any_left_ok_region++;
+//				if (!must_use)
+//					return;
+//			}
+//		}
+//		
+//		if ((otype == OligoType.OT_RIGHT) && (sa.ok_regions.count > 0)
+//				&& (!sa.ok_regions.any_right)) {
+//			boolean included = false;
+//			for (i = 0; i < sa.ok_regions.count; i++) {
+//				if ((j >= sa.ok_regions.right_pairs[i][0])
+//						&& (k <= sa.ok_regions.right_pairs[i][0]
+//								+ sa.ok_regions.right_pairs[i][1] - 1)) {
+//					included = true;
+//					break;
+//				}
+//			}
+//			if (!included) {
+//				op_set_not_in_any_ok_region();
+//				stats.not_in_any_right_ok_region++;
+//				if (!must_use)
+//					return;
+//			}
+//		}
 
 		if (this.gc_content < po_args.getMinGC()) {
 			op_set_low_gc_content();
