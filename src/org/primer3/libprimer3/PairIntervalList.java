@@ -163,7 +163,7 @@ public class PairIntervalList {
 	public void optimizeOkRegionsList(P3GlobalSettings pa, SeqArgs sa) {
 		/* We do this only if we enabled the optimization and
 		 * the primers were NOT specified. */
-		if (!LibPrimer3.OPTIMIZE_OK_REGIONS || (sa.left_input != null) || (sa.right_input!= null)) {
+		if (!LibPrimer3.OPTIMIZE_OK_REGIONS || (sa.getLeftInput() != null) || (sa.getRightInput()!= null)) {
 			return;
 		}
 
@@ -214,8 +214,8 @@ public class PairIntervalList {
 				if (rs < 0) { 
 					rs = 0; 
 				}
-				if (re > (sa.sequence.length)) { 
-					re = (sa.sequence.length); 
+				if (re > (sa.getSequence().length)) { 
+					re = (sa.getSequence().length); 
 				}
 			}
 			/* Compute new left region based on right range and min/max values
@@ -231,8 +231,8 @@ public class PairIntervalList {
 					le = new_le; 
 				}
 				if (ls < 0) { ls = 0; }
-				if (le > (sa.sequence.length)) { 
-					le = (sa.sequence.length); 
+				if (le > (sa.getSequence().length)) { 
+					le = (sa.getSequence().length); 
 				}
 			}
 			/* Temporary testing fSystem.out.format: */

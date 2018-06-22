@@ -533,7 +533,7 @@ public class LibPrimer3 {
 					/* Determine if overlap with an overlap point is required, and
 				   if so, whether one of the primers in the pairs overlaps
 				   that point. */
-					if ((sa.primer_overlap_junctions_count > 0)
+					if ((sa.getPrimerOverlapJunctionsList().size() > 0)
 							&& !(right.overlaps_overlap_position
 									|| left.overlaps_overlap_position)
 							) {
@@ -813,7 +813,7 @@ public class LibPrimer3 {
 
 				if (h.self_any == ALIGN_SCORE_UNDEF && !pa.isThermodynamicOligoAlignment()) {
 
-					oligo_seq =  Sequence._pr_substr(sa.trimmed_seq, h.start, h.length);
+					oligo_seq =  Sequence._pr_substr(sa.getTrimmedSequence(), h.start, h.length);
 					revc_oligo_seq = Sequence.p3_reverse_complement(oligo_seq);
 
 					h.oligo_compl( pa.oligosArgs, retval.intl.expl,
@@ -822,7 +822,7 @@ public class LibPrimer3 {
 				}
 
 				if (h.self_any == ALIGN_SCORE_UNDEF && pa.isThermodynamicOligoAlignment()) {
-					oligo_seq=  Sequence._pr_substr(sa.trimmed_seq, h.start, h.length);
+					oligo_seq=  Sequence._pr_substr(sa.getTrimmedSequence(), h.start, h.length);
 					revc_oligo_seq = Sequence.p3_reverse_complement(oligo_seq);
 
 					h.oligo_compl_thermod( pa.oligosArgs, retval.intl.expl,
@@ -830,7 +830,7 @@ public class LibPrimer3 {
 					if (!h.OK_OR_MUST_USE()) continue;
 				}
 				if(h.hairpin_th == ALIGN_SCORE_UNDEF && pa.isThermodynamicOligoAlignment()) {
-					oligo_seq = Sequence._pr_substr(sa.trimmed_seq, h.start, h.length);
+					oligo_seq = Sequence._pr_substr(sa.getTrimmedSequence(), h.start, h.length);
 					h.oligo_hairpin( pa.oligosArgs,
 							retval.intl.expl, thal_oligo_arg_to_use,
 							oligo_seq);
@@ -911,15 +911,15 @@ public class LibPrimer3 {
 		int left = 0;
 		retval.intl.extreme = 0;
 		  /* Use the primer provided */
-		  if ((sa.internal_input != null ) || (pa.getPrimerTask() == P3Task.CHECK_PRIMERS )){
-		         ret = add_one_primer(sa.internal_input,  retval.intl,
+		  if ((sa.getInternalInput() != null ) || (pa.getPrimerTask() == P3Task.CHECK_PRIMERS )){
+		         ret = add_one_primer(sa.getInternalInput(),  retval.intl,
 		                               pa, sa, dpal_arg_to_use, thal_arg_to_use, retval);
 		  }
 		  else {
 		    /* Pick all good in the given range */
 
 		    /* Use the settings to select a proper range */
-		   int length = sa.trimmed_seq.length - pa.getOligosArgs().getMinSize();
+		   int length = sa.getTrimmedSequence().length - pa.getOligosArgs().getMinSize();
 		   int start = pa.getOligosArgs().getMinSize() - 1;
 		   left = 0;
 
@@ -966,21 +966,21 @@ public class LibPrimer3 {
 			if(pa.getProductSizeRange(i).getLeft() < pr_min)
 				pr_min = pa.getProductSizeRange(i).getLeft();
 
-		n = sa.trimmed_seq.length;
+		n = sa.getTrimmedSequence().length;
 		//		  PR_ASSERT(INT_MAX > (n=strlen(sa.trimmed_seq)));
 		tar_r = 0; /* Target start position */
 		tar_l = n; /* Target length */
 
 		/* Iterate over target array */
-		for (i=0; i < sa.targetRegions.getCount(); i++) {
+		for (i=0; i < sa.getTargetRegions().getCount(); i++) {
 
 			/* Select the rightmost target start */
-			if (sa.targetRegions.getInterval(i)[0] > tar_r)
-				tar_r = sa.targetRegions.getInterval(i)[0];
+			if (sa.getTargetRegions().getInterval(i)[0] > tar_r)
+				tar_r = sa.getTargetRegions().getInterval(i)[0];
 
 			/* Select the rightmost target end */
-			if (sa.targetRegions.getInterval(i)[0] + sa.targetRegions.getInterval(i)[1] - 1 < tar_l)
-				tar_l = sa.targetRegions.getInterval(i)[0] + sa.targetRegions.getInterval(i)[1] - 1;
+			if (sa.getTargetRegions().getInterval(i)[0] + sa.getTargetRegions().getInterval(i)[1] - 1 < tar_l)
+				tar_l = sa.getTargetRegions().getInterval(i)[0] + sa.getTargetRegions().getInterval(i)[1] - 1;
 		}
 
 		if (pa.isDefaultPositionPenalties()) {
@@ -997,7 +997,7 @@ public class LibPrimer3 {
 		if (retval.output_type == P3OutputType.primer_list && pa.isPickLeftPrimer())
 			f_b = n - 1;
 		else if (tar_r - 1 < n - pr_min + pa.primersArgs.getMaxSize() - 1
-				&& !(pa.isPickAnyway() && sa.left_input != null ))
+				&& !(pa.isPickAnyway() && sa.getLeftInput() != null ))
 			f_b=tar_r - 1;
 		else
 			f_b = n - pr_min + pa.primersArgs.getMaxSize()-1;
@@ -1014,17 +1014,17 @@ public class LibPrimer3 {
 
 
 			/* Use the primer provided */
-			if (sa.left_input != null) {
+			if (sa.getLeftInput() != null) {
 
-				add_one_primer(sa.left_input, retval.fwd,
+				add_one_primer(sa.getLeftInput(), retval.fwd,
 						pa, sa, dpal_arg_to_use, thal_arg_to_use, retval);
 				//				left = retval.fwd.extreme;
 
 			}
 			/* Pick primers at one position */
-			else if(sa.force_left_start > -1 ||
-					sa.force_left_end > -1) {
-				pick_primers_by_position(sa.force_left_start, sa.force_left_end, retval.fwd, pa, sa,
+			else if(sa.getForceLeftStart() > -1 ||
+					sa.getForceLeftEnd() > -1) {
+				pick_primers_by_position(sa.getForceLeftStart(), sa.getForceLeftEnd(), retval.fwd, pa, sa,
 						dpal_arg_to_use, thal_arg_to_use, retval);
 				//				left = retval.fwd.extreme;
 			}
@@ -1040,7 +1040,7 @@ public class LibPrimer3 {
 		if (retval.output_type == P3OutputType.primer_list && pa.isPickRightPrimer())
 			r_b = 0;
 		else if (tar_l+1>pr_min - pa.primersArgs.getMaxSize()
-				&& !(pa.isPickAnyway() && sa.right_input != null))
+				&& !(pa.isPickAnyway() && sa.getRightInput() != null))
 			r_b = tar_l+1;
 		else
 			r_b = pr_min - pa.primersArgs.getMaxSize();
@@ -1053,17 +1053,17 @@ public class LibPrimer3 {
 			start = r_b;
 
 			/* Use the primer provided */
-			if (sa.right_input != null) {
-				add_one_primer(sa.right_input, retval.rev,
+			if (sa.getRightInput() != null) {
+				add_one_primer(sa.getRightInput(), retval.rev,
 						pa, sa, dpal_arg_to_use, thal_arg_to_use, retval);
 				/*  pick_right_primers(start, length, &right, &retval.rev,
 		          pa, sa, dpal_arg_to_use, retval);*/
 
 			}
 			/* Pick primers at one position */
-			else if(sa.force_right_start > -1 ||
-					sa.force_right_end > -1) {
-				pick_primers_by_position(sa.force_right_start, sa.force_right_end,
+			else if(sa.getForceRightStart() > -1 ||
+					sa.getForceRightEnd() > -1) {
+				pick_primers_by_position(sa.getForceRightStart(), sa.getForceRightEnd(),
 						retval.rev, pa, sa,
 						dpal_arg_to_use, thal_arg_to_use, retval);
 			}
@@ -1085,8 +1085,8 @@ public class LibPrimer3 {
 		if ((pa.isPickLeftPrimer() && 0 == retval.fwd.num_elem)
 				|| ((pa.isPickRightPrimer())  && 0 == retval.rev.num_elem)) {
 			return 1;
-		} else if (!((sa.right_input != null)
-				&& (sa.left_input != null))
+		} else if (!((sa.getRightInput() != null)
+				&& (sa.getLeftInput() != null))
 				&& pa.isPickLeftPrimer()
 				&& pa.isPickRightPrimer()
 				&& (right - left) < (pr_min - 1)) {
@@ -1177,7 +1177,7 @@ public class LibPrimer3 {
 		/* Retun 1 for no primer found */
 		found_primer = 1;
 
-		n = sa.trimmed_seq.length;
+		n = sa.getTrimmedSequence().length;
 		//		  PR_ASSERT(INT_MAX > (n=strlen(sa.trimmed_seq)));
 
 		/* Just to be sure */
@@ -1208,7 +1208,7 @@ public class LibPrimer3 {
 			h.start = start;
 
 			/* Put the real primer sequence in s */
-			oligo_seq = Sequence._pr_substr(sa.trimmed_seq, h.start, length);
+			oligo_seq = Sequence._pr_substr(sa.getTrimmedSequence(), h.start, length);
 		}
 		/* Figure out positions for reverse primers */
 		else {
@@ -1217,7 +1217,7 @@ public class LibPrimer3 {
 			h.start = start;
 
 			/* Put the real primer sequence in s */
-			oligo_seq = Sequence._pr_substr(sa.trimmed_seq, i, length);
+			oligo_seq = Sequence._pr_substr(sa.getTrimmedSequence(), i, length);
 		}
 
 		/* Force primer3 to use this oligo */
@@ -1297,14 +1297,14 @@ public class LibPrimer3 {
 		} else {
 			test_oligo = Sequence.p3_reverse_complement(primer );
 		}
-		n = sa.trimmed_seq.length;
+		n = sa.getTrimmedSequence().length;
 		//		  PR_ASSERT(INT_MAX > (n)));
 
 		/* This time we already know the size of the primer */
 		j = (primer.length);
 
 		/* Loop over the whole sequence */
-		for(i = sa.trimmed_seq.length; i >= 0; i--) {
+		for(i = sa.getTrimmedSequence().length; i >= 0; i--) {
 			//		    oligo_seq[0] = '\0';
 			/* Struct to store the primer parameters in */
 			PrimerRecord h = new PrimerRecord();
@@ -1322,7 +1322,7 @@ public class LibPrimer3 {
 				/* Put the real primer sequence in s */
 //				if(h.start+ j > sa.trimmed_seq.length)
 //					j = j - ((h.start+ j)- sa.trimmed_seq.length);
-				oligo_seq =  Sequence._pr_substr(sa.trimmed_seq, h.start, j );
+				oligo_seq =  Sequence._pr_substr(sa.getTrimmedSequence(), h.start, j );
 			}
 			/* Figure out positions for reverse primers */
 			else {
@@ -1333,7 +1333,7 @@ public class LibPrimer3 {
 				h.start=i+j-1;
 
 				/* Put the real primer sequence in s */
-				oligo_seq =  Sequence._pr_substr(sa.trimmed_seq,  i, j);
+				oligo_seq =  Sequence._pr_substr(sa.getTrimmedSequence(),  i, j);
 			}
 
 			/* Compare the primer with the sequence */
@@ -1401,18 +1401,18 @@ public class LibPrimer3 {
 			THAlArgHolder thal_oligo_arg_to_use) throws AlignmentException, ThermodynamicAlignmentException, PrimerRecordException {
 	      
 
-		if (sa.left_input != null) {
-			add_one_primer(sa.left_input,  retval.fwd,
+		if (sa.getLeftInput() != null) {
+			add_one_primer(sa.getLeftInput(),  retval.fwd,
 					pa, sa, dpal_arg_to_use, thal_arg_to_use, retval);
 		}
 
-		if (sa.right_input!= null) {
-			add_one_primer(sa.right_input,  retval.rev,
+		if (sa.getRightInput()!= null) {
+			add_one_primer(sa.getRightInput(),  retval.rev,
 					pa, sa, dpal_arg_to_use, thal_arg_to_use, retval);
 		}
 
-		if (sa.internal_input!= null) {
-			add_one_primer(sa.internal_input, retval.intl,
+		if (sa.getInternalInput()!= null) {
+			add_one_primer(sa.getInternalInput(), retval.intl,
 					pa, sa, dpal_arg_to_use, thal_oligo_arg_to_use, retval);
 		}
 
@@ -1450,43 +1450,43 @@ public class LibPrimer3 {
 		int pr_position_r;
 
 		/* Get the length of the sequence */
-		n= sa.trimmed_seq.length;
+		n= sa.getTrimmedSequence().length;
 		//		  PR_ASSERT(INT_MAX > (N));
 
 		/* For each target needed loop*/
-		for (tar_n=0; tar_n < sa.targetRegions.getCount(); tar_n++) {
+		for (tar_n=0; tar_n < sa.getTargetRegions().getCount(); tar_n++) {
 
 			/* Calculate the amount of primers needed */
 			primer_nr = 1;
 			if ((pa.isPickLeftPrimer()) && (pa.isPickRightPrimer())){
 				sequenced_len = pa.getSequencingParameters().getInterval();
-				while(sequenced_len < sa.targetRegions.getInterval(tar_n)[1]) {
+				while(sequenced_len < sa.getTargetRegions().getInterval(tar_n)[1]) {
 					primer_nr++;
 					sequenced_len = pa.getSequencingParameters().getSpacing() * (primer_nr - 1)
 							+ pa.getSequencingParameters().getInterval();
 				}
 			} else {
 				sequenced_len = pa.getSequencingParameters().getSpacing();
-				while(sequenced_len < sa.targetRegions.getInterval(tar_n)[1]) {
+				while(sequenced_len < sa.getTargetRegions().getInterval(tar_n)[1]) {
 					primer_nr++;
 					sequenced_len = pa.getSequencingParameters().getSpacing() * primer_nr;
 				}
 			}
 			/* Calculate the overlap on the sides */
-			extra_seq = (sequenced_len - sa.targetRegions.getInterval(tar_n)[1]) / 2;
+			extra_seq = (sequenced_len - sa.getTargetRegions().getInterval(tar_n)[1]) / 2;
 
 			/* Pick primers for each position */
 			for ( step_nr = 0 ; step_nr < primer_nr ; step_nr++ ) {
-				pr_position_f = sa.targetRegions.getInterval(tar_n)[0] - extra_seq
+				pr_position_f = sa.getTargetRegions().getInterval(tar_n)[0] - extra_seq
 						+ ( pa.getSequencingParameters().getSpacing() * step_nr )
 						- pa.getSequencingParameters().getLead();
 				if ((pa.isPickLeftPrimer()) && (pa.isPickRightPrimer())) {
-					pr_position_r = sa.targetRegions.getInterval(tar_n)[0] - extra_seq
+					pr_position_r = sa.getTargetRegions().getInterval(tar_n)[0] - extra_seq
 							+ ( pa.getSequencingParameters().getSpacing() * step_nr )
 							+ pa.getSequencingParameters().getInterval()
 							+ pa.getSequencingParameters().getLead();
 				} else {
-					pr_position_r = sa.targetRegions.getInterval(tar_n)[0] - extra_seq
+					pr_position_r = sa.getTargetRegions().getInterval(tar_n)[0] - extra_seq
 							+ ( pa.getSequencingParameters().getSpacing() * (step_nr+1))
 							+ pa.getSequencingParameters().getLead();        
 				}
@@ -1586,7 +1586,7 @@ public class LibPrimer3 {
 		found_primer = 0;
 
 		/* Set n to the length of included region */
-		n=sa.trimmed_seq.length;
+		n=sa.getTrimmedSequence().length;
 		//		  PR_ASSERT(INT_MAX > (n));
 
 		/* Conditions for primer length */
@@ -1622,7 +1622,7 @@ public class LibPrimer3 {
 					h.start = i - j + 1;
 
 					/* Put the real primer sequence in oligo_seq */
-					oligo_seq =  Sequence._pr_substr(sa.trimmed_seq, h.start, j);
+					oligo_seq =  Sequence._pr_substr(sa.getTrimmedSequence(), h.start, j);
 				} else {
 					/* Figure out positions for reverse primers */
 					/* Break if the primer is bigger than the sequence left*/
@@ -1632,7 +1632,7 @@ public class LibPrimer3 {
 					h.start = i+j-1;
 
 					/* Put the real primer sequence in s */
-					oligo_seq =  Sequence._pr_substr(sa.trimmed_seq,  i, j);
+					oligo_seq =  Sequence._pr_substr(sa.getTrimmedSequence(),  i, j);
 
 				}
 
@@ -1719,7 +1719,7 @@ public class LibPrimer3 {
 		//		int extreme;
 		int length, start;
 		int n;
-		n=sa.trimmed_seq.length;
+		n=sa.getTrimmedSequence().length;
 		/* Get the length of the sequence */
 		//		PR_ASSERT(INT_MAX > (n=strlen(sa.trimmed_seq)));
 		if (pa.isPickLeftPrimer()) {
@@ -1793,7 +1793,7 @@ public class LibPrimer3 {
 				pr_min = pa.getProductSizeRange(i).getLeft();
 
 		/* Set n to the length of included region */
-		n = sa.trimmed_seq.length;
+		n = sa.getTrimmedSequence().length;
 		//		PR_ASSERT(INT_MAX > (n=strlen(sa.trimmed_seq)));
 
 		if (oligo.type == OligoType.OT_INTL) {
@@ -1829,7 +1829,7 @@ public class LibPrimer3 {
 					h.start = i - j + 1;
 
 					/* Put the real primer sequence in oligo_seq */
-					oligo_seq = Sequence._pr_substr(sa.trimmed_seq, h.start, j);
+					oligo_seq = Sequence._pr_substr(sa.getTrimmedSequence(), h.start, j);
 				} else {
 					/* Figure out positions for reverse primers */
 					/* Check if the product is of sufficient size */
@@ -1842,7 +1842,7 @@ public class LibPrimer3 {
 					h.start = i+j-1;
 
 					/* Put the real primer sequence in s */
-					oligo_seq = Sequence._pr_substr(sa.trimmed_seq,  i, j);
+					oligo_seq = Sequence._pr_substr(sa.getTrimmedSequence(),  i, j);
 
 				}
 				
@@ -1915,10 +1915,10 @@ public class LibPrimer3 {
 		int i, pr_min, seq_len;
 		char offending_char = '\0';
 
-		seq_len = sa.sequence.length;
+		seq_len = sa.getSequence().length;
 
 		/* If sequence quality is provided, is it as long as the sequence? */
-		if (sa.n_quality !=0 && sa.n_quality != seq_len)
+		if (sa.getSequenceQuality() != null && sa.getSequenceQuality().length != seq_len)
 			nonfatal_err.append(
 					"Error in sequence quality data");
 
@@ -1927,7 +1927,7 @@ public class LibPrimer3 {
 			nonfatal_err.append( "Minimum 3' distance must be >= -1 (min_*_three_prime_distance)");
 
 		if ((pa.primersArgs.getMinQuality() != 0 || pa.oligosArgs.getMinQuality() != 0)
-				&& sa.n_quality == 0)
+				&& sa.getSequenceQuality().length == 0)
 			nonfatal_err.append( "Sequence quality data missing");
 
 		if (pa.getFirstBaseIndex() < PR_NULL_FORCE_POSITION) {
@@ -2064,19 +2064,19 @@ public class LibPrimer3 {
 			return true;
 		}
 
-		if (sa.incl_l >= Integer.MAX_VALUE) {
+		if (sa.getIncludedRegionLength() >= Integer.MAX_VALUE) {
 			nonfatal_err.append( "Value for SEQUENCE_INCLUDED_REGION too large");
 			return true;
 		}
 
-		if (sa.incl_s < 0 || sa.incl_l < 0
-				|| sa.incl_s + sa.incl_l > seq_len) {
+		if (sa.getIncludedRegionStart() < 0 || sa.getIncludedRegionLength() < 0
+				|| sa.getIncludedRegionStart() + sa.getIncludedRegionLength() > seq_len) {
 			nonfatal_err.append( "Illegal value for SEQUENCE_INCLUDED_REGION");
 			return true;
 		}
 
 		/* The product must fit in the included region */
-		if (sa.incl_l < pr_min && pa.isPickLeftPrimer() 
+		if (sa.getIncludedRegionLength() < pr_min && pa.isPickLeftPrimer() 
 				&& pa.isPickRightPrimer() ) {
 			if (pa.getPrimerTask() == P3Task.CHECK_PRIMERS) {
 				warning.append("SEQUENCE_INCLUDED_REGION length < min PRIMER_PRODUCT_SIZE_RANGE");
@@ -2101,24 +2101,24 @@ public class LibPrimer3 {
 				nonfatal_err.append( 	"Cannot accept both SEQUENCE_START_CODON_POSITION and non-default " + 
 						"arguments for PRIMER_INSIDE_PENALTY or PRIMER_OUTSIDE_PENALTY");
 			}
-			if (sa.start_codon_pos  > (sa.incl_s + sa.incl_l - 3)) {
+			if (sa.getStartCodonPos()  > (sa.getIncludedRegionStart() + sa.getIncludedRegionLength() - 3)) {
 				nonfatal_err.append("Start codon position not contained in SEQUENCE_INCLUDED_REGION");
 				return true;
 			} else {
-				if (sa.start_codon_pos >= 0
-						&& ((sa.sequence[sa.start_codon_pos] != 'A'
-						&& sa.sequence[sa.start_codon_pos] != 'a')
-						|| (sa.sequence[sa.start_codon_pos + 1] != 'T'
-						&& sa.sequence[sa.start_codon_pos + 1] != 't')
-						|| (sa.sequence[sa.start_codon_pos + 2] != 'G'
-						&& sa.sequence[sa.start_codon_pos + 2] != 'g'))) {
+				if (sa.getStartCodonPos() >= 0
+						&& ((sa.getSequence()[sa.getStartCodonPos()] != 'A'
+						&& sa.getSequence()[sa.getStartCodonPos()] != 'a')
+						|| (sa.getSequence()[sa.getStartCodonPos() + 1] != 'T'
+						&& sa.getSequence()[sa.getStartCodonPos() + 1] != 't')
+						|| (sa.getSequence()[sa.getStartCodonPos() + 2] != 'G'
+						&& sa.getSequence()[sa.getStartCodonPos() + 2] != 'g'))) {
 					nonfatal_err.append("No start codon at SEQUENCE_START_CODON_POSITION");
 					return true;
 				}
 			}
 		}
 
-		if (null != sa.quality) {
+		if (null != sa.getSequenceQuality()) {
 			if(pa.primersArgs.getMinQuality() != 0 && pa.primersArgs.getMinQuality() < pa.getQualityRangeMin()) {
 				glob_err.append(
 						"PRIMER_MIN_QUALITY < PRIMER_QUALITY_RANGE_MIN");
@@ -2139,9 +2139,9 @@ public class LibPrimer3 {
 						"PRIMER_INTERNAL_MIN_QUALITY > PRIMER_QUALITY_RANGE_MAX");
 				return true;
 			}
-			for(i=0; i < sa.n_quality; i++) {
-				if(sa.quality[i] < pa.getQualityRangeMin() ||
-						sa.quality[i] > pa.getQualityRangeMax()) {
+			for(i=0; i < sa.getSequenceQuality().length; i++) {
+				if(sa.getSequenceQuality()[i] < pa.getQualityRangeMin() ||
+						sa.getSequenceQuality()[i] > pa.getQualityRangeMax()) {
 					nonfatal_err.append(
 							"Sequence quality score out of range");
 					return true;
@@ -2153,7 +2153,7 @@ public class LibPrimer3 {
 					"Sequence quality is part of objective function but sequence quality is not defined");
 			return true;
 		}
-		offending_char = dna_to_upper(sa.trimmed_seq, 0);
+		offending_char = dna_to_upper(sa.getTrimmedSequence(), 0);
 		if (offending_char != '\0' ) {
 			if (pa.isLiberalBase()) {
 				warning.append( "Unrecognized base in input sequence");
@@ -2255,69 +2255,69 @@ public class LibPrimer3 {
 			return true;
 		}
 
-		if (!pa.isDefaultPositionPenalties() && sa.targetRegions.getCount() > 1) {
+		if (!pa.isDefaultPositionPenalties() && sa.getTargetRegions().getCount() > 1) {
 			nonfatal_err.append(
 					"Non-default inside penalty or outside penalty ");
 			nonfatal_err.append("is valid only when number of targets <= 1");
 		}
-		if (!pa.isDefaultPositionPenalties() && 0 == sa.targetRegions.getCount()) {
+		if (!pa.isDefaultPositionPenalties() && 0 == sa.getTargetRegions().getCount()) {
 			warning.append(
 					"Non-default inside penalty or outside penalty ");
 			warning.append("has no effect when number of targets is 0");
 		}
-		if (pa.isPickInternalOligo() != true && sa.internal_input != null) {
+		if (pa.isPickInternalOligo() != true && sa.getInternalInput() != null) {
 			nonfatal_err.append("Not specified to pick internal oligos");
 			nonfatal_err.append(" but a specific internal oligo is provided");
 		}
-		if (sa.internal_input != null) {
-			if ((sa.internal_input.length) > MAX_PRIMER_LENGTH) {
+		if (sa.getInternalInput() != null) {
+			if ((sa.getInternalInput().length) > MAX_PRIMER_LENGTH) {
 				glob_err.append("Specified internal oligo exceeds built-in maximum of " + MAX_PRIMER_LENGTH);
 				return true;
 			}
-			if ((sa.internal_input.length) >  pa.oligosArgs.getMaxSize())
+			if ((sa.getInternalInput().length) >  pa.oligosArgs.getMaxSize())
 				warning.append("Specified internal oligo > PRIMER_INTERNAL_MAX_SIZE");
 
-			if ((sa.internal_input.length) <  pa.oligosArgs.getMinSize())
+			if ((sa.getInternalInput().length) <  pa.oligosArgs.getMinSize())
 				warning.append("Specified internal oligo < PRIMER_INTERNAL_MIN_SIZE");
 
-			if (!strstr_nocase(sa.sequence, sa.internal_input))
+			if (!strstr_nocase(sa.getSequence(), sa.getInternalInput()))
 				nonfatal_err.append( "Specified internal oligo not in sequence");
-			else if (!strstr_nocase(sa.trimmed_seq, sa.internal_input))
+			else if (!strstr_nocase(sa.getTrimmedSequence(), sa.getInternalInput()))
 				nonfatal_err.append( "Specified internal oligo not in Included Region");
 		}
-		if (sa.left_input != null) {
-			if ((sa.left_input.length) > MAX_PRIMER_LENGTH) {
+		if (sa.getLeftInput() != null) {
+			if ((sa.getLeftInput().length) > MAX_PRIMER_LENGTH) {
 				glob_err.append(
 						"Specified left primer exceeds built-in maximum of " + MAX_PRIMER_LENGTH);
 				return true;
 			}
-			if ((sa.left_input.length) >  pa.primersArgs.getMaxSize())
+			if ((sa.getLeftInput().length) >  pa.primersArgs.getMaxSize())
 				warning.append("Specified left primer > PRIMER_MAX_SIZE");
-			if ((sa.left_input.length) < pa.primersArgs.getMinSize())
+			if ((sa.getLeftInput().length) < pa.primersArgs.getMinSize())
 				warning.append( "Specified left primer < PRIMER_MIN_SIZE");
-			if (!strstr_nocase(sa.sequence, sa.left_input))
+			if (!strstr_nocase(sa.getSequence(), sa.getLeftInput()))
 				nonfatal_err.append(
 						"Specified left primer not in sequence");
-			else if (!strstr_nocase(sa.trimmed_seq, sa.left_input))
+			else if (!strstr_nocase(sa.getTrimmedSequence(), sa.getLeftInput()))
 				nonfatal_err.append(
 						"Specified left primer not in Included Region");
 		}
-		if (sa.right_input != null) {
-			if ((sa.right_input.length) > MAX_PRIMER_LENGTH) {
+		if (sa.getRightInput() != null) {
+			if ((sa.getRightInput().length) > MAX_PRIMER_LENGTH) {
 				glob_err.append(
 						"Specified right primer exceeds built-in maximum of " + MAX_PRIMER_LENGTH);
 				return true;
 			}
-			if ((sa.right_input.length) < pa.primersArgs.getMinSize())
+			if ((sa.getRightInput().length) < pa.primersArgs.getMinSize())
 				warning.append( "Specified right primer < PRIMER_MIN_SIZE");
-			if ((sa.right_input.length) >  pa.primersArgs.getMaxSize()) {
+			if ((sa.getRightInput().length) >  pa.primersArgs.getMaxSize()) {
 				warning.append( "Specified right primer > PRIMER_MAX_SIZE");
 			} else { /* We do not want to overflow s1. */
-				char[] s1 =  Sequence.p3_reverse_complement(sa.right_input);
-				if (!strstr_nocase(sa.sequence, s1))
+				char[] s1 =  Sequence.p3_reverse_complement(sa.getRightInput());
+				if (!strstr_nocase(sa.getSequence(), s1))
 					nonfatal_err.append(
 							"Specified right primer not in sequence");
-				else if (!strstr_nocase(sa.trimmed_seq, s1))
+				else if (!strstr_nocase(sa.getTrimmedSequence(), s1))
 					nonfatal_err.append( "Specified right primer not in Included Region");
 			}
 		}
@@ -2419,15 +2419,15 @@ public class LibPrimer3 {
 			return true;
 		}
 
-		if((sa.force_left_start > -1) && (sa.force_left_end > -1)
-				&& (sa.force_left_start > sa.force_left_end)) {
+		if((sa.getForceLeftStart() > -1) && (sa.getForceLeftEnd() > -1)
+				&& (sa.getForceLeftStart() > sa.getForceLeftEnd())) {
 			glob_err.append(
 					"SEQUENCE_FORCE_LEFT_START > SEQUENCE_FORCE_LEFT_END");
 			return true;
 		}
 
-		if((sa.force_right_end > -1) && (sa.force_right_start > -1)
-				&& (sa.force_right_end > sa.force_right_start)) {
+		if((sa.getForceRightEnd() > -1) && (sa.getForceRightStart() > -1)
+				&& (sa.getForceRightEnd() > sa.getForceRightStart())) {
 			glob_err.append(
 					"SEQUENCE_FORCE_RIGHT_END > SEQUENCE_FORCE_RIGHT_START");
 			return true;
@@ -2443,13 +2443,13 @@ public class LibPrimer3 {
 			return true;
 		}
 
-		if ((sa.primer_overlap_junctions_count > 0) &&
+		if ((sa.getPrimerOverlapJunctionsList().size() > 0) &&
 				(pa.getMin5PrimeOverlapOfJunction() > (pa.primersArgs.getMaxSize() / 2))) {
 			glob_err.append("PRIMER_MIN_5_PRIME_OVERLAP_OF_JUNCTION > PRIMER_MAX_SIZE / 2");
 			return true;
 		}
 
-		if ((sa.primer_overlap_junctions_count > 0) && 
+		if ((sa.getPrimerOverlapJunctionsList().size() > 0) && 
 				(pa.getMin3PrimeOverlapOfJunction() > (pa.primersArgs.getMaxSize() / 2))) {
 			glob_err.append("PRIMER_MIN_3_PRIME_OVERLAP_OF_JUNCTION > PRIMER_MAX_SIZE / 2");
 			return true;
@@ -2728,22 +2728,22 @@ public class LibPrimer3 {
 		//		char   tmp_char;
 		double tmp_score;
 
-		seqlen = sa.upcased_seq.length;
-		first_untrimmed = sa.incl_s + first;
-		last_untrimmed = sa.incl_s + last;
+		seqlen = sa.getUpcasedSeq().length;
+		first_untrimmed = sa.getIncludedRegionStart() + first;
+		last_untrimmed = sa.getIncludedRegionStart() + last;
 
 
 		if (l == OligoType.OT_LEFT) {
 			oseq = s;
-			target = sa.upcased_seq;
-			target_r = sa.upcased_seq_r;
+			target = sa.getUpcasedSeq();
+			target_r = sa.getUpcasedSeqRev();
 		} else {  /* l == OT_RIGHT */
 			if (debug)
 				System.err.format("first_untrimmed = %d, last_untrimmed = %d\n",
 						first_untrimmed, last_untrimmed);
 			oseq = s_r;
-			target = sa.upcased_seq_r;
-			target_r = sa.upcased_seq;
+			target = sa.getUpcasedSeqRev();
+			target_r = sa.getUpcasedSeq();
 			/* We need to adjust first_untrimmed and last_untrimmed so that
 			       they are correct in the reverse-complemented
 			       sequence.
@@ -2840,21 +2840,21 @@ public class LibPrimer3 {
 		//		   char   tmp_char;
 		double  tmp_score;
 
-		seqlen = sa.upcased_seq.length;
-		first_untrimmed = sa.incl_s + first;
-		last_untrimmed = sa.incl_s + last;
+		seqlen = sa.getUpcasedSeq().length;
+		first_untrimmed = sa.getIncludedRegionStart() + first;
+		last_untrimmed = sa.getIncludedRegionStart() + last;
 
 		if (l == OligoType.OT_RIGHT) {
 			oseq = s_r;
-			target = sa.upcased_seq;
-			target_r = sa.upcased_seq_r;
+			target = sa.getUpcasedSeq();
+			target_r = sa.getUpcasedSeqRev();
 		} else { /* l == OT_RIGHT */
 			if (debug)
 				System.err.format( "first_untrimmed = %d, last_untrimmed = %d\n",
 						first_untrimmed, last_untrimmed);
 			oseq = s;
-			target = sa.upcased_seq_r;
-			target_r = sa.upcased_seq;
+			target = sa.getUpcasedSeqRev();
+			target_r = sa.getUpcasedSeq();
 			/* We need to adjust first_untrimmed and last_untrimmed so that
 			 * they are correct in the reverse-complemented
 			 * sequence.

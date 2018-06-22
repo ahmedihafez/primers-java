@@ -122,7 +122,7 @@ public class P3RetVal {
 		int loop_max;
 
 		/* That links to the included region */
-		int i, incl_s = sa.incl_s;
+		int i, incl_s = sa.getIncludedRegionStart();
 
 		/* This deals with the renaming of the internal oligo */
 		String new_oligo_name = "INTERNAL";
@@ -408,7 +408,7 @@ public class P3RetVal {
 						intl.repeat_sim.name);
 
 			/* If a sequence quality was provided, print it*/
-			if (null != sa.quality){
+			if (null != sa.getSequenceQuality()){
 				if (go_fwd == 1)
 					System.out.format("PRIMER_LEFT%s_MIN_SEQ_QUALITY=%d\n", suffix,
 							fwd.seq_quality);
@@ -469,7 +469,7 @@ public class P3RetVal {
 			/************************************************************************************/
 			/* Print the pair parameters*/
 			if (retval.output_type == P3OutputType.primer_pairs) {
-				if (go_int == 1 && null != sa.quality) /* FIX ME - Uptate the tests */
+				if (go_int == 1 && null != sa.getSequenceQuality()) /* FIX ME - Uptate the tests */
 					System.out.format("PRIMER_%s%s_MIN_SEQ_QUALITY=%d\n", int_oligo,
 							suffix, intl.seq_quality);
 				/* Print pair comp_any */
@@ -540,17 +540,17 @@ public class P3RetVal {
 	private void print_all_explain(P3GlobalSettings pa, SeqArgs sa,
 			int io_version) {
 		if (pa.isPickLeftPrimer()
-				&& !(pa.isPickAnyway() && sa.left_input != null))
+				&& !(pa.isPickAnyway() && sa.getLeftInput() != null))
 			System.out.format("PRIMER_LEFT_EXPLAIN=%s\n",
 					p3_get_rv_fwd().p3_get_oligo_array_explain_string());
 
 		if (pa.isPickRightPrimer() 
-				&& !(pa.isPickAnyway() && sa.right_input != null))
+				&& !(pa.isPickAnyway() && sa.getRightInput() != null))
 			System.out.format("PRIMER_RIGHT_EXPLAIN=%s\n",
 					p3_get_rv_rev().p3_get_oligo_array_explain_string());
 
 		if ( pa.isPickInternalOligo() 
-				&& !(pa.isPickAnyway() && sa.internal_input != null)) 
+				&& !(pa.isPickAnyway() && sa.getInternalInput() != null)) 
 			System.out.format("PRIMER_INTERNAL_EXPLAIN=%s\n",
 					p3_get_rv_intl().p3_get_oligo_array_explain_string());
 
@@ -621,12 +621,12 @@ public class P3RetVal {
 	 */
 	public void set_retval_both_stop_codons(SeqArgs sa) {
 		
-		  this.upstream_stop_codon = Sequence.find_stop_codon(sa.trimmed_seq,
-		                                                sa.start_codon_pos, -1);
-		  this.upstream_stop_codon += sa.incl_s;
-		  this.stop_codon_pos = Sequence.find_stop_codon(sa.trimmed_seq,
-		                                             sa.start_codon_pos,  1);
-		  this.stop_codon_pos += sa.incl_s;		
+		  this.upstream_stop_codon = Sequence.find_stop_codon(sa.getTrimmedSequence(),
+		                                                sa.getStartCodonPos(), -1);
+		  this.upstream_stop_codon += sa.getIncludedRegionStart();
+		  this.stop_codon_pos = Sequence.find_stop_codon(sa.getTrimmedSequence(),
+		                                             sa.getStartCodonPos(),  1);
+		  this.stop_codon_pos += sa.getIncludedRegionStart();		
 	}
 
 

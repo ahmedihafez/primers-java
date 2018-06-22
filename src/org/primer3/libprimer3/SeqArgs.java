@@ -1,5 +1,8 @@
 package org.primer3.libprimer3;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.primer3.masker.input_sequence;
 import org.primer3.masker.masker;
 import org.primer3.masker.masking_direction;
@@ -20,68 +23,94 @@ public class SeqArgs {
 	 * "included region").
 	 */
 
-	IntervalList targetRegions = new IntervalList(); /* The targets.  tar2.pairs[i][0] is the start
+	private IntervalList targetRegions = new IntervalList(); /* The targets.  tar2.pairs[i][0] is the start
 	 * of the ith target, tar2.pairs[i][1] its length.  */
 
-	IntervalList excludedRegions = new IntervalList();/* The number of excluded regions. */
+	private IntervalList excludedRegions = new IntervalList();/* The number of excluded regions. */
 
-	IntervalList excludedInternalRegions = new IntervalList(); 
+	private IntervalList excludedInternalRegions = new IntervalList(); 
 	/* Number of excluded regions for internal
 	           oligo; similar to excl2.*/
 
-	PairIntervalList ok_regions = new PairIntervalList();
+	private PairIntervalList okRegions = new PairIntervalList();
 
-	int[] primer_overlap_junctions= new int[LibPrimer3.PR_MAX_INTERVAL_ARRAY]; 
+	private List<Integer> primerOverlapJunctionsList = new ArrayList<Integer>();// int[LibPrimer3.PR_MAX_INTERVAL_ARRAY]; 
 	/* List of overlap junction positions. */
 
-	int primer_overlap_junctions_count;
+	private int primer_overlap_junctions_count;
 
-	public int incl_s;             /* The 0-based start of included region. */
+	/**
+	 *  The 0-based start of included region. 
+	 */
+	private int includedRegionStart;             
 
 	/**
 	 * TRIMMED_SEQ_LEN
-	 */
-	int incl_l;             /* 
 	 * The length of the included region, which is
 	 * also the length of the trimmed_seq field.
 	 */
-	int  start_codon_pos;   /* Index of first base of the start codon. */
+	private int includedRegionLength;             
+	/* Index of first base of the start codon. */
+	private int  startCodonPos;   
 
 
-	int[] quality;             /* Vector of quality scores. */
-	int  n_quality;            /* Number of valid elements in 'quality' */
-	int  quality_storage_size; /* Amount of storage quality points to. */
+	private int[] sequenceQuality;             /* Vector of quality scores. */
+//	int  n_quality;            /* Number of valid elements in 'quality' */
+//	int  quality_storage_size; /* Amount of storage quality points to. */
 
-	public char[] sequence;         /* The template sequence itself as input, 
+	private char[] sequence;         /* The template sequence itself as input, 
 	           not trimmed, not up-cased. */
-	public String sequence_name;    /* An identifier for the sequence. */
-	char[] sequence_file;    /* Another identifer for the sequence. */
-	public char[] trimmed_seq;      /* The included region only, _UPCASED_. */
+	
+	private String sequenceName;    /* An identifier for the sequence. */
+	/* Another identifer for the sequence. */
+	private char[] sequence_file;    
+	/* The included region only, _UPCASED_. */
+	private char[] trimmedSequence;      
 
 	/* Element add by T. Koressaar support lowercase masking: */
-	char[] trimmed_orig_seq; /* Trimmed version of the original, mixed-case sequence. */
+	/**
+	 *  Trimmed version of the original, mixed-case sequence. 
+	 */
+	private char[] trimmedOrigSequence; 
 
 	/* Added by M. Lepamets */
-	char[] trimmed_masked_seq; /* Masked version of the trimmed seq */
-	char[] trimmed_masked_seq_r; /* Masked version of the other strand
-	              of the trimmed seq */                           
+	/** Masked version of the trimmed seq */
+	private char[] trimmedMaskedSeq;
+	/** Masked version of the other strand of the trimmed seq */
+	private char[] trimmedMaskedSeqRev;                            
 
-	char[] upcased_seq;      /* Upper case version of sequence
-	           (_not_ trimmed). */
+	
+	/**
+	 *  Upper case version of sequence (_not_ trimmed). 
+     */
+	private char[] upcasedSeq;      
 
-	char[] upcased_seq_r;    /* Upper case version of sequence, 
-	           other strand (_not_ trimmed). */
+	/**
+	 *  Upper case version of sequence, 
+	 *  other strand (_not_ trimmed). 
+	 */
+	private char[] upcasedSeqRev;    
 
-	public char[] left_input;       /* A left primer to check or design around. */
+	
+	/**
+	 *  A left primer to check or design around. 
+	 */
+	private char[] leftInput;       
 
-	public char[] right_input;      /* A right primer to check or design around. */
+	/**
+	 *  A right primer to check or design around. 
+	 */
+	private char[] rightInput;      
 
-	public char[] internal_input;   /* An internal oligo to check or design around. */
+	/**
+	 *  An internal oligo to check or design around. 
+	 */
+	private char[] internalInput;   
 
-	int force_left_start;   /* The 0-based forced 5' start left primer. */
-	int force_left_end;     /* The 0-based forced 3' end left primer. */
-	int force_right_start;  /* The 0-based forced 5' start right primer. */
-	int force_right_end;    /* The 0-based forced 3' end right primer. */
+	private int forceLeftStart;   /* The 0-based forced 5' start left primer. */
+	private int forceLeftEnd;     /* The 0-based forced 3' end left primer. */
+	private int forceRightStart;  /* The 0-based forced 5' start right primer. */
+	private int forceRightEnd;    /* The 0-based forced 3' end right primer. */
 
 
 	/** 
@@ -89,17 +118,17 @@ public class SeqArgs {
 	 */
 	public SeqArgs()
 	{
-		this.start_codon_pos = LibPrimer3.PR_DEFAULT_START_CODON_POS;
-		this.incl_l = -1; /* Indicates logical NULL. */
+		this.startCodonPos = LibPrimer3.PR_DEFAULT_START_CODON_POS;
+		this.includedRegionLength = -1; /* Indicates logical NULL. */
 
-		this.force_left_start = LibPrimer3.PR_NULL_FORCE_POSITION; /* Indicates logical NULL. */
-		this.force_left_end = LibPrimer3.PR_NULL_FORCE_POSITION; /* Indicates logical NULL. */
-		this.force_right_start = LibPrimer3.PR_NULL_FORCE_POSITION; /* Indicates logical NULL. */
-		this.force_right_end = LibPrimer3.PR_NULL_FORCE_POSITION; /* Indicates logical NULL. */
+		this.forceLeftStart = LibPrimer3.PR_NULL_FORCE_POSITION; /* Indicates logical NULL. */
+		this.forceLeftEnd = LibPrimer3.PR_NULL_FORCE_POSITION; /* Indicates logical NULL. */
+		this.forceRightStart = LibPrimer3.PR_NULL_FORCE_POSITION; /* Indicates logical NULL. */
+		this.forceRightEnd = LibPrimer3.PR_NULL_FORCE_POSITION; /* Indicates logical NULL. */
 		this.primer_overlap_junctions_count = 0;
 
-		this.n_quality = 0;
-		this.quality = null;
+//		this.n_quality = 0;
+		this.sequenceQuality = null;
 	}
 	
 	
@@ -124,7 +153,7 @@ public class SeqArgs {
 
 
 	public boolean PR_START_CODON_POS_IS_NULL() {
-		return this.start_codon_pos <= LibPrimer3.PR_NULL_START_CODON_POS;
+		return this.startCodonPos <= LibPrimer3.PR_NULL_START_CODON_POS;
 	}
 
 
@@ -132,16 +161,24 @@ public class SeqArgs {
 	 * SEQUENCE_ID
 	 * @param datum
 	 */
-	public void p3_set_sa_sequence_name(String datum) {
-		this.sequence_name = datum;
+	public void setSequenceName(String datum) {
+		this.sequenceName = datum;
 	}
+
+	/**
+	 * @return the sequenceName
+	 */
+	public String getSequenceName() {
+		return sequenceName;
+	}
+
 
 	/**
 	 * SEQUENCE_TEMPLATE
 	 * @param datum
 	 */
-	public void p3_set_sa_sequence(String datum) {
-		this.sequence = datum.toCharArray();		
+	public void setSequence(String sequence) {
+		this.sequence = sequence.toCharArray();		
 	}
 
 	/**
@@ -152,12 +189,12 @@ public class SeqArgs {
 	public boolean set_n_quality(String datum) {
 
 		String[] qsStr =datum.trim().split(" ");
-		this.quality  = new int[qsStr.length];
+		this.sequenceQuality  = new int[qsStr.length];
 		for(int i = 0 ; i< qsStr.length;i++)
 		{
-			this.quality[i] = Integer.parseInt(qsStr[i]);
+			this.sequenceQuality[i] = Integer.parseInt(qsStr[i]);
 		}
-		this.n_quality = quality.length;
+//		this.n_quality = quality.length;
 		return true;
 	}
 
@@ -166,7 +203,7 @@ public class SeqArgs {
 	 * @param datum
 	 */
 	public void p3_set_sa_left_input(String datum) {
-		this.left_input = datum.toCharArray();		
+		this.leftInput = datum.toCharArray();		
 	}
 
 	/**
@@ -174,7 +211,7 @@ public class SeqArgs {
 	 * @param datum
 	 */
 	public void p3_set_sa_right_input(String datum) {
-		this.right_input = datum.toCharArray();		
+		this.rightInput = datum.toCharArray();		
 	}
 
 	/**
@@ -182,7 +219,7 @@ public class SeqArgs {
 	 * @param datum
 	 */
 	public void p3_set_sa_internal_input(String datum) {
-		this.internal_input = datum.toCharArray();			
+		this.internalInput = datum.toCharArray();			
 	}
 
 	/**
@@ -190,7 +227,7 @@ public class SeqArgs {
 	 * @param datum
 	 */
 	public void p3_set_sa_ok_regions(String datum) {
-		this.ok_regions = new PairIntervalList();
+		this.okRegions = new PairIntervalList();
 		String numSep = ",";
 		String intervalSep = ";";
 
@@ -210,7 +247,7 @@ public class SeqArgs {
 				i3 = Integer.parseInt(intervalNums[2].trim());
 			if(intervalNums.length > 3 && !intervalNums[3].trim().isEmpty())
 				i4 = Integer.parseInt(intervalNums[3].trim());
-			this.ok_regions.addIntervalPair(i1, i2, i3, i4);
+			this.okRegions.addIntervalPair(i1, i2, i3, i4);
 		}
 
 
@@ -259,8 +296,8 @@ public class SeqArgs {
 		this. primer_overlap_junctions_count = 0;
 		for(String item : intervalStrs) 
 		{
-			this.primer_overlap_junctions[this. primer_overlap_junctions_count] = 
-					Integer.parseInt(item);
+//			this.primerOverlapJunctionsList[this. primer_overlap_junctions_count] = Integer.parseInt(item);
+			this.primerOverlapJunctionsList.add(Integer.parseInt(item));
 			this. primer_overlap_junctions_count++;
 		}
 		return true;
@@ -274,8 +311,8 @@ public class SeqArgs {
 		String sep = ",";
 
 		String[] pairs = datum.split(sep);
-		this.incl_s = Integer.parseInt(pairs[0]);
-		this.incl_l = Integer.parseInt(pairs[1]);
+		this.includedRegionStart = Integer.parseInt(pairs[0]);
+		this.includedRegionLength = Integer.parseInt(pairs[1]);
 		return true;
 	}
 	/**
@@ -283,7 +320,7 @@ public class SeqArgs {
 	 * @param datum
 	 */
 	public void p3_set_sa_start_codon_pos(String datum) {
-		this.start_codon_pos = Integer.parseInt(datum);
+		this.startCodonPos = Integer.parseInt(datum);
 
 	}
 
@@ -292,7 +329,7 @@ public class SeqArgs {
 	 * @param datum
 	 */
 	public void p3_set_sa_force_left_start(String datum) {
-		this.force_left_start = Integer.parseInt(datum);
+		this.forceLeftStart = Integer.parseInt(datum);
 
 	}
 
@@ -301,7 +338,7 @@ public class SeqArgs {
 	 * @param datum
 	 */
 	public void p3_set_sa_force_left_end(String datum) {
-		this.force_left_end = Integer.parseInt(datum);
+		this.forceLeftEnd = Integer.parseInt(datum);
 
 	}
 
@@ -310,7 +347,7 @@ public class SeqArgs {
 	 * @param datum
 	 */
 	public void p3_set_sa_force_right_start(String datum) {
-		this.force_right_start = Integer.parseInt(datum);
+		this.forceRightStart = Integer.parseInt(datum);
 
 	}
 
@@ -319,7 +356,7 @@ public class SeqArgs {
 	 * @param datum
 	 */
 	public void p3_set_sa_force_right_end(String datum) {
-		this.force_right_end = Integer.parseInt(datum);
+		this.forceRightEnd = Integer.parseInt(datum);
 
 	}
 
@@ -341,15 +378,15 @@ public class SeqArgs {
 
 
 		/* Calculate how many Ns have to be added */
-		if (this.left_input != null ){
-			ns_to_fill = ns_to_fill - this.left_input.length;
+		if (this.leftInput != null ){
+			ns_to_fill = ns_to_fill - this.leftInput.length;
 		}
-		if (this.right_input != null){
-			ns_to_fill = ns_to_fill - this.right_input.length;
-			rev = Sequence.p3_reverse_complement(this.right_input);
+		if (this.rightInput != null){
+			ns_to_fill = ns_to_fill - this.rightInput.length;
+			rev = Sequence.p3_reverse_complement(this.rightInput);
 		}
-		if (this.internal_input != null){
-			ns_to_fill = ns_to_fill - this.internal_input.length;
+		if (this.internalInput != null){
+			ns_to_fill = ns_to_fill - this.internalInput.length;
 		}
 		/* Return if there are no primers provided */
 		if (ns_to_fill == product_size + 1){
@@ -363,9 +400,9 @@ public class SeqArgs {
 		/* Copy over the primers */
 		int strcatPos = 0;
 
-		if (this.left_input != null){
-			for (i = 0; i < this.left_input.length; i++ ) {
-				this.sequence[strcatPos] =this.left_input[i];
+		if (this.leftInput != null){
+			for (i = 0; i < this.leftInput.length; i++ ) {
+				this.sequence[strcatPos] =this.leftInput[i];
 				strcatPos++;
 			}
 
@@ -376,10 +413,10 @@ public class SeqArgs {
 			this.sequence[strcatPos] = 'N';
 			strcatPos++;
 		}
-		if (this.internal_input != null){
+		if (this.internalInput != null){
 			//			  strcat(this.sequence, this.internal_input);
-			for (i = 0; i < this.internal_input.length; i++ ) {
-				this.sequence[strcatPos] =this.internal_input[i];
+			for (i = 0; i < this.internalInput.length; i++ ) {
+				this.sequence[strcatPos] =this.internalInput[i];
 				strcatPos++;
 			}
 
@@ -389,7 +426,7 @@ public class SeqArgs {
 			this.sequence[strcatPos] = 'N';
 			strcatPos++;
 		}
-		if (this.right_input != null ){
+		if (this.rightInput != null ){
 			//		    strcat(this.sequence, rev);
 			for (i = 0; i < rev.length; i++ ) {
 				this.sequence[strcatPos] = rev[i];
@@ -510,7 +547,7 @@ public class SeqArgs {
 		if (this.targetRegions.checkAndAdjustInterval("TARGET",
 				seq_len, first_index, nonfatal_err, this, warning, false)) 
 			return true;
-		this.start_codon_pos -= this.incl_s;
+		this.startCodonPos -= this.includedRegionStart;
 		if ( this.excludedRegions.checkAndAdjustInterval("EXCLUDED_REGION",
 				seq_len, first_index, 
 				nonfatal_err, this, warning, false)) return true;
@@ -521,15 +558,15 @@ public class SeqArgs {
 				nonfatal_err, this, warning, false)) 
 			return true;
 		if (IntervalList.checkAndAdjustInterval("PRIMER_PAIR_OK_REGION_LIST",
-				this.ok_regions.getCount(), 
-				this.ok_regions.getLeftPairs(),
+				this.okRegions.getCount(), 
+				this.okRegions.getLeftPairs(),
 				seq_len,
 				first_index,
 				nonfatal_err, this, warning, true)) 
 			return true;
 		if (IntervalList.checkAndAdjustInterval("PRIMER_PAIR_OK_REGION_LIST",
-				this.ok_regions.getCount(), 
-				this.ok_regions.getRightPairs(),
+				this.okRegions.getCount(), 
+				this.okRegions.getRightPairs(),
 				seq_len,
 				first_index,
 				nonfatal_err, this, warning, true)) 
@@ -553,7 +590,7 @@ public class SeqArgs {
 	 */
 	public boolean _check_and_adjust_overlap_pos( String tag, int seq_len, int first_index, StringBuilder  nonfatal_err, StringBuilder warning) {
 		return _check_and_adjust_overlap_pos( this, 
-				this.primer_overlap_junctions, this.primer_overlap_junctions_count,  tag,
+				this.primerOverlapJunctionsList, this.primer_overlap_junctions_count,  tag,
 				seq_len, first_index, nonfatal_err, warning); 
 	}
 
@@ -582,7 +619,7 @@ public class SeqArgs {
 				sa.fake_a_sequence( pa);
 			}
 		}
-		if (pa.getPrimerTask() == P3Task.PICK_SEQUENCING_PRIMERS && sa.incl_l != -1) {
+		if (pa.getPrimerTask() == P3Task.PICK_SEQUENCING_PRIMERS && sa.includedRegionLength != -1) {
 			nonfatal_err.append("Task pick_sequencing_primers cannot be combined with included region");
 			return;
 		}
@@ -605,12 +642,12 @@ public class SeqArgs {
 
 		/* For pick_cloning_primers set the forced positions */
 		if (pa.getPrimerTask() == P3Task.PICK_CLONING_PRIMERS) {
-			if(sa.incl_l == -1) {
-				sa.force_left_start = pa.getFirstBaseIndex();
-				sa.force_right_start = seq_len + pa.getFirstBaseIndex() - 1;
+			if(sa.includedRegionLength == -1) {
+				sa.forceLeftStart = pa.getFirstBaseIndex();
+				sa.forceRightStart = seq_len + pa.getFirstBaseIndex() - 1;
 			} else {
-				sa.force_left_start = sa.incl_s;
-				sa.force_right_start = sa.incl_s + sa.incl_l - 1;
+				sa.forceLeftStart = sa.includedRegionStart;
+				sa.forceRightStart = sa.includedRegionStart + sa.includedRegionLength - 1;
 			}
 		}
 
@@ -620,15 +657,15 @@ public class SeqArgs {
 			if (sa.targetRegions.getCount() != 1) {
 				nonfatal_err.append("Task pick_discriminative_primers requires exactly one SEQUENCE_TARGET");
 			}
-			sa.force_left_end = sa.targetRegions.getInterval(0)[0] - 1;
-			sa.force_right_end = sa.targetRegions.getInterval(0)[0] + sa.targetRegions.getInterval(0)[1];
+			sa.forceLeftEnd = sa.targetRegions.getInterval(0)[0] - 1;
+			sa.forceRightEnd = sa.targetRegions.getInterval(0)[0] + sa.targetRegions.getInterval(0)[1];
 		}
 
 		/* If no included region is specified,
 		 * use the whole sequence as included region */
-		if (sa.incl_l == -1) {
-			sa.incl_l = seq_len;
-			sa.incl_s = pa.getFirstBaseIndex();
+		if (sa.includedRegionLength == -1) {
+			sa.includedRegionLength = seq_len;
+			sa.includedRegionStart = pa.getFirstBaseIndex();
 		}
 
 		/* Generate at least one target */
@@ -641,66 +678,66 @@ public class SeqArgs {
 		}
 
 		/* Fix the start of the included region and start codon */
-		sa.incl_s -= pa.getFirstBaseIndex();
-		sa.start_codon_pos -= pa.getFirstBaseIndex();
+		sa.includedRegionStart -= pa.getFirstBaseIndex();
+		sa.startCodonPos -= pa.getFirstBaseIndex();
 
 		/* Fix the start */
-		sa.force_left_start -= pa.getFirstBaseIndex();
-		sa.force_left_end -= pa.getFirstBaseIndex();
-		sa.force_right_start -= pa.getFirstBaseIndex();
-		sa.force_right_end -= pa.getFirstBaseIndex();
+		sa.forceLeftStart -= pa.getFirstBaseIndex();
+		sa.forceLeftEnd -= pa.getFirstBaseIndex();
+		sa.forceRightStart -= pa.getFirstBaseIndex();
+		sa.forceRightEnd -= pa.getFirstBaseIndex();
 
 		/* Make it relative to included region */
-		sa.force_left_start -= sa.incl_s;
-		sa.force_left_end -= sa.incl_s;
-		sa.force_right_start -= sa.incl_s;
-		sa.force_right_end -= sa.incl_s;
+		sa.forceLeftStart -= sa.includedRegionStart;
+		sa.forceLeftEnd -= sa.includedRegionStart;
+		sa.forceRightStart -= sa.includedRegionStart;
+		sa.forceRightEnd -= sa.includedRegionStart;
 
-		inc_len = sa.incl_s + sa.incl_l - 1;
+		inc_len = sa.includedRegionStart + sa.includedRegionLength - 1;
 
-		if ((sa.incl_l < Integer.MAX_VALUE) && (sa.incl_s > -1)
-				&& (sa.incl_l > -1) && (inc_len < seq_len) ) {
+		if ((sa.includedRegionLength < Integer.MAX_VALUE) && (sa.includedRegionStart > -1)
+				&& (sa.includedRegionLength > -1) && (inc_len < seq_len) ) {
 			/* Copies inluded region into trimmed_seq */
-			sa.trimmed_seq = Sequence._pr_substr(sa.sequence, sa.incl_s, sa.incl_l);
+			sa.trimmedSequence = Sequence._pr_substr(sa.sequence, sa.includedRegionStart, sa.includedRegionLength);
 
 			/* Copies inluded region into trimmed_orig_seq */
 			/* edited by T. Koressaar for lowercase masking */
 			//		    sa.trimmed_orig_seq = (char *) pr_safe_malloc(sa.incl_l + 1);
-			sa.trimmed_orig_seq = Sequence._pr_substr(sa.sequence, sa.incl_s, sa.incl_l);
+			sa.trimmedOrigSequence = Sequence._pr_substr(sa.sequence, sa.includedRegionStart, sa.includedRegionLength);
 
 			/* Masks original trimmed sequence */
 			/* edited by M. Lepamets */
 			if (pa.isMaskTemplate() && (pa.isPickLeftPrimer()  && pa.isPickRightPrimer() )) {
-				input_sequence input_seq = new input_sequence(sa.trimmed_orig_seq);
+				input_sequence input_seq = new input_sequence(sa.trimmedOrigSequence);
 				output_sequence output_seq =null;
 
 				//		       input_seq = input_sequence.create_input_sequence_from_string (sa.trimmed_orig_seq, nonfatal_err);
-				output_seq =  output_sequence.create_output_sequence (sa.incl_l, pa.getMaskingParameters().mdir);
+				output_seq =  output_sequence.create_output_sequence (sa.includedRegionLength, pa.getMaskingParameters().mdir);
 
 				masker.read_and_mask_sequence(input_seq, output_seq, pa.getMaskingParameters(), false);
 				if (output_seq.sequence != null) {
 					if (pa.getMaskingParameters().mdir == masking_direction.fwd) {
-						sa.trimmed_masked_seq = output_seq.sequence;
+						sa.trimmedMaskedSeq = output_seq.sequence;
 					} else if (pa.getMaskingParameters().mdir == masking_direction.rev) {
-						sa.trimmed_masked_seq_r = output_seq.sequence;
+						sa.trimmedMaskedSeqRev = output_seq.sequence;
 					}
 				} else {
-					sa.trimmed_masked_seq = output_seq.sequence_fwd;
-					sa.trimmed_masked_seq_r = output_seq.sequence_rev;
+					sa.trimmedMaskedSeq = output_seq.sequence_fwd;
+					sa.trimmedMaskedSeqRev = output_seq.sequence_rev;
 				}
 				//		       delete_input_sequence (input_seq);
 				//		       delete_output_sequence (output_seq);
 			}
 
 			/* Copies the whole sequence into upcased_seq */
-			sa.upcased_seq = Sequence._pr_substr(sa.sequence, 0, sa.sequence.length);
-			LibPrimer3.dna_to_upper(sa.upcased_seq, 1);
+			sa.upcasedSeq = Sequence._pr_substr(sa.sequence, 0, sa.sequence.length);
+			LibPrimer3.dna_to_upper(sa.upcasedSeq, 1);
 			/* We do not need to check for illegal characters in the return
 		       from dna_to_upper(), because errors are checked in
 		       _pr_data_control sa.trimmed_seq. */
 
 			/* Copies the reverse complement of the whole sequence into upcased_seq_r */
-			sa.upcased_seq_r = Sequence.p3_reverse_complement(sa.upcased_seq);
+			sa.upcasedSeqRev = Sequence.p3_reverse_complement(sa.upcasedSeq);
 		}
 
 		if (sa._check_and_adjust_intervals( seq_len, pa.getFirstBaseIndex(), nonfatal_err, warning)) {
@@ -717,8 +754,8 @@ public class SeqArgs {
 		}
 
 		/* Update ok regions, if non empty */
-		if (sa.ok_regions.getCount() > 0) {
-			sa.ok_regions.optimizeOkRegionsList(pa, sa);
+		if (sa.okRegions.getCount() > 0) {
+			sa.okRegions.optimizeOkRegionsList(pa, sa);
 //			sa._optimize_ok_regions_list(pa);
 		}
 	}
@@ -728,7 +765,7 @@ public class SeqArgs {
 
 
 	static boolean _check_and_adjust_overlap_pos(SeqArgs sa,
-			int[] list,
+			List<Integer> list,
 			int count, 
 			String tag,
 			int seq_len,
@@ -744,24 +781,26 @@ public class SeqArgs {
 
 		for (i = 0; i < count; i++) {
 			/* Subtract first_index from the "must overlap" positions */
-			list[i] -= first_index;
-
-			if (list[i] >= seq_len) {
+			int iThElem = list.get(i);
+			iThElem -= first_index;
+			list.set(i,iThElem);
+			
+			if (iThElem >= seq_len) {
 				nonfatal_err.append(tag + " beyond end of sequence");
 				return true;
 			}
 
-			if (list[i] < 0) {
+			if (iThElem < 0) {
 				nonfatal_err.append( "Negative " +tag + " length");
 				return true;
 			}
 
 			/* Cause the intron positions to be relative to the included region. */
-			list[i] -= sa.incl_s;
-
+			iThElem -= sa.includedRegionStart;
+			list.set(i,iThElem);
 			/* Check that intron positions are within the included region. */
-			if (list[i] < 0 
-					|| list[i] > sa.incl_l) {
+			if (iThElem < 0 
+					|| iThElem > sa.includedRegionLength) {
 				if (!outside_warning_issued) {
 					warning.append(tag +  " outside of INCLUDED_REGION");
 					outside_warning_issued = true;
@@ -797,33 +836,33 @@ public class SeqArgs {
 					s.primer_overlap_junctions_count);
 			System.out.format("primer_overlap_junctions_list [\n");
 			for (int i = 0; i < s.primer_overlap_junctions_count; i++) {
-				System.out.format("   %s\n", s.primer_overlap_junctions[i]);
+				System.out.format("   %s\n", s.primerOverlapJunctionsList.get(i));
 			}
 			System.out.format("]\n");
 		}
 
-		System.out.format("incl_s %s\n", s.incl_s) ;
-		System.out.format("incl_l %s\n", s.incl_l) ;
-		System.out.format("start_codon_pos %s\n", s.start_codon_pos) ;
-		System.out.format("n_quality %s\n", s.n_quality) ;
+		System.out.format("incl_s %s\n", s.includedRegionStart) ;
+		System.out.format("incl_l %s\n", s.includedRegionLength) ;
+		System.out.format("start_codon_pos %s\n", s.startCodonPos) ;
+		System.out.format("n_quality %s\n", s.sequenceQuality.length) ;
 		/* TO DO System.out.format("quality%s\", s.quality) ; */
-		System.out.format("quality_storage_size %s\n", s.quality_storage_size) ;
+		System.out.format("quality_storage_size %s\n", s.sequenceQuality.length) ;
 		System.out.format("*sequence %s\n", string(s.sequence)) ;
-		System.out.format("*sequence_name %s\n", s.sequence_name) ;
+		System.out.format("*sequence_name %s\n", s.sequenceName) ;
 		System.out.format("*sequence_file %s\n",  string(s.sequence_file)) ;
-		System.out.format("*trimmed_seq %s\n", string(s.trimmed_seq)) ;
-		System.out.format("*trimmed_orig_seq %s\n", string(s.trimmed_orig_seq)) ;
-		System.out.format("*trimmed_masked_seq %s\n", string(s.trimmed_masked_seq)) ;
-		System.out.format("*trimmed_masked_seq_r %s\n", string(s.trimmed_masked_seq_r)) ;
-		System.out.format("*upcased_seq %s\n", string(s.upcased_seq)) ;
-		System.out.format("*upcased_seq_r %s\n", string(s.upcased_seq_r)) ;
-		System.out.format("*left_input %s\n", string(s.left_input)) ;
-		System.out.format("*right_input %s\n", string(s.right_input)) ;
-		System.out.format("*internal_input %s\n", s.internal_input) ;
-		System.out.format("force_left_start %s\n", s.force_left_start) ;
-		System.out.format("force_left_end %s\n", s.force_left_end) ;
-		System.out.format("force_right_start %s\n", s.force_right_start) ;
-		System.out.format("force_right_end %s\n", s.force_right_end) ;
+		System.out.format("*trimmed_seq %s\n", string(s.trimmedSequence)) ;
+		System.out.format("*trimmed_orig_seq %s\n", string(s.trimmedOrigSequence)) ;
+		System.out.format("*trimmed_masked_seq %s\n", string(s.trimmedMaskedSeq)) ;
+		System.out.format("*trimmed_masked_seq_r %s\n", string(s.trimmedMaskedSeqRev)) ;
+		System.out.format("*upcased_seq %s\n", string(s.upcasedSeq)) ;
+		System.out.format("*upcased_seq_r %s\n", string(s.upcasedSeqRev)) ;
+		System.out.format("*left_input %s\n", string(s.leftInput)) ;
+		System.out.format("*right_input %s\n", string(s.rightInput)) ;
+		System.out.format("*internal_input %s\n", s.internalInput) ;
+		System.out.format("force_left_start %s\n", s.forceLeftStart) ;
+		System.out.format("force_left_end %s\n", s.forceLeftEnd) ;
+		System.out.format("force_right_start %s\n", s.forceRightStart) ;
+		System.out.format("force_right_end %s\n", s.forceRightEnd) ;
 		System.out.format("END SEQUENCE ARGS\n") ;
 		System.out.format("=============\n");
 		System.out.format("\n");
@@ -837,6 +876,376 @@ public class SeqArgs {
 			return "NULL";
 		return new String(str);
 	}
+
+
+	/**
+	 * @return the targetRegions
+	 */
+	public IntervalList getTargetRegions() {
+		return targetRegions;
+	}
+
+
+	/**
+	 * @param targetRegions the targetRegions to set
+	 */
+	public void setTargetRegions(IntervalList targetRegions) {
+		this.targetRegions = targetRegions;
+	}
+
+
+	/**
+	 * @return the excludedRegions
+	 */
+	public IntervalList getExcludedRegions() {
+		return excludedRegions;
+	}
+
+
+	/**
+	 * @param excludedRegions the excludedRegions to set
+	 */
+	public void setExcludedRegions(IntervalList excludedRegions) {
+		this.excludedRegions = excludedRegions;
+	}
+
+
+	/**
+	 * @return the excludedInternalRegions
+	 */
+	public IntervalList getExcludedInternalRegions() {
+		return excludedInternalRegions;
+	}
+
+
+	/**
+	 * @param excludedInternalRegions the excludedInternalRegions to set
+	 */
+	public void setExcludedInternalRegions(IntervalList excludedInternalRegions) {
+		this.excludedInternalRegions = excludedInternalRegions;
+	}
+
+
+	/**
+	 * @return the okRegions
+	 */
+	public PairIntervalList getOkRegions() {
+		return okRegions;
+	}
+
+
+	/**
+	 * @param okRegions the okRegions to set
+	 */
+	public void setOkRegions(PairIntervalList okRegions) {
+		this.okRegions = okRegions;
+	}
+
+
+	/**
+	 * @return the includedRegionStart
+	 */
+	public int getIncludedRegionStart() {
+		return includedRegionStart;
+	}
+
+
+	/**
+	 * @param includedRegionStart the includedRegionStart to set
+	 */
+	public void setIncludedRegionStart(int includedRegionStart) {
+		this.includedRegionStart = includedRegionStart;
+	}
+
+
+	/**
+	 * @return the includedRegionLength
+	 */
+	public int getIncludedRegionLength() {
+		return includedRegionLength;
+	}
+
+
+	/**
+	 * @param includedRegionLength the includedRegionLength to set
+	 */
+	public void setIncludedRegionLength(int includedRegionLength) {
+		this.includedRegionLength = includedRegionLength;
+	}
+
+
+	/**
+	 * @return the sequence
+	 */
+	public char[] getSequence() {
+		return sequence;
+	}
+
+
+	/**
+	 * SEQUENCE_TEMPLATE
+	 * @param sequence to seq
+	 */
+	public void setSequence(char[] sequence) {
+		this.sequence = sequence;		
+	}
+
+
+	/**
+	 * @return the startCodonPos
+	 */
+	public int getStartCodonPos() {
+		return startCodonPos;
+	}
+
+
+	/**
+	 * @param startCodonPos the startCodonPos to set
+	 */
+	public void setStartCodonPos(int startCodonPos) {
+		this.startCodonPos = startCodonPos;
+	}
+
+
+	/**
+	 * @return the sequenceQuality
+	 */
+	public int[] getSequenceQuality() {
+		return sequenceQuality;
+	}
+
+
+	/**
+	 * @param sequenceQuality the sequenceQuality to set
+	 */
+	public void setSequenceQuality(int[] sequenceQuality) {
+		this.sequenceQuality = sequenceQuality;
+	}
+
+
+	/**
+	 * @return the trimmedSequence
+	 */
+	public char[] getTrimmedSequence() {
+		return trimmedSequence;
+	}
+
+
+	/**
+	 * @param trimmedSequence the trimmedSequence to set
+	 */
+	public void setTrimmedSequence(char[] trimmedSequence) {
+		this.trimmedSequence = trimmedSequence;
+	}
+
+
+	/**
+	 * @return the trimmedOrigSequence
+	 */
+	public char[] getTrimmedOrigSequence() {
+		return trimmedOrigSequence;
+	}
+
+
+	/**
+	 * @param trimmedOrigSequence the trimmedOrigSequence to set
+	 */
+	public void setTrimmedOrigSequence(char[] trimmedOrigSequence) {
+		this.trimmedOrigSequence = trimmedOrigSequence;
+	}
+
+
+	/**
+	 * @return the primerOverlapJunctionsList
+	 */
+	public List<Integer> getPrimerOverlapJunctionsList() {
+		return primerOverlapJunctionsList;
+	}
+
+
+	/**
+	 * @return the upcasedSeq
+	 */
+	public char[] getUpcasedSeq() {
+		return upcasedSeq;
+	}
+
+
+	/**
+	 * @param upcasedSeq the upcasedSeq to set
+	 */
+	public void setUpcasedSeq(char[] upcasedSeq) {
+		this.upcasedSeq = upcasedSeq;
+	}
+
+
+	/**
+	 * @return the upcasedSeqRev
+	 */
+	public char[] getUpcasedSeqRev() {
+		return upcasedSeqRev;
+	}
+
+
+	/**
+	 * @param upcasedSeqRev the upcasedSeqRev to set
+	 */
+	public void setUpcasedSeqRev(char[] upcasedSeqRev) {
+		this.upcasedSeqRev = upcasedSeqRev;
+	}
+
+
+	/**
+	 * @return the leftInput
+	 */
+	public char[] getLeftInput() {
+		return leftInput;
+	}
+
+
+	/**
+	 * @param leftInput the leftInput to set
+	 */
+	public void setLeftInput(char[] leftInput) {
+		this.leftInput = leftInput;
+	}
+
+
+	/**
+	 * @return the rightInput
+	 */
+	public char[] getRightInput() {
+		return rightInput;
+	}
+
+
+	/**
+	 * @param rightInput the rightInput to set
+	 */
+	public void setRightInput(char[] rightInput) {
+		this.rightInput = rightInput;
+	}
+
+
+	/**
+	 * @return the internalInput
+	 */
+	public char[] getInternalInput() {
+		return internalInput;
+	}
+
+
+	/**
+	 * @param internalInput the internalInput to set
+	 */
+	public void setInternalInput(char[] internalInput) {
+		this.internalInput = internalInput;
+	}
+
+
+	/**
+	 * @return the forceLeftStart
+	 */
+	public int getForceLeftStart() {
+		return forceLeftStart;
+	}
+
+
+	/**
+	 * @param forceLeftStart the forceLeftStart to set
+	 */
+	public void setForceLeftStart(int forceLeftStart) {
+		this.forceLeftStart = forceLeftStart;
+	}
+
+
+	/**
+	 * @return the forceLeftEnd
+	 */
+	public int getForceLeftEnd() {
+		return forceLeftEnd;
+	}
+
+
+	/**
+	 * @param forceLeftEnd the forceLeftEnd to set
+	 */
+	public void setForceLeftEnd(int forceLeftEnd) {
+		this.forceLeftEnd = forceLeftEnd;
+	}
+
+
+	/**
+	 * @return the forceRightStart
+	 */
+	public int getForceRightStart() {
+		return forceRightStart;
+	}
+
+
+	/**
+	 * @param forceRightStart the forceRightStart to set
+	 */
+	public void setForceRightStart(int forceRightStart) {
+		this.forceRightStart = forceRightStart;
+	}
+
+
+	/**
+	 * @return the forceRightEnd
+	 */
+	public int getForceRightEnd() {
+		return forceRightEnd;
+	}
+
+
+	/**
+	 * @param forceRightEnd the forceRightEnd to set
+	 */
+	public void setForceRightEnd(int forceRightEnd) {
+		this.forceRightEnd = forceRightEnd;
+	}
+
+
+	/**
+	 * @return the trimmedMaskedSeq
+	 */
+	public char[] getTrimmedMaskedSeq() {
+		return trimmedMaskedSeq;
+	}
+
+
+	/**
+	 * @param trimmedMaskedSeq the trimmedMaskedSeq to set
+	 */
+	public void setTrimmedMaskedSeq(char[] trimmedMaskedSeq) {
+		this.trimmedMaskedSeq = trimmedMaskedSeq;
+	}
+
+
+	/**
+	 * @return the trimmedMaskedSeqRev
+	 */
+	public char[] getTrimmedMaskedSeqRev() {
+		return trimmedMaskedSeqRev;
+	}
+
+
+	/**
+	 * @param trimmedMaskedSeqRev the trimmedMaskedSeqRev to set
+	 */
+	public void setTrimmedMaskedSeqRev(char[] trimmedMaskedSeqRev) {
+		this.trimmedMaskedSeqRev = trimmedMaskedSeqRev;
+	}
+
+
+	/**
+	 * @param primerOverlapJunctionsList the primerOverlapJunctionsList to set
+	 */
+//	public void setPrimerOverlapJunctionsList(
+//			int[] primerOverlapJunctionsList) {
+//		this.primerOverlapJunctionsList = primerOverlapJunctionsList;
+//	}
 
 
 }

@@ -727,7 +727,7 @@ public class PrimerRecord {
 		int poly_x, max_poly_x;
 		boolean must_use = this.must_use;
 		boolean three_conditions = (must_use || pa.file_flag != 0 || retval.output_type == P3OutputType.primer_list);
-		char[] seq = sa.trimmed_seq;
+		char[] seq = sa.getTrimmedSequence();
 		ThermodynamicAlignmentArguments thal_args_for_template_mispriming = LibPrimer3.use_end_for_th_template_mispriming == 1 ? thal_arg_to_use.end1
 				: thal_arg_to_use.any;
 
@@ -783,16 +783,16 @@ public class PrimerRecord {
 
 		if (k >= 0)
 			; // PR_ASSERT
-		if (k < sa.incl_l)
+		if (k < sa.getIncludedRegionLength())
 			; // PR_ASSERT TRIMMED_SEQ_LEN
 
 		if ((otype == OligoType.OT_LEFT)
 				// FIXME :: do not depend on this values PR_NULL_START_CODON_POS
-				&& !(sa.start_codon_pos <= LibPrimer3.PR_NULL_START_CODON_POS)
+				&& !(sa.getStartCodonPos() <= LibPrimer3.PR_NULL_START_CODON_POS)
 				/*
 				 * Make sure the primer would amplify at least part of the ORF.
 				 */
-				&& (0 != (this.start - sa.start_codon_pos) % 3
+				&& (0 != (this.start - sa.getStartCodonPos()) % 3
 						|| this.start <= retval.upstream_stop_codon 
 						|| (retval.stop_codon_pos != -1 && this.start >= retval.stop_codon_pos))) {
 			stats.no_orf++;
@@ -803,12 +803,12 @@ public class PrimerRecord {
 
 		/* edited by T. Koressaar and M. Lepamets for lowercase masking */
 		if (pa.isLowercaseMasking()) {
-			char[] sequence_check = sa.trimmed_orig_seq;
+			char[] sequence_check = sa.getTrimmedOrigSequence();
 			if (pa.isMaskTemplate()) {
 				if (otype == OligoType.OT_LEFT)
-					sequence_check = sa.trimmed_masked_seq;
+					sequence_check = sa.getTrimmedMaskedSeq();
 				else if (otype == OligoType.OT_RIGHT)
-					sequence_check = sa.trimmed_masked_seq_r;
+					sequence_check = sa.getTrimmedMaskedSeqRev();
 			}
 			// is_lowercase_masked(three_prime_pos,sequence_check,this, stats)
 			if (is_lowercase_masked(sequence_check[three_prime_pos], stats)) {
@@ -836,7 +836,7 @@ public class PrimerRecord {
 		}
 		/* end A. Untergasser's changes */
 
-		gc_and_n_content(j, k - j + 1, sa.trimmed_seq);
+		gc_and_n_content(j, k - j + 1, sa.getTrimmedSequence());
 
 		if (this.num_ns > po_args.getMaxNumOfNsAccepted()) {
 			this.op_set_too_many_ns();
@@ -855,12 +855,12 @@ public class PrimerRecord {
 			this.position_penalty = 0.0;
 		} else if (otype != OligoType.OT_INTL
 				&& pa.isDefaultPositionPenalties()
-				&& sa.targetRegions.oligoOverlapsInterval(j, k - j + 1)) {
+				&& sa.getTargetRegions().oligoOverlapsInterval(j, k - j + 1)) {
 			this.position_penalty = 0.0;
 			this.bf_set_infinite_pos_penalty(1);
 			this.bf_set_overlaps_target(1);
 		} else if (otype != OligoType.OT_INTL
-				&& !pa.isDefaultPositionPenalties() && 1 == sa.targetRegions.getCount()) {
+				&& !pa.isDefaultPositionPenalties() && 1 == sa.getTargetRegions().getCount()) {
 			this.compute_position_penalty(pa, sa, otype);
 			if (this.bf_get_infinite_pos_penalty()) {
 				this.bf_set_overlaps_target(1);
@@ -872,15 +872,15 @@ public class PrimerRecord {
 
 		if (!sa.PR_START_CODON_POS_IS_NULL()) {
 			if (OligoType.OT_LEFT == otype) {
-				if (sa.start_codon_pos > this.start)
-					this.position_penalty = (sa.start_codon_pos - this.start)
+				if (sa.getStartCodonPos() > this.start)
+					this.position_penalty = (sa.getStartCodonPos() - this.start)
 							* OUTSIDE_START_WT;
 				else
-					this.position_penalty = (this.start - sa.start_codon_pos)
+					this.position_penalty = (this.start - sa.getStartCodonPos())
 							* INSIDE_START_WT;
 			} else if (OligoType.OT_RIGHT == otype) {
 				if (-1 == retval.stop_codon_pos) {
-					this.position_penalty = ((sa.incl_l) - this.start - 1)
+					this.position_penalty = ((sa.getIncludedRegionLength()) - this.start - 1)
 							* INSIDE_STOP_WT;
 				} else if (retval.stop_codon_pos < this.start) {
 					this.position_penalty = (this.start - retval.stop_codon_pos)
@@ -894,11 +894,11 @@ public class PrimerRecord {
 
 		/* TO DO Simplify logic here */
 		if (otype != OligoType.OT_INTL
-				&& sa.excludedRegions.oligoOverlapsInterval(j, k - j + 1))
+				&& sa.getExcludedRegions().oligoOverlapsInterval(j, k - j + 1))
 			bf_set_overlaps_excl_region(1);
 
 		if (otype == OligoType.OT_INTL
-				&& sa.excludedInternalRegions.oligoOverlapsInterval(j, k - j + 1))
+				&& sa.getExcludedInternalRegions().oligoOverlapsInterval(j, k - j + 1))
 			bf_set_overlaps_excl_region(1);
 
 		if (otype != OligoType.OT_INTL && bf_get_overlaps_target()) {
@@ -918,7 +918,7 @@ public class PrimerRecord {
 		/* Check if the oligo is included in any ok region */
 		
 		boolean included = false;
-		included = sa.ok_regions.chechIncludedInAny(otype,j,k);
+		included = sa.getOkRegions().chechIncludedInAny(otype,j,k);
 		if (!included) {
 			op_set_not_in_any_ok_region();
 			if(otype == OligoType.OT_LEFT)
@@ -1182,19 +1182,20 @@ public class PrimerRecord {
 				return;
 		}
 
-		for (for_i = 0; for_i < sa.primer_overlap_junctions_count; for_i++) {
+		for (for_i = 0; for_i < sa.getPrimerOverlapJunctionsList().size(); for_i++) {
+			int value_for_i = sa.getPrimerOverlapJunctionsList().get(for_i);
 			if (OligoType.OT_LEFT == otype
-					&& ((this.start + pa.getMin5PrimeOverlapOfJunction() - 1) <= sa.primer_overlap_junctions[for_i])
+					&& ((this.start + pa.getMin5PrimeOverlapOfJunction() - 1) <= value_for_i)
 					&& ((this.start + this.length - pa
-							.getMin3PrimeOverlapOfJunction())) > sa.primer_overlap_junctions[for_i]) {
+							.getMin3PrimeOverlapOfJunction())) > value_for_i) {
 				this.overlaps_overlap_position = true;
 				/* no need to continue checking */
 				break;
 			}
 			if (OligoType.OT_RIGHT == otype
 					&& ((this.start - this.length + pa
-							.getMin3PrimeOverlapOfJunction()) <= sa.primer_overlap_junctions[for_i])
-					&& ((this.start - pa.getMin5PrimeOverlapOfJunction() + 1)) > sa.primer_overlap_junctions[for_i]) {
+							.getMin3PrimeOverlapOfJunction()) <= value_for_i)
+					&& ((this.start - pa.getMin5PrimeOverlapOfJunction() + 1)) > value_for_i) {
 				this.overlaps_overlap_position = true;
 				/* no need to continue checking */
 				break;
@@ -1373,7 +1374,7 @@ public class PrimerRecord {
 		int last = (l == OligoType.OT_LEFT || l == OligoType.OT_INTL) ? this.start
 				+ this.length - 1
 				: this.start;
-		return Sequence._pr_substr(sa.trimmed_seq, first, this.length);
+		return Sequence._pr_substr(sa.getTrimmedSequence(), first, this.length);
 	}
 
 	/**
@@ -1455,7 +1456,7 @@ public class PrimerRecord {
 		int i, min_q, min_q_end, m, q;
 		boolean retval = true;
 
-		if (null == sa.quality) {
+		if (null == sa.getSequenceQuality()) {
 			this.seq_end_quality = this.seq_quality = pa.getQualityRangeMax();
 			return true;
 		}
@@ -1474,14 +1475,14 @@ public class PrimerRecord {
 			for (i = k - 4; i <= k; i++) {
 				if (i < j)
 					continue;
-				m = sa.quality[i + sa.incl_s];
+				m = sa.getSequenceQuality()[i + sa.getIncludedRegionStart()];
 				if (m < q)
 					q = m;
 			}
 			min_q_end = q;
 
 			for (i = j; i <= k - 5; i++) {
-				m = sa.quality[i + sa.incl_s];
+				m = sa.getSequenceQuality()[i + sa.getIncludedRegionStart()];
 				if (m < q)
 					q = m;
 			}
@@ -1491,14 +1492,14 @@ public class PrimerRecord {
 			for (i = j; i < j + 5; i++) {
 				if (i > k)
 					break;
-				m = sa.quality[i + sa.incl_s];
+				m = sa.getSequenceQuality()[i + sa.getIncludedRegionStart()];
 				if (m < q)
 					q = m;
 			}
 			min_q_end = q;
 
 			for (i = j + 5; i <= k; i++) {
-				m = sa.quality[i + sa.incl_s];
+				m = sa.getSequenceQuality()[i + sa.getIncludedRegionStart()];
 				if (m < q)
 					q = m;
 			}
@@ -1537,8 +1538,8 @@ public class PrimerRecord {
 		// PR_ASSERT(oligo_type.OT_LEFT == o_type || oligo_type.OT_RIGHT ==
 		// o_type);
 		// PR_ASSERT(1 == sa.tar2.count);
-		target_begin = sa.targetRegions.getInterval(0)[0];
-		target_end = target_begin + sa.targetRegions.getInterval(0)[1] - 1;
+		target_begin = sa.getTargetRegions().getInterval(0)[0];
+		target_end = target_begin + sa.getTargetRegions().getInterval(0)[1] - 1;
 
 		three_prime_base = OligoType.OT_LEFT == o_type ? this.start
 				+ this.length - 1 : this.start - this.length + 1;
@@ -1691,7 +1692,7 @@ public class PrimerRecord {
 		// PR_ASSERT(oligo.start + sa.incl_s >= 0);
 		// PR_ASSERT(oligo.start + sa.incl_s + oligo.length <= seq_len);
 
-		char[] s = Sequence._pr_substr(sa.sequence, sa.incl_s + this.start,
+		char[] s = Sequence._pr_substr(sa.getSequence(), sa.getIncludedRegionStart() + this.start,
 				this.length);
 		return s;
 		// return null;
@@ -1703,10 +1704,10 @@ public class PrimerRecord {
 		// PR_ASSERT(NULL != sa);
 		// PR_ASSERT(NULL != o);
 		// seq_len = strlen(sa.sequence);
-		start = sa.incl_s + this.start - this.length + 1;
+		start = sa.getIncludedRegionStart() + this.start - this.length + 1;
 		// PR_ASSERT(start >= 0);
 		// PR_ASSERT(start + o.length <= seq_len);
-		char[] s = Sequence._pr_substr(sa.sequence, start, this.length);
+		char[] s = Sequence._pr_substr(sa.getSequence(), start, this.length);
 		return Sequence.p3_reverse_complement(s);
 	}
 

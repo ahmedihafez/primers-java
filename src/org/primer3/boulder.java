@@ -66,11 +66,11 @@ public class boulder {
 
 					
 					if (key.equals("SEQUENCE_TEMPLATE")) {   /* NEW WAY */
-						if (sa.sequence != null) {
+						if (sa.getSequence() != null) {
 							parse_err.append("Duplicate tag: ");
 							parse_err.append("SEQUENCE_TEMPLATE"); 
 						} else {
-							sa.p3_set_sa_sequence(datum); 
+							sa.setSequence(datum); 
 						}
 					}
 					else if (key.equals("SEQUENCE_QUALITY")) {
@@ -81,7 +81,7 @@ public class boulder {
 					}
 					else if (key.equals("SEQUENCE_ID"))
 					{
-						sa.p3_set_sa_sequence_name(datum);
+						sa.setSequenceName(datum);
 					} 
 					else if (key.equals("SEQUENCE_PRIMER")) {
 						sa.p3_set_sa_left_input(datum);
@@ -792,13 +792,13 @@ public class boulder {
 		    	pa.setPickLeftPrimer(false);
 		    	pa.setPickRightPrimer(false);
 		    	pa.setPickInternalOligo(false);
-		    	if (sa.left_input != null){
+		    	if (sa.getLeftInput() != null){
 		    		pa.setPickLeftPrimer(true);
 		    	}
-		    	if (sa.right_input != null){
+		    	if (sa.getRightInput() != null){
 		    		pa.setPickRightPrimer(true);
 		    	}
-		    	if (sa.internal_input != null){
+		    	if (sa.getInternalInput() != null){
 		    		pa.setPickInternalOligo(true);
 		    	}
 		    } 

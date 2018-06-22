@@ -172,9 +172,9 @@ public class PrimerPair {
 		int last_of_left = this.left.start + this.left.length - 1;
 		int first_of_right = this.right.start - this.right.length + 1;
 		int target_first, target_last;
-		for (i = 0; i < sa.targetRegions.getCount(); i++) {
-			target_first = sa.targetRegions.getInterval(i)[0];
-			target_last = target_first + sa.targetRegions.getInterval(i)[1] - 1;
+		for (i = 0; i < sa.getTargetRegions().getCount(); i++) {
+			target_first = sa.getTargetRegions().getInterval(i)[0];
+			target_last = target_first + sa.getTargetRegions().getInterval(i)[1] - 1;
 			if (last_of_left <= target_last
 					&& first_of_right >= target_first
 					&& last_of_left < first_of_right)
@@ -242,7 +242,7 @@ public class PrimerPair {
 
 		ppair.must_use = must_use;
 
-		if (sa.targetRegions.getCount() > 0) {
+		if (sa.getTargetRegions().getCount() > 0) {
 			if (ppair.pair_spans_target(sa)) {
 				ppair.target = 1;
 			} else {
@@ -255,10 +255,10 @@ public class PrimerPair {
 		/* ============================================================= */
 
 		/* Check that the pair is included in one of the specified ok regions */
-		if ((sa.ok_regions.getCount() > 0) && (!sa.ok_regions.any_pair)) {
+		if ((sa.getOkRegions().getCount() > 0) && (!sa.getOkRegions().any_pair)) {
 			
 			
-			boolean included = sa.ok_regions.checkIncludedInAny(ppair);
+			boolean included = sa.getOkRegions().checkIncludedInAny(ppair);
 			// TODO :: Check if it work
 //			boolean included = false;
 //			int l_start = ppair.left.start, l_end = ppair.left.start + ppair.left.length - 1;
@@ -303,7 +303,7 @@ public class PrimerPair {
 			System.err.print("temporary");
 		}
 		//		  PR_ASSERT(ppair.right.start - ppair.left.start + 1 > 0)
-		ppair.product_tm =  OligoTMCalculator.longSeqTM(sa.trimmed_seq, ppair.left.start,
+		ppair.product_tm =  OligoTMCalculator.longSeqTM(sa.getTrimmedSequence(), ppair.left.start,
 				ppair.right.start - ppair.left.start + 1,
 				/* TO DO -- skewed, it would be better to not use p_args elements here */
 				pa.primersArgs.getSaltConcentration(),
@@ -349,10 +349,10 @@ public class PrimerPair {
 		     primers if not already calculated. */
 
 		/* s1 is the forward oligo. */
-		s1 = Sequence._pr_substr(sa.trimmed_seq, retval.fwd.oligo.get(m).start, retval.fwd.oligo.get(m).length );
+		s1 = Sequence._pr_substr(sa.getTrimmedSequence(), retval.fwd.oligo.get(m).start, retval.fwd.oligo.get(m).length );
 
 		/* s2 is the reverse oligo. */
-		s2 = Sequence._pr_substr(sa.trimmed_seq, retval.rev.oligo.get(n).start - retval.rev.oligo.get(n).length + 1, retval.rev.oligo.get(n).length);
+		s2 = Sequence._pr_substr(sa.getTrimmedSequence(), retval.rev.oligo.get(n).start - retval.rev.oligo.get(n).length + 1, retval.rev.oligo.get(n).length);
 
 		s1_rev = Sequence.p3_reverse_complement(s1);
 		s2_rev = Sequence.p3_reverse_complement(s2);

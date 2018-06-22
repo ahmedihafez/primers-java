@@ -325,7 +325,7 @@ public class Primer3Main {
 	     message and exit */
 		if (!fatal_parse_err.toString().isEmpty()) {
 			if (format_output) {
-				boulder.format_error(sarg.sequence_name, fatal_parse_err.toString());
+				boulder.format_error(sarg.getSequenceName(), fatal_parse_err.toString());
 			} else {
 				boulder.print_boulder_error(fatal_parse_err.toString());
 			}
@@ -337,7 +337,7 @@ public class Primer3Main {
 		 * and skip to the end of the loop */
 		if (!nonfatal_parse_err.toString().isEmpty()) {
 			if (format_output) {
-				boulder.format_error( sarg.sequence_name, nonfatal_parse_err.toString());
+				boulder.format_error( sarg.getSequenceName(), nonfatal_parse_err.toString());
 			} else {
 				boulder.print_boulder_error(nonfatal_parse_err.toString());
 			}
@@ -443,7 +443,7 @@ public class Primer3Main {
 
 			if (!nonfatal_parse_err.toString().isEmpty()) {
 				if (format_output) {
-					boulder.format_error( sarg.sequence_name, nonfatal_parse_err.toString());
+					boulder.format_error( sarg.getSequenceName(), nonfatal_parse_err.toString());
 				} else {
 					boulder.print_boulder_error(nonfatal_parse_err.toString());
 				}
@@ -452,13 +452,13 @@ public class Primer3Main {
 			/* Print any warnings and continue processing */
 			if (!warnings.toString().isEmpty()) {
 				if (format_output) {
-					boulder.format_warning( sarg.sequence_name, warnings.toString());
+					boulder.format_warning( sarg.getSequenceName(), warnings.toString());
 				} else {
 					boulder.print_boulder_warning(warnings.toString());
 				}
 			}
 
-			if (read_boulder_record_res.file_flag == 1 && sarg.sequence_name == null) {
+			if (read_boulder_record_res.file_flag == 1 && sarg.getSequenceName() == null) {
 				/* We will not have a base name for the files */
 				if (format_output) {
 					boulder.format_error((String)null,
@@ -478,13 +478,13 @@ public class Primer3Main {
 	       or internal_oligo_input primer that was
 	       unacceptable, then add warnings. */
 			if (global_pa.isPickAnyway() && format_output) {
-				if (sarg.left_input != null) {
+				if (sarg.getLeftInput() != null) {
 					retval.add_must_use_warnings( "Left primer", retval.fwd);
 				}
-				if (sarg.right_input != null) {
+				if (sarg.getRightInput() != null) {
 					retval.add_must_use_warnings("Right primer", retval.rev);
 				}
-				if (sarg.internal_input != null) {
+				if (sarg.getInternalInput() != null) {
 					retval.add_must_use_warnings("Hybridization probe", retval.intl);
 				}
 			}
@@ -499,7 +499,7 @@ public class Primer3Main {
 					/* Create files with left, right, and internal oligos. */
 					LibPrimer3.p3_print_oligo_lists(retval, sarg, global_pa,
 							retval.per_sequence_err,
-							sarg.sequence_name);
+							sarg.getSequenceName());
 				}
 			}
 			if (format_output) {

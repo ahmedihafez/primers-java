@@ -116,10 +116,10 @@ public class IntervalList {
 				return true;
 			}
 			/* Cause the interval start to be relative to the included region. */
-			pairs[i][0] -= sa.incl_s;
+			pairs[i][0] -= sa.getIncludedRegionStart();
 			/* Check that intervals are within the included region. */
 			if (pairs[i][0] < 0
-					|| pairs[i][0] + pairs[i][1] > sa.incl_l) {
+					|| pairs[i][0] + pairs[i][1] > sa.getIncludedRegionLength()) {
 				if (!outside_warning_issued) {
 					warning.append(tag_name +  " outside of INCLUDED_REGION");
 					outside_warning_issued = true;
@@ -168,10 +168,10 @@ public class IntervalList {
 				return true;
 			}
 			/* Cause the interval start to be relative to the included region. */
-			pairs.get(i)[0] -= sa.incl_s;
+			pairs.get(i)[0] -= sa.getIncludedRegionStart();
 			/* Check that intervals are within the included region. */
 			if (pairs.get(i)[0] < 0
-					|| pairs.get(i)[0] + pairs.get(i)[1] > sa.incl_l) {
+					|| pairs.get(i)[0] + pairs.get(i)[1] > sa.getIncludedRegionLength()) {
 				if (!outside_warning_issued) {
 					warning.append(tag_name +  " outside of INCLUDED_REGION");
 					outside_warning_issued = true;
