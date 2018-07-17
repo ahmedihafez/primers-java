@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.MutablePair;
 import org.primer3.masker.MaskerParameters;
 import org.primer3.masker.masker;
 import org.primer3.masker.masking_direction;
@@ -221,7 +221,7 @@ public class P3GlobalSettings {
 	/**
 	 * <Left : Minimum product sizes, Right Maximum product sizes>
 	 */
-	private List<Pair<Integer,Integer>> productSizeRanges = new ArrayList<Pair<Integer,Integer>>();
+	private List<MutablePair<Integer,Integer>> productSizeRanges = new ArrayList<MutablePair<Integer,Integer>>();
 	//	int[]    pr_min = new int[LibPrimer3.PR_MAX_INTERVAL_ARRAY];
 	/** Maximum product sizes. */
 	//	int[]    pr_max = new int[LibPrimer3.PR_MAX_INTERVAL_ARRAY]; 
@@ -315,7 +315,7 @@ public class P3GlobalSettings {
 	private boolean dump;
 
 	public void addProductSizeRange(int pr_min,int pr_max) {
-		this.productSizeRanges.add(Pair.of(pr_min, pr_max));
+		this.productSizeRanges.add(MutablePair.of(pr_min, pr_max));
 	}
 
 
@@ -525,7 +525,7 @@ public class P3GlobalSettings {
 		return productOptTM;
 	}
 
-	public Pair<Integer,Integer> getProductSizeRange(int i)
+	public MutablePair<Integer,Integer> getProductSizeRange(int i)
 	{
 		return this.productSizeRanges.get(i);
 	}
