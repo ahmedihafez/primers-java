@@ -536,7 +536,7 @@ public class P3GlobalSettings {
 	 * this will would set the first entry in the list assuming only one will work
 	 * @param minSize
 	 */
-	public void setProdcutMinSize(int minSize)
+	public void setProductMinSize(int minSize)
 	{
 		this.productSizeRanges.get(0).setLeft(minSize);
 	}
@@ -545,18 +545,18 @@ public class P3GlobalSettings {
 	 * this will would set the first entry in the list assuming only one will work
 	 * @param minSize
 	 */
-	public void setProdcutMaxSize(int maxSize)
+	public void setProductMaxSize(int maxSize)
 	{
 		this.productSizeRanges.get(0).setRight(maxSize);
 	}
 	
 	
-	public int getProdcutMaxSize()
+	public int getProductMaxSize()
 	{
 		return productSizeRanges.get(0).getRight();
 	}
 	
-	public int getProdcutMinSize()
+	public int getProductMinSize()
 	{
 		return productSizeRanges.get(0).getLeft();
 	}
