@@ -314,10 +314,7 @@ public class P3GlobalSettings {
 	/** dump fields for global settings and seq args if dump == 1 */
 	private boolean dump;
 
-	public void addProductSizeRange(int pr_min,int pr_max) {
-		this.productSizeRanges.add(MutablePair.of(pr_min, pr_max));
-	}
-
+	
 
 
 	/**
@@ -529,6 +526,41 @@ public class P3GlobalSettings {
 	{
 		return this.productSizeRanges.get(i);
 	}
+	
+	public void addProductSizeRange(int pr_min,int pr_max) {
+		this.productSizeRanges.add(MutablePair.of(pr_min, pr_max));
+	}
+
+	
+	/**
+	 * this will would set the first entry in the list assuming only one will work
+	 * @param minSize
+	 */
+	public void setProdcutMinSize(int minSize)
+	{
+		this.productSizeRanges.get(0).setLeft(minSize);
+	}
+	
+	/**
+	 * this will would set the first entry in the list assuming only one will work
+	 * @param minSize
+	 */
+	public void setProdcutMaxSize(int maxSize)
+	{
+		this.productSizeRanges.get(0).setRight(maxSize);
+	}
+	
+	
+	public int getProdcutMaxSize()
+	{
+		return productSizeRanges.get(0).getRight();
+	}
+	
+	public int getProdcutMinSize()
+	{
+		return productSizeRanges.get(0).getLeft();
+	}
+	
 	public int getProductSizeRangesNumber()
 	{
 		return this.productSizeRanges.size();
