@@ -1927,7 +1927,7 @@ public class LibPrimer3 {
 			nonfatal_err.append( "Minimum 3' distance must be >= -1 (min_*_three_prime_distance)");
 
 		if ((pa.primersArgs.getMinQuality() != 0 || pa.oligosArgs.getMinQuality() != 0)
-				&& sa.getSequenceQuality().length == 0)
+				&& (sa.getSequenceQuality() == null || sa.getSequenceQuality().length == 0 ) )
 			nonfatal_err.append( "Sequence quality data missing");
 
 		if (pa.getFirstBaseIndex() < PR_NULL_FORCE_POSITION) {

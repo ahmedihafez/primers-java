@@ -534,7 +534,7 @@ public class Primer3Main {
 	}
 	private static void read_thermodynamic_parameters() {
 
-		ThAl.get_thermodynamic_values();
+//		ThAl.get_thermodynamic_values();
 
 		// FIXME :: remove this
 		thermodynamic_params_path = "";

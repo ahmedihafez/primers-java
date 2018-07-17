@@ -84,6 +84,10 @@ public class ThAl {
 
 	
 	
+	static {
+		get_thermodynamic_values();
+	}
+	
 	public static int  get_thermodynamic_values()
 	{
 		return get_thermodynamic_values(null,null);

@@ -844,9 +844,9 @@ public class SeqArgs {
 		System.out.format("incl_s %s\n", s.includedRegionStart) ;
 		System.out.format("incl_l %s\n", s.includedRegionLength) ;
 		System.out.format("start_codon_pos %s\n", s.startCodonPos) ;
-		System.out.format("n_quality %s\n", s.sequenceQuality.length) ;
+		System.out.format("n_quality %s\n", s.sequenceQuality == null ? 0 : s.sequenceQuality.length) ;
 		/* TO DO System.out.format("quality%s\", s.quality) ; */
-		System.out.format("quality_storage_size %s\n", s.sequenceQuality.length) ;
+		System.out.format("quality_storage_size %s\n", s.sequenceQuality == null ? 0 : s.sequenceQuality.length) ;
 		System.out.format("*sequence %s\n", string(s.sequence)) ;
 		System.out.format("*sequence_name %s\n", s.sequenceName) ;
 		System.out.format("*sequence_file %s\n",  string(s.sequence_file)) ;
