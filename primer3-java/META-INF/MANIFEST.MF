@@ -3,9 +3,9 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Primer3-java
 Bundle-SymbolicName: primer3-java;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Require-Bundle: org.eclipse.wb.core.lib,
- org.apache.commons.cli,
- org.apache.commons.lang3
+Require-Bundle: org.apache.commons.cli,
+ org.apache.commons.lang3,
+ org.apache.commons.io
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.primer3,
  org.primer3.dpal,
