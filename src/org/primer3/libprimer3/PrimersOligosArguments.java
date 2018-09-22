@@ -72,7 +72,7 @@ public class PrimersOligosArguments {
 	
 	
 	
-	private int    maxNumOfNsAccepted;
+	private int   maxNumOfNsAccepted;
 	
 	
 
