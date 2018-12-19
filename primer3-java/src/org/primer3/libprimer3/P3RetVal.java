@@ -226,25 +226,35 @@ public class P3RetVal {
 			/* The conditions for primer lists */
 
 			if (retval.output_type == P3OutputType.primer_list) {
+				
+				// bug access empty list
+				fwd  = null;
+				rev  = null;
+				intl = null;
+				
+				
 				/* Attach the selected primers to the pointers */
-				fwd = retval.fwd.oligo.get(i);
-				rev = retval.rev.oligo.get(i);
-				intl = retval.intl.oligo.get(i);
+				//fwd = retval.fwd.oligo.get(i);
+				//rev = retval.rev.oligo.get(i);
+				//intl = retval.intl.oligo.get(i);
 				/* Do fwd oligos have to be printed? */
 				if ((pa.isPickLeftPrimer()) && (i < print_fwd)) {
 					go_fwd = 1;
+					fwd = retval.fwd.oligo.get(i);
 				} else {
 					go_fwd = 0;
 				}
 				/* Do rev oligos have to be printed? */
 				if ((pa.isPickRightPrimer()) && (i < print_rev)) {
 					go_rev = 1;
+					rev = retval.rev.oligo.get(i);
 				} else {
 					go_rev = 0;
 				}
 				/* Do int oligos have to be printed? */
 				if ((pa.isPickInternalOligo()) && (i < print_int)) {
 					go_int = 1;
+					intl = retval.intl.oligo.get(i);
 				} else {
 					go_int = 0;
 				}
@@ -253,13 +263,17 @@ public class P3RetVal {
 				/* Get pointers to the primer_rec's that we will print */
 				fwd  = retval.best_pairs.pairs.get(i).left;
 				rev  = retval.best_pairs.pairs.get(i).right;
-				intl = retval.best_pairs.pairs.get(i).intl;
+				
+				// potential null exp bug here 
+				// intl = retval.best_pairs.pairs.get(i).intl;
+				intl = null;
 				/* Pairs must have fwd and rev primers */
 				go_fwd = 1;
 				go_rev = 1;
 				/* Do hyb oligos have to be printed? */
 				if (pa.isPickInternalOligo() ) {
 					go_int = 1;
+					intl = retval.best_pairs.pairs.get(i).intl;
 				} else {
 					go_int = 0;
 				}
