@@ -458,11 +458,14 @@ public class ThAl {
 				"-s1 ccgcagtaagctgcgg -s2 ccgcagtaagctgcgg -a ANY -maxloop 1",
 				"-dv 1.5 -n 0.6 -s1 TGGTGGCAAAGTCGACAGAG -s2 TGCACTACCTGAGGCTTCAC -a END2",
 				"-dv 1.5 -n 0.6 -s1 AACTTCAGGATCCAGTGGGC  -a HAIRPIN",
-				"-dv 1.5 -n 0.6 -s1 CAGTGCTGCAATGATACCGC  -a HAIRPIN" // this fail
+				"-dv 1.5 -n 0.6 -s1 CAGTGCTGCAATGATACCGC  -a HAIRPIN", // this fail
+				"-dv 1.5 -n 0.6 -s1 tggcatccatgtccatcaaa   -a HAIRPIN",
+				"-dv 1.5 -n 0.6 -s1 gccgcttccctcggacaacc   -a HAIRPIN"  
+
 		}; 
 		
 		
-		args = testCases[6].split(" ");
+		args = testCases[8].split(" ");
 		
 		String s1 = null, s2 = null;
 		
