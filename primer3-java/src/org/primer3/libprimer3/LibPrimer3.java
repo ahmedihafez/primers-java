@@ -903,8 +903,8 @@ public class LibPrimer3 {
 
 	private static int make_internal_oligo_list(P3RetVal retval,
 			P3GlobalSettings pa, SeqArgs sa,
-			DPAlArgHolder dpal_arg_to_use2,
-			THAlArgHolder thal_oligo_arg_to_use2) throws PrimerRecordException, AlignmentException, ThermodynamicAlignmentException {
+			DPAlArgHolder dpal_arg_to_use,
+			THAlArgHolder thal_arg_to_use) throws PrimerRecordException, AlignmentException, ThermodynamicAlignmentException {
 
 
 		int ret;
@@ -1820,10 +1820,12 @@ public class LibPrimer3 {
 				if (oligo.type != OligoType.OT_RIGHT) {
 					/* Check if the product is of sufficient size -- could be optimized herer */
 					if (i-j > n-pr_min-1 && retval.output_type == P3OutputType.primer_pairs
-							&& oligo.type == OligoType.OT_LEFT) continue;
+							&& oligo.type == OligoType.OT_LEFT) 
+						continue;
 
 					/* Break if the primer is bigger than the sequence left */
-					if (i-j < -1) break;
+					if (i-j < -1) 
+						break;
 
 					/* Set the start of the primer */
 					h.start = i - j + 1;
@@ -1836,7 +1838,8 @@ public class LibPrimer3 {
 					if (i+j < pr_min && retval.output_type == P3OutputType.primer_pairs) continue;
 
 					/* Break if the primer is bigger than the sequence left*/
-					if (i+j > n) break;
+					if (i+j > n) 
+						break;
 
 					/* Set the start of the primer */
 					h.start = i+j-1;
@@ -2775,11 +2778,11 @@ public class LibPrimer3 {
 
 		/* 2. Align to the template 3' of the oligo. */
 		//		h.template_mispriming = align(oseq, target[0] + last_untrimmed + 1, align_args);
-		h.template_mispriming = align(oseq, Sequence.subSeqRange(target,0 , last_untrimmed + 1), align_args);
+		h.template_mispriming = align(oseq, Sequence.subSeqRange(target,last_untrimmed + 1 , target.length-1), align_args);
 
 		if (debug)
 			System.err.format("3' of oligo Score %f aligning %s against %s\n\n",
-					h.template_mispriming, oseq, Sequence.subSeqRange(target,0 , last_untrimmed + 1));
+					h.template_mispriming, oseq, Sequence.subSeqRange(target,last_untrimmed + 1 , target.length-1));
 
 		/* 3. Take the max of 1. and 2. */
 		if (tmp_score > h.template_mispriming)
@@ -2886,11 +2889,11 @@ public class LibPrimer3 {
 
 		/* 2. Align to the template 3' of the oligo. &target[0] + last_untrimmed + 1 */ 
 		h.template_mispriming
-		= align_thermod(oseq, Sequence.subSeqRange(target,0, last_untrimmed + 1) , align_args);
+		= align_thermod(oseq, Sequence.subSeqRange(target,last_untrimmed + 1 , target.length-1) , align_args);
 
 		if (debug)
 			System.err.format("3' of oligo Score %f aligning %s against %s\n\n",
-					h.template_mispriming, oseq, Sequence.subSeqRange(target,0, last_untrimmed + 1));
+					h.template_mispriming, oseq, Sequence.subSeqRange(target,last_untrimmed + 1 , target.length-1));
 
 		/* 3. Take the max of 1. and 2. */
 		if (tmp_score > h.template_mispriming)
