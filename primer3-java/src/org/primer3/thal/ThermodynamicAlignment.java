@@ -1166,7 +1166,7 @@ public class ThermodynamicAlignment {
 				T1 = (H + dplx_init_H) / ((S + dplx_init_S) + RC);
 				T2 = (EnthalpyDPT(i, j) + dplx_init_H) / ((EntropyDPT(i, j)) + dplx_init_S + RC);
 
-				if((T1 > T2) || ((traceback != 0 && T1 >= T2) || traceback != 0)) {
+				if((T1 > T2) || ((traceback != 0 && T1 >= T2) || traceback == 1)) {
 					EntropyEnthalpy[0] = S;
 					EntropyEnthalpy[1] = H;
 				}
