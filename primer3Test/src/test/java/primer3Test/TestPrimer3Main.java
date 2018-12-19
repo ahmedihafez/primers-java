@@ -263,6 +263,19 @@ public class TestPrimer3Main {
 				"primer_human_output");
 	}
 	
+	@Test
+	public void testP3NewTaskInput() throws FileNotFoundException, IOException {	  
+		
+		testCase("primer_new_tasks_input",
+				"primer_new_tasks_input",
+				"primer_new_tasks_output");
+	}	
+	
+	
+	
+	
+	
+	
 //	@Test
 //	public void testP3Cases() throws FileNotFoundException, IOException {	  
 //		
