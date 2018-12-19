@@ -533,12 +533,7 @@ public class PrimerPair {
 				   double compl_end2 = LibPrimer3.align_thermod(s2, s1_rev, thal_arg_to_use.end2) ; // ) > ppair.compl_end)
 				   if(compl_end1 > ppair.compl_end ||  compl_end2 > ppair.compl_end)
 				   { 
-					   compl_end = compl_end1;
-					   if(compl_end1 < compl_end2 )
-					   {
-						   compl_end = compl_end2;
-					   }
-					  
+					  compl_end =  Math.max(compl_end1, compl_end2);
 				      if (compl_end > pa.primersArgs.getMaxSelfEndTH()) {
 				         if (update_stats) {
 				            pair_expl.compl_end++; 
