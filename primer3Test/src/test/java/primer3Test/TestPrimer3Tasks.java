@@ -21,7 +21,7 @@ import org.junit.runners.MethodSorters;
 import org.primer3.Primer3Main;
 
 @FixMethodOrder(MethodSorters.JVM)
-public class TestPrimer3Main {
+public class TestPrimer3Tasks {
 	String message = "Hello World";	
 	MessageUtil messageUtil = new MessageUtil(message);
 
