@@ -24,72 +24,71 @@ public class PairWeights {
 	double template_mispriming_th;
 	
 	public void set_template_mispriming_th(String datum) {
-		// TODO Auto-generated method stub
-		
+		this.template_mispriming_th = Double.parseDouble(datum);
 	}
 
 	public void set_template_mispriming(String datum) {
-		// TODO Auto-generated method stub
+		this.template_mispriming = Double.parseDouble(datum);
 		
 	}
 
 	public void set_repeat_sim(String datum) {
-		// TODO Auto-generated method stub
+		this.repeat_sim = Double.parseDouble(datum);
 		
 	}
 
 	public void set_product_size_lt(String datum) {
-		// TODO Auto-generated method stub
+		this.product_size_lt = Double.parseDouble(datum);
 		
 	}
 
 	public void set_product_size_gt(String datum) {
-		// TODO Auto-generated method stub
+		this.product_size_gt = Double.parseDouble(datum);
 		
 	}
 
 	public void set_product_tm_gt(String datum) {
-		// TODO Auto-generated method stub
+		this.product_tm_gt = Double.parseDouble(datum);
 		
 	}
 
 	public void set_product_tm_lt(String datum) {
-		// TODO Auto-generated method stub
+		this.product_tm_lt = Double.parseDouble(datum);
 		
 	}
 
 	public void set_compl_end_th(String datum) {
-		// TODO Auto-generated method stub
+		this.compl_any_th = Double.parseDouble(datum);
 		
 	}
 
 	public void set_compl_any_th(String datum) {
-		// TODO Auto-generated method stub
+		this.compl_any_th = Double.parseDouble(datum);
 		
 	}
 
 	public void set_compl_end(String datum) {
-		// TODO Auto-generated method stub
+		this.compl_end = Double.parseDouble(datum);
 		
 	}
 
 	public void set_compl_any(String datum) {
-		// TODO Auto-generated method stub
+		this.compl_any = Double.parseDouble(datum);
 		
 	}
 
 	public void set_diff_tm(String datum) {
-		// TODO Auto-generated method stub
+		this.diff_tm = Double.parseDouble(datum);
 		
 	}
 
 	public void set_io_quality(String datum) {
-		// TODO Auto-generated method stub
+		this.io_quality = Double.parseDouble(datum);
 		
 	}
 
 	public void set_primer_quality(String datum) {
-		// TODO Auto-generated method stub
+		this.primer_quality = Double.parseDouble(datum);
 		
 	}
 
