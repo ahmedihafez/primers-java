@@ -21,29 +21,14 @@ import org.junit.runners.MethodSorters;
 import org.primer3.Primer3Main;
 
 @FixMethodOrder(MethodSorters.JVM)
-public class TestPrimer3Tasks {
+public class TestGroupA {
 	String message = "Hello World";	
 	MessageUtil messageUtil = new MessageUtil(message);
 
 	
-	static String resourceFolder = "src/test/resources/";
+	static String resourceFolder = "src/test/resources/groupA_test/";
 	
-	void testCase(String inputFile,String outputFile) throws FileNotFoundException, IOException
-	{
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		System.setOut(new PrintStream(baos));
-		Primer3Main.main((resourceFolder +inputFile).split(" "));
-		
-		List<String> resultlines =  IOUtils.readLines(new FileReader(new File(resourceFolder+outputFile)));
-		
-		String result = "";
-		for(String line : resultlines)
-			result += line + "\n";
-		System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
-		String outputResult = baos.toString();
-		
-		assertEquals(result,outputResult);
-	}
+
 	
 	
 	void testCase(String msg, String inputFile,String outputFile) throws FileNotFoundException, IOException
@@ -74,29 +59,19 @@ public class TestPrimer3Tasks {
 	
 	
 	@Test
-	@Ignore("See just failed")
-	public void testP3NewTaskInput() throws FileNotFoundException, IOException {	  
+	public void testP3ThermodAlignInput() throws FileNotFoundException, IOException {	  
 		
-		testCase("primer_new_tasks_input",
-				"primer_new_tasks_input",
-				"primer_new_tasks_output");
+		testCase("primer_thermod_align_input",
+				"primer_thermod_align_input",
+				"primer_thermod_align_output");
 	}	
 	
-	
+
 	@Test
-	public void testP3NewTasksInputFail() throws FileNotFoundException, IOException {	  
+	public void testP3ThreePrimeDistanceInput() throws FileNotFoundException, IOException {	  
 		
-		testCase("primer_new_tasks_input_fail",
-				"primer_new_tasks_input_fail",
-				"primer_new_tasks_output_fail");
-	}	
-	
-	
-	@Test
-	public void testP3NewTasksThInput() throws FileNotFoundException, IOException {	  
-		
-		testCase("primer_new_tasks_th_input",
-				"primer_new_tasks_th_input",
-				"primer_new_tasks_th_output");
-	}	
+		testCase("primer_three_prime_distance_input",
+				"primer_three_prime_distance_input",
+				"primer_three_prime_distance_output");
+	}
 }

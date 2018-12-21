@@ -126,7 +126,9 @@ public class TestPrimer3Main {
 	@Test
 	public void testP3PrimerFirstBaseIndex() throws FileNotFoundException, IOException {	  
 		
-		testCase("primer_first_base_index_input","primer_first_base_index_input","primer_first_base_index_output");
+		testCase("primer_first_base_index_input",
+				"primer_first_base_index_input",
+				"primer_first_base_index_output");
 	}
 	
 	@Test
@@ -183,7 +185,7 @@ public class TestPrimer3Main {
 				"primer_lib_amb_codes_output");
 	}
 	
-	@Ignore("Ignore for Now")
+	@Ignore("Ignore for Now -- take some long time :: last update PASS")
 	@Test
 	public void testP3MustMatchInput() throws FileNotFoundException, IOException {	  
 		
@@ -210,7 +212,7 @@ public class TestPrimer3Main {
 				"primer_num_best_output");
 	}
 	
-	@Ignore("Ignore Not Implmented Now")
+	//@Ignore("Ignore Not Implmented Now")
 	@Test
 	public void testP3ObjFnInput() throws FileNotFoundException, IOException {	  
 		
@@ -254,7 +256,7 @@ public class TestPrimer3Main {
 				"primer_start_codon_input",
 				"primer_start_codon_output");
 	}
-	@Ignore("Very Long test")
+	@Ignore("Very Long test :: 15m, Last Update PASS")
 	@Test
 	public void testP3HumanInput() throws FileNotFoundException, IOException {	  
 		

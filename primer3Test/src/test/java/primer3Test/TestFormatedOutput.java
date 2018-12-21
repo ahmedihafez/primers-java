@@ -21,34 +21,19 @@ import org.junit.runners.MethodSorters;
 import org.primer3.Primer3Main;
 
 @FixMethodOrder(MethodSorters.JVM)
-public class TestPrimer3Tasks {
+public class TestFormatedOutput {
 	String message = "Hello World";	
 	MessageUtil messageUtil = new MessageUtil(message);
 
 	
-	static String resourceFolder = "src/test/resources/";
+	static String resourceFolder = "src/test/resources/formated_output_test";
 	
-	void testCase(String inputFile,String outputFile) throws FileNotFoundException, IOException
-	{
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		System.setOut(new PrintStream(baos));
-		Primer3Main.main((resourceFolder +inputFile).split(" "));
-		
-		List<String> resultlines =  IOUtils.readLines(new FileReader(new File(resourceFolder+outputFile)));
-		
-		String result = "";
-		for(String line : resultlines)
-			result += line + "\n";
-		System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
-		String outputResult = baos.toString();
-		
-		assertEquals(result,outputResult);
-	}
+
 	
 	
 	void testCase(String msg, String inputFile,String outputFile) throws FileNotFoundException, IOException
 	{
-		testCase(msg,inputFile,outputFile, "");
+		testCase(msg,inputFile,outputFile, "--format_output");
 	}
 	
 	
@@ -74,29 +59,13 @@ public class TestPrimer3Tasks {
 	
 	
 	@Test
-	@Ignore("See just failed")
-	public void testP3NewTaskInput() throws FileNotFoundException, IOException {	  
+	public void testP3TaskInput() throws FileNotFoundException, IOException {	  
 		
-		testCase("primer_new_tasks_input",
-				"primer_new_tasks_input",
-				"primer_new_tasks_output");
+		testCase("primer_task_input",
+				"primer_task_input",
+				"primer_task_formated_output");
 	}	
 	
 	
-	@Test
-	public void testP3NewTasksInputFail() throws FileNotFoundException, IOException {	  
-		
-		testCase("primer_new_tasks_input_fail",
-				"primer_new_tasks_input_fail",
-				"primer_new_tasks_output_fail");
-	}	
 	
-	
-	@Test
-	public void testP3NewTasksThInput() throws FileNotFoundException, IOException {	  
-		
-		testCase("primer_new_tasks_th_input",
-				"primer_new_tasks_th_input",
-				"primer_new_tasks_th_output");
-	}	
 }
