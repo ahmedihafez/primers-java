@@ -41,8 +41,8 @@ public class Primer3Main {
 		CommandLineParser parser = new DefaultParser();
 		Options options = new Options();
 
-		Option  argOption   = Option.builder("format_output").argName( "format_output" )
-				.desc("format_output" )
+		Option  argOption   = Option.builder("formated_output").argName( "formated_output" ).longOpt("formated_output")
+				.desc("formated_output" )
 				.build();
 		options.addOption(argOption);
 
@@ -216,7 +216,9 @@ public class Primer3Main {
 			default_version = 2;
 		if(line.hasOption("D"))
 			dump_args = true ;
-
+		if(line.hasOption("formated_output"))
+			format_output = true;
+		
 		// set redirfile
 		if(error_path != null && !error_path.isEmpty())
 		{
