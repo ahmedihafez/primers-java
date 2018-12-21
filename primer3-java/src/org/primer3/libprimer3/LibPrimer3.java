@@ -249,7 +249,7 @@ public class LibPrimer3 {
 		     if dpal_arg_to_use, a static variable that has 'file'
 		     scope, has not yet been initialized. */
 			if (dpal_arg_to_use == null)
-				dpal_arg_to_use = new DPAlArgHolder();// create_dpal_arg_holder();
+				dpal_arg_to_use = DPAlArgHolder.create_dpal_arg_holder();// create_dpal_arg_holder();
 
 			// TODO :: Refactor and clean
 			if(thal_arg_to_use == null) {
@@ -629,7 +629,7 @@ public class LibPrimer3 {
 
 							if (update_stats) { 
 								if (choose_pair_or_triple_trace_me)
-									System.err.println("ok++\n");
+									System.err.format("ok++\n");
 								pair_expl.ok++;
 							}
 
