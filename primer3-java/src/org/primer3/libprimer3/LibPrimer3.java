@@ -34,12 +34,6 @@ public class LibPrimer3 {
 
 	
 	
-	// Debug info 
-	static int thal_trace = 0;
-	static boolean choose_pair_or_triple_trace_me = false;
-
-	
-
 	/* ALIGN_SCORE_UNDEF is used only libprimer3 and clients, not in dpal */
 	// #define ALIGN_SCORE_UNDEF            -DBL_MAX
 	static final public double   ALIGN_SCORE_UNDEF = -Double.MAX_VALUE;
@@ -437,7 +431,7 @@ public class LibPrimer3 {
 			            have been legal on one pass but become illegal on
 			            a subsequent pass. */
 					if (update_stats) {
-						if (choose_pair_or_triple_trace_me)
+						if (DebugInfo.choose_pair_or_triple_trace_me)
 							System.err.format( "i=%d, j=%d, overlaps_oligo_in_better_pair++\n", i, 0); // this was j
 						pair_expl.overlaps_oligo_in_better_pair++;
 					}
@@ -500,12 +494,12 @@ public class LibPrimer3 {
 			           pair with reverse oligo at i and forward oligo at j. */
 					update_stats = false;
 					if (j > max_j_seen[i]) {
-						if (choose_pair_or_triple_trace_me)
+						if (DebugInfo.choose_pair_or_triple_trace_me)
 							System.err.format("updates ON: i=%d, j=%d, max_j_seen[%d]=%d\n",  i, j, i, max_j_seen[i]);
 						max_j_seen[i] = j;
-						if (choose_pair_or_triple_trace_me)
+						if (DebugInfo.choose_pair_or_triple_trace_me)
 							System.err.format("max_j_seen[%d] -. %d\n", i, max_j_seen[i]);
-						if (choose_pair_or_triple_trace_me) System.err.format( "updates on\n");
+						if (DebugInfo.choose_pair_or_triple_trace_me) System.err.format( "updates on\n");
 						update_stats = true;
 					}
 
@@ -515,7 +509,7 @@ public class LibPrimer3 {
 			             have been legal on one pass but become illegal on
 			             a subsequent pass. */
 						if (update_stats) {
-							if (choose_pair_or_triple_trace_me)
+							if (DebugInfo.choose_pair_or_triple_trace_me)
 								System.err.format("i=%d, j=%d, overlaps_oligo_in_better_pair++\n", i, j);
 							pair_expl.overlaps_oligo_in_better_pair++;
 						}
@@ -572,7 +566,7 @@ public class LibPrimer3 {
 								/* The pair was computed, it isn't illegal and it wasn't selected yet */
 								if (update_stats) {
 									pair_expl.considered++;
-									if (choose_pair_or_triple_trace_me)
+									if (DebugInfo.choose_pair_or_triple_trace_me)
 										System.err.format("ok++\n");
 									pair_expl.ok++;
 								}
@@ -628,7 +622,7 @@ public class LibPrimer3 {
 							}
 
 							if (update_stats) { 
-								if (choose_pair_or_triple_trace_me)
+								if (DebugInfo.choose_pair_or_triple_trace_me)
 									System.err.format("ok++\n");
 								pair_expl.ok++;
 							}
@@ -693,7 +687,7 @@ public class LibPrimer3 {
 			} else {
 				/* Store the best primer for output */
 
-				if (choose_pair_or_triple_trace_me)
+				if (DebugInfo.choose_pair_or_triple_trace_me)
 					System.err.format("ADD pair i=%d, j=%d\n", the_best_i, the_best_j);
 
 				best_pairs.add_pair(the_best_pair);
@@ -2643,7 +2637,7 @@ public class LibPrimer3 {
 		try {
 			r = thal.thAlign();
 
-			if (thal_trace != 0) {
+			if (DebugInfo.thal_trace != 0) {
 				System.out.format(  "thal, thal_args, type=%s maxLoop=%d mv=%f dv=%f dntp=%f dna_conc=%f, temp=%f, temponly=%b dimer=%d\n",
 						a.getAlignmentType(), a.getMaxLoop(), a.getMonovalentConc(), a.getDivalentConc(), a.getDntpConc(), a.getDnaConc(), 
 						a.getTemperature(), a.isTempOnly(), a.getCalcDimer());
