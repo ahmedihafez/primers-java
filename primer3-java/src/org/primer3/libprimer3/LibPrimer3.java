@@ -2353,17 +2353,17 @@ public class LibPrimer3 {
 			return true;
 		}
 
-		if (pa.primersArgs.weights.repeat_sim > 0 && (seq_lib.seq_lib_num_seq(pa.primersArgs.repeat_lib) == 0)) {
+		if (pa.primersArgs.weights.repeat_sim > 0 && (pa.primersArgs.repeat_lib  == null)) {
 			glob_err.append( "Mispriming score is part of objective function, but mispriming library is not defined");
 			return true;
 		}
 
-		if (pa.oligosArgs.weights.repeat_sim > 0 && ( seq_lib.seq_lib_num_seq(pa.oligosArgs.repeat_lib) == 0)) {
+		if (pa.oligosArgs.weights.repeat_sim > 0 && ( pa.primersArgs.repeat_lib  == null)) {
 			glob_err.append( "Internal oligo mispriming score is part of objective function while mishyb library is not defined");
 			return true;
 		}
 
-		if (pa.getPrPairWeights().repeat_sim > 0 && ((seq_lib.seq_lib_num_seq(pa.primersArgs.repeat_lib) == 0))) {
+		if (pa.getPrPairWeights().repeat_sim > 0 && ((pa.primersArgs.repeat_lib  == null))) {
 			glob_err.append("Mispriming score is part of objective function, but mispriming library is not defined");
 			return true;
 		}

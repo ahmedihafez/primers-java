@@ -1294,20 +1294,20 @@ public class PrimerRecord {
 		 * library. Compare it with maximum allowed repeat similarity.
 		 */
 
-		if (seq_lib.seq_lib_num_seq(lib) > 0) {
+		if (lib != null) {
 			/* Library exists and is non-empty. */
 
-			h.repeat_sim.score = new double[lib.seq_num];
+			h.repeat_sim.score = new double[lib.seq_lib_num_seq()];
 			h.repeat_sim.max = h.repeat_sim.min = 0;
 			max = min = 0;
-			h.repeat_sim.name = lib.names.get(0);
+			h.repeat_sim.name = lib.getName(0);
 
-			for (i = 0; i < lib.seq_num; i++) {
+			for (i = 0; i < lib.seq_lib_num_seq(); i++) {
 				if (l == OligoType.OT_LEFT)
 					w = lib.weight.get(i)
 							* LibPrimer3
 									.align(s,
-											lib.seqs.get(i),
+											lib.getSeq(i),
 											(pa.isLibAmbiguityCodesConsensus() ? dpal_arg_to_use.local_end_ambig
 													: dpal_arg_to_use.local_end));
 
@@ -1315,7 +1315,7 @@ public class PrimerRecord {
 					w = lib.weight.get(i)
 							* LibPrimer3
 									.align(s,
-											lib.seqs.get(i),
+											lib.getSeq(i),
 											(pa.isLibAmbiguityCodesConsensus() ? dpal_arg_to_use.local_ambig
 													: dpal_arg_to_use.local));
 
@@ -1323,7 +1323,7 @@ public class PrimerRecord {
 					w = lib.weight.get(i)
 							* LibPrimer3
 									.align(s_r,
-											lib.rev_compl_seqs.get(i),
+											lib.getSeqRevCompl(i),
 											(pa.isLibAmbiguityCodesConsensus() ? dpal_arg_to_use.local_end_ambig
 													: dpal_arg_to_use.local));
 
@@ -1337,7 +1337,7 @@ public class PrimerRecord {
 				if (w > max) {
 					max = (int) w;
 					h.repeat_sim.max = (short) i;
-					h.repeat_sim.name = lib.names.get(i);
+					h.repeat_sim.name = lib.getName(i);
 				}
 				if (w < min) {
 					min = (int) w;

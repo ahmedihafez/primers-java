@@ -1,32 +1,40 @@
 package org.primer3.p3_seq_lib;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
-import org.primer3.libprimer3.LibPrimer3;
+import org.biojava.nbio.core.sequence.DNASequence;
+import org.biojava.nbio.core.sequence.compound.NucleotideCompound;
+import org.biojava.nbio.core.sequence.io.DNASequenceCreator;
+import org.biojava.nbio.core.sequence.io.FastaReader;
+import org.biojava.nbio.core.sequence.io.GenericFastaHeaderParser;
 
 // TODO :: missing impl...
 public class seq_lib {
+
 
 	
 	static double  PR_MAX_LIBRARY_WT = 100.0;
 
 	
 	/** An array of sequence names. */
-	public List<String> names;
+	private List<String> names;
 	/** An array of sequences. */
-	public List<char[]> seqs;
+	private List<char[]> seqs;
+	
 	/** An array of reversed-complemented sequences.
 	   x->rev_compl_seqs[i] is the reverse complement
 	   of x->seqs[i], which lets us keep track of pairwise
 	   mispriming.  See reverse_complement_seq_lib(). */
-	public List<char[]> rev_compl_seqs;
+	private List<char[]> rev_compl_seqs;
 	
 	public List<Double> weight;
 	
-	/* The number of names, sequences, and weights. */
-	public int seq_num = 0;
 	
 	StringBuilder warning = new StringBuilder();
 	StringBuilder error = new StringBuilder();
@@ -39,7 +47,6 @@ public class seq_lib {
 		seqs = new ArrayList<char[]>();
 		rev_compl_seqs = new ArrayList<char[]>();
 		weight = new ArrayList<Double>();
-		seq_num = 0;
 	}
 	
 	
@@ -51,15 +58,65 @@ public class seq_lib {
 	 */
 	public static seq_lib read_and_create_seq_lib(String filename, String errfrag) throws Exception
 	{
-		return null;
+		seq_lib slib = new seq_lib();
+		
+		DNACharSet dnaSet = new DNACharSet();
+		
+		
+		
+		
+		
+		FastaReader<DNASequence, NucleotideCompound> fastaReader = new FastaReader<DNASequence, NucleotideCompound>(
+				new FileInputStream(new File(filename)),
+				new GenericFastaHeaderParser<DNASequence, NucleotideCompound>(),
+				new DNASequenceCreator(dnaSet));
+		
+		while(true) {
+			LinkedHashMap<String, DNASequence> dbFile = fastaReader.process(1);
+			if(dbFile == null || dbFile.size() == 0 )
+				break;
+			for(Entry<String,DNASequence> seq : dbFile.entrySet())
+			{
+				//System.out.println(">" + seq.getKey());
+				//System.out.println(seq.getValue().getSequenceAsString());
+				slib.add(seq.getKey(),seq.getValue().getSequenceAsString().toCharArray(),
+						seq.getValue().getReverseComplement().getSequenceAsString().toCharArray());
+				
+			}
+		}
+		
+		int n = slib.names.size();
+		for(int i = 0;i < n; i++)
+		{
+			slib.add("reverse " + slib.names.get(i), slib.rev_compl_seqs.get(i), slib.seqs.get(i));
+		}
+		
+		return slib;
+//		return null;
 	}
 	
+	private void add(String key, char[] s, char[] srev) {
+		
+		// TODO :: still testing
+		this.names.add(key);
+		// this.names.add("reverse " + key);
+//		char[] s = value.getSequenceAsString().toCharArray();
+		this.seqs.add(s);
+		//this.seqs.add(srev);
+		this.rev_compl_seqs.add(srev);
+		//this.rev_compl_seqs.add(s);
+		this.weight.add(1.0);
+		//this.weight.add(1.0);
+
+	}
+
+
+
 	/**
 	 *  number of sequences in a seq_lib* */
-	static public int seq_lib_num_seq(seq_lib lib)
+	public int seq_lib_num_seq()
 	{
-		if (lib == null ) return 0;
-		return lib.seq_num;
+		return this.seqs.size();
 	}
 	
 	public  String seq_lib_warning_data()
@@ -67,7 +124,7 @@ public class seq_lib {
 		return "";
 	}
 	
-	public int add_seq_and_rev_comp_to_seq_lib(
+	private int add_seq_and_rev_comp_to_seq_lib(
 		    char[] seq, 
 		    String seq_id_plus, 
 		    String errfrag) {
@@ -76,7 +133,7 @@ public class seq_lib {
 	}
 	
 	
-	int add_seq_to_seq_lib(char[] seq, 
+	private int add_seq_to_seq_lib(char[] seq, 
 		    String seq_id_plus, 
 		    String errfrag) {
 		
@@ -136,5 +193,23 @@ public class seq_lib {
 
 	public String getErrors() {
 		return error.toString();
+	}
+
+
+
+	public String getName(int i) {
+		return this.names.get(i);
+	}
+
+
+
+	public char[] getSeq(int i) {
+		return this.seqs.get(i);
+	}
+
+
+
+	public char[] getSeqRevCompl(int i) {
+		return this.rev_compl_seqs.get(i);
 	}
 }

@@ -400,7 +400,7 @@ public class P3RetVal {
 				System.out.format("PRIMER_%s%s_HAIRPIN_TH=%.2f\n", int_oligo, suffix,
 						intl.hairpin_th);
 			/*Print out primer mispriming scores */
-			if (seq_lib.seq_lib_num_seq(pa.primersArgs.repeat_lib) > 0) {
+			if (pa.primersArgs.repeat_lib != null) {
 				if (go_fwd == 1)
 					System.out.format("PRIMER_LEFT%s_LIBRARY_MISPRIMING=%.2f, %s\n", suffix,
 							fwd.repeat_sim.score[fwd.repeat_sim.max],
@@ -416,7 +416,7 @@ public class P3RetVal {
 			}
 
 			/* Print out internal oligo mispriming scores */
-			if (go_int == 1 && seq_lib.seq_lib_num_seq(pa.oligosArgs.repeat_lib) > 0)
+			if (go_int == 1 && pa.oligosArgs.repeat_lib != null)
 				System.out.format("PRIMER_%s%s_LIBRARY_MISHYB=%.2f, %s\n", int_oligo, suffix,
 						intl.repeat_sim.score[intl.repeat_sim.max],
 						intl.repeat_sim.name);
