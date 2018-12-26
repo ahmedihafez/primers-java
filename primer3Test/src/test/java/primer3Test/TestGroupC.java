@@ -24,7 +24,7 @@ import org.primer3.Primer3Main;
 // mispairing test
 
 @FixMethodOrder(MethodSorters.JVM)
-public class TestGroupB {
+public class TestGroupC {
 	String message = "Hello World";	
 	MessageUtil messageUtil = new MessageUtil(message);
 
@@ -62,39 +62,13 @@ public class TestGroupB {
 	
 	
 	@Test
-	public void testP3Mispriming() throws FileNotFoundException, IOException {	  
+	public void testP3MaskerInput() throws FileNotFoundException, IOException {	  
 		
-		testCase("primer_mispriming_input",
-				"primer_mispriming_input",
-				"primer_mispriming_output");
+		testCase("primer_masker_input",
+				"primer_masker_input",
+				"primer_masker_output");
 	}	
 	
-	@Test
-	public void testP3MisprimingTH() throws FileNotFoundException, IOException {	  
-		
-		testCase("primer_mispriming_th_input",
-				"primer_mispriming_th_input",
-				"primer_mispriming_th_output");
-	}	
-	@Test
-	public void testP3MisprimingBoundary1() throws FileNotFoundException, IOException {	  
-		
-		testCase("primer_mispriming_boundary1_input",
-				"primer_mispriming_boundary1_input",
-				"primer_mispriming_boundary1_output");
-	}
-	@Test
-	public void testP3MisprimingBoundary2() throws FileNotFoundException, IOException {	  
-		
-		testCase("primer_mispriming_boundary2_input",
-				"primer_mispriming_boundary2_input",
-				"primer_mispriming_boundary2_output");
-	}	
-	@Test
-	public void testP3MisprimingLongLib() throws FileNotFoundException, IOException {	  
-		
-		testCase("primer_mispriming_long_lib_input",
-				"primer_mispriming_long_lib_input",
-				"primer_mispriming_long_lib_output");
-	}	
+
+	
 }
