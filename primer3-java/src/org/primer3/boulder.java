@@ -29,7 +29,7 @@ public class boulder {
 	                        StringBuilder glob_err,
 	                        StringBuilder non_fatal_err,
 	                        StringBuilder warnings,
-	                        read_boulder_record_results  res){
+	                        read_boulder_record_results  res) throws FileNotFoundException{
 		StringBuilder parse_err = non_fatal_err;
 		boolean data_found = false;
 		String task_tmp = null ;
@@ -819,6 +819,7 @@ public class boulder {
 					}
 				} catch (Exception e) {
 					glob_err.append("Can not read mispriming library " + repeat_file_path);
+					throw new FileNotFoundException("Can not read mispriming library " + repeat_file_path);
 				}
 			}
 			repeat_file_path = null;

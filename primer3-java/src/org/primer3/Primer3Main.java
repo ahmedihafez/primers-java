@@ -349,173 +349,178 @@ public class Primer3Main {
 		sarg = null ;
 
 		read_boulder_record_res = new read_boulder_record_results();
-		while(true)
-		{
-			/* Create and initialize a seq_args data structure. sa (seq_args *) is
-			 * initialized here because Values are _not_ retained across different
-			 * input records. */
-			sarg = new SeqArgs();
-			
-			/* Reset all errors handlers and the return structure */
-			fatal_parse_err = new StringBuilder();
-			nonfatal_parse_err= new StringBuilder();
-			warnings = new StringBuilder();
-			retval = null;
-
-			/* There were no more boulder records */
-			// TODO :: read_boulder_record
-			if(! boulder.read_boulder_record(scan,
-					strict_tags,
-					io_version,
-					!format_output,
-					P3FileType.all_parameters,
-					global_pa,
-					sarg,
-					fatal_parse_err,
-					nonfatal_parse_err,
-					warnings,
-					read_boulder_record_res))
+		try {
+			while(true)
 			{
-				break; /* There were no more boulder records */
-			}
-			if(global_pa.isMaskTemplate()){
-				global_pa.setLowercaseMasking(global_pa.isMaskTemplate());
-			}
-			/* Check if any thermodynamical alignment flag was given and the
-	        path to the parameter files changed - we need to reread them */
-			if (((global_pa.isThermodynamicOligoAlignment() ) ||
-					(global_pa.isThermodynamicTemplateAlignment() ))
-					&& (thermodynamic_path_changed ))
-				read_thermodynamic_parameters();
+				/* Create and initialize a seq_args data structure. sa (seq_args *) is
+				 * initialized here because Values are _not_ retained across different
+				 * input records. */
+				sarg = new SeqArgs();
+				
+				/* Reset all errors handlers and the return structure */
+				fatal_parse_err = new StringBuilder();
+				nonfatal_parse_err= new StringBuilder();
+				warnings = new StringBuilder();
+				retval = null;
 
-			/* Check if template masking flag was given */
-			if (global_pa.isMaskTemplate() )
-				validate_kmer_lists_path();
-
-
-			/* Check that we found the thermodynamic parameters in case any thermodynamic flag was set to 1. */
-			if (((global_pa.isThermodynamicOligoAlignment() ) ||
-					(global_pa.isThermodynamicTemplateAlignment() ))
-					&& (thermodynamic_params_path == null)) {
-				/* no parameter directory found, error */
-				System.out.println("PRIMER_ERROR=thermodynamic approach chosen, but path to thermodynamic parameters not specified\n=\n");
-				System.exit(-1);
-			}
-
-			/* Check that we found the kmer lists in case masking flag was set to 1. */
-			if (global_pa.isMaskTemplate()  && kmer_lists_path == null){
-				System.out.println("PRIMER_ERROR=masking template chosen, but path to kmer lists not specified\n=\n");
-				System.exit(-1);
-			}
-
-			/* Set up some masking parameters */
-			/* edited by M. Lepamets */
-			if (global_pa.isMaskTemplate() ) {
-				global_pa.getMaskingParameters().window_size = masker.DEFAULT_WORD_LEN_2;
-
-				if (global_pa.isPickRightPrimer() ) global_pa.getMaskingParameters().mdir = masking_direction.fwd;
-				else if (global_pa.isPickLeftPrimer() ) global_pa.getMaskingParameters().mdir = masking_direction.rev;
-				/* Check if masking parameters (k-mer list usage) have changed */
-				if (global_pa.isMaskingParametersChanged()) {
-					//	            masker.delete_formula_parameters (global_pa.mp.fp, global_pa.mp.nlists);
-					global_pa.getMaskingParameters().fp = formula_parameters.create_default_formula_parameters (global_pa.getMaskingParameters().list_prefix, kmer_lists_path);
-					global_pa.setMaskingParametersChanged(false);
+				/* There were no more boulder records */
+				// TODO :: read_boulder_record
+				if(! boulder.read_boulder_record(scan,
+						strict_tags,
+						io_version,
+						!format_output,
+						P3FileType.all_parameters,
+						global_pa,
+						sarg,
+						fatal_parse_err,
+						nonfatal_parse_err,
+						warnings,
+						read_boulder_record_res))
+				{
+					break; /* There were no more boulder records */
 				}
-			}
+				if(global_pa.isMaskTemplate()){
+					global_pa.setLowercaseMasking(global_pa.isMaskTemplate());
+				}
+				/* Check if any thermodynamical alignment flag was given and the
+			    path to the parameter files changed - we need to reread them */
+				if (((global_pa.isThermodynamicOligoAlignment() ) ||
+						(global_pa.isThermodynamicTemplateAlignment() ))
+						&& (thermodynamic_path_changed ))
+					read_thermodynamic_parameters();
 
-			input_found = 1;
-			if ((global_pa.getPrimerTask() == P3Task.GENERIC)
-					&& (global_pa.isPickInternalOligo() )){
-				PR_ASSERT(global_pa.isPickInternalOligo());
-			}
+				/* Check if template masking flag was given */
+				if (global_pa.isMaskTemplate() )
+					validate_kmer_lists_path();
 
-			/* TODO :: If there are fatal errors, write the proper message and exit */
-			//	       if (fatal_parse_err.data != NULL) {
-			//	         if (format_output) {
-			//	           format_error(stdout, sarg->sequence_name, fatal_parse_err.data);
-			//	         } else {
-			//	           print_boulder_error(fatal_parse_err.data);
-			//	         }
-			//	         fprintf(stderr, "%s: %s\n",
-			//	                 pr_program_name, fatal_parse_err.data);
-			//	         destroy_p3retval(retval);
-			//	         destroy_seq_args(sarg);
-			//	         exit(-4);
-			//	       }
 
-			if (!nonfatal_parse_err.toString().isEmpty()) {
+				/* Check that we found the thermodynamic parameters in case any thermodynamic flag was set to 1. */
+				if (((global_pa.isThermodynamicOligoAlignment() ) ||
+						(global_pa.isThermodynamicTemplateAlignment() ))
+						&& (thermodynamic_params_path == null)) {
+					/* no parameter directory found, error */
+					System.out.println("PRIMER_ERROR=thermodynamic approach chosen, but path to thermodynamic parameters not specified\n=\n");
+					System.exit(-1);
+				}
+
+				/* Check that we found the kmer lists in case masking flag was set to 1. */
+				if (global_pa.isMaskTemplate()  && kmer_lists_path == null){
+					System.out.println("PRIMER_ERROR=masking template chosen, but path to kmer lists not specified\n=\n");
+					System.exit(-1);
+				}
+
+				/* Set up some masking parameters */
+				/* edited by M. Lepamets */
+				if (global_pa.isMaskTemplate() ) {
+					global_pa.getMaskingParameters().window_size = masker.DEFAULT_WORD_LEN_2;
+
+					if (global_pa.isPickRightPrimer() ) global_pa.getMaskingParameters().mdir = masking_direction.fwd;
+					else if (global_pa.isPickLeftPrimer() ) global_pa.getMaskingParameters().mdir = masking_direction.rev;
+					/* Check if masking parameters (k-mer list usage) have changed */
+					if (global_pa.isMaskingParametersChanged()) {
+						//	            masker.delete_formula_parameters (global_pa.mp.fp, global_pa.mp.nlists);
+						global_pa.getMaskingParameters().fp = formula_parameters.create_default_formula_parameters (global_pa.getMaskingParameters().list_prefix, kmer_lists_path);
+						global_pa.setMaskingParametersChanged(false);
+					}
+				}
+
+				input_found = 1;
+				if ((global_pa.getPrimerTask() == P3Task.GENERIC)
+						&& (global_pa.isPickInternalOligo() )){
+					PR_ASSERT(global_pa.isPickInternalOligo());
+				}
+
+				/* TODO :: If there are fatal errors, write the proper message and exit */
+				//	       if (fatal_parse_err.data != NULL) {
+				//	         if (format_output) {
+				//	           format_error(stdout, sarg->sequence_name, fatal_parse_err.data);
+				//	         } else {
+				//	           print_boulder_error(fatal_parse_err.data);
+				//	         }
+				//	         fprintf(stderr, "%s: %s\n",
+				//	                 pr_program_name, fatal_parse_err.data);
+				//	         destroy_p3retval(retval);
+				//	         destroy_seq_args(sarg);
+				//	         exit(-4);
+				//	       }
+
+				if (!nonfatal_parse_err.toString().isEmpty()) {
+					if (format_output) {
+						boulder.format_error( sarg.getSequenceName(), nonfatal_parse_err.toString());
+					} else {
+						boulder.print_boulder_error(nonfatal_parse_err.toString());
+					}
+					//		        goto loop_wrap_up;
+				}
+				/* Print any warnings and continue processing */
+				if (!warnings.toString().isEmpty()) {
+					if (format_output) {
+						boulder.format_warning( sarg.getSequenceName(), warnings.toString());
+					} else {
+						boulder.print_boulder_warning(warnings.toString());
+					}
+				}
+
+				if (read_boulder_record_res.file_flag == 1 && sarg.getSequenceName() == null) {
+					/* We will not have a base name for the files */
+					if (format_output) {
+						boulder.format_error((String)null,
+								"Need PRIMER_SEQUENCE_ID if PRIMER_FILE_FLAG is not 0");
+					} else {
+						boulder.print_boulder_error("Need PRIMER_SEQUENCE_ID if PRIMER_FILE_FLAG is not 0");
+					}
+					//	    	      goto loop_wrap_up;
+				}
+
+				/* Pick the primers - the central function */
+				LibPrimer3.p3_set_gs_primer_file_flag(global_pa,
+						read_boulder_record_res.file_flag);
+				retval = LibPrimer3.choose_primers(global_pa, sarg);
+				//	       if (null == retval) exit(-2); /* Out of memory. */
+				/* If it was necessary to use a left_input, right_input,
+			   or internal_oligo_input primer that was
+			   unacceptable, then add warnings. */
+				if (global_pa.isPickAnyway() && format_output) {
+					if (sarg.getLeftInput() != null) {
+						retval.add_must_use_warnings( "Left primer", retval.fwd);
+					}
+					if (sarg.getRightInput() != null) {
+						retval.add_must_use_warnings("Right primer", retval.rev);
+					}
+					if (sarg.getInternalInput() != null) {
+						retval.add_must_use_warnings("Hybridization probe", retval.intl);
+					}
+				}
+				// CONT :: Line 449
+
+
+				if (retval.glob_err. length() == 0 && retval.per_sequence_err.length() == 0  ) {
+					/* We need to test for errors before we call
+			         p3_print_oligo_lists. This function only works on retval as
+			         returned when there were no errors. */
+					if (read_boulder_record_res.file_flag != 0) {
+						/* Create files with left, right, and internal oligos. */
+						LibPrimer3.p3_print_oligo_lists(retval, sarg, global_pa,
+								retval.per_sequence_err,
+								sarg.getSequenceName());
+					}
+				}
 				if (format_output) {
-					boulder.format_error( sarg.getSequenceName(), nonfatal_parse_err.toString());
-				} else {
-					boulder.print_boulder_error(nonfatal_parse_err.toString());
-				}
-				//		        goto loop_wrap_up;
-			}
-			/* Print any warnings and continue processing */
-			if (!warnings.toString().isEmpty()) {
-				if (format_output) {
-					boulder.format_warning( sarg.getSequenceName(), warnings.toString());
-				} else {
-					boulder.print_boulder_warning(warnings.toString());
-				}
-			}
+				    boulder. print_format_output(io_version, global_pa,
+				                          sarg, retval, pr_release,
+				                          read_boulder_record_res.explain_flag);
+				    } else {
+				      /* Use boulder output */
+				    	retval.print_boulder(io_version, global_pa, sarg, 
+				                    read_boulder_record_res.explain_flag != 0);
+				    }
 
-			if (read_boulder_record_res.file_flag == 1 && sarg.getSequenceName() == null) {
-				/* We will not have a base name for the files */
-				if (format_output) {
-					boulder.format_error((String)null,
-							"Need PRIMER_SEQUENCE_ID if PRIMER_FILE_FLAG is not 0");
-				} else {
-					boulder.print_boulder_error("Need PRIMER_SEQUENCE_ID if PRIMER_FILE_FLAG is not 0");
-				}
-				//	    	      goto loop_wrap_up;
-			}
-
-			/* Pick the primers - the central function */
-			LibPrimer3.p3_set_gs_primer_file_flag(global_pa,
-					read_boulder_record_res.file_flag);
-			retval = LibPrimer3.choose_primers(global_pa, sarg);
-			//	       if (null == retval) exit(-2); /* Out of memory. */
-			/* If it was necessary to use a left_input, right_input,
-	       or internal_oligo_input primer that was
-	       unacceptable, then add warnings. */
-			if (global_pa.isPickAnyway() && format_output) {
-				if (sarg.getLeftInput() != null) {
-					retval.add_must_use_warnings( "Left primer", retval.fwd);
-				}
-				if (sarg.getRightInput() != null) {
-					retval.add_must_use_warnings("Right primer", retval.rev);
-				}
-				if (sarg.getInternalInput() != null) {
-					retval.add_must_use_warnings("Hybridization probe", retval.intl);
-				}
-			}
-			// CONT :: Line 449
-
-
-			if (retval.glob_err. length() == 0 && retval.per_sequence_err.length() == 0  ) {
-				/* We need to test for errors before we call
-		         p3_print_oligo_lists. This function only works on retval as
-		         returned when there were no errors. */
-				if (read_boulder_record_res.file_flag != 0) {
-					/* Create files with left, right, and internal oligos. */
-					LibPrimer3.p3_print_oligo_lists(retval, sarg, global_pa,
-							retval.per_sequence_err,
-							sarg.getSequenceName());
-				}
-			}
-			if (format_output) {
-			    boulder. print_format_output(io_version, global_pa,
-			                          sarg, retval, pr_release,
-			                          read_boulder_record_res.explain_flag);
-			    } else {
-			      /* Use boulder output */
-			    	retval.print_boulder(io_version, global_pa, sarg, 
-			                    read_boulder_record_res.explain_flag != 0);
-			    }
-
-			
-		} // end while(true)
+				
+			} // end while(true)
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 
