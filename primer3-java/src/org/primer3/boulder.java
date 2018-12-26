@@ -51,16 +51,19 @@ public class boulder {
 			if (echo_output) 
 				System.out.format("%s\n", line);
 			
-			String[] lineTokens = line.split("=");
-			if(lineTokens.length <= 1 )
+			
+			if(!line.contains("=") ) //          lineTokens.length <= 1 )
 			{
 				glob_err.append("Input line with no '=': " + line);
 				continue;
 			}
 			else
 			{
-				String datum = lineTokens[1];
+				String[] lineTokens = line.split("=");
+				String datum = "";
 				String key = lineTokens[0];
+				if (lineTokens.length >= 2 )
+					datum = lineTokens[1];
 				try
 				{
 

@@ -2358,7 +2358,7 @@ public class LibPrimer3 {
 			return true;
 		}
 
-		if (pa.oligosArgs.weights.repeat_sim > 0 && ( pa.primersArgs.repeat_lib  == null)) {
+		if (pa.oligosArgs.weights.repeat_sim > 0 && ( pa.oligosArgs.repeat_lib  == null)) {
 			glob_err.append( "Internal oligo mispriming score is part of objective function while mishyb library is not defined");
 			return true;
 		}
