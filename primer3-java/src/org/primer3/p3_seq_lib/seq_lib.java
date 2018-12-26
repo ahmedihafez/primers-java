@@ -104,8 +104,26 @@ public class seq_lib {
 		this.seqs.add(s);
 		//this.seqs.add(srev);
 		this.rev_compl_seqs.add(srev);
+		
 		//this.rev_compl_seqs.add(s);
-		this.weight.add(1.0);
+		
+		// try to get the wieght
+		double weight = 1;
+		if(key.contains("*"))
+		{
+			String[] tokens = key.split("\\*");
+			try {
+				weight = Double.parseDouble(tokens[1]);
+			}
+			catch(Exception ex)
+			{
+				// ignore the wight
+				System.err.println("Can not parse weight for "+ key +" Sequence in the sequence lib.");
+			}
+		}
+		
+		
+		this.weight.add(weight);
 		//this.weight.add(1.0);
 
 	}
