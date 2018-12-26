@@ -523,7 +523,7 @@ public class Sequence  implements Iterable<Character>{
 			  }
 		  
 		 int p , q;
-		 for ( p = start; p>= 0 && p < (len-3) ;  p+=increment){
+		 for ( p = start; p>= 0 && p < (len-2) ;  p+=increment){
 			 if(Character.toUpperCase(s[p]) != 'T') continue;
 			 q = p + 1;
 			 if(Character.toUpperCase(s[q]) == 'A') {
