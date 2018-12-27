@@ -11,6 +11,50 @@ import org.primer3.thal.ThermodynamicAlignmentException;
 import org.primer3.thal.ThermodynamicAlignmentArguments;
 
 public class PrimerRecord {
+	// not used right now TODO :: use it as an option
+ 	static public boolean CACHE_SEQ = true;
+	
+	
+	/* This is 5'.3' on the template sequence: */
+	char[] oligoSeq = null;
+	// reverse of above
+	char[] oligoRevSeq =  null;
+	
+	
+	public void setOligoSeq(SeqArgs sa) {
+		
+		if (rec_type == OligoType.OT_RIGHT )
+		{
+			oligoSeq = Sequence._pr_substr(sa.getTrimmedSequence(), this.start - this.length + 1, this.length);
+
+		}
+		else
+		{
+			oligoSeq =  Sequence._pr_substr(sa.getTrimmedSequence(), this.start, this.length );
+		}
+		oligoRevSeq = Sequence.p3_reverse_complement(oligoSeq);
+		
+	}
+	
+	
+	
+	/**
+	 * OligoSeq AS 5' to 3' on the template sequence
+	 * @return
+	 */
+	public char[] getOligoSeq() {
+		return oligoSeq;
+	}
+	public char[] getOligoRevSeq() {
+		return oligoRevSeq;
+	}	
+	
+	
+	public PrimerRecord(OligoType rec_type) {
+		this.rec_type = rec_type;
+	}
+	
+	
 	// new add here and should be maintained
 	public OligoType rec_type;
 
@@ -711,9 +755,11 @@ public class PrimerRecord {
 	public void calc_and_check_oligo_features(P3GlobalSettings pa,
 			OligoType otype, DPAlArgHolder dpal_arg_to_use,
 			THAlArgHolder thal_arg_to_use, SeqArgs sa, OligoStats stats,
-			P3RetVal retval,
+			P3RetVal retval
+			//,
 			/* This is 5'.3' on the template sequence: */
-			char[] input_oligo_seq) throws AlignmentException,
+			// char[] input_oligo_seq
+			) throws AlignmentException,
 			ThermodynamicAlignmentException {
 
 		final double OUTSIDE_START_WT = 30.0;
@@ -731,9 +777,7 @@ public class PrimerRecord {
 		ThermodynamicAlignmentArguments thal_args_for_template_mispriming = LibPrimer3.use_end_for_th_template_mispriming == 1 ? thal_arg_to_use.end1
 				: thal_arg_to_use.any;
 
-		char[] s1_rev;
-		char[] oligo_seq;
-		char[] revc_oligo_seq;
+
 
 		PrimersOligosArguments po_args;
 		oligo_pair op = new oligo_pair();
@@ -756,15 +800,7 @@ public class PrimerRecord {
 		// no need for this
 		// PR_ASSERT(OT_LEFT == l || OT_RIGHT == l || OT_INTL == l);
 
-		s1_rev = Sequence.p3_reverse_complement(input_oligo_seq);
 
-		if (OligoType.OT_RIGHT == otype) {
-			oligo_seq = s1_rev;
-			revc_oligo_seq = input_oligo_seq;
-		} else {
-			oligo_seq = input_oligo_seq;
-			revc_oligo_seq = s1_rev;
-		}
 
 		if (OligoType.OT_INTL == otype) {
 			po_args = pa.oligosArgs;
@@ -821,7 +857,25 @@ public class PrimerRecord {
 					.append("Use PRIMER_LOWERCASE_MASKING=1 when using PRIMER_MASK_TEMPLATE=1.");
 			return;
 		}
+		
+		
+		
+		this.setOligoSeq(sa);
+		//char[] s1_rev;
+		char[] oligo_seq;
+		char[] revc_oligo_seq;
+//		s1_rev = Sequence.p3_reverse_complement(input_oligo_seq);
 
+		if (OligoType.OT_RIGHT == otype) {
+			oligo_seq = this.oligoRevSeq;
+			revc_oligo_seq = this.oligoSeq;
+		} else {
+			oligo_seq = this.oligoSeq;
+			revc_oligo_seq = this.oligoRevSeq;
+		}
+		
+		
+		
 		/* edited by A. Untergasser for forcing sequence use */
 		if ((po_args.must_match_five_prime != null)
 				|| (po_args.must_match_three_prime != null)) {
@@ -1236,8 +1290,8 @@ public class PrimerRecord {
 		first = cor_res[0];
 		last = cor_res[1];
 
-		char[] s = oligo_compute_sequence_and_reverse(sa, l);
-		char[] s_r = Sequence.p3_reverse_complement(s);
+		char[] s =  this.oligoSeq;//oligo_compute_sequence_and_reverse(sa, l);
+		char[] s_r = this.oligoRevSeq ;//Sequence.p3_reverse_complement(s);
 
 		/* Calculate maximum similarity to ectopic sites in the template. */
 		if (l == OligoType.OT_RIGHT || l == OligoType.OT_LEFT) {
@@ -1286,8 +1340,8 @@ public class PrimerRecord {
 			max_lib_compl = (int) pa.primersArgs.getMaxRepeatCompl();
 		}
 
-		char[] s = oligo_compute_sequence_and_reverse(sa, l);
-		char[] s_r = Sequence.p3_reverse_complement(s);
+		char[] s =  this.oligoSeq ;// oligo_compute_sequence_and_reverse(sa, l);
+		char[] s_r =  this.oligoRevSeq;//Sequence.p3_reverse_complement(s);
 
 		/*
 		 * Calculate maximum similarity to sequences from user defined repeat
@@ -1367,6 +1421,7 @@ public class PrimerRecord {
 	 * @param l
 	 * @return
 	 */
+	@Deprecated
 	private char[] oligo_compute_sequence_and_reverse(SeqArgs sa, OligoType l) {
 
 		int first = (l == OligoType.OT_LEFT || l == OligoType.OT_INTL) ? this.start
@@ -1681,6 +1736,7 @@ public class PrimerRecord {
 		return false;
 	}
 
+	// TODO :: change this
 	public char[] pr_oligo_sequence(SeqArgs sa) {
 		// int seq_len;
 
@@ -1697,7 +1753,7 @@ public class PrimerRecord {
 		return s;
 		// return null;
 	}
-
+	// TODO :: change this
 	public char[] pr_oligo_rev_c_sequence(SeqArgs sa) {
 		// TODO :: add check
 		int seq_len, start;

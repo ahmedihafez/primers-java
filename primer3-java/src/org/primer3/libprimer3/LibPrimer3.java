@@ -804,11 +804,12 @@ public class LibPrimer3 {
 							< (right.start-right.length+1))
 							&& (h.quality < min)
 							&& (h.OK_OR_MUST_USE())) {
-
+				//oligo_seq =  Sequence._pr_substr(sa.getTrimmedSequence(), h.start, h.length);
+				//revc_oligo_seq = Sequence.p3_reverse_complement(oligo_seq);
+				oligo_seq = h.getOligoSeq();
+				revc_oligo_seq = h.getOligoRevSeq();
 				if (h.self_any == ALIGN_SCORE_UNDEF && !pa.isThermodynamicOligoAlignment()) {
 
-					oligo_seq =  Sequence._pr_substr(sa.getTrimmedSequence(), h.start, h.length);
-					revc_oligo_seq = Sequence.p3_reverse_complement(oligo_seq);
 
 					h.oligo_compl( pa.oligosArgs, retval.intl.expl,
 							dpal_arg_to_use, oligo_seq, revc_oligo_seq);
@@ -816,15 +817,15 @@ public class LibPrimer3 {
 				}
 
 				if (h.self_any == ALIGN_SCORE_UNDEF && pa.isThermodynamicOligoAlignment()) {
-					oligo_seq=  Sequence._pr_substr(sa.getTrimmedSequence(), h.start, h.length);
-					revc_oligo_seq = Sequence.p3_reverse_complement(oligo_seq);
+//					oligo_seq=  Sequence._pr_substr(sa.getTrimmedSequence(), h.start, h.length);
+//					revc_oligo_seq = Sequence.p3_reverse_complement(oligo_seq);
 
 					h.oligo_compl_thermod( pa.oligosArgs, retval.intl.expl,
 							thal_oligo_arg_to_use, oligo_seq, oligo_seq);
 					if (!h.OK_OR_MUST_USE()) continue;
 				}
 				if(h.hairpin_th == ALIGN_SCORE_UNDEF && pa.isThermodynamicOligoAlignment()) {
-					oligo_seq = Sequence._pr_substr(sa.getTrimmedSequence(), h.start, h.length);
+//					oligo_seq = Sequence._pr_substr(sa.getTrimmedSequence(), h.start, h.length);
 					h.oligo_hairpin( pa.oligosArgs,
 							retval.intl.expl, thal_oligo_arg_to_use,
 							oligo_seq);
@@ -1162,10 +1163,10 @@ public class LibPrimer3 {
 		int n, found_primer;
 
 		/* Array to store one primer sequences in */
-		char[] oligo_seq;
+		// char[] oligo_seq;
 
 		/* Struct to store the primer parameters in */
-		PrimerRecord h = new PrimerRecord();
+		PrimerRecord h = new PrimerRecord(oligo.type);
 		//		  memset(&h, 0, sizeof(primer_rec));
 
 		/* Retun 1 for no primer found */
@@ -1202,7 +1203,7 @@ public class LibPrimer3 {
 			h.start = start;
 
 			/* Put the real primer sequence in s */
-			oligo_seq = Sequence._pr_substr(sa.getTrimmedSequence(), h.start, length);
+			// oligo_seq = Sequence._pr_substr(sa.getTrimmedSequence(), h.start, length);
 		}
 		/* Figure out positions for reverse primers */
 		else {
@@ -1211,7 +1212,7 @@ public class LibPrimer3 {
 			h.start = start;
 
 			/* Put the real primer sequence in s */
-			oligo_seq = Sequence._pr_substr(sa.getTrimmedSequence(), i, length);
+			// oligo_seq = Sequence._pr_substr(sa.getTrimmedSequence(), i, length);
 		}
 
 		/* Force primer3 to use this oligo */
@@ -1224,7 +1225,7 @@ public class LibPrimer3 {
 
 		/* Calculate all the primer parameters */
 		h.calc_and_check_oligo_features(pa,  oligo.type, dpal_arg_to_use, thal_arg_to_use,
-				sa, oligo.expl, retval, oligo_seq);
+				sa, oligo.expl, retval ); //, oligo_seq);
 
 		/* If primer has to be used or is OK */
 		if (h.OK_OR_MUST_USE()) {
@@ -1301,7 +1302,7 @@ public class LibPrimer3 {
 		for(i = sa.getTrimmedSequence().length; i >= 0; i--) {
 			//		    oligo_seq[0] = '\0';
 			/* Struct to store the primer parameters in */
-			PrimerRecord h = new PrimerRecord();
+			PrimerRecord h = new PrimerRecord(oligo.type);
 			/* Set the length of the primer */
 			h.length = j;
 
@@ -1330,6 +1331,7 @@ public class LibPrimer3 {
 				oligo_seq =  Sequence._pr_substr(sa.getTrimmedSequence(),  i, j);
 			}
 
+			// TODO :: after removeing oligo_seq see how you could do the folowwing
 			/* Compare the primer with the sequence */
 			if (strcmp_nocase(test_oligo, oligo_seq) != 0)
 				continue;
@@ -1344,7 +1346,7 @@ public class LibPrimer3 {
 
 			/* Calculate all the primer parameters */
 			h.calc_and_check_oligo_features(pa,  oligo.type, dpal_arg_to_use, thal_arg_to_use,
-					sa, oligo.expl, retval, oligo_seq);
+					sa, oligo.expl, retval);//, oligo_seq);
 
 			/* If primer has to be used or is OK */
 			if (h.OK_OR_MUST_USE()) {
@@ -1568,7 +1570,7 @@ public class LibPrimer3 {
 		//		  int temp_value;
 
 		/* Array to store one primer sequences in */
-		char[] oligo_seq ;//[MAX_PRIMER_LENGTH+1];
+		// char[] oligo_seq ;//[MAX_PRIMER_LENGTH+1];
 
 		/* Struct to store the primer parameters in */
 		PrimerRecord h;
@@ -1599,7 +1601,7 @@ public class LibPrimer3 {
 
 			/* Loop over possible primer lengths, from min to max */
 			for (j = primer_size_small; j <= primer_size_large; j++) {
-				h = new PrimerRecord();  
+				h = new PrimerRecord(oligo.type);  
 				/* Set the length of the primer */
 				h.length = j;
 
@@ -1616,7 +1618,7 @@ public class LibPrimer3 {
 					h.start = i - j + 1;
 
 					/* Put the real primer sequence in oligo_seq */
-					oligo_seq =  Sequence._pr_substr(sa.getTrimmedSequence(), h.start, j);
+					// oligo_seq =  Sequence._pr_substr(sa.getTrimmedSequence(), h.start, j);
 				} else {
 					/* Figure out positions for reverse primers */
 					/* Break if the primer is bigger than the sequence left*/
@@ -1626,7 +1628,7 @@ public class LibPrimer3 {
 					h.start = i+j-1;
 
 					/* Put the real primer sequence in s */
-					oligo_seq =  Sequence._pr_substr(sa.getTrimmedSequence(),  i, j);
+					// oligo_seq =  Sequence._pr_substr(sa.getTrimmedSequence(),  i, j);
 
 				}
 
@@ -1639,7 +1641,7 @@ public class LibPrimer3 {
 				oligo.expl.considered++;
 				/* Calculate all the primer parameters */
 				h.calc_and_check_oligo_features(pa, oligo.type, dpal_arg_to_use, thal_arg_to_use,
-						sa, oligo.expl, retval, oligo_seq);
+						sa, oligo.expl, retval);//, oligo_seq);
 
 				/* If primer has to be used or is OK */
 				if (h.OK_OR_MUST_USE()) {
@@ -1773,10 +1775,10 @@ public class LibPrimer3 {
 		int pr_min, n;
 
 		/* Array to store one primer sequences in */
-		char[] oligo_seq = null ; //  new char[MAX_PRIMER_LENGTH+1];
+		// char[] oligo_seq = null ; //  new char[MAX_PRIMER_LENGTH+1];
 
 		/* Struct to store the primer parameters in */
-		PrimerRecord h = new PrimerRecord();
+		PrimerRecord h = new PrimerRecord(oligo.type);
 		//		memset(&h, 0, sizeof(primer_rec));
 
 		/* Set pr_min to the very smallest
@@ -1805,7 +1807,7 @@ public class LibPrimer3 {
 
 			/* Loop over possible primer lengths, from min to max */
 			for (j = primer_size_small; j <= primer_size_large; j++) {
-				h = new PrimerRecord();
+				h = new PrimerRecord(oligo.type);
 				/* Set the length of the primer */
 				h.length = j;
 
@@ -1825,7 +1827,7 @@ public class LibPrimer3 {
 					h.start = i - j + 1;
 
 					/* Put the real primer sequence in oligo_seq */
-					oligo_seq = Sequence._pr_substr(sa.getTrimmedSequence(), h.start, j);
+					// oligo_seq = Sequence._pr_substr(sa.getTrimmedSequence(), h.start, j);
 				} else {
 					/* Figure out positions for reverse primers */
 					/* Check if the product is of sufficient size */
@@ -1839,7 +1841,7 @@ public class LibPrimer3 {
 					h.start = i+j-1;
 
 					/* Put the real primer sequence in s */
-					oligo_seq = Sequence._pr_substr(sa.getTrimmedSequence(),  i, j);
+					// oligo_seq = Sequence._pr_substr(sa.getTrimmedSequence(),  i, j);
 
 				}
 				
@@ -1853,7 +1855,7 @@ public class LibPrimer3 {
 				oligo.expl.considered++;
 				/* Calculate all the primer parameters */
 				h.calc_and_check_oligo_features(pa, oligo.type, dpal_arg_to_use, thal_arg_to_use,
-						sa, oligo.expl, retval, oligo_seq);
+						sa, oligo.expl, retval);//, oligo_seq);
 				/* If primer has to be used or is OK */
 				if (h.OK_OR_MUST_USE()) {
 					/* Calculate the penalty */

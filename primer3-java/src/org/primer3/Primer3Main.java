@@ -361,6 +361,7 @@ public class Primer3Main {
 				fatal_parse_err = new StringBuilder();
 				nonfatal_parse_err= new StringBuilder();
 				warnings = new StringBuilder();
+				System.gc();
 				retval = null;
 
 				/* There were no more boulder records */

@@ -211,7 +211,7 @@ public class PrimerPair {
 		int i;
 		ThermodynamicAlignmentArguments thal_args_for_template_mispriming  = LibPrimer3.use_end_for_th_template_mispriming != 0  ? 
 				thal_arg_to_use.end1 : thal_arg_to_use.any;
-		ppair.left = retval.fwd.oligo.get( m);
+		ppair.left = retval.fwd.oligo.get(m);
 		ppair.right = retval.rev.oligo.get(n);
 		ppair.product_size = retval.rev.oligo.get(n).start - retval.fwd.oligo.get(m).start+1;
 
@@ -349,14 +349,18 @@ public class PrimerPair {
 		     primers if not already calculated. */
 
 		/* s1 is the forward oligo. */
-		s1 = Sequence._pr_substr(sa.getTrimmedSequence(), retval.fwd.oligo.get(m).start, retval.fwd.oligo.get(m).length );
-
+//		s1 = Sequence._pr_substr(sa.getTrimmedSequence(), retval.fwd.oligo.get(m).start, retval.fwd.oligo.get(m).length );
+		s1 = ppair.left.getOligoSeq();
 		/* s2 is the reverse oligo. */
-		s2 = Sequence._pr_substr(sa.getTrimmedSequence(), retval.rev.oligo.get(n).start - retval.rev.oligo.get(n).length + 1, retval.rev.oligo.get(n).length);
+//		s2 = Sequence._pr_substr(sa.getTrimmedSequence(), retval.rev.oligo.get(n).start - retval.rev.oligo.get(n).length + 1, retval.rev.oligo.get(n).length);
+		s2 = ppair.right.getOligoSeq();
+		
+//		s1_rev = Sequence.p3_reverse_complement(s1);
+//		s2_rev = Sequence.p3_reverse_complement(s2);
 
-		s1_rev = Sequence.p3_reverse_complement(s1);
-		s2_rev = Sequence.p3_reverse_complement(s2);
-
+		s1_rev = ppair.left.getOligoRevSeq();
+		s2_rev = ppair.right.getOligoRevSeq();
+				
 
 		if (retval.fwd.oligo.get(m).self_any == LibPrimer3.ALIGN_SCORE_UNDEF 
 				&& !pa.isThermodynamicOligoAlignment()) {
