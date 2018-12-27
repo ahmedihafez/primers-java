@@ -97,4 +97,21 @@ public class TestGroupB {
 				"primer_mispriming_long_lib_input",
 				"primer_mispriming_long_lib_output");
 	}	
+	
+	//@Ignore("Ignore Not Implmented Now")
+	@Test
+	public void testP3ObjFnInput() throws FileNotFoundException, IOException {	  
+		
+		testCase("primer_obj_fn_input",
+				"primer_obj_fn_input",
+				"primer_obj_fn_output");
+	}
+	@Ignore("Ignore Not Implmented Now")
+	@Test
+	public void testP3LibAmbCodesInput() throws FileNotFoundException, IOException {	  
+		
+		testCase("primer_lib_amb_codes_input",
+				"primer_lib_amb_codes_input",
+				"primer_lib_amb_codes_output");
+	}
 }

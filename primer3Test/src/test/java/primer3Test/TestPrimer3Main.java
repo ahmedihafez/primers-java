@@ -176,14 +176,7 @@ public class TestPrimer3Main {
 				"primer_ok_regions2_output");
 	}
 	
-	@Ignore("Ignore Not Implmented Now")
-	@Test
-	public void testP3LibAmbCodesInput() throws FileNotFoundException, IOException {	  
-		
-		testCase("primer_lib_amb_codes_input",
-				"primer_lib_amb_codes_input",
-				"primer_lib_amb_codes_output");
-	}
+
 	
 	@Ignore("Ignore for Now -- take some long time :: last update PASS")
 	@Test
@@ -212,16 +205,7 @@ public class TestPrimer3Main {
 				"primer_num_best_output");
 	}
 	
-	//@Ignore("Ignore Not Implmented Now")
-	@Test
-	public void testP3ObjFnInput() throws FileNotFoundException, IOException {	  
-		
-		testCase("primer_obj_fn_input",
-				"primer_obj_fn_input",
-				"primer_obj_fn_output");
-	}
-	
-	
+
 	@Test
 	public void testP3OverlapJunctionInput() throws FileNotFoundException, IOException {	  
 		
