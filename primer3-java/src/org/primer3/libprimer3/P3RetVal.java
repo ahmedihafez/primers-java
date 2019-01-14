@@ -166,8 +166,9 @@ public class P3RetVal {
 		num_fwd = retval.fwd.num_elem;
 		num_rev = retval.rev.num_elem;
 		num_int = retval.intl.num_elem;
+		
 		num_pair = retval.best_pairs.num_pairs;
-
+		//num_pair = pa.getNumReturn();
 		/* Prints out statistics about the primers */
 		if (explain_flag) retval.print_all_explain(pa, sa, io_version);
 

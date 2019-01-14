@@ -1810,4 +1810,22 @@ public class P3GlobalSettings {
 			boolean thermodynamicTemplateAlignment) {
 		this.thermodynamicTemplateAlignment = thermodynamicTemplateAlignment;
 	}
+
+	
+	/**
+	 * Check if the given product_size satisfy any of the input product size ranges
+	 * @param product_size
+	 * @return
+	 */
+	public boolean chackProductSizeRanges(int product_size) {
+
+		for(MutablePair<Integer,Integer> prange : this.productSizeRanges )
+		{
+			if (product_size  >= prange.left  && product_size <= prange.right )
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 }

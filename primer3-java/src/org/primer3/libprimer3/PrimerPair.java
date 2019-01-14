@@ -196,7 +196,7 @@ public class PrimerPair {
 			SeqArgs sa,
 			int m,
 			int n,
-			int int_num,
+			//int int_num,
 			DPAlArgHolder dpal_arg_to_use,
 			THAlArgHolder thal_arg_to_use,
 			boolean update_stats) throws ThermodynamicAlignmentException, AlignmentException {

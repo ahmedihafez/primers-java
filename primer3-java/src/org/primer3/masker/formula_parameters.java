@@ -223,7 +223,7 @@ public class formula_parameters {
 	
 	
 	
-	static byte[] readFile(String list_file_name) throws FormulaParametersException
+	public static byte[] readFile(String list_file_name) throws FormulaParametersException
 	{
 //		log("Reading in binary file named : " + list_file_name);
 	    File file = new File(list_file_name);
@@ -237,7 +237,8 @@ public class formula_parameters {
 	        while(totalBytesRead < result.length){
 	          int bytesRemaining = result.length - totalBytesRead;
 	          //input.read() returns -1, 0, or more :
-	          int bytesRead = input.read(result, totalBytesRead, bytesRemaining); 
+	          int bytesRead = input.read(result, totalBytesRead, bytesRemaining);
+	          
 	          if (bytesRead > 0){
 	            totalBytesRead = totalBytesRead + bytesRead;
 	          }

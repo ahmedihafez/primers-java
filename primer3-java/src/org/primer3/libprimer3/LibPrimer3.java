@@ -3,8 +3,10 @@ package org.primer3.libprimer3;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TreeSet;
 
 import org.primer3.dpal.AlignmentException;
 import org.primer3.dpal.DPAlignmentArgs;
@@ -298,7 +300,7 @@ public class LibPrimer3 {
 
 			/* Select primer pairs if needed */
 			if (retval.output_type == P3OutputType.primer_pairs) {
-				choose_pair_or_triple(retval, pa, sa, dpal_arg_to_use, thal_arg_to_use,
+				choose_pair_or_triple_optimized(retval, pa, sa, dpal_arg_to_use, thal_arg_to_use,
 						thal_oligo_arg_to_use);
 			}
 
@@ -595,7 +597,7 @@ public class LibPrimer3 {
 						/* Characterize the pair. h is initialized by this call. */
 						h = new PrimerPair();
 						int tmp =  h.characterize_pair(retval, pa, sa, j, i,
-								product_size_range_index, dpal_arg_to_use,
+								dpal_arg_to_use,
 								thal_arg_to_use,
 								update_stats);
 						if (tmp == PrimerPair.PAIR_OK) {
@@ -722,6 +724,888 @@ public class LibPrimer3 {
 
 		}
 	}
+	
+	
+	/** ============================================================ */
+	/** BEGIN choose_pair_or_triple_optimized
+	 * 
+	 * change :
+	 * Product checking of if it satisfy any length
+	 * use A TreeSet to hash calculated pairs instead of the old array of hashmaps used 
+	 * 
+	 * This function uses retval.fwd and retval.rev and
+	 * updates the oligos in these array.
+	 * 
+	 * This function posibly uses retval.intl and updates its
+	 * elements via choose_internal_oligo().
+	 * 
+	 * This function examines primer pairs or triples to find
+	 * pa.num_return pairs or triples to return.
+	 * 
+	 *  Results are returned in best_pairs and in
+	 *   retval.best_pairs.expl
+	 * ============================================================ 
+	 * @throws Exception */
+	private static void choose_pair_or_triple_optimized(
+			P3RetVal retval,
+			P3GlobalSettings pa,
+			SeqArgs sa,
+			DPAlArgHolder dpal_arg_to_use,
+			THAlArgHolder thal_arg_to_use,
+			THAlArgHolder thal_oligo_arg_to_use
+			) throws Exception {
+		
+		
+		PairArrayT best_pairs = retval.best_pairs;
+
+
+		int n_int; /* Index of the internal oligo */
+		boolean update_stats = true;  /* Flag to indicate whether pair_stats
+		                            should be updated. */
+		PrimerPair h;             /* The current pair which is being evaluated. */
+		PrimerPair the_best_pair = new PrimerPair(); /* The best pair is being "remembered". */
+		PairStats pair_expl = retval.best_pairs.expl; /* For statistics */
+
+		int the_best_i, the_best_j;
+
+
+
+//		HashMap<Integer, PrimerPair>[] pairs = new HashMap[retval.rev.num_elem];
+		int[] max_j_seen = new int[retval.rev.num_elem];
+		for (int i = 0; i < max_j_seen.length; i++) max_j_seen[i] = -1;
+
+		
+		// #############
+		class ijPairs {
+			int i ;
+			int j ;
+			double estimatedQuilty = Double.MAX_VALUE;
+			public ijPairs(int i , int j , double q) {
+				this.i = i;
+				this.j = j;
+				this.estimatedQuilty =q;
+			}
+			
+//			public double quality = Double.MAX_VALUE;
+			public PrimerPair pairRecord =  null;
+		}
+		
+		TreeSet<ijPairs> calcPairs = new TreeSet<ijPairs>(new Comparator<ijPairs>() {
+
+			@Override
+			public int compare(ijPairs o1, ijPairs o2) {
+				int cRes2 =  compare_primer_pair(o1.pairRecord,o2.pairRecord);
+				return cRes2;
+			}
+		});
+		
+		//#############
+		
+		
+		
+		while(true) {
+			the_best_i = -1;
+			the_best_j = -1;
+			/* To start put penalty to the maximum */
+			if(calcPairs.size() > 0 )
+			{
+				ijPairs pair = calcPairs.first();
+				the_best_pair = pair.pairRecord;
+				the_best_i = pair.i;
+				the_best_j = pair.j;
+			}
+			else {
+				the_best_pair = new PrimerPair();
+				the_best_pair.pair_quality = Double.MAX_VALUE;
+			}
+
+			for (int i = 0; i < retval.rev.num_elem; i++) {
+				// keep retval.rev.oligo.get(i) in right
+				PrimerRecord right = retval.rev.oligo.get(i);
+				/* Pairs[i] is NULL if there has never been an assignment to
+				 pairs[i] because pairs was allocated by calloc, which
+				 sets the allocated memory to 0. */
+
+				/* Only use a primer that *might be* legal or that the caller
+		         has provided and specified as "must use".  Primers are *NOT*
+		         FULLY ASSESSED until the call to characterize_pair(), in
+		         order to avoid expensive computations (mostly alignments)
+		         unless necessary. */
+				if (!right.OK_OR_MUST_USE()) {
+					continue;
+				}
+
+				/* If the pair cannot be better than the one already 
+				 * selected, then we can skip remaining reverse primers */
+				if (pa.getPrPairWeights().primer_quality *
+						(right.quality + retval.fwd.oligo.get(0).quality)
+						> the_best_pair.pair_quality) {
+					break;
+				}
+
+				if (right.overlaps) {
+					/* The stats will not keep track of the pair correctly
+			            after the first pass, because an oligo might
+			            have been legal on one pass but become illegal on
+			            a subsequent pass. */
+					if (update_stats) {
+						if (DebugInfo.choose_pair_or_triple_trace_me)
+							System.err.format( "i=%d, j=%d, overlaps_oligo_in_better_pair++\n", i, 0); // this was j
+						pair_expl.overlaps_oligo_in_better_pair++;
+					}
+					continue;
+				}
+
+
+				/* Loop over forward primers */
+				for (int j= max_j_seen[i]+1; j<retval.fwd.num_elem; j++) {
+					PrimerRecord left = retval.fwd.oligo.get(j);
+
+					/* We check the reverse oligo again, because we may
+			           have determined that it is "not ok", even though
+			           (as a far as we knew), it was ok above. */
+					if ( ! right.OK_OR_MUST_USE()) {
+						break;
+					}
+
+					/* Only use a primer that is legal, or that the caller
+			           has provided and specified as "must use". */
+					if (!left.OK_OR_MUST_USE()) continue;
+
+					/* If the pair cannot be better than the one already 
+					 * selected, then we can skip remaining forward primers 
+					 * for this reverse primer */
+					if (pa.getPrPairWeights().primer_quality *
+							(left.quality + right.quality) 
+							> the_best_pair.pair_quality) {
+						break;
+					}
+
+					/* Need to have this here because if we break just above, then,
+			           at a later iteration, we may need to examine the oligo
+			           pair with reverse oligo at i and forward oligo at j. */
+					update_stats = false;
+					if (j > max_j_seen[i]) {  // this is dead code
+						if (DebugInfo.choose_pair_or_triple_trace_me)
+							System.err.format("updates ON: i=%d, j=%d, max_j_seen[%d]=%d\n",  i, j, i, max_j_seen[i]);
+						max_j_seen[i] = j;
+						if (DebugInfo.choose_pair_or_triple_trace_me)
+							System.err.format("max_j_seen[%d] -. %d\n", i, max_j_seen[i]);
+						if (DebugInfo.choose_pair_or_triple_trace_me) System.err.format( "updates on\n");
+						update_stats = true;
+					}
+
+					if (left.overlaps) {
+						/* The stats will not keep track of the pair correctly
+			             after the first pass, because an oligo might
+			             have been legal on one pass but become illegal on
+			             a subsequent pass. */
+						if (update_stats) {
+							if (DebugInfo.choose_pair_or_triple_trace_me)
+								System.err.format("i=%d, j=%d, overlaps_oligo_in_better_pair++\n", i, j);
+							pair_expl.overlaps_oligo_in_better_pair++;
+						}
+						continue;
+					}
+
+					/* Some simple checks first, before searching the hashmap */
+					boolean must_use = false;
+					if ((pa.getPrimerTask() == P3Task.CHECK_PRIMERS) || 
+							((left.must_use != false) &&
+									(right.must_use != false))) {
+						must_use = true;
+					}
+
+					/* Determine if overlap with an overlap point is required, and
+				   if so, whether one of the primers in the pairs overlaps
+				   that point. */
+					if ((sa.getPrimerOverlapJunctionsList().size() > 0)
+							&& !(right.overlaps_overlap_position
+									|| left.overlaps_overlap_position)
+							) {
+						if (update_stats) { 
+							pair_expl.considered++;
+							pair_expl.does_not_overlap_a_required_point++; 
+						}
+						if (!must_use) continue;
+					}
+
+					/* Check product size now */
+					int product_size  = right.start - left.start+1;
+
+					
+					//  pa.pr_min[product_size_range_index]  pa.pr_max[product_size_range_index]
+					if (!pa.chackProductSizeRanges( product_size)) {
+						if (update_stats) {
+							/* This line NEW */ 
+							if (!must_use)
+								pair_expl.considered++;
+							pair_expl.product++; 
+						}
+						if (!must_use) continue;
+					}
+
+
+					{
+						/* Characterize the pair. h is initialized by this call. */
+						h = new PrimerPair();
+						int pairStatus =  h.characterize_pair(retval, pa, sa, j, i,
+								dpal_arg_to_use,
+								thal_arg_to_use,
+								update_stats);
+						if (pairStatus == PrimerPair.PAIR_OK) {
+
+							/* Choose internal oligo if needed */
+							if (pa.isPickRightPrimer() && pa.isPickLeftPrimer()
+									&& pa.isPickInternalOligo()) {
+								n_int = choose_internal_oligo(retval, h.left, h.right, sa, pa, dpal_arg_to_use, thal_oligo_arg_to_use);
+								if ( n_int == -1) {
+
+									/* We were UNable to choose an internal oligo. */
+									if (update_stats) { 
+										pair_expl.internal++;
+									}
+
+									/* Mark the pair as not good - the entry in the hash map will be a NULL */
+//									hmap.put( j, null);
+									continue;
+								} else {
+									/* We DID choose an internal oligo, and we
+			                   set h.intl to point to it. */
+									h.intl = retval.intl.oligo.get(n_int);
+								}
+							}
+
+							if (update_stats) { 
+								if (DebugInfo.choose_pair_or_triple_trace_me)
+									System.err.format("ok++\n");
+								pair_expl.ok++;
+							}
+
+							/* Calculate the pair penalty */
+							h.pair_quality = h.obj_fn(pa);
+							//							PR_ASSERT(h.pair_quality >= 0.0);
+
+
+
+							ijPairs newPairInfo = new ijPairs(i, j, pa.getPrPairWeights().primer_quality * 
+									(left.quality + right.quality));
+//							newPairInfo.quality = h.pair_quality;
+							newPairInfo.pairRecord = h;
+							boolean resAdded = calcPairs.add(newPairInfo);
+
+							
+							/* The current pair (h) is the new best pair if it is better than the best pair so far. */
+							if (compare_primer_pair(h, the_best_pair) < 0) {
+								the_best_pair = h;
+								the_best_i = i;
+								the_best_j = j;
+
+							}
+
+							/* There cannot be a better pair */
+							if (the_best_pair.pair_quality == 0) {
+								break;
+							}
+						} 
+ 
+					}
+				}  /* for (j=0; j<retval.fwd.num_elem; j++) -- inner loop */
+				/* Check if there cannot be a better pair than best found */
+			      
+				if (the_best_pair.pair_quality == 0) {
+			        break;
+				}
+
+			} /* for (i = 0; i < retval.rev.num_elem; i++) --- outer loop */
+			
+
+			if (the_best_pair.pair_quality == Double.MAX_VALUE ) {
+				// search exhausted  no more to explore
+				break;
+			} 
+			else 
+			{
+				/* Store the best primer for output */
+
+				if (DebugInfo.choose_pair_or_triple_trace_me)
+					System.err.format("ADD pair i=%d, j=%d\n", the_best_i, the_best_j);
+				
+				// remove the first one from the set
+				calcPairs.remove(calcPairs.first());
+				
+				best_pairs.add_pair(the_best_pair);
+
+				/* Update the overlaps flags */   // do not update all -- just as needed ??
+				int minRight3PrimeDistance = pa.getMinRight3PrimeDistance();
+				
+				if(minRight3PrimeDistance > 0 )
+				{
+					for (int i = 0; i < retval.rev.num_elem; i++) {
+						PrimerRecord right = retval.rev.oligo.get(i);
+						if (right_oligo_in_pair_overlaps_used_oligo(right,
+								the_best_pair,
+								minRight3PrimeDistance)) {
+							right.overlaps = true;
+						}
+					}
+				}
+				else if (minRight3PrimeDistance == 0)
+				{
+					// mark current only so we do not select it again
+					the_best_pair.right.overlaps = true;
+				}
+				int minLeft3PrimeDistance = pa.getMinLeft3PrimeDistance();
+				if (minLeft3PrimeDistance > 0 )
+				{
+					for (int j = 0; j < retval.fwd.num_elem; j++) {
+						PrimerRecord left = retval.fwd.oligo.get(j);
+						if (left_oligo_in_pair_overlaps_used_oligo(left,
+								the_best_pair,
+								minLeft3PrimeDistance)) {
+							left.overlaps = true;
+						}
+					}
+				}
+				else if (minLeft3PrimeDistance == 0)
+				{
+					the_best_pair.left.overlaps = true;
+				}
+				/* If we have enough then stop the while loop */
+				if (pa.getNumReturn() == best_pairs.num_pairs) {
+					break;
+				}
+			}
+
+		}
+	}
+	
+	// #############################
+		private static void choose_pair_or_triple_updated(
+				P3RetVal retval,
+				P3GlobalSettings pa,
+				SeqArgs sa,
+				DPAlArgHolder dpal_arg_to_use,
+				THAlArgHolder thal_arg_to_use,
+				THAlArgHolder thal_oligo_arg_to_use
+				) throws Exception {
+			PairArrayT best_pairs = retval.best_pairs;
+
+
+//			int i,j;   /* Loop index. */
+			int n_int; /* Index of the internal oligo */
+			/*int *max_j_seen; */  /* The maximum value of j (loop index for forward primers)
+			                            that has been examined for every reverse primer
+			                            index (i) -- global variable now */
+			boolean update_stats = true;  /* Flag to indicate whether pair_stats
+			                            should be updated. */
+			PrimerPair h;             /* The current pair which is being evaluated. */
+			PrimerPair the_best_pair = new PrimerPair(); /* The best pair is being "remembered". */
+			
+			PairStats pair_expl = retval.best_pairs.expl; /* For statistics */
+
+			
+			int nBestBeat = 0;
+			
+			// int product_size_range_index = 0;
+//			int the_best_i, the_best_j;
+
+			/* Hash maps used to store pairs that were computed */
+
+			/* std::hash_map<int, primer_pair*> **pairs; */
+			/* pairs is an array of pointers to hash maps.  It will be indexed
+			     by the indices of the reverse primers in retval.rev. -- global var now */
+//			HashMap<Integer, PrimerPair> hmap = null, best_hmap = null;
+			/* hmap and best_hmap will be pointers to hash maps also pointed to
+			by elements of pairs. */
+
+			//		  std::hash_map<int, primer_pair*>::iterator it;
+//			PrimerPair pp = null, best_pp = null;
+//			boolean pair_found = false;
+			
+			
+			// rightIndex to <leftindef, PrimerPair of the two (left,right)> 
+			HashMap<Integer, HashMap<Integer, PrimerPair>> pairs = new HashMap();
+			// I think that i will not need this anymore
+			
+			// temp init for now
+			the_best_pair.pair_quality = Double.MAX_VALUE;
+			
+			for (int i = 0; i < retval.rev.num_elem; i++) {
+				// keep retval.rev.oligo.get(i) in right
+				PrimerRecord right = retval.rev.oligo.get(i);
+//				hmap = pairs[i];  
+				/* Pairs[i] is NULL if there has never been an assignment to
+				 pairs[i] because pairs was allocated by calloc, which
+				 sets the allocated memory to 0. */
+
+				/* Only use a primer that *might be* legal or that the caller
+		         has provided and specified as "must use".  Primers are *NOT*
+		         FULLY ASSESSED until the call to characterize_pair(), in
+		         order to avoid expensive computations (mostly alignments)
+		         unless necessary. */
+				if (!right.OK_OR_MUST_USE()) {
+					// if right is not ok then skip we can add this to
+					continue;
+				}
+
+				/* If the pair cannot be better than the one already 
+				 * selected, then we can skip remaining reverse primers */
+				if (pa.getPrPairWeights().primer_quality *
+						(right.quality + retval.fwd.oligo.get(0).quality)
+						> the_best_pair.pair_quality) {
+					// break;
+					// not break , continue to the next i rev primer 
+					continue;
+				}
+
+				if (right.overlaps) {
+					/* The stats will not keep track of the pair correctly
+			            after the first pass, because an oligo might
+			            have been legal on one pass but become illegal on
+			            a subsequent pass. */
+					if (update_stats) {
+						if (DebugInfo.choose_pair_or_triple_trace_me)
+							System.err.format( "i=%d, j=%d, overlaps_oligo_in_better_pair++\n", i, 0); // this was j
+						pair_expl.overlaps_oligo_in_better_pair++;
+					}
+
+					continue;
+				}
+				/* Loop over forward primers */
+				for (int j=0; j<retval.fwd.num_elem; j++) {
+					PrimerRecord left = retval.fwd.oligo.get(j);
+					
+					/* We check the reverse oligo again, because we may
+			           have determined that it is "not ok", even though
+			           (as a far as we knew), it was ok above. */
+					if ( !right.OK_OR_MUST_USE()) {
+						break;
+					}
+					/* Only use a primer that is legal, or that the caller
+			           has provided and specified as "must use". */
+					if (!left.OK_OR_MUST_USE()) continue;
+					
+					/* If the pair cannot be better than the one already 
+					 * selected, then we can skip remaining forward primers 
+					 * for this reverse primer */
+					if (pa.getPrPairWeights().primer_quality *
+							(left.quality + right.quality) 
+							> the_best_pair.pair_quality) {
+						// break;
+						// System.out.println("Should Break !!");
+					}
+					
+					if (left.overlaps) {
+						/* The stats will not keep track of the pair correctly
+			             after the first pass, because an oligo might
+			             have been legal on one pass but become illegal on
+			             a subsequent pass. */
+						if (update_stats) {
+							if (DebugInfo.choose_pair_or_triple_trace_me)
+								System.err.format("i=%d, j=%d, overlaps_oligo_in_better_pair++\n", i, j);
+							pair_expl.overlaps_oligo_in_better_pair++;
+						}
+						continue;
+					}
+					/* Some simple checks first, before searching the hashmap */
+					boolean must_use = false;
+					if ((pa.getPrimerTask() == P3Task.CHECK_PRIMERS) || 
+							((left.must_use != false) &&
+									(right.must_use != false))) {
+						must_use = true;
+					}
+					
+					
+					/* Determine if overlap with an overlap point is required, and
+					   if so, whether one of the primers in the pairs overlaps
+					   that point. */
+					if ((sa.getPrimerOverlapJunctionsList().size() > 0)
+							&& !(right.overlaps_overlap_position
+									|| left.overlaps_overlap_position)
+							) {
+						if (update_stats) { 
+							pair_expl.considered++;
+							pair_expl.does_not_overlap_a_required_point++; 
+						}
+						if (!must_use) continue;
+					}					
+					/* Check product size now */
+					int product_size  = right.start - left.start+1;
+					if (  !pa.chackProductSizeRanges( product_size) ) {
+						if (update_stats) {
+							/* This line NEW */ 
+							if (!must_use)
+								pair_expl.considered++;
+							pair_expl.product++; 
+						}
+						if (!must_use) continue;
+					}
+					
+					/* Check if pair was already computed */
+					// this is not going to happen here since there is no external top while loop
+					
+					/* Characterize the pair. h is initialized by this call. */
+					{
+						h = new PrimerPair();
+						int tmp =  h.characterize_pair(retval, pa, sa, j, i,
+								dpal_arg_to_use,
+								thal_arg_to_use,
+								update_stats);
+						if (tmp == PrimerPair.PAIR_OK) {
+
+							/* Choose internal oligo if needed */
+							if (pa.isPickRightPrimer() && pa.isPickLeftPrimer()
+									&& pa.isPickInternalOligo()) {
+								n_int = choose_internal_oligo(retval, h.left, h.right, sa, pa, dpal_arg_to_use, thal_oligo_arg_to_use);
+								if ( n_int == -1) {
+
+									/* We were UNable to choose an internal oligo. */
+									if (update_stats) { 
+										pair_expl.internal++;
+									}
+
+
+									continue;
+								} else {
+									/* We DID choose an internal oligo, and we
+			                   set h.intl to point to it. */
+									h.intl = retval.intl.oligo.get(n_int);
+								}
+							}
+
+							if (update_stats) { 
+								if (DebugInfo.choose_pair_or_triple_trace_me)
+									System.err.format("ok++\n");
+								pair_expl.ok++;
+							}
+
+							/* Calculate the pair penalty */
+							h.pair_quality = h.obj_fn(pa);
+							//							PR_ASSERT(h.pair_quality >= 0.0);
+
+							/* The current pair (h) is the new best pair if it is better than the best pair so far. */
+							if (compare_primer_pair(h, the_best_pair) < 0) {
+								the_best_pair = h;
+								nBestBeat++;
+
+							}
+
+							/* There cannot be a better pair */
+							if (the_best_pair.pair_quality == 0) {
+//								break;
+								nBestBeat++;
+								//System.out.println("Should Break !!");
+							}
+							
+							// if pair_quality within a range add it 
+							best_pairs.add_pair(h);
+							
+						} else if (tmp == PrimerPair.PAIR_FAILED) {
+							/* Illegal pair */
+//							hmap.put(j,null);
+						} 
+
+					}
+					
+					
+				} /* for (j=0; j<retval.fwd.num_elem; j++) -- inner loop */
+				/* Check if there cannot be a better pair than best found */
+			      
+				if (the_best_pair.pair_quality == 0) {
+//			        break;
+			        //System.out.println("Should Break !!");
+				}
+				if (pa.getNumReturn() < nBestBeat) {
+					break;
+				}
+			} /* for (i = 0; i < retval.rev.num_elem; i++) --- outer loop */
+			
+			
+			best_pairs.pairs.sort( new Comparator<PrimerPair>() {
+
+				@Override
+				public int compare(PrimerPair o1, PrimerPair o2) {
+					
+					// return compare_primer_pair(o1, o2) ;
+					return Double.compare(o1.pair_quality, o2.pair_quality);
+				}
+			});
+			System.out.println("Done");
+		}
+		
+		private static void choose_pair_or_triple_updated_2(
+				P3RetVal retval,
+				P3GlobalSettings pa,
+				SeqArgs sa,
+				DPAlArgHolder dpal_arg_to_use,
+				THAlArgHolder thal_arg_to_use,
+				THAlArgHolder thal_oligo_arg_to_use
+				) throws Exception {
+			PairArrayT best_pairs = retval.best_pairs;
+
+
+//			int i,j;   /* Loop index. */
+			int n_int; /* Index of the internal oligo */
+			/*int *max_j_seen; */  /* The maximum value of j (loop index for forward primers)
+			                            that has been examined for every reverse primer
+			                            index (i) -- global variable now */
+			boolean update_stats = true;  /* Flag to indicate whether pair_stats
+			                            should be updated. */
+			PrimerPair h;             /* The current pair which is being evaluated. */
+			PrimerPair the_best_pair = new PrimerPair(); /* The best pair is being "remembered". */
+			
+			PairStats pair_expl = retval.best_pairs.expl; /* For statistics */
+
+			
+			int nBestBeat = 0;
+			
+
+			
+			class ijPairs {
+				int i ;
+				int j ;
+				double estimatedQuilty = Double.MAX_VALUE;
+				public ijPairs(int i , int j , double q) {
+					this.i = i;
+					this.j = j;
+					this.estimatedQuilty =q;
+				}
+			}
+			List<ijPairs> estimatedPairs = new ArrayList<ijPairs>();
+			for (int i = 0; i < retval.rev.num_elem; i++) {
+				PrimerRecord right = retval.rev.oligo.get(i);
+				for (int j=0; j<retval.fwd.num_elem; j++) {
+					PrimerRecord left = retval.fwd.oligo.get(j);
+					if (!left.OK_OR_MUST_USE()) continue;
+					estimatedPairs.add(new ijPairs(i,j,  pa.getPrPairWeights().primer_quality * 
+							(left.quality + right.quality)));
+				}
+			}
+			
+			estimatedPairs.sort(new Comparator<ijPairs>() {
+
+				@Override
+				public int compare(ijPairs o1, ijPairs o2) {
+					
+					return Double.compare(o1.estimatedQuilty, o2.estimatedQuilty);
+				}
+				
+			});
+			
+			// rightIndex to <leftindef, PrimerPair of the two (left,right)> 
+			HashMap<Integer, HashMap<Integer, PrimerPair>> pairs = new HashMap();
+			// I think that i will not need this anymore
+			
+			// temp init for now
+			the_best_pair.pair_quality = Double.MAX_VALUE;
+			
+			for (int i = 0; i < retval.rev.num_elem; i++) {
+				// keep retval.rev.oligo.get(i) in right
+				PrimerRecord right = retval.rev.oligo.get(i);
+//				hmap = pairs[i];  
+				/* Pairs[i] is NULL if there has never been an assignment to
+				 pairs[i] because pairs was allocated by calloc, which
+				 sets the allocated memory to 0. */
+
+				/* Only use a primer that *might be* legal or that the caller
+		         has provided and specified as "must use".  Primers are *NOT*
+		         FULLY ASSESSED until the call to characterize_pair(), in
+		         order to avoid expensive computations (mostly alignments)
+		         unless necessary. */
+				if (!right.OK_OR_MUST_USE()) {
+					// if right is not ok then skip we can add this to
+					continue;
+				}
+
+				/* If the pair cannot be better than the one already 
+				 * selected, then we can skip remaining reverse primers */
+				if (pa.getPrPairWeights().primer_quality *
+						(right.quality + retval.fwd.oligo.get(0).quality)
+						> the_best_pair.pair_quality) {
+					// break;
+					// not break , continue to the next i rev primer 
+					continue;
+				}
+
+				if (right.overlaps) {
+					/* The stats will not keep track of the pair correctly
+			            after the first pass, because an oligo might
+			            have been legal on one pass but become illegal on
+			            a subsequent pass. */
+					if (update_stats) {
+						if (DebugInfo.choose_pair_or_triple_trace_me)
+							System.err.format( "i=%d, j=%d, overlaps_oligo_in_better_pair++\n", i, 0); // this was j
+						pair_expl.overlaps_oligo_in_better_pair++;
+					}
+
+					continue;
+				}
+				/* Loop over forward primers */
+				for (int j=0; j<retval.fwd.num_elem; j++) {
+					PrimerRecord left = retval.fwd.oligo.get(j);
+					
+					/* We check the reverse oligo again, because we may
+			           have determined that it is "not ok", even though
+			           (as a far as we knew), it was ok above. */
+					if ( !right.OK_OR_MUST_USE()) {
+						break;
+					}
+					/* Only use a primer that is legal, or that the caller
+			           has provided and specified as "must use". */
+					if (!left.OK_OR_MUST_USE()) continue;
+					
+					/* If the pair cannot be better than the one already 
+					 * selected, then we can skip remaining forward primers 
+					 * for this reverse primer */
+					if (pa.getPrPairWeights().primer_quality *
+							(left.quality + right.quality) 
+							> the_best_pair.pair_quality) {
+						// break;
+						// System.out.println("Should Break !!");
+					}
+					
+					if (left.overlaps) {
+						/* The stats will not keep track of the pair correctly
+			             after the first pass, because an oligo might
+			             have been legal on one pass but become illegal on
+			             a subsequent pass. */
+						if (update_stats) {
+							if (DebugInfo.choose_pair_or_triple_trace_me)
+								System.err.format("i=%d, j=%d, overlaps_oligo_in_better_pair++\n", i, j);
+							pair_expl.overlaps_oligo_in_better_pair++;
+						}
+						continue;
+					}
+					/* Some simple checks first, before searching the hashmap */
+					boolean must_use = false;
+					if ((pa.getPrimerTask() == P3Task.CHECK_PRIMERS) || 
+							((left.must_use != false) &&
+									(right.must_use != false))) {
+						must_use = true;
+					}
+					
+					
+					/* Determine if overlap with an overlap point is required, and
+					   if so, whether one of the primers in the pairs overlaps
+					   that point. */
+					if ((sa.getPrimerOverlapJunctionsList().size() > 0)
+							&& !(right.overlaps_overlap_position
+									|| left.overlaps_overlap_position)
+							) {
+						if (update_stats) { 
+							pair_expl.considered++;
+							pair_expl.does_not_overlap_a_required_point++; 
+						}
+						if (!must_use) continue;
+					}					
+					/* Check product size now */
+					int product_size  = right.start - left.start+1;
+					if (  !pa.chackProductSizeRanges( product_size) ) {
+						if (update_stats) {
+							/* This line NEW */ 
+							if (!must_use)
+								pair_expl.considered++;
+							pair_expl.product++; 
+						}
+						if (!must_use) continue;
+					}
+					
+					/* Check if pair was already computed */
+					// this is not going to happen here since there is no external top while loop
+					
+					/* Characterize the pair. h is initialized by this call. */
+					{
+						h = new PrimerPair();
+						int tmp =  h.characterize_pair(retval, pa, sa, j, i,
+								dpal_arg_to_use,
+								thal_arg_to_use,
+								update_stats);
+						if (tmp == PrimerPair.PAIR_OK) {
+
+							/* Choose internal oligo if needed */
+							if (pa.isPickRightPrimer() && pa.isPickLeftPrimer()
+									&& pa.isPickInternalOligo()) {
+								n_int = choose_internal_oligo(retval, h.left, h.right, sa, pa, dpal_arg_to_use, thal_oligo_arg_to_use);
+								if ( n_int == -1) {
+
+									/* We were UNable to choose an internal oligo. */
+									if (update_stats) { 
+										pair_expl.internal++;
+									}
+
+
+									continue;
+								} else {
+									/* We DID choose an internal oligo, and we
+			                   set h.intl to point to it. */
+									h.intl = retval.intl.oligo.get(n_int);
+								}
+							}
+
+							if (update_stats) { 
+								if (DebugInfo.choose_pair_or_triple_trace_me)
+									System.err.format("ok++\n");
+								pair_expl.ok++;
+							}
+
+							/* Calculate the pair penalty */
+							h.pair_quality = h.obj_fn(pa);
+							//							PR_ASSERT(h.pair_quality >= 0.0);
+
+							/* The current pair (h) is the new best pair if it is better than the best pair so far. */
+							if (compare_primer_pair(h, the_best_pair) < 0) {
+								the_best_pair = h;
+								nBestBeat++;
+
+							}
+
+							/* There cannot be a better pair */
+							if (the_best_pair.pair_quality == 0) {
+//								break;
+								nBestBeat++;
+								//System.out.println("Should Break !!");
+							}
+							
+							// if pair_quality within a range add it 
+							best_pairs.add_pair(h);
+							
+						} else if (tmp == PrimerPair.PAIR_FAILED) {
+							/* Illegal pair */
+//							hmap.put(j,null);
+						} 
+
+					}
+					
+					
+				} /* for (j=0; j<retval.fwd.num_elem; j++) -- inner loop */
+				/* Check if there cannot be a better pair than best found */
+			      
+				if (the_best_pair.pair_quality == 0) {
+//			        break;
+			        //System.out.println("Should Break !!");
+				}
+				if (pa.getNumReturn() < nBestBeat) {
+					break;
+				}
+			} /* for (i = 0; i < retval.rev.num_elem; i++) --- outer loop */
+			
+			
+			best_pairs.pairs.sort( new Comparator<PrimerPair>() {
+
+				@Override
+				public int compare(PrimerPair o1, PrimerPair o2) {
+					
+					// return compare_primer_pair(o1, o2) ;
+					return Double.compare(o1.pair_quality, o2.pair_quality);
+				}
+			});
+			System.out.println("Done");
+		}
+		
+	// #############################
+		
+		
 
 	
 
@@ -901,7 +1785,7 @@ public class LibPrimer3 {
 			DPAlArgHolder dpal_arg_to_use,
 			THAlArgHolder thal_arg_to_use) throws PrimerRecordException, AlignmentException, ThermodynamicAlignmentException {
 
-
+		
 		int ret;
 		int left = 0;
 		retval.intl.extreme = 0;
