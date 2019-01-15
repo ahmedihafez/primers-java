@@ -67,6 +67,13 @@ public class TestFastaInput {
 				"-fasta src/test/resources/fasta_input_test/primer_fasta_input.fasta");
 	}	
 	
-
+	@Test
+	public void testP3NInput() throws FileNotFoundException, IOException {	  
+		
+		testCase("p3_3_prime_n_input",
+				"p3_3_prime_n_input",
+				"p3_3_prime_n_output" ,
+				"-fasta src/test/resources/fasta_input_test/p3_3_prime_n_input.fasta");
+	}	
 	
 }
