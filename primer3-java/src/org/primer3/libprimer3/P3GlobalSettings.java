@@ -10,6 +10,7 @@ import org.primer3.masker.masker;
 import org.primer3.masker.masking_direction;
 import org.primer3.oligotm.MeltingTemperatureMethod;
 import org.primer3.oligotm.SaltCorrectionMethod;
+import org.primer3.p3_seq_lib.seq_lib;
 
 public class P3GlobalSettings {
 
@@ -1828,4 +1829,17 @@ public class P3GlobalSettings {
 		}
 		return false;
 	}
+
+	
+	seq_lib inputFasta = null;
+	public void setInputFasta(seq_lib inputFasta) {
+		this.inputFasta = inputFasta;
+		
+	}
+	
+	public seq_lib getInputFasta()
+	{
+		return inputFasta;
+	}
+	
 }

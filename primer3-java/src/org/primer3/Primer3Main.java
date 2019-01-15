@@ -28,6 +28,7 @@ import org.primer3.libprimer3.SeqArgs;
 import org.primer3.masker.formula_parameters;
 import org.primer3.masker.masker;
 import org.primer3.masker.masking_direction;
+import org.primer3.p3_seq_lib.seq_lib;
 import org.primer3.thal.ThAl;
 
 public class Primer3Main {
@@ -46,6 +47,20 @@ public class Primer3Main {
 				.build();
 		options.addOption(argOption);
 
+		
+		
+		
+		
+		argOption = Option.builder("fasta")
+				.hasArg()
+				.argName( "fasta" )
+				.longOpt("fasta")    
+				.desc("Fasta file contains input sequenes" )
+				.build();
+		options.addOption(argOption);
+		
+		
+		
 		argOption = Option.builder("d")
 				.hasArg()
 				.argName( "default_version" )
@@ -156,7 +171,9 @@ public class Primer3Main {
 		int about = 0;
 		int compat = 0;
 		int invalid_flag = 0;
-
+		String fastaInputFile = null;
+		
+		
 		String p3_settings_path = null;
 		String output_path = null;
 		String error_path = null;
@@ -218,6 +235,11 @@ public class Primer3Main {
 			dump_args = true ;
 		if(line.hasOption("formated_output"))
 			format_output = true;
+		
+		
+		if(line.hasOption("fasta"))
+			fastaInputFile = line.getOptionValue("fasta");
+		
 		
 		// set redirfile
 		if(error_path != null && !error_path.isEmpty())
@@ -287,6 +309,10 @@ public class Primer3Main {
 		/* Allocate the space for global settings and fill in default parameters */
 		global_pa = P3GlobalSettings.p3_create_global_settings(default_version);
 
+		
+
+		
+		
 		if(global_pa == null)
 		{
 			print_usage();
@@ -295,6 +321,19 @@ public class Primer3Main {
 
 		global_pa.setDump(dump_args) ;
 
+		// will assume that the input will come from a fasta file
+		if (fastaInputFile != null)
+		{
+			try {
+				seq_lib inputFasta = seq_lib.read_and_create_seq_lib(fastaInputFile, false);
+				global_pa.setInputFasta(inputFasta);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				System.exit(-1);
+			}
+		}
+		
 
 		/* Settings files have to be read in just below, and
 	    	the functions need a temporary sarg */

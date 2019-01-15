@@ -73,7 +73,17 @@ public class boulder {
 							parse_err.append("Duplicate tag: ");
 							parse_err.append("SEQUENCE_TEMPLATE"); 
 						} else {
-							sa.setSequence(datum); 
+							// TODO :: check if the seq exist or not and report that to the user
+							if(pa.getInputFasta() != null)
+							{
+								
+								char[] seqValue = pa.getInputFasta().getSeq(datum);
+								sa.setSequence(seqValue);
+							}
+							else
+							{
+								sa.setSequence(datum); 
+							}
 						}
 					}
 					else if (key.equals("SEQUENCE_QUALITY")) {

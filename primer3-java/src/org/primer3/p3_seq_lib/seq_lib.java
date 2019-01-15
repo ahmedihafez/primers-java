@@ -3,6 +3,7 @@ package org.primer3.p3_seq_lib;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
@@ -36,6 +37,8 @@ public class seq_lib {
 	public List<Double> weight;
 	
 	
+	HashMap<String, Integer > seqNameToIndex = new HashMap<String, Integer>(); 
+	
 	StringBuilder warning = new StringBuilder();
 	StringBuilder error = new StringBuilder();
 
@@ -49,15 +52,20 @@ public class seq_lib {
 		weight = new ArrayList<Double>();
 	}
 	
-	
+	public static seq_lib read_and_create_seq_lib(String filename, String libName) throws Exception
+	{
+		return read_and_create_seq_lib(filename, true);
+	}
 	
 	/*  
 	 * Reads any file in fasta format and returns a newly allocated
 	 * seq_lib, lib.  Sets lib.error to a non-empty string on any error
 	 * other than ENOMEM.  Returns NULL on ENOMEM.
 	 */
-	public static seq_lib read_and_create_seq_lib(String filename, String errfrag) throws Exception
+	// Input args String errfrag
+	public static seq_lib read_and_create_seq_lib(String filename, boolean addRev) throws Exception
 	{
+		
 		seq_lib slib = new seq_lib();
 		
 		DNACharSet dnaSet = new DNACharSet();
@@ -85,12 +93,14 @@ public class seq_lib {
 			}
 		}
 		
-		int n = slib.names.size();
-		for(int i = 0;i < n; i++)
+		if(addRev)
 		{
-			slib.add("reverse " + slib.names.get(i), slib.rev_compl_seqs.get(i), slib.seqs.get(i));
+			int n = slib.names.size();
+			for(int i = 0;i < n; i++)
+			{
+				slib.add("reverse " + slib.names.get(i), slib.rev_compl_seqs.get(i), slib.seqs.get(i));
+			}
 		}
-		
 		return slib;
 //		return null;
 	}
@@ -98,7 +108,9 @@ public class seq_lib {
 	private void add(String key, char[] s, char[] srev) {
 		
 		// TODO :: still testing
+		seqNameToIndex.put(key, this.names.size());
 		this.names.add(key);
+		
 		// this.names.add("reverse " + key);
 //		char[] s = value.getSequenceAsString().toCharArray();
 		this.seqs.add(s);
@@ -229,5 +241,13 @@ public class seq_lib {
 
 	public char[] getSeqRevCompl(int i) {
 		return this.rev_compl_seqs.get(i);
+	}
+
+	public char[] getSeq(String datum) {
+		// TODO Auto-generated method stub
+		Integer index= seqNameToIndex.get(datum);;
+		if(index != null)
+			return seqs.get(index);
+		return  null;
 	}
 }
