@@ -118,6 +118,7 @@ public class TestPrimer3Main {
 		testCase("primer_end_pathology_input","primer_end_pathology_input","primer_end_pathology_output");
 	}
 	
+	// Using the optimized finder give some diff 
 	@Test
 	public void testP3GCEnd() throws FileNotFoundException, IOException {	  
 		
