@@ -8,7 +8,7 @@ public class  PairArrayT {
 	  public int         num_pairs = 0;
 	  // TODO :: make sure it is init. somewhere
 	  public List<PrimerPair> pairs = new ArrayList<PrimerPair>();
-	  PairStats  expl = new PairStats();
+	  public PairStats  expl = new PairStats();
 	  
 	  
 	  public String p3_get_pair_array_explain_string()

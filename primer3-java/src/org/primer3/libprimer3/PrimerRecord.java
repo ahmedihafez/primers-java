@@ -112,14 +112,14 @@ public class PrimerRecord {
 	public int length; /* Length of the oligo. */
 	int num_ns; /* Number of Ns in the oligo. */
 
-	boolean must_use; /* Non-0 if the oligo must be used even if it is illegal. */
-	boolean overlaps; /*
+	public boolean must_use; /* Non-0 if the oligo must be used even if it is illegal. */
+	public boolean overlaps; /*
 					 * Non-0 if the oligo overlaps some oligo used in one of the
 					 * best pairs.
 					 */
 
 	long oligoProblems;
-	boolean overlaps_overlap_position;
+	public boolean overlaps_overlap_position;
 
 	char template_mispriming_ok; /*
 								 * Non-0 if the oligo was checked for this

@@ -18,7 +18,7 @@ public class PrimerPair {
 	/**
 	 *  Penalty value of the primer pair 
 	 */
-	double pair_quality;  
+	public double pair_quality;  
 
 	/** Absolute value of the difference between melting
 	 * 	temperatures for left and right primers. 

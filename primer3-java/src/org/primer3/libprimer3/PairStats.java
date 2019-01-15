@@ -3,33 +3,33 @@ package org.primer3.libprimer3;
 import java.util.Formatter;
 
 public class PairStats {
-  int considered;          /* Total number of pairs or triples tested.      */
-  int product;             /* Pairs providing incorrect product size.       */
-  int target;              /* Pairs without any target between primers.     */
-  int temp_diff;           /* Melting temperature difference too high.      */
-  int compl_any;           /* Pairwise complementarity larger than allowed. */
-  int compl_end;           /* The same for 3' end complementarity.          */
-  int internal;            /* Internal oligo was not found.                 */
-  int repeat_sim;          /* Complementarity with repeat sequence too high.*/
-  int high_tm;             /* Product Tm too high.                          */
-  int low_tm;              /* Product Tm too low.                           */
-  int template_mispriming; /* Sum of template mispriming scores too high.   */
+	public int considered;          /* Total number of pairs or triples tested.      */
+	public int product;             /* Pairs providing incorrect product size.       */
+	public int target;              /* Pairs without any target between primers.     */
+	public int temp_diff;           /* Melting temperature difference too high.      */
+	public int compl_any;           /* Pairwise complementarity larger than allowed. */
+	public int compl_end;           /* The same for 3' end complementarity.          */
+	public int internal;            /* Internal oligo was not found.                 */
+	public int repeat_sim;          /* Complementarity with repeat sequence too high.*/
+	public int high_tm;             /* Product Tm too high.                          */
+	public int low_tm;              /* Product Tm too low.                           */
+	public int template_mispriming; /* Sum of template mispriming scores too high.   */
 
   /* Neither oligo in the pairs overlaps one of the "required sites".       */
-  int does_not_overlap_a_required_point;
+	public int does_not_overlap_a_required_point;
 
   /* One of the oligos in the pair overlaps an oligo in a better_pair:       */
-  int overlaps_oligo_in_better_pair;
+  public int overlaps_oligo_in_better_pair;
 
   /* The left and right oligos are not in any of the pair of regions given in
      PRIMER_PAIR_OK_REGION_LIST. */
-  int not_in_any_ok_region;
+  public int not_in_any_ok_region;
 
   /* Left primer to the right of right right primer. This can occur when
      the primers are provided by the caller. */
-  int reversed;
+  public int reversed;
 
-  int ok;                  /* Number that were ok.                          */
+  public int ok;                  /* Number that were ok.                          */
 
   
   

@@ -2,6 +2,9 @@ package org.primer3.libprimer3;
 
 import org.primer3.boulder;
 import org.primer3.p3_seq_lib.seq_lib;
+import org.primer3.search.P3BasicPairFinder;
+import org.primer3.search.P3OptimzedFinder;
+import org.primer3.search.Primer3Finder;
 import org.primer3.sequence.Sequence;
 
 /**
@@ -11,10 +14,13 @@ import org.primer3.sequence.Sequence;
 public class P3RetVal {
 
 	/* Arrays of oligo (primer) records. */
+	// left primers 
 	public OligoArray fwd;
 
+	// internal/ probes
 	public OligoArray intl;
 
+	// right primers
 	public OligoArray rev;
 
 	/* Array of best primer pairs */
@@ -23,6 +29,15 @@ public class P3RetVal {
 	/* Enum to store type of output */
 	public P3OutputType output_type;
 
+	
+	// seq args associated with this result
+	public SeqArgs sa;
+	// global setting associated with this result 
+	// This is goping to change after this result is collected
+	// TODO :: side effect here refactor this to keep it's own copy of the args ??
+	public P3GlobalSettings pa;
+	
+	
 	/* Place for error messages */
 	// Originally was pr_append_str -. changed to StringBuilder
 	public StringBuilder glob_err = new StringBuilder();
@@ -45,7 +60,7 @@ public class P3RetVal {
 	//	  
 	//  }
 
-	public P3RetVal ()
+	protected P3RetVal ()
 	{
 		this.fwd = new OligoArray(OligoType.OT_LEFT);
 		this.intl = new OligoArray( OligoType.OT_INTL);
@@ -56,6 +71,22 @@ public class P3RetVal {
 		this.rev.type  = OligoType.OT_RIGHT;
 		
 		best_pairs = new PairArrayT() ;
+	}
+
+	public P3RetVal(P3GlobalSettings pa, SeqArgs sa) {
+		this();
+		/* Set the general output type */
+		if (pa.isPickLeftPrimer() && pa.isPickRightPrimer()) {
+			this.output_type = P3OutputType.primer_pairs;
+		} else {
+			this.output_type = P3OutputType.primer_list;
+		}
+		if (	pa.getPrimerTask() == P3Task.PICK_PRIMER_LIST ||
+				pa.getPrimerTask() == P3Task.PICK_SEQUENCING_PRIMERS) {
+			this.output_type = P3OutputType.primer_list;
+		}
+		this.pa = pa;
+		this.sa = sa;
 	}
 
 	public OligoArray p3_get_rv_rev()
@@ -634,7 +665,7 @@ public class P3RetVal {
 	 * a stop codon to the right of the the start codon in the
 	 * amplicon. 
 	 */
-	public void set_retval_both_stop_codons(SeqArgs sa) {
+	public void set_retval_both_stop_codons() {
 		
 		  this.upstream_stop_codon = Sequence.find_stop_codon(sa.getTrimmedSequence(),
 		                                                sa.getStartCodonPos(), -1);
@@ -642,6 +673,15 @@ public class P3RetVal {
 		  this.stop_codon_pos = Sequence.find_stop_codon(sa.getTrimmedSequence(),
 		                                             sa.getStartCodonPos(),  1);
 		  this.stop_codon_pos += sa.getIncludedRegionStart();		
+	}
+
+	public void choose_pairs(DPAlArgHolder dpal_arg_to_use, THAlArgHolder thal_arg_to_use,
+			THAlArgHolder thal_oligo_arg_to_use) throws Exception {
+		
+		Primer3Finder p3Finder = new P3BasicPairFinder(this,dpal_arg_to_use, thal_arg_to_use, thal_oligo_arg_to_use);
+//		Primer3Finder p3Finder = new P3OptimzedFinder(this,dpal_arg_to_use, thal_arg_to_use, thal_oligo_arg_to_use);
+		p3Finder.getNextResult();
+//		p3Finder.getNextResult();
 	}
 
 

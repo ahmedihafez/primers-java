@@ -2,7 +2,7 @@ package org.primer3.libprimer3;
 
 public class PairWeights {
 	
-	double primer_quality;
+	public double primer_quality;
 	double io_quality;
 	double diff_tm;
 	double compl_any;
