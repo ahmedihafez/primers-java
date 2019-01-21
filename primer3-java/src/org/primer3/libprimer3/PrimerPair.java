@@ -608,24 +608,25 @@ public class PrimerPair {
 
 	private double pair_repeat_sim(P3GlobalSettings pa) {
 		if (pa.primersArgs.repeat_lib == null)  return 0 ;
-		int i, n, max, w;
-		  PrimerRecord fw, rev;
+		int i, n;
+		double max, w;
+		PrimerRecord fw, rev;
 
-		  fw = this.left;
-		  rev = this.right;
+		fw = this.left;
+		rev = this.right;
 
-		  max = 0;
-		  n = pa.primersArgs.repeat_lib.seq_lib_num_seq();
-		  if(n == 0) return 0;
-		  this.rep_name =  pa.primersArgs.repeat_lib.getName(0) ;
-		  for (i = 0; i < n; i++) {
-			  w = (int) (fw.repeat_sim.score[i] + rev.repeat_sim.score[i]);
-			  if (w > max) {
-				  max = w;
-				  this.rep_name =  pa.primersArgs.repeat_lib.getName(i) ;
-		    }
-		  }
-		  return max;
+		max = 0;
+		n = pa.primersArgs.repeat_lib.seq_lib_num_seq();
+		if(n == 0) return 0;
+		this.rep_name =  pa.primersArgs.repeat_lib.getName(0) ;
+		for (i = 0; i < n; i++) {
+			w = (double) (fw.repeat_sim.score[i] + rev.repeat_sim.score[i]);
+			if (w > max) {
+				max = w;
+				this.rep_name =  pa.primersArgs.repeat_lib.getName(i) ;
+			}
+		}
+		return max;
 	}
 
 

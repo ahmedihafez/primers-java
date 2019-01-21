@@ -1239,6 +1239,30 @@ public class SeqArgs {
 	}
 
 
+	boolean isMultiplex = false;
+	static final String DEFAULT_MULTIPLEX_GROUP = "DefaultGroup";
+	String mutliplexGroup = DEFAULT_MULTIPLEX_GROUP;
+	public void setMultplex(String datum) {
+		
+		if(datum.equals("1")) {
+			// enable multiplex in the global group
+			this.isMultiplex = true;
+			this.mutliplexGroup = DEFAULT_MULTIPLEX_GROUP;
+		}
+		else if( datum.isEmpty() ||  datum.equals("0")) {
+			// disable multiplex to this seq
+			this.isMultiplex= false;
+			this.mutliplexGroup = null;
+		}
+		else {
+			// value is an id of the multiplex group
+			this.isMultiplex = true;
+			this.mutliplexGroup = datum;
+		}
+		
+	}
+
+
 	/**
 	 * @param primerOverlapJunctionsList the primerOverlapJunctionsList to set
 	 */

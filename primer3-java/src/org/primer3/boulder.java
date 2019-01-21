@@ -66,92 +66,97 @@ public class boulder {
 					datum = lineTokens[1];
 				try
 				{
-
 					
-					if (key.equals("SEQUENCE_TEMPLATE")) {   /* NEW WAY */
-						if (sa.getSequence() != null) {
-							parse_err.append("Duplicate tag: ");
-							parse_err.append("SEQUENCE_TEMPLATE"); 
-						} else {
-							// TODO :: check if the seq exist or not and report that to the user
-							if(pa.getInputFasta() != null)
-							{
-								
-								char[] seqValue = pa.getInputFasta().getSeq(datum);
-								sa.setSequence(seqValue);
-							}
-							else
-							{
-								sa.setSequence(datum); 
-							}
-						}
-					}
-					else if (key.equals("SEQUENCE_QUALITY")) {
-	//					 = parse_seq_quality(datum, sa);
-						if (!sa.set_n_quality(datum)) {
-							parse_err.append("Error in sequence quality data");
-						}
-					}
-					else if (key.equals("SEQUENCE_ID"))
+					if(key.startsWith("SEQUENCE_"))
 					{
-						sa.setSequenceName(datum);
-					} 
-					else if (key.equals("SEQUENCE_PRIMER")) {
-						sa.p3_set_sa_left_input(datum);
-					} 
-					else if (key.equals("SEQUENCE_PRIMER_REVCOMP")) {
-						sa.p3_set_sa_right_input(datum);	
-					}
-					else if (key.equals("SEQUENCE_INTERNAL_OLIGO")) { 
-						sa.p3_set_sa_internal_input(datum);
-					}
-					else if (key.equals("SEQUENCE_PRIMER_PAIR_OK_REGION_LIST")) { 
-						sa.p3_set_sa_ok_regions(datum);
-					}
-					else if (key.equals("SEQUENCE_TARGET")) { 
-						sa.p3_set_sa_tar2(datum);
-					}
-					else if (key.equals("SEQUENCE_EXCLUDED_REGION")) { 
-						sa.p3_set_sa_excl2(datum);
-					}
-					else if (key.equals("SEQUENCE_INTERNAL_EXCLUDED_REGION")) {
-						sa.p3_set_sa_excl_internal2(datum);
-					}
-					else if (key.equals("SEQUENCE_OVERLAP_JUNCTION_LIST")) {
-						if(!sa.p3_set_sa_primer_overlap_junctions(datum))
-						{
-							parse_err.append("Error in SEQUENCE_PRIMER_OVERLAP_JUNCTION_LIST");
-						}
-	//					if (parse_intron_list(datum, sa.p3_set_sa_primer_overlap_junctions, 
-	//						      &sa.p3_set_sa_primer_overlap_junctions_count) == 0) {
-	//			          pr_append_new_chunk(parse_err,
-	//						      "Error in SEQUENCE_PRIMER_OVERLAP_JUNCTION_LIST");
-	//			        }
-					} 
-					else if (key.equals("SEQUENCE_INCLUDED_REGION")) {
-				        
-						if(!sa.p3_set_sa_incl_sl(datum))
-						{
-							tag_syntax_error("SEQUENCE_INCLUDED_REGION", datum,			
-			                             parse_err);
-						}
-					} 
-					else if (key.equals("SEQUENCE_START_CODON_POSITION")) { 
-						sa.p3_set_sa_start_codon_pos(datum);
-					}
-					else if (key.equals("SEQUENCE_FORCE_LEFT_START")) { 
-						sa.p3_set_sa_force_left_start(datum);
-					}
-					else if (key.equals("SEQUENCE_FORCE_LEFT_END")) { 
-						sa.p3_set_sa_force_left_end(datum);
-					}
-					else if (key.equals("SEQUENCE_FORCE_RIGHT_START")) { 
-						sa.p3_set_sa_force_right_start(datum);
-					}
-					else if (key.equals("SEQUENCE_FORCE_RIGHT_END")) { 
-						sa.p3_set_sa_force_right_end(datum);
+						setSeqArgsParameters(sa,key,datum,pa,parse_err);
 						continue;
 					}
+					
+//					if (key.equals("SEQUENCE_TEMPLATE")) {   /* NEW WAY */
+//						if (sa.getSequence() != null) {
+//							parse_err.append("Duplicate tag: ");
+//							parse_err.append("SEQUENCE_TEMPLATE"); 
+//						} else {
+//							// TODO :: check if the seq exist or not and report that to the user
+//							if(pa.getInputFasta() != null)
+//							{
+//								
+//								char[] seqValue = pa.getInputFasta().getSeq(datum);
+//								sa.setSequence(seqValue);
+//							}
+//							else
+//							{
+//								sa.setSequence(datum); 
+//							}
+//						}
+//					}
+//					else if (key.equals("SEQUENCE_QUALITY")) {
+//	//					 = parse_seq_quality(datum, sa);
+//						if (!sa.set_n_quality(datum)) {
+//							parse_err.append("Error in sequence quality data");
+//						}
+//					}
+//					else if (key.equals("SEQUENCE_ID"))
+//					{
+//						sa.setSequenceName(datum);
+//					} 
+//					else if (key.equals("SEQUENCE_PRIMER")) {
+//						sa.p3_set_sa_left_input(datum);
+//					} 
+//					else if (key.equals("SEQUENCE_PRIMER_REVCOMP")) {
+//						sa.p3_set_sa_right_input(datum);	
+//					}
+//					else if (key.equals("SEQUENCE_INTERNAL_OLIGO")) { 
+//						sa.p3_set_sa_internal_input(datum);
+//					}
+//					else if (key.equals("SEQUENCE_PRIMER_PAIR_OK_REGION_LIST")) { 
+//						sa.p3_set_sa_ok_regions(datum);
+//					}
+//					else if (key.equals("SEQUENCE_TARGET")) { 
+//						sa.p3_set_sa_tar2(datum);
+//					}
+//					else if (key.equals("SEQUENCE_EXCLUDED_REGION")) { 
+//						sa.p3_set_sa_excl2(datum);
+//					}
+//					else if (key.equals("SEQUENCE_INTERNAL_EXCLUDED_REGION")) {
+//						sa.p3_set_sa_excl_internal2(datum);
+//					}
+//					else if (key.equals("SEQUENCE_OVERLAP_JUNCTION_LIST")) {
+//						if(!sa.p3_set_sa_primer_overlap_junctions(datum))
+//						{
+//							parse_err.append("Error in SEQUENCE_PRIMER_OVERLAP_JUNCTION_LIST");
+//						}
+//	//					if (parse_intron_list(datum, sa.p3_set_sa_primer_overlap_junctions, 
+//	//						      &sa.p3_set_sa_primer_overlap_junctions_count) == 0) {
+//	//			          pr_append_new_chunk(parse_err,
+//	//						      "Error in SEQUENCE_PRIMER_OVERLAP_JUNCTION_LIST");
+//	//			        }
+//					} 
+//					else if (key.equals("SEQUENCE_INCLUDED_REGION")) {
+//				        
+//						if(!sa.p3_set_sa_incl_sl(datum))
+//						{
+//							tag_syntax_error("SEQUENCE_INCLUDED_REGION", datum,			
+//			                             parse_err);
+//						}
+//					} 
+//					else if (key.equals("SEQUENCE_START_CODON_POSITION")) { 
+//						sa.p3_set_sa_start_codon_pos(datum);
+//					}
+//					else if (key.equals("SEQUENCE_FORCE_LEFT_START")) { 
+//						sa.p3_set_sa_force_left_start(datum);
+//					}
+//					else if (key.equals("SEQUENCE_FORCE_LEFT_END")) { 
+//						sa.p3_set_sa_force_left_end(datum);
+//					}
+//					else if (key.equals("SEQUENCE_FORCE_RIGHT_START")) { 
+//						sa.p3_set_sa_force_right_start(datum);
+//					}
+//					else if (key.equals("SEQUENCE_FORCE_RIGHT_END")) { 
+//						sa.p3_set_sa_force_right_end(datum);
+//						continue;
+//					}
 				
 					/* Process "Global" Arguments (those that persist between boulder
 				       * records). */
@@ -876,6 +881,97 @@ public class boulder {
 	}
 
 	
+
+	private static void setSeqArgsParameters(SeqArgs sa , String key, String datum,  P3GlobalSettings pa , StringBuilder parse_err) {
+		if (key.equals("SEQUENCE_TEMPLATE")) {   /* NEW WAY */
+			if (sa.getSequence() != null) {
+				parse_err.append("Duplicate tag: ");
+				parse_err.append("SEQUENCE_TEMPLATE"); 
+			} else {
+				// TODO :: check if the seq exist or not and report that to the user
+				if(pa.getInputFasta() != null)
+				{
+					
+					char[] seqValue = pa.getInputFasta().getSeq(datum);
+					sa.setSequence(seqValue);
+				}
+				else
+				{
+					sa.setSequence(datum); 
+				}
+			}
+		}
+		else if (key.equals("SEQUENCE_QUALITY")) {
+//					 = parse_seq_quality(datum, sa);
+			if (!sa.set_n_quality(datum)) {
+				parse_err.append("Error in sequence quality data");
+			}
+		}
+		else if (key.equals("SEQUENCE_ID"))
+		{
+			sa.setSequenceName(datum);
+		} 
+		else if (key.equals("SEQUENCE_PRIMER")) {
+			sa.p3_set_sa_left_input(datum);
+		} 
+		else if (key.equals("SEQUENCE_PRIMER_REVCOMP")) {
+			sa.p3_set_sa_right_input(datum);	
+		}
+		else if (key.equals("SEQUENCE_INTERNAL_OLIGO")) { 
+			sa.p3_set_sa_internal_input(datum);
+		}
+		else if (key.equals("SEQUENCE_PRIMER_PAIR_OK_REGION_LIST")) { 
+			sa.p3_set_sa_ok_regions(datum);
+		}
+		else if (key.equals("SEQUENCE_TARGET")) { 
+			sa.p3_set_sa_tar2(datum);
+		}
+		else if (key.equals("SEQUENCE_EXCLUDED_REGION")) { 
+			sa.p3_set_sa_excl2(datum);
+		}
+		else if (key.equals("SEQUENCE_INTERNAL_EXCLUDED_REGION")) {
+			sa.p3_set_sa_excl_internal2(datum);
+		}
+		else if (key.equals("SEQUENCE_OVERLAP_JUNCTION_LIST")) {
+			if(!sa.p3_set_sa_primer_overlap_junctions(datum))
+			{
+				parse_err.append("Error in SEQUENCE_PRIMER_OVERLAP_JUNCTION_LIST");
+			}
+//					if (parse_intron_list(datum, sa.p3_set_sa_primer_overlap_junctions, 
+//						      &sa.p3_set_sa_primer_overlap_junctions_count) == 0) {
+//			          pr_append_new_chunk(parse_err,
+//						      "Error in SEQUENCE_PRIMER_OVERLAP_JUNCTION_LIST");
+//			        }
+		} 
+		else if (key.equals("SEQUENCE_INCLUDED_REGION")) {
+	        
+			if(!sa.p3_set_sa_incl_sl(datum))
+			{
+				tag_syntax_error("SEQUENCE_INCLUDED_REGION", datum,			
+                             parse_err);
+			}
+		} 
+		else if (key.equals("SEQUENCE_START_CODON_POSITION")) { 
+			sa.p3_set_sa_start_codon_pos(datum);
+		}
+		else if (key.equals("SEQUENCE_FORCE_LEFT_START")) { 
+			sa.p3_set_sa_force_left_start(datum);
+		}
+		else if (key.equals("SEQUENCE_FORCE_LEFT_END")) { 
+			sa.p3_set_sa_force_left_end(datum);
+		}
+		else if (key.equals("SEQUENCE_FORCE_RIGHT_START")) { 
+			sa.p3_set_sa_force_right_start(datum);
+		}
+		else if (key.equals("SEQUENCE_FORCE_RIGHT_END")) { 
+			sa.p3_set_sa_force_right_end(datum);
+		}
+		else if (key.equals("SEQUENCE_MULTIPLEX")) {
+			sa.setMultplex(datum);
+		}
+	}
+
+
 
 	// FIXME :: no need for this
 	private static void tag_syntax_error(String string, String datum,

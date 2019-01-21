@@ -1329,15 +1329,18 @@ public class PrimerRecord {
 		int i;
 
 		int min, max;
-		int max_lib_compl;
-
+		double max_lib_compl;
+		boolean  max_lib_compl_is_percent = false;
 		/* First, check the oligo against the repeat library. */
 		if (l == OligoType.OT_INTL) {
 			lib = pa.oligosArgs.repeat_lib;
-			max_lib_compl = (int) pa.oligosArgs.getMaxRepeatCompl();
+			max_lib_compl =  pa.oligosArgs.getMaxRepeatCompl();
+			max_lib_compl_is_percent = pa.oligosArgs.maxRepeatComplIsPercent;
 		} else {
 			lib = pa.primersArgs.repeat_lib;
-			max_lib_compl = (int) pa.primersArgs.getMaxRepeatCompl();
+			max_lib_compl =  pa.primersArgs.getMaxRepeatCompl();
+			max_lib_compl_is_percent = pa.primersArgs.maxRepeatComplIsPercent;
+
 		}
 
 		char[] s =  this.oligoSeq ;// oligo_compute_sequence_and_reverse(sa, l);
@@ -1387,7 +1390,12 @@ public class PrimerRecord {
 				// "Out of range error occured calculating match to repeat library");
 				// return;
 				// }
+				
+				// TODO :: calc w as percent ,, this is an optional value
 				h.repeat_sim.score[i] = w;
+				if (max_lib_compl_is_percent)
+					w = 100 *( w / this.length);
+
 				if (w > max) {
 					max = (int) w;
 					h.repeat_sim.max = (short) i;
