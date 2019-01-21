@@ -7,7 +7,7 @@ public class DPAlignmentResults {
 	public String msg ;
     int[][]     path = new int[DPAlignment.DPAL_MAX_ALIGN][2];
     int     path_length;
-    int     align_end_1; /* Last alignment position in the 1st sequence. */
-    int     align_end_2; /* Last alignment position in the 2nd sequence. */
+    public int     align_end_1; /* Last alignment position in the 1st sequence. */
+    public int     align_end_2; /* Last alignment position in the 2nd sequence. */
     public double  score;
 }

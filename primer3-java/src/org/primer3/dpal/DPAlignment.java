@@ -710,10 +710,16 @@ public class DPAlignment {
 
 		  smax = 0; /* For local alignment score can never be less than 0. */
 
+		  
+//		  int alignStartPos = -1;
+//		  int alignCurrentStartPos = -1;
+		  int alignEndPos = -1;
 		  /* Initialize the 0th row of the score matrix. */
 		  for(j=0; j < ylen; j++) { 
-		    score = in.ssm[X[0]][Y[j]]; 
-		    if (score < 0) score = 0;
+		    score = in.ssm[X[0]][Y[j]];
+		    
+		    if (score < 0) 
+		    	score = 0;
 		    /*S[0][j] = score;*/
 		    S0[j] = score;
 		  }   
@@ -724,7 +730,8 @@ public class DPAlignment {
 		  S1[0] = score;
 		  for(j=1; j < ylen; j++) {
 		    score = S0[j-1];
-		    if(j>1 && (a=S0[j-2] + gap) > score)score = a;
+		    if(j>1 && (a=S0[j-2] + gap) > score)
+		    	score = a;
 		    score += in.ssm[X[1]][Y[j]];
 		    if (score < 0) score = 0;
 		    S1[j] = score;
@@ -735,9 +742,11 @@ public class DPAlignment {
 		    if (score < 0) score = 0;
 		    S2[0] = score;
 		    score = S1[0];
-		    if((a=S0[0] + gap) > score) score = a;
+		    if((a=S0[0] + gap) > score) 
+		    	score = a;
 		    score += in.ssm[X[i]][Y[1]];
-		    if(score < 0) score = 0;
+		    if(score < 0) 
+		    	score = 0;
 		    S2[1] = score;
 		    for(j=2; j < ylen; j++) {
 		      score = S0[j-1];
@@ -754,28 +763,49 @@ public class DPAlignment {
 		  /* Calculate scores for last row (i = xlen-1) and find smax */
 		  i = xlen - 1;
 		  score = in.ssm[X[i]][Y[0]];
-		  if (score < 0) score = 0;
-		  else if (score > smax) smax = score;
+		  if (score < 0) {
+			  score = 0;
+		  }
+		  else if (score > smax) {
+			  smax = score;
+			  alignEndPos = 0;
+		  }
 		  S2[0] = score;
 		  score = S1[0];
-		  if((a=S0[0] + gap) > score) score = a;
+		  if( ( a = S0[0] + gap) > score)  {
+			  score = a;
+		  }
 		  score += in.ssm[X[i]][Y[1]];
-		  if(score < 0) score = 0;
-		  else if (score > smax) smax = score;
+		  if(score < 0) {
+			  score = 0;
+		  }
+		  else if (score > smax) { 
+			  smax = score;
+			  alignEndPos = 1;
+		  }
 		  S2[1] = score;
 		  for(j=2; j < ylen; j++) {
 		    score = S0[j-1];
-		    if((a=S1[j-2])>score) score = a;
+		    if((a=S1[j-2])>score)  {
+		    	score = a;
+		    }
 		    score +=gap;
-		    if((a=S1[j-1]) >score) score = a;
+		    if((a=S1[j-1]) >score) {
+		    	score = a;
+		    }
 		    score += in.ssm[X[i]][Y[j]];
-		    if (score < 0 ) score = 0;
-		    else if (score > smax) smax = score;
-		    S2[j]=score;
+		    if (score < 0 ) { 
+		    	score = 0;
+		    }
+		    else if (score > smax) { 
+		    	smax = score;
+		    	alignEndPos = j;
+		    }
+		    S2[j] = score;
 		  }
 		  out.score = smax;
 		  out.path_length=0;
-		
+		  out.align_end_2 = alignEndPos;
 		
 	}
 	
