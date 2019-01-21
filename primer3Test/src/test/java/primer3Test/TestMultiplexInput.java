@@ -21,12 +21,12 @@ import org.junit.runners.MethodSorters;
 import org.primer3.Primer3Main;
 
 @FixMethodOrder(MethodSorters.JVM)
-public class TestFastaInput {
+public class TestMultiplexInput {
 	String message = "Hello World";	
 	MessageUtil messageUtil = new MessageUtil(message);
 
 	
-	static String resourceFolder = "src/test/resources/fasta_input_test/";
+	static String resourceFolder = "src/test/resources/multiplex_test/";
 	
 
 	
@@ -59,33 +59,13 @@ public class TestFastaInput {
 	
 	
 	@Test
-	public void testP3FastaInput() throws FileNotFoundException, IOException {	  
+	public void testP3SpecificInput() throws FileNotFoundException, IOException {	  
 		
-		testCase("primer_task_input",
-				"primer_task_input",
-				"primer_task_output" ,
-				"-fasta src/test/resources/fasta_input_test/primer_fasta_input.fasta");
-	}	
-	
-	@Test
-	public void testP3NInput() throws FileNotFoundException, IOException {	  
-		
-		testCase("p3_3_prime_n_input",
-				"p3_3_prime_n_input",
-				"p3_3_prime_n_output" ,
-				"-fasta src/test/resources/fasta_input_test/p3_3_prime_n_input.fasta");
+		testCase("primer_task_specific_input",
+				"primer_task_specific_input",
+				"primer_task_specific_output",
+				"-fasta src/test/resources/multiplex_test/primer_task_specific.fasta");
 	}	
 	
 	
-	// TODO :: needs debugging 
-	// generating left and right primers is not the same as orginal version ??
-	
-	@Test
-	public void testP30Input() throws FileNotFoundException, IOException {	  
-		
-		testCase("p3_3_prime_0_input",
-				"p3_3_prime_0_input",
-				"p3_3_prime_0_output" ,
-				"-fasta src/test/resources/fasta_input_test/p3_3_prime_0_input.fasta");
-	}	
 }
