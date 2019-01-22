@@ -543,7 +543,8 @@ public class DPAlignment {
 	    S0 = P0; S1 = P1; S2 = P2;
 
 	    smax = 0; /* For local alignment score can never be less than 0. */
-
+	    int alignEndPosY = -1; 
+	    int alignEndPosX = -1;
 	    /* Initialize the 0th row of the score matrix. */
 	    for(j=0; j < ylen; j++) { 
 	        score = in.ssm[X[0]][Y[j]]; 
@@ -563,7 +564,11 @@ public class DPAlignment {
 	        if(j>1 && (a=S0[j-2] + gap) > score)score = a;
 	        score += in.ssm[X[1]][Y[j]];
 	        if (score < 0) score = 0;
-	        else if(score > smax) smax = score;
+	        else if(score > smax) {
+	        	smax = score;
+	        	alignEndPosX = 1;
+	        	alignEndPosY = j;
+	        }
 	        S1[j] = score;
 	    }
 
@@ -575,8 +580,14 @@ public class DPAlignment {
 	        score = S1[0];
 	        if((a=S0[0] + gap) > score) score = a;
 	        score += in.ssm[X[i]][Y[1]];
-	        if(score < 0) score = 0;
-	        else if (score > smax) smax = score;
+	        if(score < 0) {
+	        	score = 0;
+	        }
+	        else if (score > smax) { 
+	        	smax = score;
+	        	alignEndPosX = i;
+	        	alignEndPosY = 1;
+	        }
 	        S2[1] = score;
 	        for(j=2; j < ylen; j++) {
 	            score = S0[j-1];
@@ -586,13 +597,19 @@ public class DPAlignment {
 
 	            score += in.ssm[X[i]][Y[j]];       
 	            if (score < 0 ) score = 0;
-	            else if (score > smax) smax = score;
+	            else if (score > smax) {
+	            	smax = score;
+	            	alignEndPosX = i;
+	            	alignEndPosY = j;
+	            }
 	            S2[j]=score;
 	        }
 	        S = S0; S0 = S1; S1 = S2; S2 = S;
 	    }
 	    out.score = smax;
 	    out.path_length=0;
+	    out.align_end_1 = alignEndPosX;
+	    out.align_end_2 = alignEndPosY;
 	}
 	
 	
@@ -713,7 +730,8 @@ public class DPAlignment {
 		  
 //		  int alignStartPos = -1;
 //		  int alignCurrentStartPos = -1;
-		  int alignEndPos = -1;
+		  int alignEndPosY = -1;
+		  int alignEndPosX = -1;
 		  /* Initialize the 0th row of the score matrix. */
 		  for(j=0; j < ylen; j++) { 
 		    score = in.ssm[X[0]][Y[j]];
@@ -768,7 +786,8 @@ public class DPAlignment {
 		  }
 		  else if (score > smax) {
 			  smax = score;
-			  alignEndPos = 0;
+			  alignEndPosX = i;
+			  alignEndPosY = 0;
 		  }
 		  S2[0] = score;
 		  score = S1[0];
@@ -781,7 +800,8 @@ public class DPAlignment {
 		  }
 		  else if (score > smax) { 
 			  smax = score;
-			  alignEndPos = 1;
+			  alignEndPosX = i;
+			  alignEndPosY = 1;
 		  }
 		  S2[1] = score;
 		  for(j=2; j < ylen; j++) {
@@ -799,13 +819,15 @@ public class DPAlignment {
 		    }
 		    else if (score > smax) { 
 		    	smax = score;
-		    	alignEndPos = j;
+		    	alignEndPosX = i;
+		    	alignEndPosY = j;
 		    }
 		    S2[j] = score;
 		  }
 		  out.score = smax;
 		  out.path_length=0;
-		  out.align_end_2 = alignEndPos;
+		  out.align_end_1 = alignEndPosX;
+		  out.align_end_2 = alignEndPosY;
 		
 	}
 	
