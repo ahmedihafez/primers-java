@@ -105,7 +105,7 @@ public class seq_lib {
 //		return null;
 	}
 	
-	private void add(String key, char[] s, char[] srev) {
+	public void add(String key, char[] s, char[] srev) {
 		
 		// TODO :: still testing
 		seqNameToIndex.put(key, this.names.size());

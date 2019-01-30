@@ -4,11 +4,11 @@ import org.primer3.dpal.DPAlignmentArgs;
 import org.primer3.dpal.DPAlignment;
 
 public class DPAlArgHolder {
-	DPAlignmentArgs local;
+	public DPAlignmentArgs local;
 	DPAlignmentArgs end;
-	DPAlignmentArgs local_end;
-	DPAlignmentArgs local_ambig;
-	DPAlignmentArgs local_end_ambig;
+	public DPAlignmentArgs local_end;
+	public DPAlignmentArgs local_ambig;
+	public DPAlignmentArgs local_end_ambig;
 	
 //	PRIMER_LEFT_0_SEQUENCE= GTGAAGCCTCAGGTAGTGCA
 //	PRIMER_RIGHT_0_SEQUENCE= CTCTGTCGACTTTGCCACCA

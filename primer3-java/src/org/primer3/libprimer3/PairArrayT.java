@@ -24,4 +24,29 @@ public class  PairArrayT {
 		  this.num_pairs++;
 		  
 	  }
+	  
+	  public void clearSet()
+	  {
+		  pairs.clear();
+		  num_pairs = 0;
+	  }
+
+
+	List<PrimerPair> currentSet = null;
+	public void cacheCurrent() {
+		currentSet = this.pairs;
+		this.pairs =new ArrayList<PrimerPair>();
+		this.num_pairs = 0;
+	}
+
+
+
+	public void mergeBests() {
+		
+		currentSet.addAll(pairs);
+		num_pairs =  currentSet.size();
+		pairs = currentSet;
+		currentSet = null;
+		
+	}
 }

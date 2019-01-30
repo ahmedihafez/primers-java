@@ -10,6 +10,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -47,10 +48,10 @@ public class Primer3Main {
 				.build();
 		options.addOption(argOption);
 
-		
-		
-		
-		
+
+
+
+
 		argOption = Option.builder("fasta")
 				.hasArg()
 				.argName( "fasta" )
@@ -58,9 +59,9 @@ public class Primer3Main {
 				.desc("Fasta file contains input sequenes" )
 				.build();
 		options.addOption(argOption);
-		
-		
-		
+
+
+
 		argOption = Option.builder("d")
 				.hasArg()
 				.argName( "default_version" )
@@ -130,12 +131,12 @@ public class Primer3Main {
 			// parse the command line arguments
 			CommandLine line = parser.parse( options, args );
 
-//			if(line.getOptions().length == 0 )
-//
-//			{
-//				formatter.printHelp(pr_program_name + " [options] <inputFile>", "head", options, "");
-//				//				formatter.printHelp( pr_program_name, options );
-//			}
+			//			if(line.getOptions().length == 0 )
+			//
+			//			{
+			//				formatter.printHelp(pr_program_name + " [options] <inputFile>", "head", options, "");
+			//				//				formatter.printHelp( pr_program_name, options );
+			//			}
 
 			return line;		    
 		}
@@ -151,16 +152,16 @@ public class Primer3Main {
 	static public void main(String[] args)
 	{
 
-//		args = "/data/softwares/primer3-primer3/test/primer_rat_input".split(" ");
-		
-//		args = "/data/softwares/primer3-primer3/example".split(" ");
-		
-//		args = "/data/softwares/primer3-primer3/test/primer_not_ok_regions_input".split(" ");
-//		args = "/data/softwares/primer3-primer3/test/primer_first_base_index_input ".split( " " );
-		
-//		args = "/data/softwares/primer3-primer3/test/primer_high_gc_load_set_input --p3_settings_file /data/softwares/primer3-primer3/test/primer_high_gc_load_set.set".split( " " );
+		//		args = "/data/softwares/primer3-primer3/test/primer_rat_input".split(" ");
 
-		
+		//		args = "/data/softwares/primer3-primer3/example".split(" ");
+
+		//		args = "/data/softwares/primer3-primer3/test/primer_not_ok_regions_input".split(" ");
+		//		args = "/data/softwares/primer3-primer3/test/primer_first_base_index_input ".split( " " );
+
+		//		args = "/data/softwares/primer3-primer3/test/primer_high_gc_load_set_input --p3_settings_file /data/softwares/primer3-primer3/test/primer_high_gc_load_set.set".split( " " );
+
+
 		/* Setup the input data structures handlers */
 		boolean format_output = false;
 		boolean strict_tags = false;
@@ -172,8 +173,8 @@ public class Primer3Main {
 		int compat = 0;
 		int invalid_flag = 0;
 		String fastaInputFile = null;
-		
-		
+
+
 		String p3_settings_path = null;
 		String output_path = null;
 		String error_path = null;
@@ -235,12 +236,12 @@ public class Primer3Main {
 			dump_args = true ;
 		if(line.hasOption("formated_output"))
 			format_output = true;
-		
-		
+
+
 		if(line.hasOption("fasta"))
 			fastaInputFile = line.getOptionValue("fasta");
-		
-		
+
+
 		// set redirfile
 		if(error_path != null && !error_path.isEmpty())
 		{
@@ -309,10 +310,10 @@ public class Primer3Main {
 		/* Allocate the space for global settings and fill in default parameters */
 		global_pa = P3GlobalSettings.p3_create_global_settings(default_version);
 
-		
 
-		
-		
+
+
+
 		if(global_pa == null)
 		{
 			print_usage();
@@ -333,7 +334,7 @@ public class Primer3Main {
 				System.exit(-1);
 			}
 		}
-		
+
 
 		/* Settings files have to be read in just below, and
 	    	the functions need a temporary sarg */
@@ -388,6 +389,11 @@ public class Primer3Main {
 		sarg = null ;
 
 		read_boulder_record_res = new read_boulder_record_results();
+
+		// for new part in multiplex 
+		ArrayList<P3RetVal> lateResult = new ArrayList<P3RetVal>();
+
+
 		try {
 			while(true)
 			{
@@ -395,7 +401,7 @@ public class Primer3Main {
 				 * initialized here because Values are _not_ retained across different
 				 * input records. */
 				sarg = new SeqArgs();
-				
+
 				/* Reset all errors handlers and the return structure */
 				fatal_parse_err = new StringBuilder();
 				nonfatal_parse_err= new StringBuilder();
@@ -516,6 +522,10 @@ public class Primer3Main {
 				LibPrimer3.p3_set_gs_primer_file_flag(global_pa,
 						read_boulder_record_res.file_flag);
 				retval = LibPrimer3.choose_primers(global_pa, sarg);
+
+				if(sarg.isMultiplex )
+					lateResult.add(retval);
+
 				//	       if (null == retval) exit(-2); /* Out of memory. */
 				/* If it was necessary to use a left_input, right_input,
 			   or internal_oligo_input primer that was
@@ -546,18 +556,43 @@ public class Primer3Main {
 					}
 				}
 				if (format_output) {
-				    boulder. print_format_output(io_version, global_pa,
-				                          sarg, retval, pr_release,
-				                          read_boulder_record_res.explain_flag);
-				    } else {
-				      /* Use boulder output */
-				    	retval.print_boulder(io_version, global_pa, sarg, 
-				                    read_boulder_record_res.explain_flag != 0);
-				    }
+					boulder. print_format_output(io_version, global_pa,
+							sarg, retval, pr_release,
+							read_boulder_record_res.explain_flag);
+				} else {
+					/* Use boulder output */
+					retval.print_boulder(io_version, 
+							read_boulder_record_res.explain_flag != 0);
+				}
 
-				
+
 			} // end while(true)
+
+
+			boolean multiplexHasResult = LibPrimer3.multiplexSearch.search();
+			// this part is for multiplex after finishing each seq, we wait to all seqs within the same well are ready to search
+
+			for(P3RetVal lateRetval : lateResult)
+			{
+				if (format_output) {
+					boulder. print_format_output(io_version, global_pa,
+							sarg, lateRetval, pr_release,
+							read_boulder_record_res.explain_flag);
+				} else {
+					/* Use boulder output */
+					lateRetval.print_boulder(io_version, 
+							read_boulder_record_res.explain_flag != 0);
+				}
+			}
+			if(multiplexHasResult ) {
+				LibPrimer3.multiplexSearch.print_boulder(io_version);
+			}
+
+
 		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -581,7 +616,7 @@ public class Primer3Main {
 	}
 	private static void read_thermodynamic_parameters() {
 
-//		ThAl.get_thermodynamic_values();
+		//		ThAl.get_thermodynamic_values();
 
 		// FIXME :: remove this
 		thermodynamic_params_path = "";

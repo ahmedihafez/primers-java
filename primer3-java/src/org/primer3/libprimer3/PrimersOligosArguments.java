@@ -619,12 +619,12 @@ public class PrimersOligosArguments {
 	 * @param datum
 	 */
 	public void setMaxRepeatCompl(String datum) {
+		// TODO :: test this we internal probes settings
 		if(datum.contains("%"))
 		{
-			// this is a precentage
+			// this is a percentage
 			datum = datum.substring(0, datum.length()-1);
 			maxRepeatComplIsPercent = true;
-					
 		}
 		else
 		{

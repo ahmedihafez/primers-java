@@ -1,5 +1,7 @@
 package org.primer3.libprimer3;
 
+import java.util.ArrayList;
+
 /* This struct captures informatin about the similarity of
    an oligo (primer) to elements in a mispriming (repeat)
    library (which is read in from a fasta file). */
@@ -13,9 +15,9 @@ public class RepSim {
      * (Used when the objective function involves
      * minimization of mispriming possibilities.)
      */
-	short min;        
+	int min;        
 	/** The index of the maximum score in slot 'score' (below). */
-	short max;        
+	int max;        
 	
 	/** 
      * Array of similarity (i.e. false-priming) scores,
@@ -24,5 +26,5 @@ public class RepSim {
      * score is set to NULL to indicate that
      * the rep_sim structure is uninitialized.
      */
-	double[] score = null;    
+	public ArrayList<Double> score = new ArrayList<Double>();    
 }

@@ -1841,5 +1841,16 @@ public class P3GlobalSettings {
 	{
 		return inputFasta;
 	}
+
+	int mispriming3EndScore  = 0;
+	public void setMispriming3EndScore(String datum) {
+		mispriming3EndScore = Integer.parseInt(datum);
+	}
+	public void setMispriming3EndScore(int  value) {
+		mispriming3EndScore = value;
+	}
+	public int getMispriming3EndScore() {
+		return mispriming3EndScore;
+	}
 	
 }

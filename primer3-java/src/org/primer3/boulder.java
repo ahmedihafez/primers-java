@@ -457,6 +457,9 @@ public class boulder {
 					else if (key.equals("PRIMER_MAX_LIBRARY_MISPRIMING")) {
 						pa.primersArgs.setMaxRepeatCompl(datum);
 					}
+					else if(key.equals("PRIMER_LIBRARY_MISPRIMING_3END")){
+						pa.setMispriming3EndScore(datum);
+					}
 					else if (key.equals("PRIMER_INTERNAL_MAX_LIBRARY_MISHYB")) {
 						pa.oligosArgs.setMaxRepeatCompl(datum);
 					}
@@ -967,7 +970,7 @@ public class boulder {
 			sa.p3_set_sa_force_right_end(datum);
 		}
 		else if (key.equals("SEQUENCE_MULTIPLEX")) {
-			sa.setMultplex(datum);
+			sa.setMultiplex(datum);
 		}
 	}
 

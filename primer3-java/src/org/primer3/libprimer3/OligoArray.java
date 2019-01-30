@@ -19,7 +19,7 @@ public class OligoArray {
 	 OligoType type;
 
 	 /* Primers statistics. */
-	 OligoStats expl = new OligoStats();
+	 public OligoStats expl = new OligoStats();
 
 	 
 	// this is add here because it is been used a lot ?? : 

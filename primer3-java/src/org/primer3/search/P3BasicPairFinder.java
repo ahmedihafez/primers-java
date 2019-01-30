@@ -22,7 +22,7 @@ public class P3BasicPairFinder extends Primer3Finder {
 	}
 
 	@Override
-	public void getNextResult() throws Exception {
+	public void getLocalNextResult() throws Exception {
 		// TODO Auto-generated method stub
 		PairArrayT best_pairs = retval.best_pairs;
 
@@ -274,7 +274,9 @@ public class P3BasicPairFinder extends Primer3Finder {
 					if (!pair_found) {
 						/* Characterize the pair. h is initialized by this call. */
 						h = new PrimerPair();
-						int tmp =  h.characterize_pair(retval, retval.pa, retval.sa, j, i,
+						int tmp =  h.characterize_pair(retval,
+//								retval.pa, retval.sa,
+								left, right,
 								dpal_arg_to_use,
 								thal_arg_to_use,
 								update_stats);
@@ -395,7 +397,7 @@ public class P3BasicPairFinder extends Primer3Finder {
 				}
 
 				/* If we have enough then stop the while loop */
-				if (retval.pa.getNumReturn() == best_pairs.num_pairs) {
+				if (retval.pa.getNumReturn() <= best_pairs.num_pairs) {
 					break;
 				}
 			}

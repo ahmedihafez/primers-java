@@ -5,10 +5,10 @@ import org.primer3.thal.ThermodynamicAlignmentArguments;
 
 public class THAlArgHolder {
 	
-	ThermodynamicAlignmentArguments any;
-	ThermodynamicAlignmentArguments end1;
-	ThermodynamicAlignmentArguments end2;
-	ThermodynamicAlignmentArguments hairpin_th;
+	public ThermodynamicAlignmentArguments any;
+	public ThermodynamicAlignmentArguments end1;
+	public ThermodynamicAlignmentArguments end2;
+	public ThermodynamicAlignmentArguments hairpin_th;
 	
 	
 	

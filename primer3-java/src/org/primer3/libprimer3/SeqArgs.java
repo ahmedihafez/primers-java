@@ -1239,10 +1239,11 @@ public class SeqArgs {
 	}
 
 
-	boolean isMultiplex = false;
+	public boolean isMultiplex = false;
 	static final String DEFAULT_MULTIPLEX_GROUP = "DefaultGroup";
-	String mutliplexGroup = DEFAULT_MULTIPLEX_GROUP;
-	public void setMultplex(String datum) {
+	
+	public String mutliplexGroup = DEFAULT_MULTIPLEX_GROUP;
+	public void setMultiplex(String datum) {
 		
 		if(datum.equals("1")) {
 			// enable multiplex in the global group

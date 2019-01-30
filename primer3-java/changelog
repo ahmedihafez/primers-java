@@ -1,0 +1,9 @@
+
+PRIMER_MAX_LIBRARY_MISPRIMING/PRIMER_INTERNAL_MAX_LIBRARY_MISHYB : 
+	add % to the input number to calc similary as percent instead of taking a fixed number for all primers
+	
+add new Args SEQUENCE_MULTIPLEX
+set to 1 to enable multiplex , for each seq you want to add to, if given other than 0/1 , then it is considered as an id for the 
+multiplex group.
+
+add new args PRIMER_LIBRARY_MISPRIMING_3END 

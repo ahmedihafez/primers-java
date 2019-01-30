@@ -1,7 +1,13 @@
 package org.primer3.libprimer3;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Set;
+
 import org.primer3.dpal.AlignmentException;
+import org.primer3.dpal.DPAlignment;
 import org.primer3.dpal.DPAlignmentArgs;
+import org.primer3.dpal.DPAlignmentResults;
 import org.primer3.masker.masker;
 import org.primer3.masker.oligo_pair;
 import org.primer3.oligotm.OligoTMCalculator;
@@ -58,7 +64,7 @@ public class PrimerRecord {
 	// new add here and should be maintained
 	public OligoType rec_type;
 
-	RepSim repeat_sim = new RepSim();
+	public RepSim repeat_sim = new RepSim();
 	/*
 	 * Information on the best repeat library (mispriming library) match for
 	 * this oligo (primer), plus additional scores.
@@ -555,7 +561,7 @@ public class PrimerRecord {
 				sum += pa.primersArgs.weights.num_ns * this.num_ns;
 			if (pa.primersArgs.weights.repeat_sim > 0)
 				sum += pa.primersArgs.weights.repeat_sim
-						* this.repeat_sim.score[this.repeat_sim.max];
+						* this.repeat_sim.score.get(this.repeat_sim.max);
 			if (!bf_get_overlaps_target()) {
 				/*
 				 * We might be evaluating p_obj_fn with this.target if the
@@ -708,7 +714,7 @@ public class PrimerRecord {
 				sum += pa.oligosArgs.weights.num_ns * this.num_ns;
 			if (pa.oligosArgs.weights.repeat_sim > 0)
 				sum += pa.oligosArgs.weights.repeat_sim
-						* this.repeat_sim.score[this.repeat_sim.max];
+						* this.repeat_sim.score.get(this.repeat_sim.max);
 
 			/* FIXME :: QUALITY WT */
 			if (pa.oligosArgs.weights.seq_quality > 0)
@@ -790,7 +796,7 @@ public class PrimerRecord {
 		 * Set repeat_sim to NULL as indicator that the repeat_sim struct is not
 		 * initialized.
 		 */
-		this.repeat_sim.score = null;
+		this.repeat_sim.score.clear();
 
 		this.gc_content = this.num_ns = 0;
 		this.overlaps_overlap_position = false;
@@ -1319,12 +1325,111 @@ public class PrimerRecord {
 		return new int[] { first, last };
 	}
 
+	
+	
+	
 	public void oligo_repeat_library_mispriming(P3GlobalSettings pa,
-			SeqArgs sa, OligoType l, OligoStats ostats,
-			DPAlArgHolder dpal_arg_to_use, StringBuilder glob_err)
-			throws AlignmentException {
+			seq_lib lib,
+			OligoType l, OligoStats ostats,
+			DPAlArgHolder dpal_arg_to_use, StringBuilder glob_err , Set<String> exculdeSeq) throws AlignmentException
+	{
+		
 		PrimerRecord h = this;
 		double w;
+		int min, max;
+		double max_lib_compl;
+		boolean  max_lib_compl_is_percent = false;
+		/* First, check the oligo against the repeat library. */
+		if (l == OligoType.OT_INTL) {
+			max_lib_compl =  pa.oligosArgs.getMaxRepeatCompl();
+			max_lib_compl_is_percent = pa.oligosArgs.maxRepeatComplIsPercent;
+		} else {
+			max_lib_compl =  pa.primersArgs.getMaxRepeatCompl();
+			max_lib_compl_is_percent = pa.primersArgs.maxRepeatComplIsPercent;
+
+		}
+
+		char[] s =  this.oligoSeq ;// oligo_compute_sequence_and_reverse(sa, l);
+		char[] s_r =  this.oligoRevSeq;//Sequence.p3_reverse_complement(s);
+//		h.repeat_sim.score = new ArrayList<Double>();
+		h.repeat_sim.max = h.repeat_sim.min = 0;
+		max = min = 0;
+		h.repeat_sim.name = lib.getName(0);
+		max = h.repeat_sim.max;
+		for (int i = 0; i < lib.seq_lib_num_seq(); i++) {
+			w = 0;
+			if(exculdeSeq == null || !exculdeSeq.contains(lib.getName(i)))
+			{
+				if (l == OligoType.OT_LEFT)
+					w = lib.weight.get(i)
+							* LibPrimer3
+									.align(s,
+											lib.getSeq(i),
+											(pa.isLibAmbiguityCodesConsensus() ? dpal_arg_to_use.local_end_ambig
+													: dpal_arg_to_use.local_end) ,pa.getMispriming3EndScore() );
+	
+				else if (l == OligoType.OT_INTL)
+					w = lib.weight.get(i)
+							* LibPrimer3
+									.align(s,
+											lib.getSeq(i),
+											(pa.isLibAmbiguityCodesConsensus() ? dpal_arg_to_use.local_ambig
+													: dpal_arg_to_use.local));
+	
+				else
+					w = lib.weight.get(i)
+							* LibPrimer3
+									.align(s_r,
+											lib.getSeqRevCompl(i),
+											(pa.isLibAmbiguityCodesConsensus() ? dpal_arg_to_use.local_end_ambig
+													: dpal_arg_to_use.local));
+				}
+			// if (w > SHRT_MAX || w < SHRT_MIN) {
+			// /* This check is necessary for the next 9 lines */
+			// pr_append_new_chunk( error,
+			// "Out of range error occured calculating match to repeat library");
+			// return;
+			// }
+			
+			// TODO :: calc w as percent ,, this is an optional value
+			h.repeat_sim.score.add(w);
+			if (max_lib_compl_is_percent)
+				w = 100 *( w / this.length);
+
+			if (w > max) {
+				max = (int) w;
+				h.repeat_sim.max = h.repeat_sim.score.size()-1;
+				h.repeat_sim.name = lib.getName(i);
+			}
+			if (w < min) {
+				min = (int) w;
+				h.repeat_sim.min = (short) i;
+			}
+
+			if (w > max_lib_compl) {
+				op_set_high_similarity_to_non_template_seq();
+				ostats.repeat_score++;
+				ostats.ok--;
+				if (!h.must_use)
+					return;
+			} /* if w > max_lib_compl */
+		} /* for */
+	}
+	
+	
+	
+	
+	
+	public void oligo_repeat_library_mispriming(
+			P3GlobalSettings pa,
+			// TODO :: clean sa args no longer needed
+			SeqArgs sa, 
+			// TODO l is a member of h
+			OligoType l, 
+			OligoStats ostats,
+			DPAlArgHolder dpal_arg_to_use, StringBuilder glob_err)
+			throws AlignmentException {
+		
 		seq_lib lib;
 		int i;
 
@@ -1343,8 +1448,8 @@ public class PrimerRecord {
 
 		}
 
-		char[] s =  this.oligoSeq ;// oligo_compute_sequence_and_reverse(sa, l);
-		char[] s_r =  this.oligoRevSeq;//Sequence.p3_reverse_complement(s);
+//		char[] s =  this.oligoSeq ;// oligo_compute_sequence_and_reverse(sa, l);
+//		char[] s_r =  this.oligoRevSeq;//Sequence.p3_reverse_complement(s);
 
 		/*
 		 * Calculate maximum similarity to sequences from user defined repeat
@@ -1353,67 +1458,11 @@ public class PrimerRecord {
 
 		if (lib != null) {
 			/* Library exists and is non-empty. */
+			oligo_repeat_library_mispriming(pa,
+					lib,
+					l, ostats,
+					dpal_arg_to_use, glob_err, null);
 
-			h.repeat_sim.score = new double[lib.seq_lib_num_seq()];
-			h.repeat_sim.max = h.repeat_sim.min = 0;
-			max = min = 0;
-			h.repeat_sim.name = lib.getName(0);
-
-			for (i = 0; i < lib.seq_lib_num_seq(); i++) {
-				if (l == OligoType.OT_LEFT)
-					w = lib.weight.get(i)
-							* LibPrimer3
-									.align(s,
-											lib.getSeq(i),
-											(pa.isLibAmbiguityCodesConsensus() ? dpal_arg_to_use.local_end_ambig
-													: dpal_arg_to_use.local_end));
-
-				else if (l == OligoType.OT_INTL)
-					w = lib.weight.get(i)
-							* LibPrimer3
-									.align(s,
-											lib.getSeq(i),
-											(pa.isLibAmbiguityCodesConsensus() ? dpal_arg_to_use.local_ambig
-													: dpal_arg_to_use.local));
-
-				else
-					w = lib.weight.get(i)
-							* LibPrimer3
-									.align(s_r,
-											lib.getSeqRevCompl(i),
-											(pa.isLibAmbiguityCodesConsensus() ? dpal_arg_to_use.local_end_ambig
-													: dpal_arg_to_use.local));
-
-				// if (w > SHRT_MAX || w < SHRT_MIN) {
-				// /* This check is necessary for the next 9 lines */
-				// pr_append_new_chunk( error,
-				// "Out of range error occured calculating match to repeat library");
-				// return;
-				// }
-				
-				// TODO :: calc w as percent ,, this is an optional value
-				h.repeat_sim.score[i] = w;
-				if (max_lib_compl_is_percent)
-					w = 100 *( w / this.length);
-
-				if (w > max) {
-					max = (int) w;
-					h.repeat_sim.max = (short) i;
-					h.repeat_sim.name = lib.getName(i);
-				}
-				if (w < min) {
-					min = (int) w;
-					h.repeat_sim.min = (short) i;
-				}
-
-				if (w > max_lib_compl) {
-					op_set_high_similarity_to_non_template_seq();
-					ostats.repeat_score++;
-					ostats.ok--;
-					if (!h.must_use)
-						return;
-				} /* if w > max_lib_compl */
-			} /* for */
 		} /* if library exists and is non-empty */
 		/* End of checking against the repeat library */
 
@@ -1773,6 +1822,125 @@ public class PrimerRecord {
 		// PR_ASSERT(start + o.length <= seq_len);
 		char[] s = Sequence._pr_substr(sa.getSequence(), start, this.length);
 		return Sequence.p3_reverse_complement(s);
+	}
+
+
+	// Multi targets specfic primers : other targets that this primer can bind to
+	// exact
+	public HashMap<String,Integer> targetSpecificIndex = new HashMap<String, Integer>();
+	// targets specfic primers
+	public boolean isTargetSpecific = true;
+	
+	
+	public void calcSpecific(seq_lib targets_lib,String targetName, String reversePrefixTargets, DPAlignmentArgs dpAlignmentArgs) throws AlignmentException {
+		
+		for(int i = 0 ; i < targets_lib.seq_lib_num_seq(); i++)
+		{
+			
+			DPAlignmentResults r = null;
+			
+			String oTargetName = targets_lib.getName(i);
+			if(oTargetName.equals(targetName) || oTargetName.contains(reversePrefixTargets))
+				continue;
+			
+			if( rec_type == OligoType.OT_RIGHT) {
+				r = DPAlignment.dpAlign(this.getOligoRevSeq(), 
+						targets_lib.getSeqRevCompl(i),dpAlignmentArgs);
+			}else
+			{
+				r = DPAlignment.dpAlign(this.getOligoSeq(), 
+						targets_lib.getSeq(i),dpAlignmentArgs);
+			}
+			// if score == len then is the same
+			// if score is about 90% then see the last 3 and 
+			
+			if (r.score  ==  (this.length*100 ))
+			{
+				// TODO :: see if the this is the correct coordinates 
+				if(this.rec_type ==OligoType.OT_RIGHT ) {
+					targetSpecificIndex.put(oTargetName, (targets_lib.getSeqRevCompl(i).length -r.align_end_2 ) - this.length);
+				}
+				else
+				{
+					targetSpecificIndex.put(oTargetName, r.align_end_2-this.length);
+				}
+				//isTargetSpecific = false;
+			}
+			else
+			{
+				if(r.align_end_1 != this.length-1)
+				{
+					System.err.println("r.align_end_1 != this.length-1");
+				}
+				String targetSeqMatch,thisSeqMatch;
+				if( Math.abs( (r.score - (this.length*100))) <= 800   ) {
+					String last3End_Target = ""
+							,last3End_Primer = "";
+					if( rec_type == OligoType.OT_RIGHT) {
+//						 targetSeqMatch  = String.copyValueOf(targets_lib.getSeqRevCompl(i), r.align_end_2-this.length,this.length);
+//						 thisSeqMatch  = String.copyValueOf(this.getOligoRevSeq(), 0,this.length);
+						
+						last3End_Target =  String.copyValueOf(targets_lib.getSeqRevCompl(i), r.align_end_2-3, 3);
+						last3End_Primer =  String.copyValueOf(this.getOligoRevSeq(), r.align_end_1-3, 3);						
+					}
+					else if ( rec_type == OligoType.OT_LEFT) {
+//						 targetSeqMatch  = String.copyValueOf(targets_lib.getSeq(i), r.align_end_2-this.length,this.length);
+//						 thisSeqMatch  = String.copyValueOf(this.getOligoSeq(), 0,this.length);
+					
+						last3End_Target =  String.copyValueOf(targets_lib.getSeq(i), r.align_end_2-2, 3);
+						last3End_Primer =  String.copyValueOf(this.getOligoSeq(), r.align_end_1-2, 3);
+					}
+					if(     last3End_Primer.length() == 3 && last3End_Target.length()== 3 )
+					{
+						if(last3End_Primer.charAt(0) == last3End_Target.charAt(0) && 
+								( last3End_Primer.charAt(1) == last3End_Target.charAt(1) || 
+									last3End_Primer.charAt(2) == last3End_Target.charAt(2))) {
+							isTargetSpecific = false;
+						}
+					}
+				}
+			}
+				
+		}
+		
+	}
+
+
+
+	int findSubSeq(char[] seq, char[] oligoSeq2, int maxMisMatch) {
+		int subLen = oligoSeq2.length;
+		int numMisMatch = 0;
+		int offset3End = 0;
+		if(rec_type != OligoType.OT_RIGHT)
+		{
+			offset3End = subLen - 4;
+		}
+		// last one should differ
+		
+		for(int i = 0 ; i < seq.length - subLen;i++)
+		{
+			numMisMatch = 0;
+			for(int j =0 ; j < subLen ; j++ )
+			{
+				if(seq[i+j] != oligoSeq2[j])
+				{
+					numMisMatch++;
+					if(numMisMatch > maxMisMatch)
+						break;
+				}
+				
+			}
+			if(numMisMatch == 0) 
+			{
+				
+				return i;
+			}
+			// not yet it could 
+			// compare last 3 or first three
+//			if(seq[i] ==  )
+			
+		}
+		return -1;
 	}
 
 }

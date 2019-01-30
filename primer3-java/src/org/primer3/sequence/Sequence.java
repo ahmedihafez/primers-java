@@ -544,6 +544,21 @@ public class Sequence  implements Iterable<Character>{
 		return -1;
 	}
 
+	public static boolean equals(char[] oligoSeq1, char[] oligoSeq2) {
+
+		if(oligoSeq1.length == oligoSeq2.length)
+		{
+			for(int i = 0; i < oligoSeq1.length ; i++)
+			{
+				if(oligoSeq1[i] != oligoSeq2[i])
+					return false;
+			}
+			return true;
+		}
+
+		return false;
+	}
+
 	
 
 	

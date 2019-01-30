@@ -18,6 +18,7 @@ import org.primer3.masker.masking_direction;
 import org.primer3.masker.output_sequence;
 import org.primer3.oligotm.OligoTMCalculator;
 import org.primer3.p3_seq_lib.seq_lib;
+import org.primer3.search.P3MultiplexSearch;
 import org.primer3.sequence.Sequence;
 import org.primer3.thal.ThermodynamicAlignmentException;
 import org.primer3.thal.ThermodynamicAlignment;
@@ -157,6 +158,8 @@ public class LibPrimer3 {
 
 
 
+	static public P3MultiplexSearch multiplexSearch = new P3MultiplexSearch();
+	
 	/** 
 	 * Choose individual primers or oligos, or primer pairs, or primer
 	 * pairs with internal oligos. On ENOMEM return NULL and set errno. 
@@ -293,8 +296,16 @@ public class LibPrimer3 {
 
 			/* Select primer pairs if needed */
 			if (retval.output_type == P3OutputType.primer_pairs) {
-				retval.choose_pairs(dpal_arg_to_use, thal_arg_to_use,
+				
+				if(sa.isMultiplex)
+				{
+					multiplexSearch.addTarget(retval);
+				}
+				else 
+				{
+					retval.choose_pairs(dpal_arg_to_use, thal_arg_to_use,
 						thal_oligo_arg_to_use);
+				}
 //				choose_pair_or_triple_optimized(retval, pa, sa, dpal_arg_to_use, thal_arg_to_use,
 //						thal_oligo_arg_to_use);
 			}
@@ -1243,7 +1254,9 @@ public class LibPrimer3 {
 					/* Characterize the pair. h is initialized by this call. */
 					{
 						h = new PrimerPair();
-						int tmp =  h.characterize_pair(retval, pa, sa, j, i,
+						int tmp =  h.characterize_pair(retval, 
+//								pa, sa, 
+								left, right,
 								dpal_arg_to_use,
 								thal_arg_to_use,
 								update_stats);
@@ -1512,7 +1525,9 @@ public class LibPrimer3 {
 					/* Characterize the pair. h is initialized by this call. */
 					{
 						h = new PrimerPair();
-						int tmp =  h.characterize_pair(retval, pa, sa, j, i,
+						int tmp =  h.characterize_pair(retval, 
+//								pa, sa, 
+								left, right,
 								dpal_arg_to_use,
 								thal_arg_to_use,
 								update_stats);
@@ -1711,7 +1726,7 @@ public class LibPrimer3 {
 					if (!h.OK_OR_MUST_USE()) continue;
 				}
 
-				if (h.repeat_sim.score == null) {
+				if (h.repeat_sim.score.size() == 0) {
 					h.oligo_repeat_library_mispriming( pa, sa, OligoType.OT_INTL, retval.intl.expl,
 							dpal_arg_to_use, retval.glob_err);
 					if (!h.OK_OR_MUST_USE()) continue;
@@ -2486,7 +2501,7 @@ public class LibPrimer3 {
 
 				/* Set repeat_sim to NULL as indicator that the repeat_sim
 		         struct is not initialized. */
-				h.repeat_sim.score = null;
+				h.repeat_sim.score.clear();
 
 				/* Figure out positions for left primers and internal oligos */
 				if (oligo.type != OligoType.OT_RIGHT) {
@@ -3554,8 +3569,11 @@ public class LibPrimer3 {
 		return new String(s2);
 	}
 
-
 	public static double align(char[] s1, char[] s2, DPAlignmentArgs a) throws AlignmentException {
+		return align( s1,  s2, a,0);
+	}
+
+	public static double align(char[] s1, char[] s2, DPAlignmentArgs a , int end3ScoreCalc) throws AlignmentException {
 
 
 		DPAlignmentResults r =  null;
@@ -3575,6 +3593,78 @@ public class LibPrimer3 {
 		if (r.score == DPAlignment.DPAL_ERROR_SCORE) {
 			throw new AlignmentException(r.msg)	;
 		}
+		
+		// a.flag == DPAlignment.DPAL_LOCAL_END
+
+		
+		if (end3ScoreCalc > 0 && r.align_end_2  > 3 )
+		{
+			double pen3End  = 0;
+			char[] ts = new char[4];
+			ts[3] =  Character.toUpperCase(s2[r.align_end_2-0]);
+			ts[2] =  Character.toUpperCase(s2[r.align_end_2-1]);
+			ts[1] =  Character.toUpperCase(s2[r.align_end_2-2]);
+			ts[0] =  Character.toUpperCase(s2[r.align_end_2-3]);
+
+			
+			int s1Len = s1.length;
+			double _1 = Character.toUpperCase(s1[s1Len-1]) == ts[3] ? 0.5 : -0.5;
+			double _2 = Character.toUpperCase(s1[s1Len-2]) == ts[2] ? 1 : - 1;
+			double _3 = Character.toUpperCase(s1[s1Len-3]) == ts[3] ? 1.5 : -1.5;
+//			pen3End = _1 + _2 + _3;
+			
+			if( Character.toUpperCase(s1[s1Len-1]) == ts[3]  ) 
+			{
+				pen3End += 0.5 ;
+				if( Character.toUpperCase(s1[s1Len-2]) == ts[2]  )
+				{
+					pen3End += 1 ;
+					if( Character.toUpperCase(s1[s1Len-3]) == ts[1]  )
+					{
+						pen3End += 1.5 ;
+					}
+				}
+				else
+				{
+					if( Character.toUpperCase(s1[s1Len-3]) == ts[1]  )
+					{
+						pen3End += 0.5 ;
+					}
+				}
+
+			}
+			else {
+				pen3End -= 0.5 ;
+				if( Character.toUpperCase(s1[s1Len-2]) == ts[2]  )
+				{
+					pen3End += 1 ;
+					if( Character.toUpperCase(s1[s1Len-3]) == ts[1]  )
+					{
+						pen3End += 1.5 ;
+					}
+					else
+					{
+						pen3End -= 1.5 ;		
+					}
+				}
+				else
+				{
+					pen3End -= 1.0 ;
+					if( Character.toUpperCase(s1[s1Len-3]) == ts[1]  ) {
+						pen3End += 1.5 ;
+					}
+					else
+					{
+						pen3End -= 1.5 ;
+					}
+				}
+			}
+			if(pen3End > 0)
+				r.score += 2*pen3End;
+			else 
+				r.score += pen3End;
+		}
+
 		return ((r.score < 0.0) ? 0.0 : r.score / LibPrimer3.PR_ALIGN_SCORE_PRECISION);
 	}
 

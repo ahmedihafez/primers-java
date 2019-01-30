@@ -1,5 +1,7 @@
 package org.primer3.libprimer3;
 
+import java.util.List;
+
 import org.primer3.boulder;
 import org.primer3.p3_seq_lib.seq_lib;
 import org.primer3.search.P3BasicPairFinder;
@@ -120,7 +122,7 @@ public class P3RetVal {
 	}
 
 
-	public void print_boulder(int io_version,P3GlobalSettings pa, SeqArgs sa, boolean   explain_flag) {
+	public void print_boulder(int io_version, boolean   explain_flag) {
 
 		P3RetVal retval = this;
 		/* The pointers to warning tag */
@@ -435,11 +437,11 @@ public class P3RetVal {
 			if (pa.primersArgs.repeat_lib != null) {
 				if (go_fwd == 1)
 					System.out.format("PRIMER_LEFT%s_LIBRARY_MISPRIMING=%.2f, %s\n", suffix,
-							fwd.repeat_sim.score[fwd.repeat_sim.max],
+							fwd.repeat_sim.score.get(fwd.repeat_sim.max),
 							fwd.repeat_sim.name);
 				if (go_rev == 1)
 					System.out.format("PRIMER_RIGHT%s_LIBRARY_MISPRIMING=%.2f, %s\n", suffix,
-							rev.repeat_sim.score[rev.repeat_sim.max],
+							rev.repeat_sim.score.get(rev.repeat_sim.max),
 							rev.repeat_sim.name);
 				if (retval.output_type == P3OutputType.primer_pairs)
 					System.out.format("PRIMER_PAIR%s_LIBRARY_MISPRIMING=%.2f, %s\n", suffix,
@@ -450,7 +452,7 @@ public class P3RetVal {
 			/* Print out internal oligo mispriming scores */
 			if (go_int == 1 && pa.oligosArgs.repeat_lib != null)
 				System.out.format("PRIMER_%s%s_LIBRARY_MISHYB=%.2f, %s\n", int_oligo, suffix,
-						intl.repeat_sim.score[intl.repeat_sim.max],
+						intl.repeat_sim.score.get(intl.repeat_sim.max),
 						intl.repeat_sim.name);
 
 			/* If a sequence quality was provided, print it*/
@@ -674,16 +676,34 @@ public class P3RetVal {
 		                                             sa.getStartCodonPos(),  1);
 		  this.stop_codon_pos += sa.getIncludedRegionStart();		
 	}
-
+	public Primer3Finder p3Finder;
 	public void choose_pairs(DPAlArgHolder dpal_arg_to_use, THAlArgHolder thal_arg_to_use,
 			THAlArgHolder thal_oligo_arg_to_use) throws Exception {
 		
-		Primer3Finder p3Finder = new P3BasicPairFinder(this,dpal_arg_to_use, thal_arg_to_use, thal_oligo_arg_to_use);
+		p3Finder = new P3BasicPairFinder(this,dpal_arg_to_use, thal_arg_to_use, thal_oligo_arg_to_use);
 //		Primer3Finder p3Finder = new P3OptimzedFinder(this,dpal_arg_to_use, thal_arg_to_use, thal_oligo_arg_to_use);
 		p3Finder.getNextResult();
 //		p3Finder.getNextResult();
 	}
 
+	
+	public void inisSearch(DPAlArgHolder dpal_arg_to_use, THAlArgHolder thal_arg_to_use,
+			THAlArgHolder thal_oligo_arg_to_use)
+	{
+		p3Finder = new P3OptimzedFinder(this,dpal_arg_to_use, thal_arg_to_use, thal_oligo_arg_to_use);
+	}
+	
+	public PairArrayT best_pairs_All ;
+	public List<PrimerPair> getNextRusult() throws Exception
+	{
+//		// cache current set
+//		best_pairs.cacheCurrent();
+//		p3Finder.getNextResult();
+//		List<PrimerPair> newPairs = best_pairs.pairs;
+//		best_pairs.mergeBests();
+//		return newPairs;
+		return p3Finder.getNextResult();
+	}
 
 
 }

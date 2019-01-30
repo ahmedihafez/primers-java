@@ -1,5 +1,6 @@
 package org.primer3.libprimer3;
 
+import org.primer3.boulder;
 import org.primer3.dpal.AlignmentException;
 import org.primer3.oligotm.OligoTMCalculator;
 import org.primer3.p3_seq_lib.seq_lib;
@@ -14,7 +15,9 @@ public class PrimerPair {
 	static public int PAIR_OK = 1;
 	static public int PAIR_FAILED = 0;
 
-
+	
+	
+	
 	/**
 	 *  Penalty value of the primer pair 
 	 */
@@ -192,17 +195,20 @@ public class PrimerPair {
 	 * @throws AlignmentException 
 	 */
 	public  int characterize_pair(P3RetVal retval,
-			P3GlobalSettings pa,
-			SeqArgs sa,
-			int m,
-			int n,
+//			P3GlobalSettings pa,
+//			SeqArgs sa,
+			PrimerRecord left, // int m,
+			PrimerRecord right, // int n,
 			//int int_num,
 			DPAlArgHolder dpal_arg_to_use,
 			THAlArgHolder thal_arg_to_use,
 			boolean update_stats) throws ThermodynamicAlignmentException, AlignmentException {
 		
-		PrimerPair ppair = this;
+//		PrimerPair ppair = this;
 
+		P3GlobalSettings pa = retval.pa;
+		SeqArgs sa= retval.sa;
+		
 		char[] s1, s2,s1_rev, s2_rev;
 		double compl_end;
 		PairStats pair_expl = retval.best_pairs.expl;
@@ -211,12 +217,12 @@ public class PrimerPair {
 		int i;
 		ThermodynamicAlignmentArguments thal_args_for_template_mispriming  = LibPrimer3.use_end_for_th_template_mispriming != 0  ? 
 				thal_arg_to_use.end1 : thal_arg_to_use.any;
-		ppair.left = retval.fwd.oligo.get(m);
-		ppair.right = retval.rev.oligo.get(n);
-		ppair.product_size = retval.rev.oligo.get(n).start - retval.fwd.oligo.get(m).start+1;
+		this.left = left;//retval.fwd.oligo.get(m);
+		this.right = right;//retval.rev.oligo.get(n);
+		this.product_size = right.start - left.start+1;
 
-		ppair.target = 0;
-		ppair.compl_any = ppair.compl_end = 0;
+		this.target = 0;
+		this.compl_any = this.compl_end = 0;
 		if (update_stats) { 
 			pair_expl.considered++;
 		}
@@ -227,12 +233,12 @@ public class PrimerPair {
 
 		/* We must use the pair if the caller specifed
 		     both the left and the right primer. */
-		if (ppair.left.must_use != false && ppair.right.must_use != false) {
+		if (this.left.must_use != false && this.right.must_use != false) {
 
 			/* But if caller specified primers are in
 		       reversed order we cannot analyze them
 		       as a pair. */
-			if (ppair.product_size < 1) {
+			if (this.product_size < 1) {
 				pair_expl.reversed++;
 				return PAIR_FAILED;
 			}
@@ -240,13 +246,13 @@ public class PrimerPair {
 			must_use = true;
 		}
 
-		ppair.must_use = must_use;
+		this.must_use = must_use;
 
 		if (sa.getTargetRegions().getCount() > 0) {
-			if (ppair.pair_spans_target(sa)) {
-				ppair.target = 1;
+			if (this.pair_spans_target(sa)) {
+				this.target = 1;
 			} else {
-				ppair.target = -1;
+				this.target = -1;
 				if (update_stats) { pair_expl.target++; }
 				if (!must_use) return PAIR_FAILED;
 			}
@@ -258,11 +264,11 @@ public class PrimerPair {
 		if ((sa.getOkRegions().getCount() > 0) && (!sa.getOkRegions().any_pair)) {
 			
 			
-			boolean included = sa.getOkRegions().checkIncludedInAny(ppair);
+			boolean included = sa.getOkRegions().checkIncludedInAny(this);
 			// TODO :: Check if it work
 //			boolean included = false;
-//			int l_start = ppair.left.start, l_end = ppair.left.start + ppair.left.length - 1;
-//			int r_start = ppair.right.start - ppair.right.length + 1, r_end = ppair.right.start;
+//			int l_start = this.left.start, l_end = this.left.start + this.left.length - 1;
+//			int r_start = this.right.start - this.right.length + 1, r_end = this.right.start;
 //			for (i=0; i<sa.ok_regions.count; i++) {
 //				if (sa.ok_regions.left_pairs[i][0] == -1) {
 //					/* any left primer, check right primer */
@@ -299,38 +305,38 @@ public class PrimerPair {
 		/* ============================================================= */
 		/* Compute product Tm and related parameters; check constraints. */
 
-		if (ppair.right.start - ppair.left.start + 1 <= 0) {
+		if (this.right.start - this.left.start + 1 <= 0) {
 			System.err.print("temporary");
 		}
-		//		  PR_ASSERT(ppair.right.start - ppair.left.start + 1 > 0)
-		ppair.product_tm =  OligoTMCalculator.longSeqTM(sa.getTrimmedSequence(), ppair.left.start,
-				ppair.right.start - ppair.left.start + 1,
+		//		  PR_ASSERT(this.right.start - this.left.start + 1 > 0)
+		this.product_tm =  OligoTMCalculator.longSeqTM(sa.getTrimmedSequence(), this.left.start,
+				this.right.start - this.left.start + 1,
 				/* TO DO -- skewed, it would be better to not use p_args elements here */
 				pa.primersArgs.getSaltConcentration(),
 				pa.primersArgs.getDivalentConcentration(),
 				pa.primersArgs.getDntpConcentration());
 
-		//		  PR_ASSERT(ppair.product_tm != oligo_tm.OLIGOTM_ERROR);
+		//		  PR_ASSERT(this.product_tm != oligo_tm.OLIGOTM_ERROR);
 
 		min_oligo_tm
-		= ppair.left.temp > ppair.right.temp ? ppair.right.temp : ppair.left.temp;
-		ppair.product_tm_oligo_tm_diff = ppair.product_tm - min_oligo_tm;
-		ppair.t_opt_a  = 0.3 * min_oligo_tm + 0.7 * ppair.product_tm - 14.9;
+		= this.left.temp > this.right.temp ? this.right.temp : this.left.temp;
+		this.product_tm_oligo_tm_diff = this.product_tm - min_oligo_tm;
+		this.t_opt_a  = 0.3 * min_oligo_tm + 0.7 * this.product_tm - 14.9;
 
 		if (pa.getProductMinTM() != LibPrimer3.PR_DEFAULT_PRODUCT_MIN_TM
-				&& ppair.product_tm < pa.getProductMinTM()) {
+				&& this.product_tm < pa.getProductMinTM()) {
 			if (update_stats) { pair_expl.low_tm++; }
 			if (!must_use) return PAIR_FAILED;
 		}
 
 		if (pa.getProductMaxTM() != LibPrimer3.PR_DEFAULT_PRODUCT_MAX_TM
-				&& ppair.product_tm > pa.getProductMaxTM()) {
+				&& this.product_tm > pa.getProductMaxTM()) {
 			if (update_stats) { pair_expl.high_tm++; }
 			if (!must_use) return PAIR_FAILED;
 		}
 
-		ppair.diff_tm =  Math.abs(retval.fwd.oligo.get(m).temp - retval.rev.oligo.get(n).temp);
-		if (ppair.diff_tm > pa.getMaxDiffTm()) {
+		this.diff_tm =  Math.abs(left.temp - right.temp);
+		if (this.diff_tm > pa.getMaxDiffTm()) {
 			if (update_stats) { pair_expl.temp_diff++; }
 			if (!must_use) return PAIR_FAILED;
 		}
@@ -349,47 +355,47 @@ public class PrimerPair {
 		     primers if not already calculated. */
 
 		/* s1 is the forward oligo. */
-//		s1 = Sequence._pr_substr(sa.getTrimmedSequence(), retval.fwd.oligo.get(m).start, retval.fwd.oligo.get(m).length );
-		s1 = ppair.left.getOligoSeq();
+//		s1 = Sequence._pr_substr(sa.getTrimmedSequence(), left.start, left.length );
+		s1 = this.left.getOligoSeq();
 		/* s2 is the reverse oligo. */
-//		s2 = Sequence._pr_substr(sa.getTrimmedSequence(), retval.rev.oligo.get(n).start - retval.rev.oligo.get(n).length + 1, retval.rev.oligo.get(n).length);
-		s2 = ppair.right.getOligoSeq();
+//		s2 = Sequence._pr_substr(sa.getTrimmedSequence(), right.start - right.length + 1, right.length);
+		s2 = this.right.getOligoSeq();
 		
 //		s1_rev = Sequence.p3_reverse_complement(s1);
 //		s2_rev = Sequence.p3_reverse_complement(s2);
 
-		s1_rev = ppair.left.getOligoRevSeq();
-		s2_rev = ppair.right.getOligoRevSeq();
+		s1_rev = this.left.getOligoRevSeq();
+		s2_rev = this.right.getOligoRevSeq();
 				
 
-		if (retval.fwd.oligo.get(m).self_any == LibPrimer3.ALIGN_SCORE_UNDEF 
+		if (left.self_any == LibPrimer3.ALIGN_SCORE_UNDEF 
 				&& !pa.isThermodynamicOligoAlignment()) {
 			/* We have not yet computed the 'self_any' paramter,
 			       which is an estimate of self primer-dimer and secondary
 			       structure propensity. */
-			retval.fwd.oligo.get(m).oligo_compl( pa.primersArgs, retval.fwd.expl, dpal_arg_to_use, s1, s1_rev);
+			left.oligo_compl( pa.primersArgs, retval.fwd.expl, dpal_arg_to_use, s1, s1_rev);
 
-			if (!retval.fwd.oligo.get(m).OK_OR_MUST_USE()) {
+			if (!left.OK_OR_MUST_USE()) {
 				pair_expl.considered--;
 				if (!must_use) return PAIR_FAILED;
 			}
 		}
 		/* Thermodynamic approach, fwd-primer */
-		if (retval.fwd.oligo.get(m).self_any == LibPrimer3.ALIGN_SCORE_UNDEF 
+		if (left.self_any == LibPrimer3.ALIGN_SCORE_UNDEF 
 				&& pa.isThermodynamicOligoAlignment()) {
-			retval.fwd.oligo.get(m).oligo_compl_thermod(pa.primersArgs,
+			left.oligo_compl_thermod(pa.primersArgs,
 					retval.fwd.expl, thal_arg_to_use, s1, s1); /* ! s1, s1_rev */
 
-			if (!retval.fwd.oligo.get(m).OK_OR_MUST_USE()) {
+			if (!left.OK_OR_MUST_USE()) {
 				pair_expl.considered--;
 				if (!must_use) return PAIR_FAILED;
 			}
 		}   
-		if (retval.fwd.oligo.get(m).hairpin_th == LibPrimer3.ALIGN_SCORE_UNDEF 
+		if (left.hairpin_th == LibPrimer3.ALIGN_SCORE_UNDEF 
 				&& pa.isThermodynamicOligoAlignment()) {
-			retval.fwd.oligo.get(m).oligo_hairpin( pa.primersArgs,
+			left.oligo_hairpin( pa.primersArgs,
 					retval.fwd.expl, thal_arg_to_use, s1);
-			if (!retval.fwd.oligo.get(m).OK_OR_MUST_USE()) {
+			if (!left.OK_OR_MUST_USE()) {
 				pair_expl.considered--;
 				if (!must_use) return PAIR_FAILED;
 			}
@@ -400,28 +406,28 @@ public class PrimerPair {
 		
 		
 		
-		  if (retval.rev.oligo.get(n).self_any == LibPrimer3.ALIGN_SCORE_UNDEF && !pa.isThermodynamicOligoAlignment()) {
-			  retval.rev.oligo.get(n).oligo_compl( pa.primersArgs, retval.rev.expl, dpal_arg_to_use, s2_rev, s2);
+		  if (right.self_any == LibPrimer3.ALIGN_SCORE_UNDEF && !pa.isThermodynamicOligoAlignment()) {
+			  right.oligo_compl( pa.primersArgs, retval.rev.expl, dpal_arg_to_use, s2_rev, s2);
 
-			    if (!retval.rev.oligo.get(n).OK_OR_MUST_USE()) {
+			    if (!right.OK_OR_MUST_USE()) {
 			      pair_expl.considered--;
 			      if (!must_use) return PAIR_FAILED;
 			    }
 			  }
 			   /* Thermodynamic approach */
-			   if (retval.rev.oligo.get(n).self_any == LibPrimer3.ALIGN_SCORE_UNDEF && pa.isThermodynamicOligoAlignment()) {
-				   retval.rev.oligo.get(n).oligo_compl_thermod( pa.primersArgs,
+			   if (right.self_any == LibPrimer3.ALIGN_SCORE_UNDEF && pa.isThermodynamicOligoAlignment()) {
+				   right.oligo_compl_thermod( pa.primersArgs,
 			                          retval.rev.expl, thal_arg_to_use, s2_rev, s2_rev); /* s2_rev, s2 */
 			      
-			      if (!retval.rev.oligo.get(n).OK_OR_MUST_USE()) {
+			      if (!right.OK_OR_MUST_USE()) {
 			         pair_expl.considered--;
 			         if (!must_use) return PAIR_FAILED;
 			      }  
 			   }
-			   if (retval.rev.oligo.get(n).hairpin_th == LibPrimer3.ALIGN_SCORE_UNDEF && pa.isThermodynamicOligoAlignment()) {
-				   retval.rev.oligo.get(n).oligo_hairpin( pa.primersArgs,
+			   if (right.hairpin_th == LibPrimer3.ALIGN_SCORE_UNDEF && pa.isThermodynamicOligoAlignment()) {
+				   right.oligo_hairpin( pa.primersArgs,
 			                    retval.rev.expl, thal_arg_to_use, s2_rev);
-			      if (!retval.rev.oligo.get(n).OK_OR_MUST_USE()) {
+			      if (!right.OK_OR_MUST_USE()) {
 			         pair_expl.considered--;
 			         if (!must_use) return PAIR_FAILED;
 			      }
@@ -437,31 +443,31 @@ public class PrimerPair {
 			  /* Mispriming of _individual_ primers to template and 
 			     to repeat libraries. */
 
-			  if (retval.fwd.oligo.get(m).repeat_sim.score == null) {
+			  if (left.repeat_sim.score.size() == 0) {
 			    /* We have not yet checked the oligo against the repeat library. */
-				  retval.fwd.oligo.get(m).oligo_repeat_library_mispriming( pa, sa, OligoType.OT_LEFT,
+				  left.oligo_repeat_library_mispriming( pa, sa, OligoType.OT_LEFT,
 			                                    retval.fwd.expl,dpal_arg_to_use, retval.glob_err);
-			    if (retval.fwd.oligo.get(m).OK_OR_MUST_USE()) {
-			    	retval.fwd.oligo.get(m).oligo_template_mispriming( pa, sa, OligoType.OT_LEFT,
+			    if (left.OK_OR_MUST_USE()) {
+			    	left.oligo_template_mispriming( pa, sa, OligoType.OT_LEFT,
 							retval.fwd.expl,
 							dpal_arg_to_use.local_end,
 							thal_args_for_template_mispriming);
 			    }
-			    if (!retval.fwd.oligo.get(m).OK_OR_MUST_USE()) {
+			    if (!left.OK_OR_MUST_USE()) {
 			      pair_expl.considered--;
 			      if (!must_use) return PAIR_FAILED;
 			    }
 			  }
 			   
-			  if (retval.rev.oligo.get(n).repeat_sim.score == null) {
-				  retval.rev.oligo.get(n).oligo_repeat_library_mispriming(pa, sa, OligoType.OT_RIGHT,
+			  if (right.repeat_sim.score.size() == 0 ) {
+				  right.oligo_repeat_library_mispriming(pa, sa, OligoType.OT_RIGHT,
 			                                    retval.rev.expl, dpal_arg_to_use,retval.glob_err);
-			    if (retval.rev.oligo.get(n).OK_OR_MUST_USE()) {
-			    	retval.rev.oligo.get(n).oligo_template_mispriming( pa, sa, OligoType.OT_RIGHT, retval.rev.expl, 
+			    if (right.OK_OR_MUST_USE()) {
+			    	right.oligo_template_mispriming( pa, sa, OligoType.OT_RIGHT, retval.rev.expl, 
 							dpal_arg_to_use.local_end,
 							thal_args_for_template_mispriming);
 			    }
-			    if (!retval.rev.oligo.get(n).OK_OR_MUST_USE()) {
+			    if (!right.OK_OR_MUST_USE()) {
 			      pair_expl.considered--;
 			      if (!must_use) return PAIR_FAILED;
 			    }
@@ -478,32 +484,32 @@ public class PrimerPair {
 			   * s2's complement and s1.  (Both s1 and s2 are taken from the same strand.)
 			   */
 			   if(!pa.isThermodynamicOligoAlignment()) {
-			      ppair.compl_any = LibPrimer3.align(s1, s2, dpal_arg_to_use.local);
-			      if (ppair.compl_any > pa.getPairComplAny()) {
+			      this.compl_any = LibPrimer3.align(s1, s2, dpal_arg_to_use.local);
+			      if (this.compl_any > pa.getPairComplAny()) {
 			         if (update_stats) { pair_expl.compl_any++; }
 			         if (!must_use) return PAIR_FAILED;
 			      }
 			      
-			      ppair.compl_end = LibPrimer3.align(s1, s2, dpal_arg_to_use.end);
-			      if (ppair.compl_end > pa.getPairComplEnd()) {
+			      this.compl_end = LibPrimer3.align(s1, s2, dpal_arg_to_use.end);
+			      if (this.compl_end > pa.getPairComplEnd()) {
 			         if (update_stats) { pair_expl.compl_end++; }
 			         if (!must_use) return PAIR_FAILED;
 			      }
 			   } else {
 			      /* thermodynamical approach */
-			      ppair.compl_any = LibPrimer3.align_thermod(s1, s2_rev, thal_arg_to_use.any);
-			      if (ppair.compl_any > pa.getPairComplAnyTH()) {
+			      this.compl_any = LibPrimer3.align_thermod(s1, s2_rev, thal_arg_to_use.any);
+			      if (this.compl_any > pa.getPairComplAnyTH()) {
 			         if (update_stats) {
 			            pair_expl.compl_any++; 
 			         }
 			         if (!must_use) return PAIR_FAILED;
 			      }
-			      ppair.compl_end = LibPrimer3.align_thermod(s1, s2_rev, thal_arg_to_use.end1);
+			      this.compl_end = LibPrimer3.align_thermod(s1, s2_rev, thal_arg_to_use.end1);
 			      compl_end        = LibPrimer3.align_thermod(s1, s2_rev, thal_arg_to_use.end2); /* Triinu Please check */
-			      if (ppair.compl_end < compl_end) {
-			         ppair.compl_end = compl_end;
+			      if (this.compl_end < compl_end) {
+			         this.compl_end = compl_end;
 			      }
-			      if (ppair.compl_end > pa.getPairComplEndTH()) {
+			      if (this.compl_end > pa.getPairComplEndTH()) {
 			         if (update_stats) {
 			            pair_expl.compl_end++; 
 			         }
@@ -516,15 +522,15 @@ public class PrimerPair {
 			   * align(s2_rev, s1_rev, end_args) > align(s1,s2,end_args).
 			   */
 			  if (!pa.isThermodynamicOligoAlignment() && (compl_end = LibPrimer3.align(s2_rev, s1_rev, dpal_arg_to_use.end))
-			      > ppair.compl_end) {
+			      > this.compl_end) {
 			    if (compl_end > pa.primersArgs.getMaxSelfEnd()) {
 			      if (update_stats) { pair_expl.compl_end++; }
 			      if (!must_use) return PAIR_FAILED;
 			    }
-			    ppair.compl_end = compl_end;
+			    this.compl_end = compl_end;
 			  }
 
-			  if ((ppair.repeat_sim = ppair.pair_repeat_sim( pa))
+			  if ((this.repeat_sim = this.pair_repeat_sim( pa))
 			      > pa.getPairRepeatCompl()) {
 			    if (update_stats) { pair_expl.repeat_sim++; }
 			    if (!must_use) return PAIR_FAILED;
@@ -533,9 +539,9 @@ public class PrimerPair {
 			   if (pa.isThermodynamicOligoAlignment() ) {
 				   // I think this is better than prev inline check
 				   // maybe the second call will return a greater value
-				   double compl_end1 = LibPrimer3.align_thermod(s2, s1_rev, thal_arg_to_use.end1) ; // ) > ppair.compl_end || 
-				   double compl_end2 = LibPrimer3.align_thermod(s2, s1_rev, thal_arg_to_use.end2) ; // ) > ppair.compl_end)
-				   if(compl_end1 > ppair.compl_end ||  compl_end2 > ppair.compl_end)
+				   double compl_end1 = LibPrimer3.align_thermod(s2, s1_rev, thal_arg_to_use.end1) ; // ) > this.compl_end || 
+				   double compl_end2 = LibPrimer3.align_thermod(s2, s1_rev, thal_arg_to_use.end2) ; // ) > this.compl_end)
+				   if(compl_end1 > this.compl_end ||  compl_end2 > this.compl_end)
 				   { 
 					  compl_end =  Math.max(compl_end1, compl_end2);
 				      if (compl_end > pa.primersArgs.getMaxSelfEndTH()) {
@@ -544,7 +550,7 @@ public class PrimerPair {
 				         }
 				         if (!must_use) return PAIR_FAILED;
 				      }
-				      ppair.compl_end = compl_end;
+				      this.compl_end = compl_end;
 				   }
 			   }
 			   
@@ -556,41 +562,41 @@ public class PrimerPair {
 			 
 			   if (!pa.isThermodynamicTemplateAlignment() ) {
 			     if (!pa.needPairTemplateMispriming())
-			        ppair.template_mispriming = LibPrimer3.ALIGN_SCORE_UNDEF;
+			        this.template_mispriming = LibPrimer3.ALIGN_SCORE_UNDEF;
 			     else {
-//			        PR_ASSERT(ppair.left.template_mispriming != LibPrimer3.ALIGN_SCORE_UNDEF);
-//			        PR_ASSERT(ppair.left.template_mispriming_r != LibPrimer3.ALIGN_SCORE_UNDEF);
-//			        PR_ASSERT(ppair.right.template_mispriming != LibPrimer3.ALIGN_SCORE_UNDEF);
-//			        PR_ASSERT(ppair.right.template_mispriming_r != LibPrimer3.ALIGN_SCORE_UNDEF);
-			        ppair.template_mispriming =
-			           ppair.left.template_mispriming + ppair.right.template_mispriming_r;
-			        if ((ppair.left.template_mispriming_r + ppair.right.template_mispriming)
-			             > ppair.template_mispriming)
-			           ppair.template_mispriming
-			           = ppair.left.template_mispriming_r + ppair.right.template_mispriming;
+//			        PR_ASSERT(this.left.template_mispriming != LibPrimer3.ALIGN_SCORE_UNDEF);
+//			        PR_ASSERT(this.left.template_mispriming_r != LibPrimer3.ALIGN_SCORE_UNDEF);
+//			        PR_ASSERT(this.right.template_mispriming != LibPrimer3.ALIGN_SCORE_UNDEF);
+//			        PR_ASSERT(this.right.template_mispriming_r != LibPrimer3.ALIGN_SCORE_UNDEF);
+			        this.template_mispriming =
+			           this.left.template_mispriming + this.right.template_mispriming_r;
+			        if ((this.left.template_mispriming_r + this.right.template_mispriming)
+			             > this.template_mispriming)
+			           this.template_mispriming
+			           = this.left.template_mispriming_r + this.right.template_mispriming;
 
 			        if (pa.getPairMaxTemplateMispriming() >= 0.0
-			             && ppair.template_mispriming > pa.getPairMaxTemplateMispriming()) {
+			             && this.template_mispriming > pa.getPairMaxTemplateMispriming()) {
 			            if (update_stats) { pair_expl.template_mispriming++; }
 			            if (!must_use) return PAIR_FAILED;
 			        }
 			     }
 			   } else { /* thermodynamic approach */
 			     if (!pa.needPairTemplateMisprimingTH())
-			       ppair.template_mispriming = LibPrimer3.ALIGN_SCORE_UNDEF;
+			       this.template_mispriming = LibPrimer3.ALIGN_SCORE_UNDEF;
 			     else {
-//			       PR_ASSERT(ppair.left.template_mispriming != LibPrimer3.ALIGN_SCORE_UNDEF);
-//			       PR_ASSERT(ppair.left.template_mispriming_r != LibPrimer3.ALIGN_SCORE_UNDEF);
-//			       PR_ASSERT(ppair.right.template_mispriming != LibPrimer3.ALIGN_SCORE_UNDEF);
-//			       PR_ASSERT(ppair.right.template_mispriming_r != LibPrimer3.ALIGN_SCORE_UNDEF);
-			       ppair.template_mispriming =
-			           ppair.left.template_mispriming + ppair.right.template_mispriming_r;
-			       if ((ppair.left.template_mispriming_r + ppair.right.template_mispriming)
-			             > ppair.template_mispriming)
-			           ppair.template_mispriming
-			           = ppair.left.template_mispriming_r + ppair.right.template_mispriming;
+//			       PR_ASSERT(this.left.template_mispriming != LibPrimer3.ALIGN_SCORE_UNDEF);
+//			       PR_ASSERT(this.left.template_mispriming_r != LibPrimer3.ALIGN_SCORE_UNDEF);
+//			       PR_ASSERT(this.right.template_mispriming != LibPrimer3.ALIGN_SCORE_UNDEF);
+//			       PR_ASSERT(this.right.template_mispriming_r != LibPrimer3.ALIGN_SCORE_UNDEF);
+			       this.template_mispriming =
+			           this.left.template_mispriming + this.right.template_mispriming_r;
+			       if ((this.left.template_mispriming_r + this.right.template_mispriming)
+			             > this.template_mispriming)
+			           this.template_mispriming
+			           = this.left.template_mispriming_r + this.right.template_mispriming;
 
-			       if (pa.getPairMaxTemplateMisprimingTH() > 0  && ppair.template_mispriming > pa.getPairMaxTemplateMisprimingTH()) {
+			       if (pa.getPairMaxTemplateMisprimingTH() > 0  && this.template_mispriming > pa.getPairMaxTemplateMisprimingTH()) {
 			            if (update_stats) {
 			               pair_expl.template_mispriming++;
 			            }
@@ -620,7 +626,7 @@ public class PrimerPair {
 		if(n == 0) return 0;
 		this.rep_name =  pa.primersArgs.repeat_lib.getName(0) ;
 		for (i = 0; i < n; i++) {
-			w = (double) (fw.repeat_sim.score[i] + rev.repeat_sim.score[i]);
+			w = (double) (fw.repeat_sim.score.get(i) + rev.repeat_sim.score.get(i));
 			if (w > max) {
 				max = w;
 				this.rep_name =  pa.primersArgs.repeat_lib.getName(i) ;
@@ -629,5 +635,313 @@ public class PrimerPair {
 		return max;
 	}
 
+	
+	public void print_boulder(P3RetVal retval , String i, int io_version) {
+
+		/* A place to put a string containing all error messages */
+//		StringBuilder combined_retval_err = null;
+
+		/* A small spacer; WARNING this is a fixed size
+	     buffer, but plenty bigger than
+	     log(2^64, 10), the longest character
+	     string that is needed for a 64 bit integer. */
+		String suffix ;
+
+		/* Pointers for the primer set just printing */
+		PrimerRecord fwd, rev, intl;
+
+
+
+		/* Switches for printing this primer */
+		int go_fwd = 0;
+		int go_rev = 0;
+		int go_int = 0;
+
+		/* The number of loop cycles */
+//		int loop_max;
+
+		/* That links to the included region */
+		int  incl_s = retval.sa.getIncludedRegionStart();
+
+		/* This deals with the renaming of the internal oligo */
+		String new_oligo_name = "INTERNAL";
+		String int_oligo = new_oligo_name;
+
+
+		{
+			/* We will print primer pairs or pairs plus internal oligos */
+			/* Get pointers to the primer_rec's that we will print */
+			fwd  = this.left;
+			rev  = this.right;
+
+			// potential null exp bug here 
+			// intl = retval.best_pairs.pairs.get(i).intl;
+			intl = null;
+			/* Pairs must have fwd and rev primers */
+			go_fwd = 1;
+			go_rev = 1;
+			/* Do hyb oligos have to be printed? */
+			if (this.intl != null ) {
+				go_int = 1;
+				intl = this.intl;
+			} else {
+				go_int = 0;
+			}
+
+
+			/* Get the number for pimer counting in suffix[0] */
+			suffix = "_"+ i;
+
+			/* Print out the Pair Penalties */
+//			if (retval.output_type == P3OutputType.primer_pairs) {
+				System.out.format("PRIMER_PAIR%s_PENALTY=%f\n", suffix,
+						this.pair_quality);
+//			}
+
+			/* Print single primer penalty */
+			if (go_fwd == 1)
+				System.out.format("PRIMER_LEFT%s_PENALTY=%f\n", suffix, fwd.quality);
+			if (go_rev == 1)
+				System.out.format("PRIMER_RIGHT%s_PENALTY=%f\n", suffix, rev.quality);
+			if (go_int == 1)
+				System.out.format("PRIMER_%s%s_PENALTY=%f\n", int_oligo, suffix, intl.quality);
+
+			/* Print the oligo_problems */
+			if (io_version == 4) {
+				if (go_fwd == 1 && fwd.p3_ol_has_any_problem())
+					System.out.format("PRIMER_LEFT%s_PROBLEMS=%s\n", suffix, fwd.p3_get_ol_problem_string());
+				if (go_rev == 1 && rev.p3_ol_has_any_problem())
+					System.out.format("PRIMER_RIGHT%s_PROBLEMS=%s\n", suffix, rev.p3_get_ol_problem_string());
+				if (go_int == 1 && intl.p3_ol_has_any_problem())
+					System.out.format("PRIMER_%s%s_PROBLEMS=%s\n", int_oligo, suffix, intl.p3_get_ol_problem_string());
+			}
+
+			/* Print primer sequences. */
+			if (go_fwd == 1)
+				System.out.format("PRIMER_LEFT%s_SEQUENCE=%s\n", suffix,
+						//						pr_oligo_sequence(sa, fwd));
+						LibPrimer3.	string(fwd.getOligoSeq()));
+			if (go_rev == 1)
+				System.out.format("PRIMER_RIGHT%s_SEQUENCE=%s\n", suffix,
+						LibPrimer3.	string(rev.getOligoRevSeq()));
+			if(go_int == 1)
+				System.out.format("PRIMER_%s%s_SEQUENCE=%s\n", int_oligo, suffix,
+					LibPrimer3.	string(intl.getOligoSeq()));
+
+			/* Print primer start and length */
+			if (go_fwd == 1)
+				System.out.format("PRIMER_LEFT%s=%d,%d\n", suffix,
+						fwd.start + incl_s + retval.pa.getFirstBaseIndex(),
+						fwd.length);
+			if (go_rev == 1)
+				System.out.format("PRIMER_RIGHT%s=%d,%d\n", suffix,
+						rev.start + incl_s + retval.pa.getFirstBaseIndex(),
+						rev.length);
+			if (go_int == 1)
+				System.out.format("PRIMER_%s%s=%d,%d\n", int_oligo, suffix,
+						intl.start + incl_s + retval.pa.getFirstBaseIndex(),
+						intl.length);
+
+			/* Print primer Tm */
+			if (go_fwd == 1)
+				System.out.format("PRIMER_LEFT%s_TM=%.3f\n", suffix, fwd.temp);
+			if (go_rev == 1)
+				System.out.format("PRIMER_RIGHT%s_TM=%.3f\n", suffix, rev.temp);
+			if (go_int == 1)
+				System.out.format("PRIMER_%s%s_TM=%.3f\n", int_oligo, suffix, intl.temp);
+
+			/* Print primer GC content */
+			if (go_fwd == 1)
+				System.out.format("PRIMER_LEFT%s_GC_PERCENT=%.3f\n", suffix, fwd.gc_content);
+			if (go_rev == 1)
+				System.out.format("PRIMER_RIGHT%s_GC_PERCENT=%.3f\n", suffix, rev.gc_content);
+			if (go_int == 1)
+				System.out.format("PRIMER_%s%s_GC_PERCENT=%.3f\n", int_oligo, suffix,
+						intl.gc_content);
+
+			/* Print primer self_any */
+			if (go_fwd == 1 && retval.pa.isThermodynamicOligoAlignment()==false)
+				System.out.format("PRIMER_LEFT%s_SELF_ANY=%.2f\n", suffix,
+						fwd.self_any);
+			if (go_rev == 1 && retval.pa.isThermodynamicOligoAlignment()==false)
+				System.out.format("PRIMER_RIGHT%s_SELF_ANY=%.2f\n", suffix,
+						rev.self_any);
+			if (go_int == 1 && retval.pa.isThermodynamicOligoAlignment()==false)
+				System.out.format("PRIMER_%s%s_SELF_ANY=%.2f\n", int_oligo, suffix,
+						intl.self_any);
+			if (go_int == 1 && retval.pa.isThermodynamicOligoAlignment()==true)
+				System.out.format("PRIMER_%s%s_SELF_ANY_TH=%.2f\n", int_oligo, suffix,
+						intl.self_any);
+			/* Print primer self_any thermodynamical approach */
+			if (go_fwd == 1 && retval.pa.isThermodynamicOligoAlignment()==true)
+				System.out.format("PRIMER_LEFT%s_SELF_ANY_TH=%.2f\n", suffix,
+						fwd.self_any);
+			if (go_rev == 1 && retval.pa.isThermodynamicOligoAlignment()==true)
+				System.out.format("PRIMER_RIGHT%s_SELF_ANY_TH=%.2f\n", suffix,
+						rev.self_any);
+			/* Print primer self_end*/
+			if (go_fwd == 1 && retval.pa.isThermodynamicOligoAlignment()==false)
+				System.out.format("PRIMER_LEFT%s_SELF_END=%.2f\n", suffix,
+						fwd.self_end);
+			if (go_rev == 1 && retval.pa.isThermodynamicOligoAlignment()==false)
+				System.out.format("PRIMER_RIGHT%s_SELF_END=%.2f\n", suffix,
+						rev.self_end);
+			if (go_int == 1 && retval.pa.isThermodynamicOligoAlignment()==false)
+				System.out.format("PRIMER_%s%s_SELF_END=%.2f\n", int_oligo, suffix,
+						intl.self_end);
+			if (go_int == 1 && retval.pa.isThermodynamicOligoAlignment()==true)
+				System.out.format("PRIMER_%s%s_SELF_END_TH=%.2f\n", int_oligo, suffix,
+						intl.self_end);
+			/* Print primer self_end thermodynamical approach */
+			if (go_fwd == 1 && retval.pa.isThermodynamicOligoAlignment()==true)
+				System.out.format("PRIMER_LEFT%s_SELF_END_TH=%.2f\n", suffix,
+						fwd.self_end);
+			if (go_rev == 1 && retval.pa.isThermodynamicOligoAlignment()==true)
+				System.out.format("PRIMER_RIGHT%s_SELF_END_TH=%.2f\n", suffix,
+						rev.self_end);
+			/* Print primer hairpin */
+			if (go_fwd == 1 && retval.pa.isThermodynamicOligoAlignment()==true)
+				System.out.format("PRIMER_LEFT%s_HAIRPIN_TH=%.2f\n", suffix,
+						fwd.hairpin_th);
+			if (go_rev == 1 && retval.pa.isThermodynamicOligoAlignment()==true)
+				System.out.format("PRIMER_RIGHT%s_HAIRPIN_TH=%.2f\n", suffix,
+						rev.hairpin_th);
+			if (go_int == 1 && retval.pa.isThermodynamicOligoAlignment()==true)
+				System.out.format("PRIMER_%s%s_HAIRPIN_TH=%.2f\n", int_oligo, suffix,
+						intl.hairpin_th);
+			/*Print out primer mispriming scores */
+			if (retval.pa.primersArgs.repeat_lib != null) {
+				if (go_fwd == 1)
+					System.out.format("PRIMER_LEFT%s_LIBRARY_MISPRIMING=%.2f, %s\n", suffix,
+							fwd.repeat_sim.score.get(fwd.repeat_sim.max),
+							fwd.repeat_sim.name);
+				if (go_rev == 1)
+					System.out.format("PRIMER_RIGHT%s_LIBRARY_MISPRIMING=%.2f, %s\n", suffix,
+							rev.repeat_sim.score.get(rev.repeat_sim.max),
+							rev.repeat_sim.name);
+//				if (retval.output_type == P3OutputType.primer_pairs)
+					System.out.format("PRIMER_PAIR%s_LIBRARY_MISPRIMING=%.2f, %s\n", suffix,
+							this.repeat_sim,
+							this.rep_name);
+			}
+
+			/* Print out internal oligo mispriming scores */
+			if (go_int == 1 && retval.pa.oligosArgs.repeat_lib != null)
+				System.out.format("PRIMER_%s%s_LIBRARY_MISHYB=%.2f, %s\n", int_oligo, suffix,
+						intl.repeat_sim.score.get(intl.repeat_sim.max),
+						intl.repeat_sim.name);
+
+			/* If a sequence quality was provided, print it*/
+			if (null != retval.sa.getSequenceQuality()){
+				if (go_fwd == 1)
+					System.out.format("PRIMER_LEFT%s_MIN_SEQ_QUALITY=%d\n", suffix,
+							fwd.seq_quality);
+				if (go_rev == 1) 
+					System.out.format("PRIMER_RIGHT%s_MIN_SEQ_QUALITY=%d\n", suffix,
+							rev.seq_quality);
+				if (go_int == 1 && (retval.output_type == P3OutputType.primer_list)) 
+					System.out.format("PRIMER_%s%s_MIN_SEQ_QUALITY=%d\n", int_oligo, suffix,
+							intl.seq_quality);
+				/* Has to be here and in primer pairs for backward compatibility */
+			}
+
+			/* Print position penalty, this is for backward compatibility */
+			if (!retval.pa.isDefaultPositionPenalties()
+					|| !retval.sa.PR_START_CODON_POS_IS_NULL()){
+				System.out.format("PRIMER_LEFT%s_POSITION_PENALTY=%f\n", suffix,
+						fwd.position_penalty);
+				System.out.format("PRIMER_RIGHT%s_POSITION_PENALTY=%f\n", suffix,
+						rev.position_penalty);
+			}
+
+			/* Print primer end stability */
+			if (go_fwd == 1)
+				System.out.format("PRIMER_LEFT%s_END_STABILITY=%.4f\n",
+						suffix, fwd.end_stability);
+			if (go_rev == 1)
+				System.out.format("PRIMER_RIGHT%s_END_STABILITY=%.4f\n",
+						suffix, rev.end_stability);
+
+			/* Print primer template mispriming */
+			if ( (!retval.pa.isThermodynamicTemplateAlignment() ) && (go_fwd == 1) && 
+					(fwd.oligo_max_template_mispriming() != LibPrimer3.ALIGN_SCORE_UNDEF))
+				System.out.format("PRIMER_LEFT%s_TEMPLATE_MISPRIMING=%.4f\n", suffix,
+						fwd.oligo_max_template_mispriming());
+			if ( (!retval.pa.isThermodynamicTemplateAlignment() ) && (go_rev == 1) && 
+					(rev.oligo_max_template_mispriming() != LibPrimer3.ALIGN_SCORE_UNDEF))
+				System.out.format("PRIMER_RIGHT%s_TEMPLATE_MISPRIMING=%.4f\n", suffix,
+						rev.oligo_max_template_mispriming());
+
+			/* Print primer template mispriming, thermodynamical approach*/
+			if ( (retval.pa.isThermodynamicTemplateAlignment()) && (go_fwd == 1) &&
+					(fwd.oligo_max_template_mispriming_thermod() != LibPrimer3.ALIGN_SCORE_UNDEF)) {
+				System.out.format("PRIMER_LEFT%s_TEMPLATE_MISPRIMING_TH=%.4f\n", suffix,
+						fwd.oligo_max_template_mispriming_thermod());
+			}
+
+			if ( (retval.pa.isThermodynamicTemplateAlignment() ) && (go_rev == 1) &&
+					(rev.oligo_max_template_mispriming_thermod() != LibPrimer3.ALIGN_SCORE_UNDEF)) {
+				System.out.format("PRIMER_RIGHT%s_TEMPLATE_MISPRIMING_TH=%.4f\n", suffix,
+						rev.oligo_max_template_mispriming_thermod());
+				//	#if 0
+				//	       System.out.format("DEBUG_PRIMER_RIGHT%s_TEMPLATE_MISPRIMING_TOP_TH=%.4f\n", suffix,
+				//		      rev.template_mispriming);
+				//	       System.out.format("DEBUG_PRIMER_RIGHT%s_TEMPLATE_MISPRIMING_R_TH=%.4f\n", suffix,
+				//		      rev.template_mispriming_r);
+				//	#endif
+			}
+			/************************************************************************************/
+			/* Print the pair parameters*/
+			if (retval.output_type == P3OutputType.primer_pairs) {
+				if (go_int == 1 && null != retval.sa.getSequenceQuality()) /* FIX ME - Uptate the tests */
+					System.out.format("PRIMER_%s%s_MIN_SEQ_QUALITY=%d\n", int_oligo,
+							suffix, intl.seq_quality);
+				/* Print pair comp_any */
+				if(retval.pa.isThermodynamicOligoAlignment()==false)
+					System.out.format("PRIMER_PAIR%s_COMPL_ANY=%.2f\n", suffix,
+							this.compl_any);
+				if(retval.pa.isThermodynamicOligoAlignment()==true)
+					System.out.format("PRIMER_PAIR%s_COMPL_ANY_TH=%.2f\n", suffix,
+							this.compl_any);
+				/* Print pair comp_end */
+				if(retval.pa.isThermodynamicOligoAlignment()==false)
+					System.out.format("PRIMER_PAIR%s_COMPL_END=%.2f\n", suffix,
+							this.compl_end);
+				if(retval.pa.isThermodynamicOligoAlignment()==true)
+					System.out.format("PRIMER_PAIR%s_COMPL_END_TH=%.2f\n", suffix,
+							this.compl_end);
+				/* Print product size */
+				System.out.format("PRIMER_PAIR%s_PRODUCT_SIZE=%d\n", suffix,
+						this.product_size);
+				/* Print the product Tm if a Tm range is defined */
+				if (retval.pa.getProductMaxTM() != LibPrimer3.PR_DEFAULT_PRODUCT_MAX_TM ||
+						retval.pa.getProductMinTM() != LibPrimer3.PR_DEFAULT_PRODUCT_MIN_TM) {
+					System.out.format("PRIMER_PAIR%s_PRODUCT_TM=%.4f\n", suffix,
+							this.product_tm);
+
+					System.out.format("PRIMER_PAIR%s_PRODUCT_TM_OLIGO_TM_DIFF=%.4f\n", suffix,
+							this.product_tm_oligo_tm_diff);
+
+					System.out.format("PRIMER_PAIR%s_T_OPT_A=%.4f\n", suffix,
+							this.t_opt_a);
+				}
+
+				/* Print the primer pair template mispriming */
+				if ((!retval.pa.isThermodynamicTemplateAlignment() ) && (this.template_mispriming != LibPrimer3.ALIGN_SCORE_UNDEF))
+					System.out.format("PRIMER_PAIR%s_TEMPLATE_MISPRIMING=%.2f\n", suffix,
+							this.template_mispriming);
+				/* Print the primer pair template mispriming. Thermodynamic approach.  */
+				if ((retval.pa.isThermodynamicTemplateAlignment() ) && (this.template_mispriming != LibPrimer3.ALIGN_SCORE_UNDEF))
+					System.out.format("PRIMER_PAIR%s_TEMPLATE_MISPRIMING_TH=%.2f\n", suffix,
+							this.template_mispriming);
+
+			} /* End of print parameters of primer pairs */
+
+		} /* End of the big loop printing all data */
+
+		/* End the print with newline and flush all buffers */
+
+	}
+	
 
 }

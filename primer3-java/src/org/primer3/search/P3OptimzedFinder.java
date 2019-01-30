@@ -82,7 +82,7 @@ public class P3OptimzedFinder extends Primer3Finder {
 	 * ============================================================ 
 	 * @throws Exception */
 	@Override
-	public void getNextResult()  throws Exception {
+	public void getLocalNextResult()  throws Exception {
 		
 		
 		// who will clear the result ??
@@ -112,7 +112,8 @@ public class P3OptimzedFinder extends Primer3Finder {
 		
 		//#############
 		
-		
+		if(retval.fwd.num_elem == 0 || retval.rev.num_elem == 0)
+			return;
 		
 		while(true) {
 			/* If we have enough then stop the while loop */
@@ -264,7 +265,9 @@ public class P3OptimzedFinder extends Primer3Finder {
 					{
 						/* Characterize the pair. h is initialized by this call. */
 						h = new PrimerPair();
-						int pairStatus =  h.characterize_pair(retval, retval.pa, retval.sa, j, i,
+						int pairStatus =  h.characterize_pair(retval, 
+//								retval.pa, retval.sa, 
+								left, right,
 								dpal_arg_to_use,
 								thal_arg_to_use,
 								update_stats);
