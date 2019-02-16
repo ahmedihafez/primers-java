@@ -44,7 +44,8 @@ public class boulder {
 			line = scan.nextLine().trim();
 			if(line.equals("="))
 				break;
-			
+			if(line.startsWith("#"))
+				continue;
 			if (file_type == P3FileType.settings && ! line.startsWith("PRIMER_") && ! line.startsWith("P3_FILE_ID") )
 				continue;
 			data_found = true;
