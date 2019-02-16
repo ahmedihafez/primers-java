@@ -555,6 +555,7 @@ public class Primer3Main {
 								sarg.getSequenceName());
 					}
 				}
+				if(! sarg.isMultiplex )
 				if (format_output) {
 					boulder. print_format_output(io_version, global_pa,
 							sarg, retval, pr_release,

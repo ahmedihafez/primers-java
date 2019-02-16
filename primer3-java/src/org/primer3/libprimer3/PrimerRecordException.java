@@ -1,6 +1,6 @@
 package org.primer3.libprimer3;
 
-class PrimerRecordException extends Exception{
+public class PrimerRecordException extends Exception{
 	/**
 	 * 
 	 */

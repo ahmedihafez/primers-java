@@ -1,5 +1,7 @@
 package org.primer3.libprimer3;
 
+import org.primer3.primer.PrimerPair;
+
 public class PairIntervalList {
 
 
@@ -9,7 +11,7 @@ public class PairIntervalList {
 			    left interval */
 	boolean any_right = false; /* set to 1 if the empty pair ",," is given for any
 			    right interval */
-	boolean any_pair = false;  /* set to 1 if both intervals are given as empty */
+	public boolean any_pair = false;  /* set to 1 if both intervals are given as empty */
 	private int count = 0;     /* total number of pairs */
 
 

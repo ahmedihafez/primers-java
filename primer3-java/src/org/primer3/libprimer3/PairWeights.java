@@ -3,25 +3,25 @@ package org.primer3.libprimer3;
 public class PairWeights {
 	
 	public double primer_quality;
-	double io_quality;
-	double diff_tm;
-	double compl_any;
-	double compl_any_th;
-	double compl_end;
-	double compl_end_th;
-	double temp_cutoff;
-	double product_tm_lt;
-	double product_tm_gt;
-	double product_size_lt;
-	double product_size_gt;
-	double repeat_sim;
+	public double io_quality;
+	public double diff_tm;
+	public double compl_any;
+	public double compl_any_th;
+	public double compl_end;
+	public double compl_end_th;
+	public double temp_cutoff;
+	public double product_tm_lt;
+	public double product_tm_gt;
+	public double product_size_lt;
+	public double product_size_gt;
+	public double repeat_sim;
 	
 	
 //	TODO :: PR_ASSERT(pa.pr_pair_weights.template_mispriming >= 0.0);
-	double template_mispriming;
+	public double template_mispriming;
 
 //	TODO :: PR_ASSERT(pa.pr_pair_weights.template_mispriming_th >= 0.0);
-	double template_mispriming_th;
+	public double template_mispriming_th;
 	
 	public void set_template_mispriming_th(String datum) {
 		this.template_mispriming_th = Double.parseDouble(datum);

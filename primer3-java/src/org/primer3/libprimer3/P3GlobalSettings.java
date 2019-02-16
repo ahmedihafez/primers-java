@@ -49,7 +49,7 @@ public class P3GlobalSettings {
 	private boolean    pickInternalOligo;   
 
 	/* TODO, See if this can be factored out. */
-	int    file_flag; 
+	public  int    file_flag; 
 
 	/** 
 	 * The index of the first base in the input
@@ -705,13 +705,13 @@ public class P3GlobalSettings {
 
 	public boolean needTemplateMispriming() {
 		return this.primersArgs.getMaxTemplateMispriming() >= 0
-				|| this.primersArgs.weights.template_mispriming > 0.0
+				|| this.primersArgs.weights.getTemplateMispriming() > 0.0
 				|| this.needPairTemplateMispriming();
 	}
 	public boolean needTemplateMisprimingTH() {
 		return
 				this.primersArgs.getMaxTemplateMisprimingTH() >= 0
-				|| this.primersArgs.weights.template_mispriming_th > 0.0
+				|| this.primersArgs.weights.getTemplateMisprimingTh() > 0.0
 				|| this.needPairTemplateMisprimingTH();
 	}
 	public void p3_print_args() {
@@ -776,27 +776,27 @@ public class P3GlobalSettings {
 		System.out.format("=============\n");
 		System.out.format("BEGIN primer_args\n");
 		System.out.format("begin oligo_weights\n");
-		System.out.format("temp_gt %f\n", p.primersArgs.weights.temp_gt ) ;
-		System.out.format("temp_gt %f\n", p.primersArgs.weights.temp_gt) ;
-		System.out.format("temp_lt %f\n", p.primersArgs.weights.temp_lt) ;
-		System.out.format("gc_content_gt %f\n", p.primersArgs.weights.gc_content_gt) ;
-		System.out.format("gc_content_lt %f\n", p.primersArgs.weights.gc_content_lt) ;
-		System.out.format("compl_any %f\n", p.primersArgs.weights.compl_any) ;
-		System.out.format("compl_end %f\n", p.primersArgs.weights.compl_end) ;
-		System.out.format("compl_any_th %f\n", p.primersArgs.weights.compl_any_th) ;
-		System.out.format("compl_end_th %f\n", p.primersArgs.weights.compl_end_th) ;
-		System.out.format("hairpin %f\n", p.primersArgs.weights.hairpin_th) ;
-		System.out.format("repeat_sim %f\n", p.primersArgs.weights.repeat_sim) ;
-		System.out.format("length_lt %f\n", p.primersArgs.weights.length_lt) ;
-		System.out.format("length_gt %f\n", p.primersArgs.weights.length_gt) ;
-		System.out.format("seq_quality %f\n", p.primersArgs.weights.seq_quality) ;
-		System.out.format("end_quality %f\n", p.primersArgs.weights.end_quality) ;
-		System.out.format("pos_penalty %f\n", p.primersArgs.weights.pos_penalty) ;
-		System.out.format("end_stability %f\n", p.primersArgs.weights.end_stability) ;
-		System.out.format("num_ns %f\n", p.primersArgs.weights.num_ns) ;
-		System.out.format("template_mispriming %f\n", p.primersArgs.weights.template_mispriming) ;
-		System.out.format("template_mispriming_th %f\n", p.primersArgs.weights.template_mispriming_th) ;
-		System.out.format("failure_rate %f\n", p.primersArgs.weights.failure_rate) ;
+		System.out.format("temp_gt %f\n", p.primersArgs.weights.getTemperatureQT() ) ;
+		System.out.format("temp_gt %f\n", p.primersArgs.weights.getTemperatureQT()) ;
+		System.out.format("temp_lt %f\n", p.primersArgs.weights.getTemperatureLT()) ;
+		System.out.format("gc_content_gt %f\n", p.primersArgs.weights.getGcContentQT()) ;
+		System.out.format("gc_content_lt %f\n", p.primersArgs.weights.getGcContentLT()) ;
+		System.out.format("compl_any %f\n", p.primersArgs.weights.getComplAny()) ;
+		System.out.format("compl_end %f\n", p.primersArgs.weights.getComplEnd()) ;
+		System.out.format("compl_any_th %f\n", p.primersArgs.weights.getComplAnyTh()) ;
+		System.out.format("compl_end_th %f\n", p.primersArgs.weights.getComplEndTh()) ;
+		System.out.format("hairpin %f\n", p.primersArgs.weights.getHairpinTh()) ;
+		System.out.format("repeat_sim %f\n", p.primersArgs.weights.getRepeatSimilarity()) ;
+		System.out.format("length_lt %f\n", p.primersArgs.weights.getLengthLT()) ;
+		System.out.format("length_gt %f\n", p.primersArgs.weights.getLengthQT()) ;
+		System.out.format("seq_quality %f\n", p.primersArgs.weights.getSeqQuality()) ;
+		System.out.format("end_quality %f\n", p.primersArgs.weights.getEndQuality()) ;
+		System.out.format("pos_penalty %f\n", p.primersArgs.weights.getPosPenalty()) ;
+		System.out.format("end_stability %f\n", p.primersArgs.weights.getEndStability()) ;
+		System.out.format("num_ns %f\n", p.primersArgs.weights.getNumNs()) ;
+		System.out.format("template_mispriming %f\n", p.primersArgs.weights.getTemplateMispriming()) ;
+		System.out.format("template_mispriming_th %f\n", p.primersArgs.weights.getTemplateMisprimingTh()) ;
+		System.out.format("failure_rate %f\n", p.primersArgs.weights.getFailureRate()) ;
 		System.out.format("end oligo_weights\n") ;
 
 		System.out.format("opt_tm %f\n", p.primersArgs.getOptTm()) ;
@@ -828,23 +828,23 @@ public class P3GlobalSettings {
 		System.out.format("begin internal oligo args (p.o_args.)\n") ;
 
 		System.out.format("  begin internal oligo_weights (p.o_args.weights.)\n") ;
-		System.out.format("    temp_gt %f\n", p.oligosArgs.weights.temp_gt) ;
-		System.out.format("    temp_lt %f\n", p.oligosArgs.weights.temp_lt) ;
-		System.out.format("    gc_content_gt %f\n", p.oligosArgs.weights.gc_content_gt) ;
-		System.out.format("    gc_content_lt %f\n", p.oligosArgs.weights.gc_content_lt) ;
-		System.out.format("    compl_any %f\n", p.oligosArgs.weights.compl_any) ;
-		System.out.format("    compl_end %f\n", p.oligosArgs.weights.compl_end) ;
-		System.out.format("    compl_any_th %f\n", p.oligosArgs.weights.compl_any_th) ;
-		System.out.format("    compl_end_th %f\n", p.oligosArgs.weights.compl_end_th) ;
-		System.out.format("    hairpin %f\n", p.oligosArgs.weights.hairpin_th) ;
-		System.out.format("    repeat_sim %f\n", p.oligosArgs.weights.repeat_sim) ;
-		System.out.format("    length_lt %f\n", p.oligosArgs.weights.length_lt) ;
-		System.out.format("    length_gt %f\n", p.oligosArgs.weights.length_gt) ;
-		System.out.format("    seq_quality %f\n", p.oligosArgs.weights.seq_quality) ;
-		System.out.format("    end_quality %f\n", p.oligosArgs.weights.end_quality) ;
-		System.out.format("    pos_penalty %f\n", p.oligosArgs.weights.pos_penalty) ;
-		System.out.format("    end_stability %f\n", p.oligosArgs.weights.end_stability) ;
-		System.out.format("    num_ns %f\n", p.oligosArgs.weights.num_ns) ;
+		System.out.format("    temp_gt %f\n", p.oligosArgs.weights.getTemperatureQT()) ;
+		System.out.format("    temp_lt %f\n", p.oligosArgs.weights.getTemperatureLT()) ;
+		System.out.format("    gc_content_gt %f\n", p.oligosArgs.weights.getGcContentQT()) ;
+		System.out.format("    gc_content_lt %f\n", p.oligosArgs.weights.getGcContentLT()) ;
+		System.out.format("    compl_any %f\n", p.oligosArgs.weights.getComplAny()) ;
+		System.out.format("    compl_end %f\n", p.oligosArgs.weights.getComplEnd()) ;
+		System.out.format("    compl_any_th %f\n", p.oligosArgs.weights.getComplAnyTh()) ;
+		System.out.format("    compl_end_th %f\n", p.oligosArgs.weights.getComplEndTh()) ;
+		System.out.format("    hairpin %f\n", p.oligosArgs.weights.getHairpinTh()) ;
+		System.out.format("    repeat_sim %f\n", p.oligosArgs.weights.getRepeatSimilarity()) ;
+		System.out.format("    length_lt %f\n", p.oligosArgs.weights.getLengthLT()) ;
+		System.out.format("    length_gt %f\n", p.oligosArgs.weights.getLengthQT()) ;
+		System.out.format("    seq_quality %f\n", p.oligosArgs.weights.getSeqQuality()) ;
+		System.out.format("    end_quality %f\n", p.oligosArgs.weights.getEndQuality()) ;
+		System.out.format("    pos_penalty %f\n", p.oligosArgs.weights.getPosPenalty()) ;
+		System.out.format("    end_stability %f\n", p.oligosArgs.weights.getEndStability()) ;
+		System.out.format("    num_ns %f\n", p.oligosArgs.weights.getNumNs()) ;
 		System.out.format("  end internal oligo_weights\n") ;
 
 		System.out.format("  opt_tm %f\n", p.oligosArgs.getOptTm()) ;
@@ -1344,26 +1344,26 @@ public class P3GlobalSettings {
 		this.setMaxEndGC(5);
 
 		/* Weights for objective functions for oligos and pairs. */
-		this.primersArgs.weights.compl_any     = 0;
-		this.primersArgs.weights.compl_any_th  = 0;
-		this.primersArgs.weights.compl_end     = 0;
-		this.primersArgs.weights.compl_end_th  = 0;
-		this.primersArgs.weights.end_quality   = 0;
-		this.primersArgs.weights.end_stability = 0;
-		this.primersArgs.weights.gc_content_gt = 0;
-		this.primersArgs.weights.gc_content_lt = 0;
-		this.primersArgs.weights.hairpin_th    = 0;
-		this.primersArgs.weights.length_gt     = 1;
-		this.primersArgs.weights.length_lt     = 1;
-		this.primersArgs.weights.num_ns        = 0;
-		this.primersArgs.weights.pos_penalty   = 1;
-		this.primersArgs.weights.repeat_sim    = 0;
-		this.primersArgs.weights.seq_quality   = 0;
-		this.primersArgs.weights.temp_cutoff   = 5;
-		this.primersArgs.weights.temp_gt       = 1;
-		this.primersArgs.weights.temp_lt       = 1;
-		this.primersArgs.weights.template_mispriming = 0.0;
-		this.primersArgs.weights.template_mispriming_th = 0.0;
+		this.primersArgs.weights.setComplAny(0);
+		this.primersArgs.weights.setComplAnyTh(0);
+		this.primersArgs.weights.setComplEnd(0);
+		this.primersArgs.weights.setComplEndTh(0);
+		this.primersArgs.weights.setEndQuality(0);
+		this.primersArgs.weights.setEndStability(0);
+		this.primersArgs.weights.setGcContentQT(0);
+		this.primersArgs.weights.setGcContentLT(0);
+		this.primersArgs.weights.setHairpinTh(0);
+		this.primersArgs.weights.setLengthQT(1);
+		this.primersArgs.weights.setLengthLT(1);
+		this.primersArgs.weights.setNumNs(0);
+		this.primersArgs.weights.setPosPenalty(1);
+		this.primersArgs.weights.setRepeatSimilarity(0);
+		this.primersArgs.weights.setSeqQuality(0);
+		this.primersArgs.weights.setTemperatureCutoff(5);
+		this.primersArgs.weights.setTemperatureQT(1);
+		this.primersArgs.weights.setTemperatureLT(1);
+		this.primersArgs.weights.setTemplateMispriming(0.0);
+		this.primersArgs.weights.setTemplateMisprimingTh(0.0);
 		this.primersArgs.must_match_five_prime  = null;
 		this.primersArgs.must_match_three_prime = null;
 		/* End of weights for objective functions for oligos and pairs. */
@@ -1429,21 +1429,21 @@ public class P3GlobalSettings {
 		this.oligosArgs.setMinEndQuality(0);
 		this.oligosArgs.setMaxTemplateMispriming(LibPrimer3.PR_UNDEFINED_ALIGN_OPT);
 		this.oligosArgs.setMaxTemplateMisprimingTH(LibPrimer3.PR_UNDEFINED_ALIGN_OPT);
-		this.oligosArgs.weights.temp_gt       = 1;
-		this.oligosArgs.weights.temp_lt       = 1;
-		this.oligosArgs.weights.length_gt     = 1;
-		this.oligosArgs.weights.length_lt     = 1;
-		this.oligosArgs.weights.gc_content_gt = 0;
-		this.oligosArgs.weights.gc_content_lt = 0;
-		this.oligosArgs.weights.compl_any     = 0;
-		this.oligosArgs.weights.compl_end     = 0;
-		this.oligosArgs.weights.compl_any_th  = 0;
-		this.oligosArgs.weights.compl_end_th  = 0;
-		this.oligosArgs.weights.hairpin_th    = 0;
-		this.oligosArgs.weights.num_ns        = 0;
-		this.oligosArgs.weights.repeat_sim    = 0;
-		this.oligosArgs.weights.seq_quality   = 0;
-		this.oligosArgs.weights.end_quality   = 0;
+		this.oligosArgs.weights.setTemperatureQT(1);
+		this.oligosArgs.weights.setTemperatureLT(1);
+		this.oligosArgs.weights.setLengthQT(1);
+		this.oligosArgs.weights.setLengthLT(1);
+		this.oligosArgs.weights.setGcContentQT(0);
+		this.oligosArgs.weights.setGcContentLT(0);
+		this.oligosArgs.weights.setComplAny(0);
+		this.oligosArgs.weights.setComplEnd(0);
+		this.oligosArgs.weights.setComplAnyTh(0);
+		this.oligosArgs.weights.setComplEndTh(0);
+		this.oligosArgs.weights.setHairpinTh(0);
+		this.oligosArgs.weights.setNumNs(0);
+		this.oligosArgs.weights.setRepeatSimilarity(0);
+		this.oligosArgs.weights.setSeqQuality(0);
+		this.oligosArgs.weights.setEndQuality(0);
 		this.oligosArgs.must_match_five_prime  = null;
 		this.oligosArgs.must_match_three_prime = null;
 

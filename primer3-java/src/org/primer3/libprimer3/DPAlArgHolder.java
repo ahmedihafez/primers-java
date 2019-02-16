@@ -5,7 +5,7 @@ import org.primer3.dpal.DPAlignment;
 
 public class DPAlArgHolder {
 	public DPAlignmentArgs local;
-	DPAlignmentArgs end;
+	public DPAlignmentArgs end;
 	public DPAlignmentArgs local_end;
 	public DPAlignmentArgs local_ambig;
 	public DPAlignmentArgs local_end_ambig;

@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.primer3.libprimer3.DPAlArgHolder;
 import org.primer3.libprimer3.P3RetVal;
-import org.primer3.libprimer3.PrimerPair;
 import org.primer3.libprimer3.THAlArgHolder;
+import org.primer3.primer.PrimerPair;
 
 public abstract class Primer3Finder {
 	P3RetVal retval;

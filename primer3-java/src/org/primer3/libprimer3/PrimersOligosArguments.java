@@ -121,9 +121,9 @@ public class PrimersOligosArguments {
 	private double maxTemplateMisprimingTH;
 
 	// orginal char *
-	char[] must_match_five_prime;
+	public char[] must_match_five_prime;
 	// orginal char *
-	char[] must_match_three_prime;
+	public char[] must_match_three_prime;
 	/* Primers and Oligos must match this 5 prime and 3 prime sequences.
 	     This allows to select a set of primer pair with an identical 3' end
 	     to avoid primer dimers. On the 5 prime end bases quenching flourochromes can be avoided.

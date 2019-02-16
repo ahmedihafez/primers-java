@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import org.primer3.primer.PrimerRecord;
+
 public class OligoArray {
 
 	 /* Array of oligo (primer) records. */
@@ -13,7 +15,7 @@ public class OligoArray {
 	 public int num_elem = 0;
 
 	 /* Storage lengths of oligo */
-	 int storage_size = LibPrimer3.INITIAL_LIST_LEN;
+//	 int storage_size = LibPrimer3.INITIAL_LIST_LEN;
 
 	 /* Type of oligos in the array */
 	 OligoType type;

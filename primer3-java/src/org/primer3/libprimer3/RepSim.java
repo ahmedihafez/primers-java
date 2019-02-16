@@ -8,16 +8,16 @@ import java.util.ArrayList;
 public class RepSim {
 	/** Name of the sequence format with maximum
        similarity to the oligo. */
-	String name;       
+	public String name;       
 
 	/** 
      * The minimum score in slot 'score' (below).
      * (Used when the objective function involves
      * minimization of mispriming possibilities.)
      */
-	int min;        
+	public int min;        
 	/** The index of the maximum score in slot 'score' (below). */
-	int max;        
+	public int max;        
 	
 	/** 
      * Array of similarity (i.e. false-priming) scores,

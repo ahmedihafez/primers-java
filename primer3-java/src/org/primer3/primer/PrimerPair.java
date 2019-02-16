@@ -1,7 +1,17 @@
-package org.primer3.libprimer3;
+package org.primer3.primer;
 
 import org.primer3.boulder;
 import org.primer3.dpal.AlignmentException;
+import org.primer3.libprimer3.DPAlArgHolder;
+import org.primer3.libprimer3.LibPrimer3;
+import org.primer3.libprimer3.OligoType;
+import org.primer3.libprimer3.P3GlobalSettings;
+import org.primer3.libprimer3.P3OutputType;
+import org.primer3.libprimer3.P3RetVal;
+import org.primer3.libprimer3.P3Task;
+import org.primer3.libprimer3.PairStats;
+import org.primer3.libprimer3.SeqArgs;
+import org.primer3.libprimer3.THAlArgHolder;
 import org.primer3.oligotm.OligoTMCalculator;
 import org.primer3.p3_seq_lib.seq_lib;
 import org.primer3.sequence.Sequence;
@@ -12,9 +22,12 @@ public class PrimerPair {
 
 
 
-	static public int PAIR_OK = 1;
-	static public int PAIR_FAILED = 0;
-
+	final static public int PAIR_OK = 1;
+	final static public int PAIR_FAILED = 0;
+	final static public int PAIR_UNCHARACTRIZED = -1;
+	
+	
+	public int pairStatus = PAIR_UNCHARACTRIZED;
 	
 	
 	
@@ -35,21 +48,21 @@ public class PrimerPair {
 	 * Difference in Tm between the primer with lowest Tm
 	 * the product Tm.
 	 */
-	double product_tm_oligo_tm_diff;
+	public double product_tm_oligo_tm_diff;
 	
-	double t_opt_a;
+	public double t_opt_a;
 
 	/**
 	 * Local complementarity score between left and right
 	 * primers (* 100).
 	 */
-	double compl_any;     
+	public double compl_any;     
 
 	/** 
 	 * 3'-anchored global complementatory score between *
 	 * left and right primers (* 100).
 	 */
-	double compl_end;     
+	public double compl_end;     
 
 
 	
@@ -58,25 +71,25 @@ public class PrimerPair {
 	 *  to ectopic sites in the template, on "same"
 	 *  strand (* 100). 
 	 */
-	double template_mispriming;
+	public double template_mispriming;
 	
 	/** Maximum total similarity of both primers to the
 	 *  sequence from given file in fasta format.
 	 */
-	double repeat_sim;    
+	public double repeat_sim;    
 	public PrimerRecord left;     /* Left primer. */
 	public PrimerRecord right;    /* Right primer. */
 	public PrimerRecord intl;     /* Internal oligo. */
 
-	boolean   must_use;
+	public boolean   must_use;
 
-	int    product_size;  /* Product size. */
-	int    target;        /* 
+	public int    product_size;  /* Product size. */
+	public int    target;        /* 
 	 * 1 if there is a target between the right and left
 	 * primers.
 	 */
 	// char *
-	String rep_name;
+	public String rep_name;
 
 
 	/**
@@ -204,6 +217,8 @@ public class PrimerPair {
 			THAlArgHolder thal_arg_to_use,
 			boolean update_stats) throws ThermodynamicAlignmentException, AlignmentException {
 		
+		// TODO :: check if left or right is not good then return fail without continue
+		
 //		PrimerPair ppair = this;
 
 		P3GlobalSettings pa = retval.pa;
@@ -240,6 +255,7 @@ public class PrimerPair {
 		       as a pair. */
 			if (this.product_size < 1) {
 				pair_expl.reversed++;
+				this.pairStatus = PAIR_FAILED;
 				return PAIR_FAILED;
 			}
 
@@ -254,7 +270,10 @@ public class PrimerPair {
 			} else {
 				this.target = -1;
 				if (update_stats) { pair_expl.target++; }
-				if (!must_use) return PAIR_FAILED;
+				if (!must_use) {
+					this.pairStatus = PAIR_FAILED;
+					return PAIR_FAILED;
+				}
 			}
 		}
 
@@ -299,7 +318,10 @@ public class PrimerPair {
 			
 			if (!included) {
 				if (update_stats) { pair_expl.not_in_any_ok_region++; }
-				if (!must_use) return PAIR_FAILED;
+				if (!must_use) {
+					this.pairStatus = PAIR_FAILED;
+					return PAIR_FAILED;
+				}
 			}
 		}
 		/* ============================================================= */
@@ -326,19 +348,28 @@ public class PrimerPair {
 		if (pa.getProductMinTM() != LibPrimer3.PR_DEFAULT_PRODUCT_MIN_TM
 				&& this.product_tm < pa.getProductMinTM()) {
 			if (update_stats) { pair_expl.low_tm++; }
-			if (!must_use) return PAIR_FAILED;
+			if (!must_use) {
+				this.pairStatus = PAIR_FAILED;
+				return PAIR_FAILED;
+			}
 		}
 
 		if (pa.getProductMaxTM() != LibPrimer3.PR_DEFAULT_PRODUCT_MAX_TM
 				&& this.product_tm > pa.getProductMaxTM()) {
 			if (update_stats) { pair_expl.high_tm++; }
-			if (!must_use) return PAIR_FAILED;
+			if (!must_use) {
+				this.pairStatus = PAIR_FAILED;
+				return PAIR_FAILED;
+			}
 		}
 
 		this.diff_tm =  Math.abs(left.temp - right.temp);
 		if (this.diff_tm > pa.getMaxDiffTm()) {
 			if (update_stats) { pair_expl.temp_diff++; }
-			if (!must_use) return PAIR_FAILED;
+			if (!must_use) {
+				this.pairStatus = PAIR_FAILED;
+				return PAIR_FAILED;
+			}
 		}
 
 		/* End of product-temperature related computations. */
@@ -377,7 +408,10 @@ public class PrimerPair {
 
 			if (!left.OK_OR_MUST_USE()) {
 				pair_expl.considered--;
-				if (!must_use) return PAIR_FAILED;
+				if (!must_use) {
+					this.pairStatus = PAIR_FAILED;
+					return PAIR_FAILED;
+				}
 			}
 		}
 		/* Thermodynamic approach, fwd-primer */
@@ -388,7 +422,10 @@ public class PrimerPair {
 
 			if (!left.OK_OR_MUST_USE()) {
 				pair_expl.considered--;
-				if (!must_use) return PAIR_FAILED;
+				if (!must_use) {
+					this.pairStatus = PAIR_FAILED;
+					return PAIR_FAILED;
+				}
 			}
 		}   
 		if (left.hairpin_th == LibPrimer3.ALIGN_SCORE_UNDEF 
@@ -397,7 +434,10 @@ public class PrimerPair {
 					retval.fwd.expl, thal_arg_to_use, s1);
 			if (!left.OK_OR_MUST_USE()) {
 				pair_expl.considered--;
-				if (!must_use) return PAIR_FAILED;
+				if (!must_use) {
+					this.pairStatus = PAIR_FAILED;
+					return PAIR_FAILED;
+				}
 			}
 		}
 
@@ -411,7 +451,10 @@ public class PrimerPair {
 
 			    if (!right.OK_OR_MUST_USE()) {
 			      pair_expl.considered--;
-			      if (!must_use) return PAIR_FAILED;
+			      if (!must_use) {
+						this.pairStatus = PAIR_FAILED;
+						return PAIR_FAILED;
+					}
 			    }
 			  }
 			   /* Thermodynamic approach */
@@ -421,7 +464,10 @@ public class PrimerPair {
 			      
 			      if (!right.OK_OR_MUST_USE()) {
 			         pair_expl.considered--;
-			         if (!must_use) return PAIR_FAILED;
+			         if (!must_use) {
+							this.pairStatus = PAIR_FAILED;
+							return PAIR_FAILED;
+						}
 			      }  
 			   }
 			   if (right.hairpin_th == LibPrimer3.ALIGN_SCORE_UNDEF && pa.isThermodynamicOligoAlignment()) {
@@ -429,7 +475,10 @@ public class PrimerPair {
 			                    retval.rev.expl, thal_arg_to_use, s2_rev);
 			      if (!right.OK_OR_MUST_USE()) {
 			         pair_expl.considered--;
-			         if (!must_use) return PAIR_FAILED;
+			         if (!must_use) {
+							this.pairStatus = PAIR_FAILED;
+							return PAIR_FAILED;
+						}
 			      }
 			   }
 			   
@@ -455,7 +504,10 @@ public class PrimerPair {
 			    }
 			    if (!left.OK_OR_MUST_USE()) {
 			      pair_expl.considered--;
-			      if (!must_use) return PAIR_FAILED;
+			      if (!must_use) {
+						this.pairStatus = PAIR_FAILED;
+						return PAIR_FAILED;
+					}
 			    }
 			  }
 			   
@@ -469,7 +521,10 @@ public class PrimerPair {
 			    }
 			    if (!right.OK_OR_MUST_USE()) {
 			      pair_expl.considered--;
-			      if (!must_use) return PAIR_FAILED;
+			      if (!must_use) {
+						this.pairStatus = PAIR_FAILED;
+						return PAIR_FAILED;
+					}
 			    }
 			  }
 			   
@@ -487,13 +542,19 @@ public class PrimerPair {
 			      this.compl_any = LibPrimer3.align(s1, s2, dpal_arg_to_use.local);
 			      if (this.compl_any > pa.getPairComplAny()) {
 			         if (update_stats) { pair_expl.compl_any++; }
-			         if (!must_use) return PAIR_FAILED;
+			         if (!must_use) {
+							this.pairStatus = PAIR_FAILED;
+							return PAIR_FAILED;
+						}
 			      }
 			      
 			      this.compl_end = LibPrimer3.align(s1, s2, dpal_arg_to_use.end);
 			      if (this.compl_end > pa.getPairComplEnd()) {
 			         if (update_stats) { pair_expl.compl_end++; }
-			         if (!must_use) return PAIR_FAILED;
+			         if (!must_use) {
+							this.pairStatus = PAIR_FAILED;
+							return PAIR_FAILED;
+						}
 			      }
 			   } else {
 			      /* thermodynamical approach */
@@ -502,7 +563,10 @@ public class PrimerPair {
 			         if (update_stats) {
 			            pair_expl.compl_any++; 
 			         }
-			         if (!must_use) return PAIR_FAILED;
+			         if (!must_use) {
+							this.pairStatus = PAIR_FAILED;
+							return PAIR_FAILED;
+						}
 			      }
 			      this.compl_end = LibPrimer3.align_thermod(s1, s2_rev, thal_arg_to_use.end1);
 			      compl_end        = LibPrimer3.align_thermod(s1, s2_rev, thal_arg_to_use.end2); /* Triinu Please check */
@@ -513,7 +577,10 @@ public class PrimerPair {
 			         if (update_stats) {
 			            pair_expl.compl_end++; 
 			         }
-			         if (!must_use) return PAIR_FAILED;
+			         if (!must_use) {
+							this.pairStatus = PAIR_FAILED;
+							return PAIR_FAILED;
+						}
 			      }
 			   }
 			   
@@ -525,7 +592,10 @@ public class PrimerPair {
 			      > this.compl_end) {
 			    if (compl_end > pa.primersArgs.getMaxSelfEnd()) {
 			      if (update_stats) { pair_expl.compl_end++; }
-			      if (!must_use) return PAIR_FAILED;
+			      if (!must_use) {
+						this.pairStatus = PAIR_FAILED;
+						return PAIR_FAILED;
+					}
 			    }
 			    this.compl_end = compl_end;
 			  }
@@ -533,7 +603,10 @@ public class PrimerPair {
 			  if ((this.repeat_sim = this.pair_repeat_sim( pa))
 			      > pa.getPairRepeatCompl()) {
 			    if (update_stats) { pair_expl.repeat_sim++; }
-			    if (!must_use) return PAIR_FAILED;
+			    if (!must_use) {
+					this.pairStatus = PAIR_FAILED;
+					return PAIR_FAILED;
+				}
 			  }
 			   /* thermodynamic approach */
 			   if (pa.isThermodynamicOligoAlignment() ) {
@@ -548,7 +621,10 @@ public class PrimerPair {
 				         if (update_stats) {
 				            pair_expl.compl_end++; 
 				         }
-				         if (!must_use) return PAIR_FAILED;
+				         if (!must_use) {
+								this.pairStatus = PAIR_FAILED;
+								return PAIR_FAILED;
+							}
 				      }
 				      this.compl_end = compl_end;
 				   }
@@ -578,7 +654,7 @@ public class PrimerPair {
 			        if (pa.getPairMaxTemplateMispriming() >= 0.0
 			             && this.template_mispriming > pa.getPairMaxTemplateMispriming()) {
 			            if (update_stats) { pair_expl.template_mispriming++; }
-			            if (!must_use) return PAIR_FAILED;
+			            if (!must_use) return this.pairStatus = PAIR_FAILED;
 			        }
 			     }
 			   } else { /* thermodynamic approach */
@@ -600,7 +676,7 @@ public class PrimerPair {
 			            if (update_stats) {
 			               pair_expl.template_mispriming++;
 			            }
-			            if (!must_use) return PAIR_FAILED;
+			            if (!must_use) return this.pairStatus = PAIR_FAILED;
 			       }
 			     }
 			   }
@@ -608,7 +684,7 @@ public class PrimerPair {
 			   /* End of calculating _pair_ mispriming if necessary. */
 			   /* ============================================================= */
 
-			  return PAIR_OK;
+			  return this.pairStatus = PAIR_OK;
 	}
 
 
@@ -620,7 +696,10 @@ public class PrimerPair {
 
 		fw = this.left;
 		rev = this.right;
-
+		// TO
+		if (fw.repeat_sim.score.size() != rev.repeat_sim.score.size() )
+			System.err.println("Stop");
+		
 		max = 0;
 		n = pa.primersArgs.repeat_lib.seq_lib_num_seq();
 		if(n == 0) return 0;

@@ -5,105 +5,444 @@ package org.primer3.libprimer3;
  * retained _across_ different input records.  (These are the so-called
  * "Global" arguments in the documentation.)
  */
-public class OligoWeights {
+public class OligoWeights implements Cloneable {
 
-	double compl_any;
-	double compl_any_th;
-	double compl_end;
-	double compl_end_th;
-	double end_quality;
-	double end_stability;
-	double gc_content_gt;
-	double gc_content_lt;
-	double hairpin_th;
-	double length_gt;
-	double length_lt;
-    double num_ns;
-    double pos_penalty;
-    double repeat_sim;
-    double seq_quality;
-    double temp_cutoff;
-    double temp_gt;
-    double temp_lt;
-    double template_mispriming;
-    double template_mispriming_th;
-    double failure_rate;
+	private double complAny;
+	private double complAnyTh;
+	private double complEnd;
+	private double complEndTh;
+	private double endQuality;
+	private double endStability;
+	private double gcContentQT;
+	private double gcContentLT;
+	private double hairpinTh;
+	private double lengthQT;
+	private double lengthLT;
+	private double numNs;
+	private double posPenalty;
+	private double repeatSimilarity;
+	private double seqQuality;
+	private double temperatureCutoff;
+	private double temperatureQT;
+	private double temperatureLT;
+	private double templateMispriming;
+	private double templateMisprimingTh;
+	private double failureRate;
+
 	
-    public void set_template_mispriming_th(String datum) {
-    	this.template_mispriming_th = Double.parseDouble(datum);
-	}
-    
 	
-    public void set_end_quality(String datum) {
-    	this.end_quality = Double.parseDouble(datum);
+	
+	
+	
+	
+	
+	
+	public double getComplAny() {
+		return complAny;
 	}
-    
+
+	public void setComplAny(double complAny) {
+		this.complAny = complAny;
+	}
+
+	/**
+	 * @return the complAnyTh
+	 */
+	public double getComplAnyTh() {
+		return complAnyTh;
+	}
+
+	/**
+	 * @param complAnyTh the complAnyTh to set
+	 */
+	public void setComplAnyTh(double complAnyTh) {
+		this.complAnyTh = complAnyTh;
+	}
+
+	/**
+	 * @return the complEnd
+	 */
+	public double getComplEnd() {
+		return complEnd;
+	}
+
+	/**
+	 * @param complEnd the complEnd to set
+	 */
+	public void setComplEnd(double complEnd) {
+		this.complEnd = complEnd;
+	}
+
+	/**
+	 * @return the complEndTh
+	 */
+	public double getComplEndTh() {
+		return complEndTh;
+	}
+
+	/**
+	 * @param complEndTh the complEndTh to set
+	 */
+	public void setComplEndTh(double complEndTh) {
+		this.complEndTh = complEndTh;
+	}
+
+	/**
+	 * @return the endQuality
+	 */
+	public double getEndQuality() {
+		return endQuality;
+	}
+
+	/**
+	 * @param endQuality the endQuality to set
+	 */
+	public void setEndQuality(double endQuality) {
+		this.endQuality = endQuality;
+	}
+
+	/**
+	 * @return the endStability
+	 */
+	public double getEndStability() {
+		return endStability;
+	}
+
+	/**
+	 * @param endStability the endStability to set
+	 */
+	public void setEndStability(double endStability) {
+		this.endStability = endStability;
+	}
+
+	/**
+	 * @return the gcContentQT
+	 */
+	public double getGcContentQT() {
+		return gcContentQT;
+	}
+
+	/**
+	 * @param gcContentQT the gcContentQT to set
+	 */
+	public void setGcContentQT(double gcContentQT) {
+		this.gcContentQT = gcContentQT;
+	}
+
+	/**
+	 * @return the gcContentLT
+	 */
+	public double getGcContentLT() {
+		return gcContentLT;
+	}
+
+	/**
+	 * @param gcContentLT the gcContentLT to set
+	 */
+	public void setGcContentLT(double gcContentLT) {
+		this.gcContentLT = gcContentLT;
+	}
+
+	/**
+	 * @return the hairpinTh
+	 */
+	public double getHairpinTh() {
+		return hairpinTh;
+	}
+
+	/**
+	 * @param hairpinTh the hairpinTh to set
+	 */
+	public void setHairpinTh(double hairpinTh) {
+		this.hairpinTh = hairpinTh;
+	}
+
+	/**
+	 * @return the lengthQT
+	 */
+	public double getLengthQT() {
+		return lengthQT;
+	}
+
+	/**
+	 * @param lengthQT the lengthQT to set
+	 */
+	public void setLengthQT(double lengthQT) {
+		this.lengthQT = lengthQT;
+	}
+
+	/**
+	 * @return the lengthLT
+	 */
+	public double getLengthLT() {
+		return lengthLT;
+	}
+
+	/**
+	 * @param lengthLT the lengthLT to set
+	 */
+	public void setLengthLT(double lengthLT) {
+		this.lengthLT = lengthLT;
+	}
+
+	/**
+	 * @return the numNs
+	 */
+	public double getNumNs() {
+		return numNs;
+	}
+
+	/**
+	 * @param numNs the numNs to set
+	 */
+	public void setNumNs(double numNs) {
+		this.numNs = numNs;
+	}
+
+	/**
+	 * @return the posPenalty
+	 */
+	public double getPosPenalty() {
+		return posPenalty;
+	}
+
+	/**
+	 * @param posPenalty the posPenalty to set
+	 */
+	public void setPosPenalty(double posPenalty) {
+		this.posPenalty = posPenalty;
+	}
+
+	/**
+	 * @return the repeatSimilarity
+	 */
+	public double getRepeatSimilarity() {
+		return repeatSimilarity;
+	}
+
+	/**
+	 * @param repeatSimilarity the repeatSimilarity to set
+	 */
+	public void setRepeatSimilarity(double repeatSimilarity) {
+		this.repeatSimilarity = repeatSimilarity;
+	}
+
+	/**
+	 * @return the seqQuality
+	 */
+	public double getSeqQuality() {
+		return seqQuality;
+	}
+
+	/**
+	 * @param seqQuality the seqQuality to set
+	 */
+	public void setSeqQuality(double seqQuality) {
+		this.seqQuality = seqQuality;
+	}
+
+	/**
+	 * @return the temperatureCutoff
+	 */
+	public double getTemperatureCutoff() {
+		return temperatureCutoff;
+	}
+
+	/**
+	 * @param temperatureCutoff the temperatureCutoff to set
+	 */
+	public void setTemperatureCutoff(double temperatureCutoff) {
+		this.temperatureCutoff = temperatureCutoff;
+	}
+
+	/**
+	 * @return the temperatureQT
+	 */
+	public double getTemperatureQT() {
+		return temperatureQT;
+	}
+
+	/**
+	 * @param temperatureQT the temperatureQT to set
+	 */
+	public void setTemperatureQT(double temperatureQT) {
+		this.temperatureQT = temperatureQT;
+	}
+
+	/**
+	 * @return the temperatureLT
+	 */
+	public double getTemperatureLT() {
+		return temperatureLT;
+	}
+
+	/**
+	 * @param temperatureLT the temperatureLT to set
+	 */
+	public void setTemperatureLT(double temperatureLT) {
+		this.temperatureLT = temperatureLT;
+	}
+
+	/**
+	 * @return the templateMispriming
+	 */
+	public double getTemplateMispriming() {
+		return templateMispriming;
+	}
+
+	/**
+	 * @param templateMispriming the templateMispriming to set
+	 */
+	public void setTemplateMispriming(double templateMispriming) {
+		this.templateMispriming = templateMispriming;
+	}
+
+	/**
+	 * @return the templateMisprimingTh
+	 */
+	public double getTemplateMisprimingTh() {
+		return templateMisprimingTh;
+	}
+
+	/**
+	 * @param templateMisprimingTh the templateMisprimingTh to set
+	 */
+	public void setTemplateMisprimingTh(double templateMisprimingTh) {
+		this.templateMisprimingTh = templateMisprimingTh;
+	}
+
+	/**
+	 * @return the failureRate
+	 */
+	public double getFailureRate() {
+		return failureRate;
+	}
+
+	/**
+	 * @param failureRate the failureRate to set
+	 */
+	public void setFailureRate(double failureRate) {
+		this.failureRate = failureRate;
+	}
+	
+	
+	
+	
+	
+	
+	
+	// ###########################################################################################
+	// Setter method from a string value (source configuration file)
+	public void set_template_mispriming_th(String datum) {
+		this.setTemplateMisprimingTh(Double.parseDouble(datum));
+	}
+
+	public void set_end_quality(String datum) {
+		this.setEndQuality(Double.parseDouble(datum));
+	}
+
 	public void set_seq_quality(String datum) {
-		this.seq_quality =  Double.parseDouble(datum);
+		this.setSeqQuality(Double.parseDouble(datum));
 	}
-	
+
 	public void set_repeat_sim(String datum) {
-		this.repeat_sim = Double.parseDouble(datum);
+		this.setRepeatSimilarity(Double.parseDouble(datum));
 	}
-	
+
 	public void set_num_ns(String datum) {
-		this.num_ns = Double.parseDouble(datum);
+		this.setNumNs(Double.parseDouble(datum));
 	}
-	
+
 	public void set_hairpin_th(String datum) {
-		this.hairpin_th = Double.parseDouble(datum);	
+		this.setHairpinTh(Double.parseDouble(datum));	
 	}
-	
+
 	public void set_compl_end_th(String datum) {
-		this.compl_end_th = Double.parseDouble(datum);
+		this.setComplEndTh(Double.parseDouble(datum));
 	}
-	
+
 	public void set_compl_any_th(String datum) {
-		this.compl_any_th = Double.parseDouble(datum);
+		this.setComplAnyTh(Double.parseDouble(datum));
 	}
-	
+
 	public void set_compl_end(String datum) {
-		this.compl_end = Double.parseDouble(datum);
+		this.setComplEnd(Double.parseDouble(datum));
 	}
-	
+
 	public void set_compl_any(String datum) {
-		this.compl_any = Double.parseDouble(datum);
+		this.setComplAny(Double.parseDouble(datum));
 	}
-	
+
 	public void set_length_gt(String datum) {
-		this.length_gt = Double.parseDouble(datum);
+		this.setLengthQT(Double.parseDouble(datum));
 	}
-	
+
 	public void set_length_lt(String datum) {
-		this.length_lt = Double.parseDouble(datum);
+		this.setLengthLT(Double.parseDouble(datum));
 	}
-	
+
 	public void set_gc_content_lt(String datum) {
-		this.gc_content_lt = Double.parseDouble(datum);
+		this.setGcContentLT(Double.parseDouble(datum));
 	}
-	
+
 	public void set_gc_content_gt(String datum) {
-		this.gc_content_gt = Double.parseDouble(datum);
+		this.setGcContentQT(Double.parseDouble(datum));
 	}
-	
+
 	public void set_temp_lt(String datum) {
-		this.temp_lt = Double.parseDouble(datum);
+		this.setTemperatureLT(Double.parseDouble(datum));
 	}
-	
+
 	public void set_temp_gt(String datum) {
-		this.temp_gt = Double.parseDouble(datum);
+		this.setTemperatureQT(Double.parseDouble(datum));
 	}
 	public void set_failure_rate(String datum) {
-		this.failure_rate = Double.parseDouble(datum);
+		this.setFailureRate(Double.parseDouble(datum));
 	}
 	public void set_template_mispriming(String datum) {
-		this.template_mispriming = Double.parseDouble(datum);
+		this.setTemplateMispriming(Double.parseDouble(datum));
 	}
 	public void set_end_stability(String datum) {
-		this.end_stability = Double.parseDouble(datum);
+		this.setEndStability(Double.parseDouble(datum));
 	}
 	public void set_pos_penalty(String datum) {
-		this.pos_penalty = Double.parseDouble(datum);
+		this.setPosPenalty(Double.parseDouble(datum));
 	}
 
-   }
+	// ###########################################################################
+
+	@Override
+	protected OligoWeights clone() throws CloneNotSupportedException {
+		OligoWeights newClone = new OligoWeights();
+		
+		// field wise copy :: Make sure that any change in the class are reflected here
+		// ####################
+		newClone.setComplAny(this.getComplAny());
+		newClone.setComplAnyTh(this.getComplAnyTh());
+		newClone.setComplEnd(this.getComplEnd());
+		newClone.setComplEndTh(this.getComplEndTh());
+		newClone.setEndQuality(this.getEndQuality());
+		newClone.setEndStability(this.getEndStability());
+		newClone.setGcContentQT(this.getGcContentQT());
+		newClone.setGcContentLT(this.getGcContentLT());
+		newClone.setHairpinTh(this.getHairpinTh());
+		newClone.setLengthQT(this.getLengthQT());
+		newClone.setLengthLT(this.getLengthLT());
+		newClone.setNumNs(this.getNumNs());
+		newClone.setPosPenalty(this.getPosPenalty());
+		newClone.setRepeatSimilarity(this.getRepeatSimilarity());
+		newClone.setSeqQuality(this.getSeqQuality());
+		newClone.setTemperatureCutoff(this.getTemperatureCutoff());
+		newClone.setTemperatureQT(this.getTemperatureQT());
+		newClone.setTemperatureLT(this.getTemperatureLT());
+		newClone.setTemplateMispriming(this.getTemplateMispriming());
+		newClone.setTemplateMisprimingTh(this.getTemplateMisprimingTh());
+		newClone.setFailureRate(failureRate);
+		// ##########################################
+		
+ 		return newClone;
+	}
+
+
+
+}

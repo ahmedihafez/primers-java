@@ -3,6 +3,8 @@ package org.primer3.libprimer3;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.primer3.primer.PrimerPair;
+
 public class  PairArrayT {
 //	  int         storage_size = 0;
 	  public int         num_pairs = 0;

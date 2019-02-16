@@ -16,9 +16,11 @@ import org.primer3.masker.input_sequence;
 import org.primer3.masker.masker;
 import org.primer3.masker.masking_direction;
 import org.primer3.masker.output_sequence;
+import org.primer3.multisearch.P3MultiplexSearch;
 import org.primer3.oligotm.OligoTMCalculator;
 import org.primer3.p3_seq_lib.seq_lib;
-import org.primer3.search.P3MultiplexSearch;
+import org.primer3.primer.PrimerPair;
+import org.primer3.primer.PrimerRecord;
 import org.primer3.sequence.Sequence;
 import org.primer3.thal.ThermodynamicAlignmentException;
 import org.primer3.thal.ThermodynamicAlignment;
@@ -278,7 +280,7 @@ public class LibPrimer3 {
 				}
 			}
 
-			if( pa.getPrimerTask() != P3Task.PICK_SEQUENCING_PRIMERS)
+			if( !sa.isMultiplex && pa.getPrimerTask() != P3Task.PICK_SEQUENCING_PRIMERS)
 			{
 				if (pa.isPickRightPrimer()  )
 					retval.rev.sort_primer_array();
@@ -3041,7 +3043,7 @@ public class LibPrimer3 {
 				}
 			}
 		}
-		else if (pa.primersArgs.weights.seq_quality != 0 || pa.oligosArgs.weights.seq_quality != 0) {
+		else if (pa.primersArgs.weights.getSeqQuality() != 0 || pa.oligosArgs.weights.getSeqQuality() != 0) {
 			nonfatal_err.append(
 					"Sequence quality is part of objective function but sequence quality is not defined");
 			return true;
@@ -3229,15 +3231,15 @@ public class LibPrimer3 {
 			return true;
 		}
 
-		if ((pa.primersArgs.weights.gc_content_lt != 0 ||
-				pa.primersArgs.weights.gc_content_gt != 0)
+		if ((pa.primersArgs.weights.getGcContentLT() != 0 ||
+				pa.primersArgs.weights.getGcContentQT() != 0)
 				&& pa.primersArgs.getOptGC() == DEFAULT_OPT_GC_PERCENT) {
 			glob_err.append( "Primer GC content is part of objective function while optimum gc_content is not defined");
 			return true;
 		}
 
-		if ((pa.oligosArgs.weights.gc_content_lt != 0 ||
-				pa.oligosArgs.weights.gc_content_gt != 0 )
+		if ((pa.oligosArgs.weights.getGcContentLT() != 0 ||
+				pa.oligosArgs.weights.getGcContentQT() != 0 )
 				&& pa.oligosArgs.getOptGC() == DEFAULT_OPT_GC_PERCENT) {
 			glob_err.append("Hyb probe GC content is part of objective function while optimum gc_content is not defined");
 			return true;
@@ -3249,12 +3251,12 @@ public class LibPrimer3 {
 			return true;
 		}
 
-		if (pa.primersArgs.weights.repeat_sim > 0 && (pa.primersArgs.repeat_lib  == null)) {
+		if (pa.primersArgs.weights.getRepeatSimilarity() > 0 && (pa.primersArgs.repeat_lib  == null)) {
 			glob_err.append( "Mispriming score is part of objective function, but mispriming library is not defined");
 			return true;
 		}
 
-		if (pa.oligosArgs.weights.repeat_sim > 0 && ( pa.oligosArgs.repeat_lib  == null)) {
+		if (pa.oligosArgs.weights.getRepeatSimilarity() > 0 && ( pa.oligosArgs.repeat_lib  == null)) {
 			glob_err.append( "Internal oligo mispriming score is part of objective function while mishyb library is not defined");
 			return true;
 		}
@@ -3563,7 +3565,7 @@ public class LibPrimer3 {
 
 
 
-	static String string(char[] s2) {
+	public static String string(char[] s2) {
 		if(s2 == null)
 			return "";
 		return new String(s2);

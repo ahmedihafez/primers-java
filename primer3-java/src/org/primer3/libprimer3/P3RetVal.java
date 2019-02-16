@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.primer3.boulder;
 import org.primer3.p3_seq_lib.seq_lib;
+import org.primer3.primer.PrimerPair;
+import org.primer3.primer.PrimerRecord;
 import org.primer3.search.P3BasicPairFinder;
 import org.primer3.search.P3OptimzedFinder;
 import org.primer3.search.Primer3Finder;
@@ -53,9 +55,9 @@ public class P3RetVal {
 	 * the intial base of the leftmost stop codon that
 	 * is to the right of sa.start_codon_pos.
 	 */
-	int stop_codon_pos;
+	public int stop_codon_pos;
 
-	int upstream_stop_codon;  /* TO DO needs docs */
+	public  int upstream_stop_codon;  /* TO DO needs docs */
 
 	// this changed to constructor
 	//  static public p3retval create_p3retval(){

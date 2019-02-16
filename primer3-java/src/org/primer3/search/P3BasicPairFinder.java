@@ -9,9 +9,9 @@ import org.primer3.libprimer3.P3RetVal;
 import org.primer3.libprimer3.P3Task;
 import org.primer3.libprimer3.PairArrayT;
 import org.primer3.libprimer3.PairStats;
-import org.primer3.libprimer3.PrimerPair;
-import org.primer3.libprimer3.PrimerRecord;
 import org.primer3.libprimer3.THAlArgHolder;
+import org.primer3.primer.PrimerPair;
+import org.primer3.primer.PrimerRecord;
 
 public class P3BasicPairFinder extends Primer3Finder {
 

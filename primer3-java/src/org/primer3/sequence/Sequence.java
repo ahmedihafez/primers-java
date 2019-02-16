@@ -4,9 +4,9 @@ import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
-import org.primer3.libprimer3.PrimerRecord;
 import org.primer3.libprimer3.OligoType;
 import org.primer3.libprimer3.SeqArgs;
+import org.primer3.primer.PrimerRecord;
 
 /**
  * Sequence Class not part of primer3 lib
@@ -557,6 +557,16 @@ public class Sequence  implements Iterable<Character>{
 		}
 
 		return false;
+	}
+
+	public static int compare(char[] oligoSeq1, char[] oligoSeq2) {
+		for(int i = 0,j=0; i < oligoSeq1.length && j < oligoSeq2.length ; i++,j++)
+		{
+			int c = Character.compare(oligoSeq1[i], oligoSeq2[i] );
+			if( c != 0 )
+				return c;
+		}
+		return Integer.compare(oligoSeq1.length , oligoSeq2.length);
 	}
 
 	

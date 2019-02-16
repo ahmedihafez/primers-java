@@ -4,37 +4,37 @@ import java.util.Formatter;
 
 
 public class OligoStats {
-	int considered;          /* Total number of tested oligos of given type   */
-	int ns;                  /* Number of oligos rejected because of Ns       */
-	int target;              /* Overlapping targets.                          */
-	int excluded;            /* Overlapping excluded regions.                 */
-	int gc;                  /* Unacceptable GC content.                      */
-	int gc_clamp;            /* Don't have required number of GCs at 3' end.  */
-	int gc_end_high;         /* Too many G+Cs at the 3' end.                  */
-	int temp_min;            /* Melting temperature below t_min.              */
-	int temp_max;            /* Melting temperature more than t_max.          */
-	int size_min;            /* Primer shorter than minimal size.             */
-	int size_max;            /* Primer longer than minimal size.              */
-	int compl_any;           /* Self-complementarity too high.                */
-	int compl_end;           /* Self-complementarity at 3' end too high.      */
-	int hairpin_th;          /* Hairpin structure too stable in
+	public int considered;          /* Total number of tested oligos of given type   */
+	public int ns;                  /* Number of oligos rejected because of Ns       */
+	public int target;              /* Overlapping targets.                          */
+	public int excluded;            /* Overlapping excluded regions.                 */
+	public int gc;                  /* Unacceptable GC content.                      */
+	public int gc_clamp;            /* Don't have required number of GCs at 3' end.  */
+	public int gc_end_high;         /* Too many G+Cs at the 3' end.                  */
+	public int temp_min;            /* Melting temperature below t_min.              */
+	public int temp_max;            /* Melting temperature more than t_max.          */
+	public int size_min;            /* Primer shorter than minimal size.             */
+	public int size_max;            /* Primer longer than minimal size.              */
+	public int compl_any;           /* Self-complementarity too high.                */
+	public int compl_end;           /* Self-complementarity at 3' end too high.      */
+	public int hairpin_th;          /* Hairpin structure too stable in
 			      thermodynamical approach                      */
-	int repeat_score;        /* Complementarity with repeat sequence too high.*/
-	int poly_x;              /* Long mononucleotide sequence inside.          */
-	int seq_quality;         /* Low quality of bases included.                */
-	int stability;           /* Stability of 5 3' bases too high.             */
-	int no_orf;              /* Would not amplify any of the specified ORF
+	public int repeat_score;        /* Complementarity with repeat sequence too high.*/
+	public int poly_x;              /* Long mononucleotide sequence inside.          */
+	public int seq_quality;         /* Low quality of bases included.                */
+	public int stability;           /* Stability of 5 3' bases too high.             */
+	public int no_orf;              /* Would not amplify any of the specified ORF
                              (valid for left primers only).                 */
-	int template_mispriming; /* Template mispriming score too high.           */
-	int ok;                  /* Number of acceptable oligos.                  */
-	int gmasked;             /* Added by T. Koressaar, number of gmasked
+	public int template_mispriming; /* Template mispriming score too high.           */
+	public int ok;                  /* Number of acceptable oligos.                  */
+	public int gmasked;             /* Added by T. Koressaar, number of gmasked
 			      oligos */
-	int must_match_fail;     /* Added by A. Untergasser, number of oligos 
+	public int must_match_fail;     /* Added by A. Untergasser, number of oligos 
 			      failing must match */
-	int not_in_any_left_ok_region; /* Oligo not included in any of the
+	public int not_in_any_left_ok_region; /* Oligo not included in any of the
                                     left regions given in
                                     PRIMER_PAIR_OK_REGION_LIST. */
-	int not_in_any_right_ok_region;/* Oligo not included in any of the
+	public int not_in_any_right_ok_region;/* Oligo not included in any of the
                                     right regions given in
                                     PRIMER_PAIR_OK_REGION_LIST. */
 	public String p3_oligo_explain_string() {
