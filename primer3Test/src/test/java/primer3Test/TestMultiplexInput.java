@@ -65,7 +65,40 @@ public class TestMultiplexInput {
 				"primer_task_specific_input",
 				"primer_task_specific_output",
 				"-fasta src/test/resources/multiplex_test/primer_task_specific.fasta");
-	}	
+	}
 	
+	@Test
+	public void testP3SpecificInput5T() throws FileNotFoundException, IOException {	  
+		
+		testCase("primer_task_specific_input_5T",
+				"primer_task_specific_input_5T",
+				"primer_task_specific_output",
+				"-fasta src/test/resources/multiplex_test/targets_new.fasta");
+	}	
+	@Test
+	public void testP3SpecificInput_7T() throws FileNotFoundException, IOException {	  
+		
+		testCase("primer_task_specific_input_7T",
+				"primer_task_specific_input_7T",
+				"primer_task_specific_output",
+				"-fasta src/test/resources/multiplex_test/targets_new_fake.fasta");
+	}	
+	@Test
+	public void testP3SpecificInput3() throws FileNotFoundException, IOException {	  
+		
+		testCase("primer_task_specific_input3",
+				"primer_task_specific_input3",
+				"primer_task_specific_output",
+				"-fasta src/test/resources/multiplex_test/targets_new.fasta");
+	}
+	
+	@Test
+	public void testP3SpecificAlbInput() throws FileNotFoundException, IOException {	  
+		
+		testCase("primer_task_specific_alb_input",
+				"primer_task_specific_alb_input",
+				"primer_task_specific_output",
+				"-fasta src/test/resources/multiplex_test/primer_task_specific.fasta");
+	}	
 	
 }
