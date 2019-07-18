@@ -41,6 +41,9 @@ public class P3GlobalSettings {
 	 * only, 4 if internal oligo only.  
 	 */
 	private P3Task   primerTask;
+	
+	
+	private PCRType pcrType = PCRType.NORMAL_PCR;
 
 	private boolean    pickLeftPrimer;   
 
@@ -1851,6 +1854,16 @@ public class P3GlobalSettings {
 	}
 	public int getMispriming3EndScore() {
 		return mispriming3EndScore;
+	}
+
+	public PCRType getPcrType() {
+		return pcrType;
+	}
+
+	public void setPcrType(PCRType pcrType) {
+		this.pcrType = pcrType;
+		if(pcrType == PCRType.NORMAL_PCR)
+			pickInternalOligo = false;
 	}
 	
 }

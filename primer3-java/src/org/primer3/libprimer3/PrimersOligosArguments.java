@@ -9,7 +9,8 @@ import org.primer3.p3_seq_lib.seq_lib;
  */
 public class PrimersOligosArguments {
 
-	public seq_lib       repeat_lib = null;
+	// TODO :: What to do regarading the sequence library
+	public seq_lib   repeat_lib = null;
 	public OligoWeights weights = new OligoWeights();
 	
 	private double optTm;
@@ -612,7 +613,7 @@ public class PrimersOligosArguments {
 	
 
 
-	public boolean maxRepeatComplIsPercent = false;
+	private boolean maxRepeatComplIsPercent = false;
 
 	/**
 	 * 
@@ -624,11 +625,11 @@ public class PrimersOligosArguments {
 		{
 			// this is a percentage
 			datum = datum.substring(0, datum.length()-1);
-			maxRepeatComplIsPercent = true;
+			setMaxRepeatComplIsPercent(true);
 		}
 		else
 		{
-			maxRepeatComplIsPercent = false;
+			setMaxRepeatComplIsPercent(false);
 		}
 		this.setMaxRepeatCompl(Double.parseDouble(datum));
 	}
@@ -754,5 +755,17 @@ public class PrimersOligosArguments {
 	 */
 	public void setMaxSelfEnd(double maxSelfEnd) {
 		this.maxSelfEnd = maxSelfEnd;
+	}
+
+
+
+	public boolean isMaxRepeatComplIsPercent() {
+		return maxRepeatComplIsPercent;
+	}
+
+
+
+	public void setMaxRepeatComplIsPercent(boolean maxRepeatComplIsPercent) {
+		this.maxRepeatComplIsPercent = maxRepeatComplIsPercent;
 	}
 }

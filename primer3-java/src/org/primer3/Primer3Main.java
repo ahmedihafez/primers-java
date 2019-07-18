@@ -523,7 +523,7 @@ public class Primer3Main {
 						read_boulder_record_res.file_flag);
 				retval = LibPrimer3.choose_primers(global_pa, sarg);
 
-				if(sarg.isMultiplex )
+				if(sarg.isMultiplex() )
 					lateResult.add(retval);
 
 				//	       if (null == retval) exit(-2); /* Out of memory. */
@@ -555,7 +555,7 @@ public class Primer3Main {
 								sarg.getSequenceName());
 					}
 				}
-				if(! sarg.isMultiplex )
+				if(! sarg.isMultiplex() )
 				if (format_output) {
 					boulder. print_format_output(io_version, global_pa,
 							sarg, retval, pr_release,

@@ -280,7 +280,7 @@ public class LibPrimer3 {
 				}
 			}
 
-			if( !sa.isMultiplex && pa.getPrimerTask() != P3Task.PICK_SEQUENCING_PRIMERS)
+			if( !sa.isMultiplex() && pa.getPrimerTask() != P3Task.PICK_SEQUENCING_PRIMERS)
 			{
 				if (pa.isPickRightPrimer()  )
 					retval.rev.sort_primer_array();
@@ -299,7 +299,7 @@ public class LibPrimer3 {
 			/* Select primer pairs if needed */
 			if (retval.output_type == P3OutputType.primer_pairs) {
 				
-				if(sa.isMultiplex)
+				if(sa.isMultiplex())
 				{
 					multiplexSearch.addTarget(retval);
 				}
@@ -1792,7 +1792,7 @@ public class LibPrimer3 {
 
 
 
-	private static int make_internal_oligo_list(P3RetVal retval,
+	public static int make_internal_oligo_list(P3RetVal retval,
 			P3GlobalSettings pa, SeqArgs sa,
 			DPAlArgHolder dpal_arg_to_use,
 			THAlArgHolder thal_arg_to_use) throws PrimerRecordException, AlignmentException, ThermodynamicAlignmentException {
@@ -1834,7 +1834,7 @@ public class LibPrimer3 {
 	 * @throws ThermodynamicAlignmentException 
 	 * @throws AlignmentException 
 	 */
-	private static int make_detection_primer_lists(
+	public static int make_detection_primer_lists(
 			P3RetVal retval,
 			P3GlobalSettings pa,
 			SeqArgs sa,
@@ -3901,6 +3901,35 @@ public class LibPrimer3 {
 			String sequence_name) {
 		// TODO Auto-generated method stub
 
+	}
+
+
+	/**
+	 * check if every thing in the input are ok
+	 * 
+	 * @param seqRetVal
+	 * @return retrun true if Ok , false in case an error.
+	 */
+	public static boolean checkAndPrepareInput(P3RetVal seqRetVal) {
+		/* Change some parameters to fit the task */
+		// TODO :: refactor this 
+		seqRetVal.sa._adjust_seq_args(seqRetVal.pa,  seqRetVal);
+		
+
+
+		if(!seqRetVal.get_per_sequence_err().isEmpty()) 
+			return false;
+
+		/* Check if the input in sa and pa makes sense */
+		if (_pr_data_control(seqRetVal.pa, seqRetVal.sa,seqRetVal.glob_err,seqRetVal.per_sequence_err,seqRetVal.warnings)) {
+			return false;
+		}
+
+
+
+		seqRetVal.set_retval_both_stop_codons();
+
+		return true;
 	}
 
 }

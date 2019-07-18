@@ -1239,7 +1239,7 @@ public class SeqArgs {
 	}
 
 
-	public boolean isMultiplex = false;
+	private boolean isMultiplex = false;
 	static final String DEFAULT_MULTIPLEX_GROUP = "DefaultGroup";
 	
 	public String mutliplexGroup = DEFAULT_MULTIPLEX_GROUP;
@@ -1252,7 +1252,7 @@ public class SeqArgs {
 		}
 		else if( datum.isEmpty() ||  datum.equals("0")) {
 			// disable multiplex to this seq
-			this.isMultiplex= false;
+			this.isMultiplex = false;
 			this.mutliplexGroup = null;
 		}
 		else {
@@ -1261,6 +1261,16 @@ public class SeqArgs {
 			this.mutliplexGroup = datum;
 		}
 		
+	}
+
+
+	public boolean isMultiplex() {
+		return isMultiplex;
+	}
+
+
+	public void setMultiplex(boolean isMultiplex) {
+		this.isMultiplex = isMultiplex;
 	}
 
 

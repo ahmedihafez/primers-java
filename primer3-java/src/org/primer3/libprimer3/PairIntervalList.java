@@ -269,5 +269,10 @@ public class PairIntervalList {
 	public int getCount() {
 		return count;
 	}
+	public void clear() {
+		count = 0;
+		any_left = any_right = any_pair = false;
+		
+	}
 	
 }

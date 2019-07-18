@@ -13,6 +13,11 @@ public class IntervalList {
 
 	private List<int[]> pairs = new ArrayList<int[]>();
 	// 
+	
+	public List<int[]> getPairs() {
+		return pairs;
+	}
+	
 //	private int count = 0;
 	public boolean oligoOverlapsInterval(int start, int len) {
 
@@ -26,7 +31,7 @@ public class IntervalList {
 	}
 
 	/* Add a pair of integers to an  array of intervals */
-	boolean addInterval( int i1, int i2)
+	public boolean addInterval( int i1, int i2)
 	{
 //		int c = this.count;
 //		if (c >= LibPrimer3.PR_MAX_INTERVAL_ARRAY) return true;
@@ -193,6 +198,13 @@ public class IntervalList {
 		return pairs.get(i);
 	}
 
-	
+	public void addInterval(int[] interval) {
+		this.pairs.add(interval);
+	}
+
+
+	public void remove(int i) {
+		this.pairs.remove(i);
+	}
 
 }

@@ -75,6 +75,16 @@ public class TestMultiplexInput {
 				"primer_task_specific_output",
 				"-fasta src/test/resources/multiplex_test/targets_new.fasta");
 	}	
+	
+	@Test
+	public void testP3SpecificInput5Tm() throws FileNotFoundException, IOException {	  
+		
+		testCase("primer_task_specific_input_5T_m",
+				"primer_task_specific_input_5T_m",
+				"primer_task_specific_output",
+				"-fasta src/test/resources/multiplex_test/targets_new.fasta");
+	}	
+	
 	@Test
 	public void testP3SpecificInput_7T() throws FileNotFoundException, IOException {	  
 		
@@ -86,10 +96,10 @@ public class TestMultiplexInput {
 	@Test
 	public void testP3SpecificInput3() throws FileNotFoundException, IOException {	  
 		
-		testCase("primer_task_specific_input3",
-				"primer_task_specific_input3",
+		testCase("primer_task_specific_input_3T",
+				"primer_task_specific_input_3T",
 				"primer_task_specific_output",
-				"-fasta src/test/resources/multiplex_test/targets_new.fasta");
+				"-fasta src/test/resources/multiplex_test/targets_new_fake2.fasta");
 	}
 	
 	@Test

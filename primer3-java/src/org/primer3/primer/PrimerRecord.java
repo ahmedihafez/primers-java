@@ -43,7 +43,7 @@ public class PrimerRecord  {
 	// reverse of above
 	protected char[] oligoRevSeq =  null;
 	
-	
+	// Store the source sequence and input setting here
 	public SeqArgs sa;
 	
 	public String getTargetName() {
@@ -1383,10 +1383,10 @@ public class PrimerRecord  {
 		/* First, check the oligo against the repeat library. */
 		if (l == OligoType.OT_INTL) {
 			max_lib_compl =  pa.oligosArgs.getMaxRepeatCompl();
-			max_lib_compl_is_percent = pa.oligosArgs.maxRepeatComplIsPercent;
+			max_lib_compl_is_percent = pa.oligosArgs.isMaxRepeatComplIsPercent();
 		} else {
 			max_lib_compl =  pa.primersArgs.getMaxRepeatCompl();
-			max_lib_compl_is_percent = pa.primersArgs.maxRepeatComplIsPercent;
+			max_lib_compl_is_percent = pa.primersArgs.isMaxRepeatComplIsPercent();
 
 		}
 
@@ -1869,6 +1869,7 @@ public class PrimerRecord  {
 	// Multi targets specfic primers : other targets that this primer can bind to
 	// exact
 	public HashMap<String,Integer> targetSpecificIndex = new HashMap<String, Integer>();
+	public HashMap<String,Double> targetSpecificScore = new HashMap<String, Double>();
 	// targets specfic primers
 	/**
 	 * primer is specific regarding its target list. it could have multiple targert
@@ -1933,50 +1934,79 @@ public class PrimerRecord  {
 				{
 					System.err.println("r.align_end_1 != this.length-1");
 				}
-				String targetSeqMatch,thisSeqMatch;
-				if( Math.abs( (r.score - (this.length*100))) <= 800   ) {
-					String last3End_Target = "" ,last3End_Primer = "";
-					if( rec_type == OligoType.OT_RIGHT) {
-//						 targetSeqMatch  = String.copyValueOf(targets_lib.getSeqRevCompl(i), r.align_end_2-this.length,this.length);
-//						 thisSeqMatch  = String.copyValueOf(this.getOligoRevSeq(), 0,this.length);
-						
-						// to get the correct seq
-//						String.copyValueOf(targets_lib.getSeqRevCompl(i), r.align_end_2-20+1, 20);
-						
-						last3End_Target =  String.copyValueOf(targets_lib.getSeqRevCompl(i), r.align_end_2-2, 3);
-						last3End_Primer =  String.copyValueOf(this.getOligoRevSeq(), r.align_end_1-2, 3);
-						if(     last3End_Primer.length() == 3 && last3End_Target.length()== 3 )
-						{
-							
-							if(last3End_Primer.charAt(2) == last3End_Target.charAt(2) || 
-									( last3End_Primer.charAt(1) == last3End_Target.charAt(1) || 
-										last3End_Primer.charAt(0) == last3End_Target.charAt(0))) {
-								isTargetSpecific = false;
-								// one is enough so return
-								return;
-							}
-						}
-					}
-					else if ( rec_type == OligoType.OT_LEFT) {
-//						 targetSeqMatch  = String.copyValueOf(targets_lib.getSeq(i), r.align_end_2-this.length,this.length);
-//						 thisSeqMatch  = String.copyValueOf(this.getOligoSeq(), 0,this.length);
-					
-						last3End_Target =  String.copyValueOf(targets_lib.getSeq(i), r.align_end_2-2, 3);
-						last3End_Primer =  String.copyValueOf(this.getOligoSeq(), r.align_end_1-2, 3);
-						if(     last3End_Primer.length() == 3 && last3End_Target.length()== 3 )
-						{
-							
-							if(last3End_Primer.charAt(0) == last3End_Target.charAt(0) ||
-									( last3End_Primer.charAt(1) == last3End_Target.charAt(1) || 
-										last3End_Primer.charAt(2) == last3End_Target.charAt(2))) {
-								isTargetSpecific = false;
-								// one is enough so return
-								return;
-							}
-						}
-					}
-					
+				// TODO :: read from pa
+				double maxScore = 80;
+				int end3ScoreCalc = 4;
+				
+				double finalScore = r.score < 0.0 ? 0.0 : r.score / LibPrimer3.PR_ALIGN_SCORE_PRECISION;
+				
+				String last3End_Target = "" ,last3End_Primer = "";
+				if( rec_type == OligoType.OT_RIGHT) {
+					last3End_Target =  String.copyValueOf(targets_lib.getSeqRevCompl(i), r.align_end_2-(end3ScoreCalc-1), end3ScoreCalc);
+					last3End_Primer =  String.copyValueOf(this.getOligoRevSeq(), r.align_end_1-(end3ScoreCalc-1), end3ScoreCalc);
 				}
+				else if ( rec_type == OligoType.OT_LEFT) {	
+					last3End_Target =  String.copyValueOf(targets_lib.getSeq(i), r.align_end_2-(end3ScoreCalc-1), end3ScoreCalc);
+					last3End_Primer =  String.copyValueOf(this.getOligoSeq(), r.align_end_1-(end3ScoreCalc-1), end3ScoreCalc);
+				}
+				if(     last3End_Primer.length() ==  last3End_Target.length() ) {
+					int matches = 0;
+					for(int j = 0; j < end3ScoreCalc;j++ )
+					{
+						if(last3End_Primer.charAt(j) == last3End_Target.charAt(j)) {
+							finalScore++;
+							matches++;
+						}
+					}
+					if(matches == end3ScoreCalc )
+						finalScore++;
+				}
+				
+				
+				
+				double wScore = 100 * (finalScore/this.length);
+				if(wScore > maxScore ) {
+					isTargetSpecific = false;
+					targetSpecificScore.put(oTargetName, finalScore);
+				}
+				
+				
+				String targetSeqMatch,thisSeqMatch;
+//				if( Math.abs( (r.score - (this.length*100))) <= 1000   ) {
+//					if( rec_type == OligoType.OT_RIGHT) {
+//	
+//						last3End_Target =  String.copyValueOf(targets_lib.getSeqRevCompl(i), r.align_end_2-2, 3);
+//						last3End_Primer =  String.copyValueOf(this.getOligoRevSeq(), r.align_end_1-2, 3);
+//						if(     last3End_Primer.length() == 3 && last3End_Target.length()== 3 )
+//						{
+//							
+//							if(last3End_Primer.charAt(2) == last3End_Target.charAt(2) || 
+//									( last3End_Primer.charAt(1) == last3End_Target.charAt(1) || 
+//										last3End_Primer.charAt(0) == last3End_Target.charAt(0))) {
+//								isTargetSpecific = false;
+//								// one is enough so return
+//								return;
+//							}
+//						}
+//					}
+//					else if ( rec_type == OligoType.OT_LEFT) {
+//	
+//						last3End_Target =  String.copyValueOf(targets_lib.getSeq(i), r.align_end_2-2, 3);
+//						last3End_Primer =  String.copyValueOf(this.getOligoSeq(), r.align_end_1-2, 3);
+//						if(     last3End_Primer.length() == 3 && last3End_Target.length()== 3 )
+//						{
+//							
+//							if(last3End_Primer.charAt(0) == last3End_Target.charAt(0) ||
+//									( last3End_Primer.charAt(1) == last3End_Target.charAt(1) || 
+//										last3End_Primer.charAt(2) == last3End_Target.charAt(2))) {
+//								isTargetSpecific = false;
+//								// one is enough so return
+//								return;
+//							}
+//						}
+//					}
+//					
+//				}
 			}
 				
 		}
