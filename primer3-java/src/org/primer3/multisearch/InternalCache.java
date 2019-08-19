@@ -8,6 +8,11 @@ import java.util.Map.Entry;
 import org.primer3.primer.MultiTargetPrimerRecord;
 import org.primer3.primer.PrimerRecord;
 
+/**
+ * TODO :: add new disk implementation of this cache
+ * @author Ahmed Hafez
+ *
+ */
 class InternalCache {
 		int mask ;
 		int k ;

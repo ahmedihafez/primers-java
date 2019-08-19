@@ -66,6 +66,7 @@ public class MultiTargetScanner {
 	
 	/**
 	 * sort primer by sequence and group similar sequence together as one mutli-primer 
+	 * TODO :: use bit pattern 
 	 * @param multiTargetPrimers
 	 * @param targetName
 	 * @param oligo
@@ -113,7 +114,7 @@ public class MultiTargetScanner {
 	/**
 	 * multi target reverse primer list
 	 */
-	ArrayList<PrimerRecord> multiRev= new ArrayList<PrimerRecord>();
+	ArrayList<PrimerRecord> multiRev = new ArrayList<PrimerRecord>();
 	/**
 	 * one target specific reverse primer
 	 */

@@ -11,11 +11,18 @@ import org.primer3.libprimer3.SeqArgs;
 import org.primer3.p3_seq_lib.seq_lib;
 import org.primer3.sequence.Sequence;
 
+/**
+ * multi target primer , hold primer that can bind to more than one terget
+ * it store also orginar primer objects
+ * @author Ahmed Hafez
+ *
+ */
 public class MultiTargetPrimerRecord  extends PrimerRecord {
 
 	public HashMap<String, PrimerRecord> targetsToPrimer = new HashMap<String, PrimerRecord>();
 	HashMap<String, Integer> primerStarts = new HashMap<String, Integer>();
 
+	// ?? do we need this
 	PrimerRecord orgPrimer;
 
 
@@ -73,11 +80,12 @@ public class MultiTargetPrimerRecord  extends PrimerRecord {
 		this.failure_rate= newRecord.failure_rate; 
 
 	}
+	// TODO :: use this
 	boolean isRepeatsInTarget = false;
 	public void addRecord(String target, PrimerRecord newRecord) {
 		// ensure integrity
 		// we could also detect repeats here ??
-		// TODO :: if we have same target then this is a repeat unless the start is differnt
+		// TODO :: if we have same target then this is a repeat unless the start is different
 		if(!targetsToPrimer.containsKey(target) ) {
 			targetsToPrimer.put(target, newRecord);
 			primerStarts.put(target, newRecord.start);

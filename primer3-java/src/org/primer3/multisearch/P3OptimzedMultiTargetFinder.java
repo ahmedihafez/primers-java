@@ -34,10 +34,7 @@ import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
 // Stateful search of primers pairs 
 public class P3OptimzedMultiTargetFinder {
-	
-
-
-	
+		
 	DPAlArgHolder dpal_arg_to_use;
 	THAlArgHolder thal_arg_to_use;
 	THAlArgHolder thal_oligo_arg_to_use;
@@ -45,6 +42,8 @@ public class P3OptimzedMultiTargetFinder {
 //	int[][] max_j_seen;
 	
 	MultiTargetScanner scanner = null;
+	
+	
 	public P3OptimzedMultiTargetFinder(MultiTargetScanner scanner , DPAlArgHolder dpal_arg_to_use, THAlArgHolder thal_arg_to_use,
 			THAlArgHolder thal_oligo_arg_to_use) {
 		
@@ -85,102 +84,7 @@ public class P3OptimzedMultiTargetFinder {
 	
 	
 	
-//	class ijPairProductBucket {
-//		PotentialPairSet[] calcPairs; 
-//		int productSize;
-//		public ijPairProductBucket(int k) {
-//			calcPairs = new PotentialPairSet[k];
-//			for (int i = 0; i < calcPairs.length; i++) {
-//				calcPairs[i] = new PotentialPairSet();
-//			}
-//		}
-//	}
-//	HashMap<Integer, ijPairProductBucket> calcPairsBucket = new HashMap<Integer, P3OptimzedMultiTargetFinder.ijPairProductBucket>();
-//	PotentialPairSetsCollection[] productCalcPairs ;
-//	Comparator<ijPairProductBucket> ijPairProductBucketComparator = new Comparator<P3OptimzedMultiFinder.ijPairProductBucket>() {
-//		
-//		@Override
-//		public int compare(ijPairProductBucket o1, ijPairProductBucket o2) {
-//			return Integer.compare(o1.productSize, o2.productSize);
-//		}
-//	};
-	public class mPairs {
-		
-		PotentialPair[] pairSet;
-		
-		int setStatus = PrimerPair.PAIR_UNCHARACTRIZED;
-		
-		public mPairs(PotentialPair[] pairSet)
-		{
-			if(pairSet != null )
-			{
-				this.pairSet = pairSet;
-				estimatedQuilty = 0;
-				for (int i = 0; i < pairSet.length; i++) {
-					
-					estimatedQuilty += pairSet[i].estimatedQuilty;
-				}
-			}
-		}
-		double estimatedQuilty = Double.MAX_VALUE;
 
-		public int check() throws Exception {
-			
-			for (int p = 0; p < pairSet.length; p++) {
-				PotentialPair pair = pairSet[p];
-//				PrimerRecord left = scanner.multiFwd.get(pair.j);
-//				PrimerRecord right = scanner.targetsToSpRev.get(scanner.targets.get(p)).get(pair.i);
-				
-				if(pair.pairStatus == PrimerPair.PAIR_OK)
-				{
-					
-				}
-				else if (pair.pairStatus == PrimerPair.PAIR_UNCHARACTRIZED) {
-					pair.checkpair(dpal_arg_to_use, thal_arg_to_use);;
-				}
-				
-				if(pair.pairStatus == PrimerPair.PAIR_FAILED) {	
-					setStatus = PrimerPair.PAIR_FAILED;
-					return setStatus;
-				}
-				
-			}
-//			for (int p = 0; p < pairSet.length; p++) {
-//				PotentialPair pair = pairSet[p];
-//				for (int i = 0; i < p; i++) {
-//					if(!checkmTargetPrimers(pair, pairSet[i])) 
-//					{
-//						setStatus = PrimerPair.PAIR_FAILED;
-//						return setStatus;
-//					}
-//				}
-//				
-//			}
-			
-
-			
-			setStatus = PrimerPair.PAIR_OK;
-			return setStatus;
-		}
-		
-		private boolean checkmTargetPrimers(PotentialPair o1, PotentialPair o2) {
-			
-			if(o1.left instanceof MultiTargetPrimerRecord && o2.left instanceof MultiTargetPrimerRecord)
-			{
-//				// both are left
-				MultiTargetPrimerRecord o1Left = (MultiTargetPrimerRecord) o1.left;
-				MultiTargetPrimerRecord o2Left = (MultiTargetPrimerRecord) o2.left;
-//				// if o1 left has the o2 taget then they should be the same left other wise no
-				if(     o1Left.targetsToPrimer.containsKey(o2.getTargetName())  || 
-						o2Left.targetsToPrimer.containsKey(o1.getTargetName()))
-				{
-					return o1Left == o2Left ;
-				}
-			}
-			return true;
-		}
-
-	}
 	
 	
 	
@@ -395,7 +299,7 @@ public class P3OptimzedMultiTargetFinder {
 					continue;
 				}
 				nIterantion--;
-				mPairs newPairComp = new mPairs(newset);
+				mPairs newPairComp = new mPairs(this, newset);
 				newPairComp.check();
 				
 				lSearchs.update();

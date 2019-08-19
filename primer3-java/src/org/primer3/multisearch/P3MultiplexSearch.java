@@ -17,6 +17,11 @@ import org.primer3.primer.PrimerPair;
 import org.primer3.primer.PrimerRecord;
 import org.primer3.search.multiplex.MultiplexResult;
 
+/**
+ * CLI implementation of the search , Why ??
+ * @author Ahmed Hafez
+ *
+ */
 public class P3MultiplexSearch implements IP3MultiSearch {
 
 	public DPAlArgHolder dpal_arg_to_use;
