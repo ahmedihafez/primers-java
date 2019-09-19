@@ -16,8 +16,14 @@ public interface IPrimer {
 	int calcScore(IPrimer primer);
 	float calcDeltaG(IPrimer backwordPrimer, float[] table);
 	CountResult calcCount(IPrimer backwardPrimer);
-	void dGprint(IPrimer backwardPrimer, float minDG, PrintStream out, float[] table);
 	int NumPossibilities_32bases();
 	IPrimer getComplement();
+	
+	
+	
+	void printBases(PrintStream outstream);
+	
+	void dGprint(IPrimer backwardPrimer, float minDG, PrintStream out, float[] table);
+	void print(IPrimer backwardPrimer, int maxScore, PrintStream out);
 
 }

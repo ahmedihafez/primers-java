@@ -25,7 +25,7 @@ public class PoolerMain {
 	// table = deltaG_table(temp,mg,cation,dNTP);
 
 	//      puts("--suggest-pools suggests a number for --pools (or use --pools=?)");
-	boolean suggestPools = false;
+	boolean suggestPools = true;
 
 	//      puts("--pools[=NUM[,MINS[,PREFIX]]] e.g. --pools=2,1,poolfile-");
 	int numPools = 0;
@@ -37,7 +37,7 @@ public class PoolerMain {
 	//      puts("--genome=PATH to check amplicons for overlaps in the genome (.2bit or .fa)");
 	String genomeFile;
 	//      puts("--amp-max=LENGTH sets max amplicon length for the overlap check (default 220)"); /* v1.35 added 0 = unlimited, not available in interactive version */
-	int maxAmpliconLen;
+	int maxAmpliconLen = 220;
 	//      puts("--multiplx=FILE (write MultiPLX input after the --genome stage)");
 	String multiplexFile;
 	//      puts("--seedless (don't seed random number generator, and use the same\n           
@@ -98,8 +98,8 @@ public class PoolerMain {
 			//		        }
 			int nAmplicons=0; boolean[] overlappingAmplicons=null; int[] primerNoToAmpliconNo=null;
 			if(genomeFile != null) {
-				Amplicons amplicons= new Amplicons(ap,genomeFile,maxAmpliconLen,multiplexFile,1);
-				overlappingAmplicons = amplicons.getOverlappingAmplicons(); /* TODO: support ,0 here for just an all-amplicon-locations-file from command line? */
+				Amplicons amplicons= new Amplicons(ap,genomeFile,maxAmpliconLen,multiplexFile,0);
+				overlappingAmplicons = amplicons.getOverlappingAmplicons(null); /* TODO: support ,0 here for just an all-amplicon-locations-file from command line? */
 				primerNoToAmpliconNo = amplicons.primerNoToAmpliconNo; 
 				nAmplicons = amplicons.nAmplicons;
 			}
@@ -155,14 +155,14 @@ public class PoolerMain {
 		PoolerMain poolerMain = new PoolerMain();
 
 		poolerMain.doCounts = true;
-		poolerMain.calcDG = true;
-		poolerMain.selfOmit = false;
+		poolerMain.calcDG = false;
+		poolerMain.selfOmit = true;
 		poolerMain.limitMinsToRun = 1;
-//		poolerMain.numPools = -1;
+		poolerMain.numPools = 2;
 		poolerMain.hasThreshold = true;
-		poolerMain.threshold = -5;
+		poolerMain.threshold = 2;
 //		poolerMain.genomeFile = "/data/softwares/pooler/example/hg38.2bit";
-		poolerMain.runPooler("/data/softwares/pooler/example/example4.txt");
+		poolerMain.runPooler("/data/softwares/pooler/example/example.txt");
 
 
 	}

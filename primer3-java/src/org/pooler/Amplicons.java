@@ -1,5 +1,6 @@
 package org.pooler;
 
+import java.io.PrintStream;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,8 +12,6 @@ import org.pooler.Fasta2Bit.SeqData;
 import org.pooler.Fasta2Bit.SeqInfo;
 
 public class Amplicons {
-
-
 
 	public class PrimerToFind  implements java.lang.Comparable<Long> {
 		long lhsBases; /* = p & minValid, for the bsearch (is actually the LAST len(minValid)/2 bases before the cursor, but we're reading backwards from the left see below) */
@@ -35,12 +34,18 @@ public class Amplicons {
 		String name; /* for reports */
 	}
 	HashMap<Integer, ArrayList<AmpEvent>> eventLists = new HashMap<>(); 
+//	HashMap<String, Amplicon> amps = new HashMap<>(); 
+	public List<Amplicon> amps = new ArrayList<>(); 
 
 
 	AllPrimers ap;
+	
+	
 	String genomeFile; 
 	int maxAmpliconLen;
 	String allAmpsFileName;
+	// to report/output an input file for MultiPLX program
+	// if 0 just write locations to the file
 	int allAmpsIsMultiPLX;
 
 	public int[] primerNoToAmpliconNo;
@@ -55,26 +60,38 @@ public class Amplicons {
 		this.allAmpsIsMultiPLX = allAmpsIsMultiPLX;
 		this.allAmpsFileName = multiplexFile;
 	}
-
+	PrintStream reportFileStream = null;
+	public void setReportFile(PrintStream psReportFile) {
+		this.reportFileStream= psReportFile;
+		
+	}
 
 
 	PrimerToFind [] primerVariantsToFind;
 	//	int nPrimerVariantsToFind;
 	int[] didFind;
-	public boolean[] getOverlappingAmplicons() {
-
+	public boolean[] getOverlappingAmplicons(PrintStream errStream) {
+		
+		PrintStream oldErrStream = System.err;
+		if(errStream != null)
+			System.setErr(errStream);
+		
+		
 		Instant start = Instant.now();
-		int nAmp = amplicons_from_primer_names();
+		nAmplicons = amplicons_from_primer_names();
 		boolean[] overlaps = null;
-		if(nAmp > 0) {
-			primerVariantsToFind = populatePF(nAmp);
+		if(nAmplicons > 0) {
+			primerVariantsToFind = populatePF(nAmplicons);
 			didFind = new int[ap.np];
 			List<SeqInfo> names = Genome.go_throgh_genome(this);
-			checkPF();
-			overlaps = eventsToOverlaps(nAmp,
+			if(errStream != null)
+				System.setErr(oldErrStream);
+
+			checkPF(reportFileStream);
+			overlaps = eventsToOverlaps(nAmplicons,
 					names,
-					null ,
-					null,
+					reportFileStream,
+					System.out,
 					null);
 
 		}
@@ -191,8 +208,14 @@ public class Amplicons {
 						//		          if(!strncmp(ap.names[i],Debug_PrimerNamePrefix,sizeof(Debug_PrimerNamePrefix)-1))
 						//		            fprintf(stderr,"Amplicon %d is P%d (%s) and %d (%s)\n",nAmp,i,ap.names[i],j,ap.names[j]);
 						//		          #endif
+						Amplicon newAmp = new Amplicon();
 						(ampliconNoToFwd)[nAmp] = i;
 						(ampliconNoToRev)[nAmp] = j;
+						newAmp.fwdIndex = i ;
+						newAmp.revIndex = j;
+						newAmp.name = n.substring(0, l-2);
+//						amps.put(newAmp.name, newAmp);
+						amps.add( newAmp);
 						(primerNoToAmpliconNo)[i] = (primerNoToAmpliconNo)[j] = nAmp++;
 						if(j==jStart && jStart++ == i+1) 
 							++i; /* NOT i = new jStart, because the loop counter will also incr it */
@@ -302,7 +325,11 @@ public class Amplicons {
 	}
 
 
-	void checkPF() {
+	/**
+	 * Check if amplicons are in the genome and report to a file
+	 * @param reportFile
+	 */
+	void checkPF(PrintStream reportFile) {
 		int nPrimers = ap.np;
 		//		  qsort(primerVariantsToFind,nPrimerVariantsToFind,sizeof(PrimerToFind),PF_by_didFind);
 		Arrays.sort(primerVariantsToFind, new Comparator<PrimerToFind>() {
@@ -330,14 +357,18 @@ public class Amplicons {
 					reported = true; 
 					System.err.println("The following primers were not found in the genome:");
 					//		        reportFile = fopen(getReportFilename(),"w");
-					//		        if(reportFile) fputs("The following primers were not found in the genome:\n",reportFile);
+					if(reportFile!=null)
+						reportFile.println("The following primers were not found in the genome:");
+					// if(reportFile) fputs("The following primers were not found in the genome:\n",reportFile);
 					/* Previously reported number found more than once
-		           as well, but this turned out not to be useful
-		           because some primers can occur frequently but
-		           not in their amplicons.  We could make didFind
-		           boolean rather than a counter. */
+		           	as well, but this turned out not to be useful
+		           	because some primers can occur frequently but
+		           	not in their amplicons.  We could make didFind
+		           	boolean rather than a counter. */
 				}
 				System.err.format("%s\n",primerVariantsToFind[i].name);
+				if(reportFile!=null)
+					reportFile.format("%s\n",primerVariantsToFind[i].name);
 				//		      if(reportFile) fprintf(reportFile,"%s\n",primerVariantsToFind[i].name);
 				didFind[primerVariantsToFind[i].primerNo] = 1; /* so we don't report this one a second time (as multiple entries in primerVariantsToFind map to the same primerNo) */
 			}
@@ -345,10 +376,14 @@ public class Amplicons {
 		//		  #endif
 		if (nFound == nPrimers) {
 			System.err.format("All %d primers were found in the genome\n",nPrimers);
+			if(reportFile!=null)
+				reportFile.format("All %d primers were found in the genome\n",nPrimers);
 			//		  if(reportFile) fprintf(reportFile,"All %d primers were found in the genome\n",nPrimers);
 		} 
 		else {
 			System.err.format("%d of %d primers were found in the genome\n",nFound,nPrimers);
+			if(reportFile!=null)
+				reportFile.format("%d of %d primers were found in the genome\n",nFound,nPrimers);
 			//		  if(reportFile) fprintf(reportFile,"%d of %d primers were found in the genome\n",nFound,nPrimers);
 		}
 		//		  return reportFile;
@@ -360,11 +395,11 @@ public class Amplicons {
 
 
 	}
-
+	public int nOverlaps = 0;
 	boolean[] eventsToOverlaps( int nAmp,
 			List<SeqInfo> names,
-			Object reportFileP,
-			Object allAmps,
+			PrintStream reportFileP,
+			PrintStream allAmps,
 			Object genome
 			) {
 		char[] ampsFound= new char[nAmp];
@@ -372,7 +407,7 @@ public class Amplicons {
 		int[] inProgress= new int[nAmp];
 		int[] inProgressI= new int [nAmp];
 		//		  if(memFail(ampsFound,overlaps,inProgress,inProgressI,_memFail)) return NULL;
-		int nOverlaps = 0;
+		nOverlaps = 0;
 		if (allAmpsIsMultiPLX != 0) 
 			ap.addTags(); // prior to v1.33 this was incorrectly placed below the start of the seqNo loop, resulting in additional copies of tags being added for each new chromosome (usually overflowing the selected bit size so you get only the last part of the 2nd tag)
 		long maxLenFound = 0;
@@ -408,19 +443,35 @@ public class Amplicons {
 					long ampLength = events.get(end).baseEnd + 1 - events.get(i).baseStart;
 					if (ampLength>maxLenFound) maxLenFound= ampLength;
 					if(allAmps != null ) {
-//						if (allAmpsIsMultiPLX != 0) {
+						if (allAmpsIsMultiPLX != 0) {
 //							/* TODO: what if duplicate ampsFound[ampNo] ? */
-//							fprintf(allAmps,"%.*s",(int)strlen(events[i].name)-1-(strchr("-_",events[i].name[strlen(events[i].name)-2])!=0),events[i].name);
-//							fputc('\t',allAmps);
-//							printBasesMaybeD(ap,ampliconNoToFwd[events[i].ampNo],allAmps);
-//							fputc('\t',allAmps);
-//							printBasesMaybeD(ap,ampliconNoToRev[events[i].ampNo],allAmps);
-//							fputc('\t',allAmps);
+							AmpEvent sEvent = events.get(i);
+							String sEventName = sEvent.name;
+							int subIndex = sEventName.charAt(sEventName.length()-2) == '-' || sEventName.charAt(sEventName.length()-2) == '_'  ? 1 : 0 ;
+							allAmps.format("%s",sEventName.substring(0, sEventName.length()-1-subIndex));
+							// fprintf(allAmps,"%.*s",(int)strlen(events[i].name)-1-(strchr("-_",events[i].name[strlen(events[i].name)-2])!=0),events[i].name);
+							allAmps.print("\t");
+							//	fputc('\t',allAmps);
+							ap.forward.get(ampliconNoToFwd[sEvent.ampNo]).printBases(allAmps);
+							// printBasesMaybeD(ap,ampliconNoToFwd[events[i].ampNo],allAmps);
+							allAmps.print("\t");
+							// fputc('\t',allAmps);
+							ap.forward.get(ampliconNoToRev[sEvent.ampNo]).printBases(allAmps);
+							// printBasesMaybeD(ap,ampliconNoToRev[events[i].ampNo],allAmps);
+							allAmps.print("\t");
+							// fputc('\t',allAmps);
 //							output_genome_segment(genome,seqNo,events[i].baseStart,ampLength,allAmps);
-//							fputc('\n',allAmps);
-//						} 
-//						else 
+							allAmps.print("\n");
+							// fputc('\n',allAmps);
+						} 
+						else {
 //							fprintf(allAmps,"%s:%s (%s:%u%c%u)\n",events[i].name,events[end].name,&(names[seqNo][0]),events[i].baseStart,((onOrOff==1)?'+':'-'),events[end].baseEnd);
+							allAmps.format("%s:%s (%s:%d%c%d)\n",events.get(i).name,events.get(end).name,names.get(seqNo).seqname , events.get(i).baseStart,((onOrOff==1)?'+':'-'),events.get(end).baseEnd);
+						}
+						
+						Amplicon amp = amps.get(events.get(i).ampNo);
+						amp.setLocation(names.get(seqNo).seqname, events.get(i).baseStart, events.get(end).baseEnd, onOrOff==1);
+						
 					}
 					/* now check if there's any overlaps with other amplicons that are already running */
 					int prnOver=0, j;
@@ -435,25 +486,42 @@ public class Amplicons {
 									System.err.print("Overlapping amplicons:\n");
 //									if(!*reportFileP) *reportFileP = fopen(getReportFilename(),"w");
 //									if(*reportFileP) fputs("Overlapping amplicons:\n",*reportFileP);
+									if(reportFileP != null)
+										reportFileP.print("Overlapping amplicons:\n");
 								}
 								System.err.format("%s:%s (%s:%d%c%d) / ",
 										events.get(i).name,
 										events.get(end).name,
-										 names.get(seqNo).seqname,
+										names.get(seqNo).seqname,
 										events.get(i).baseStart,((onOrOff==1)?'+':'-'),
 										events.get(end).baseEnd);
 //								if(*reportFileP) fprintf(*reportFileP,"%s:%s (%s:%u%c%u) / ",events[i].name,events[end].name,&(names[seqNo][0]),events[i].baseStart,((onOrOff==1)?'+':'-'),events[end].baseEnd);
+								if(reportFileP != null)
+									reportFileP.format("%s:%s (%s:%d%c%d) / ",
+											events.get(i).name,
+											events.get(end).name,
+											names.get(seqNo).seqname,
+											events.get(i).baseStart,((onOrOff==1)?'+':'-'),
+											events.get(end).baseEnd);
+									
 								prnOver=1;
 							}
 							nOverlaps++;
 							AmpEvent overlapWithStart = events.get(inProgressI[j]),
 							overlapWithEnd = events.get( findEndEvent(events,inProgressI[j],maxAmpliconLen));
 							System.err.format("%s:%s (%d%c%d)",overlapWithStart.name,overlapWithEnd.name,overlapWithStart.baseStart,((overlapWithStart.onOrOff==1)?'+':'-'),overlapWithEnd.baseEnd);
+							if(reportFileP != null)
+								reportFileP.format("%s:%s (%d%c%d)",overlapWithStart.name,overlapWithEnd.name,overlapWithStart.baseStart,((overlapWithStart.onOrOff==1)?'+':'-'),overlapWithEnd.baseEnd);
+							Amplicon amp = amps.get(events.get(i).ampNo);
+							Amplicon overlappingAmp = amps.get(overlapWithStart.ampNo);
+							amp.addOverlapingAmp(overlappingAmp);
 //							if(*reportFileP) 
 //								fprintf(*reportFileP,"%s:%s (%u%c%u)",overlapWithStart->name,overlapWithEnd->name,overlapWithStart->baseStart,((overlapWithStart->onOrOff==1)?'+':'-'),overlapWithEnd->baseEnd);
 						}
 					if(prnOver != 0) {
 						System.err.print("\n");
+						if(reportFileP != null)
+							reportFileP.print("\n");
 //						if(*reportFileP) fputs("\n",*reportFileP);
 					}
 				}
@@ -468,6 +536,9 @@ public class Amplicons {
 					System.err.format("Amplicons not found in genome:\n"); 
 //					ResetColour();
 //					if(*reportFileP) fprintf(*reportFileP,"Amplicons not found in genome:\n");
+					if(reportFileP != null)
+						reportFileP.format("Amplicons not found in genome:\n"); 
+						
 				}
 				numNotFound++;
 //				#ifdef Debug_AmpliconNo
@@ -475,12 +546,17 @@ public class Amplicons {
 //				#endif
 				System.err.format("%s/%s\n",ap.names.get(ampliconNoToFwd[i]),
 						ap.names.get(ampliconNoToRev[i]));
+				if(reportFileP != null)
+					reportFileP.format("%s/%s\n",ap.names.get(ampliconNoToFwd[i]),
+							ap.names.get(ampliconNoToRev[i]));
 //				if(*reportFileP) fprintf(*reportFileP,"%s/%s\n",ap.names[ampliconNoToFwd[i]],ap.names[ampliconNoToRev[i]]);
 			}
 		if(numNotFound != 0) {
 //			SetColour(Bright,Red,Black); 
 			System.err.format(maxAmpliconLen != 0 ? "%d of %d amplicons not found in genome (with length <=%d)\n":"%d of %d amplicons not found in genome\n",numNotFound,nAmp,maxAmpliconLen); 
 //			ResetColour();
+			if(reportFileP != null)
+				reportFileP.format(maxAmpliconLen != 0 ? "%d of %d amplicons not found in genome (with length <=%d)\n":"%d of %d amplicons not found in genome\n",numNotFound,nAmp,maxAmpliconLen); 
 //			if(*reportFileP) fprintf(*reportFileP,maxAmpliconLen?"%d of %d amplicons not found in genome (with length <=%d)\n":"%d of %d amplicons not found in genome\n",numNotFound,nAmp,maxAmpliconLen);
 		} 
 		else { 
@@ -496,6 +572,8 @@ public class Amplicons {
 //		SetColour(Bright,Cyan,Black); 
 		System.err.format("%d overlaps found\n",nOverlaps); 
 //		ResetColour();
+		if(reportFileP != null)
+			reportFileP.format("%d overlaps found\n",nOverlaps);
 //		if(*reportFileP) fprintf(*reportFileP,"%d overlaps found\n",nOverlaps);
 //		free(inProgress); 
 //		free(inProgressI); 
@@ -528,4 +606,7 @@ public class Amplicons {
 //		  #endif
 		  return 0;
 		}
+
+
+	
 }

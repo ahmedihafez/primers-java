@@ -166,7 +166,7 @@ public class Fasta2Bit {
 	
 	
 	void parseSeqDir() {
-		System.out.println(seqPtr);
+//		System.out.println(seqPtr);
 		// ByteBuffer wrapped = readData(0,1)	;
 		try {
 			seqDir = new  SeqInfo[nSeq];

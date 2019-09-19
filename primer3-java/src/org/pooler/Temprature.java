@@ -282,7 +282,7 @@ public class Temprature {
 	
 	// MPprimer has monovalent_cation_conc_mM default 50, others 0
 	// Versions prior to 1.17 incorrectly called these _nM instead of _mM (unit, you nit :-) )
-	static float[] deltaG_table(float K,float mg_conc_mM,float monovalent_cation_conc_mM,float dNTP_conc_mM) {
+	public static float[] deltaG_table(float K,float mg_conc_mM,float monovalent_cation_conc_mM,float dNTP_conc_mM) {
 		  // MPprimer has monovalent_cation_conc_mM default 50, others 0
 		  // Versions prior to 1.17 incorrectly called these _nM instead of _mM (unit, you nit :-) )
 		 float[] r = new float[259];

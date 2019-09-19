@@ -7,14 +7,14 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.biojava.nbio.core.sequence.DNASequence;
 import org.biojava.nbio.core.sequence.compound.NucleotideCompound;
 import org.biojava.nbio.core.sequence.io.DNASequenceCreator;
@@ -41,7 +41,7 @@ public class AllPrimers {
 	List<String> names; // primer names
 
 	int np; // total number of primers
-	int maxLen = 0; // length of longest primer 
+	int maxLen = 0 , minLen = Integer.MAX_VALUE , maxTag= 0; // length of longest primer 
 
 	PrimerFactory currentFactory = null;
 
@@ -152,9 +152,132 @@ public class AllPrimers {
 
 	}
 
+	
+	public void loadSequences(ArrayList<String> seqNames,ArrayList<String> seqs) {
+
+		whichTag = new ArrayList<Integer>();
+		forward = new ArrayList<IPrimer>();
+		backward = new ArrayList<IPrimer>();
+		tags = new ArrayList<IPrimer>();
+		names = new ArrayList<String>();
+
+		// here decide which currentFactory = PrimerFactory.getCurrent();
+		PrimerFactory.setCurrent( new PrimerFactory64());
+		currentFactory = PrimerFactory.getCurrent();
 
 
 
+
+		try {
+
+
+			int p = 0 ; // number of seq so far
+			HashMap<Character, Integer> lastByte_to_whichTag = new HashMap<Character, Integer>();
+			HashMap<Character, Boolean> check_not_last = new HashMap<Character, Boolean>();
+			int nextTag = 0;
+			for(int seqIndex = 0 ; seqIndex < seqs.size();seqIndex++) {
+				System.out.println(">" + seqNames.get(seqIndex));
+				System.out.println(seqs.get(seqIndex));
+				int seqLen = seqs.get(seqIndex).length();
+
+				
+				IPrimer mdp = currentFactory.createPrimer(seqs.get(seqIndex));
+				String seqName = seqNames.get(seqIndex);
+				if (seqName.startsWith("tag") && seqName.length() == 4 ) {
+					
+					
+					if(maxTag < seqLen)
+						maxTag = seqLen;
+					char tagType = Character.toUpperCase(seqName.charAt(3));
+					if(!lastByte_to_whichTag.containsKey(tagType))
+					{
+						for(int i = 0 ; i < whichTag.size() ; i++)
+						{
+							if ( tagType ==  
+									Character.toUpperCase( 
+											names.get(i).charAt(names.get(i).length()-1) ) 
+									) {
+								whichTag.set(i,nextTag);
+							}
+
+						}
+					} 
+					else 
+						check_not_last.put(tagType, true);
+					lastByte_to_whichTag.put(tagType, nextTag);
+					tags.add(mdp);
+					nextTag++;
+				}
+				else {
+					
+					if(minLen > seqLen)
+						minLen = seqLen;
+					if(maxLen < seqLen)
+						maxLen = seqLen;
+					names.add(seqName);
+					char tagType =  Character.toUpperCase(seqName.charAt(seqName.length()-1) );
+					int whichTagValue = -1;
+					if(lastByte_to_whichTag.containsKey(tagType))
+						whichTagValue = lastByte_to_whichTag.get(tagType);
+					whichTag.add(whichTagValue);
+					check_not_last.put(tagType,false);
+					forward.add(mdp);
+				}
+			}
+			
+
+			p = 0;
+			for(Entry<Character,Boolean> checkTag : check_not_last.entrySet() )
+			{
+				if(checkTag.getValue()) {
+					if(p != 0) 
+					{
+						//fprintf(stderr,"WARNING: Same applies to >tag%c\n",nextTag);
+					}
+					else {
+						p = 1;
+						//fprintf(stderr,"\nWARNING: You have multiple >tag%c sequences\n         and the last one does not precede a >...%c primer.\n         This probably means you've made a mistake.\n         Apart from the first >tag%c, all >tag%c tags will apply to\n         >...%c primers AFTER the >tag%c (not before it).\n",nextTag,nextTag,nextTag,nextTag,nextTag,nextTag);
+					}
+				}
+			}
+
+
+			for(int i = 0 ;  i < forward.size();i++) {
+				this.backward.add(forward.get(i).getReverse());
+			}
+
+
+			this.np = this.forward.size();
+
+		}  catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+
+	}
+
+
+	
+	
+	
+	public int getNumberOfPrimers() {
+		return np;
+	}
+	public int getNumberOfTags() {
+		return tags.size();
+	}
+	public int getMaxPrimerLength() {
+		return maxLen;
+	}
+	public int getMinPrimerLength() {
+		return minLen;
+	}
+	public int getMaxTagLength() {
+		return maxTag;
+	}
+	
+	
 	public static void main(String[] argv) {
 		AllPrimers testAllPrimers = new AllPrimers();
 
@@ -346,10 +469,10 @@ public class AllPrimers {
 	}
 
 	public class PS_cache {
-		int[] scores; 
+		public int[] scores; 
 		int[] primerMove_depends_on;
 		int []fix_to_pool; 
-		int fix_min_pools;
+		public int fix_min_pools;
 		public void saturate_scores_of_overlapping_primers(boolean[] overlappingAmplicons, int[] primerNoToAmpliconNo,
 				int nAmplicons, int np) {
 			int i,j,p=0; 
@@ -380,7 +503,7 @@ public class AllPrimers {
 	}
 
 
-	PS_cache PS_precalc(final float[] table,
+	public PS_cache PS_precalc(final float[] table,
 			final boolean[] overlappingAmplicons,
 			final int[] primerNoToAmpliconNo,int nAmplicons) {
 
@@ -581,8 +704,9 @@ public class AllPrimers {
 	}
 
 
-	public void dGprintStats(int[] pools, int[] calcScores) {
-		int[] counts= new int[0x4000+1]; 
+	public List<List<Pair<Double, Double>>> dGprintStats(int[] pools, int[] calcScores) {
+		int[] counts= new int[0x4000+1];
+		List<List<Pair<Double, Double>>> poolsCounts = new ArrayList<>();
 		//		  if(memFail(counts,_memFail)) return;
 		int i,j,nPools=0,pool;
 		for(i=0; i<np; i++) 
@@ -592,6 +716,9 @@ public class AllPrimers {
 		int precalcScores2 = 0 , precalcScores = 0;
 		nPools++;
 		for(pool=0; pool<nPools; pool++) {
+			List<Pair<Double, Double>> poolCounts = new ArrayList<>();
+			poolsCounts.add(poolCounts);
+			
 			System.out.format("Pool %d:\n",pool+1);
 			//		    memset(counts,0,(0x4000+1)*sizeof(int));
 			precalcScores = precalcScores2;
@@ -607,15 +734,25 @@ public class AllPrimers {
 			for(; i<0x4000; i++) 
 				if(counts[i] != 0) {
 					System.out.format("%.3g\t%d\n",((float)(-i))/2.0,counts[i]);
+//					poolCounts.add(new ImmutablePair<String, Integer>(
+//							String.format("%.3g",((float)(-i))/2.0),
+//							counts[i]
+//							));
+					poolCounts.add(
+							new ImmutablePair<Double, Double>(((double)(-i))/2.0,(double) counts[i])
+							);
 				}
 			int other=counts[0x4000];
 			if(other != 0) 
 				System.out.format("Overlaps\t%d\n",other);
 		}
+		
+		return poolsCounts;
 
 	}
 
-	public void printStats(int[] pools, int[] calcScores) {
+	public List<List<Pair<Double, Double>>> printStats(int[] pools, int[] calcScores) {
+		List<List<Pair<Double, Double>>> poolsCounts = new ArrayList<>();
 		/* like pCounts64 but outputs per-pool */
 		int i,j,nPools=0,pool;
 		for(i=0; i<np; i++) 
@@ -625,6 +762,8 @@ public class AllPrimers {
 		int precalcScores = 0;
 		nPools++; /* 1 higher than max */
 		for(pool=0; pool<nPools; pool++) {
+			List<Pair<Double, Double>> poolCounts = new ArrayList<>();
+			poolsCounts.add(poolCounts);
 			System.out.format("Pool %d:\n",pool+1);
 			precalcScores = 0;
 			int[] counts = new int[64];
@@ -638,12 +777,17 @@ public class AllPrimers {
 						} else other++;
 					} else if(calcScores != null) 
 						precalcScores++;
-			for(i=0; i<=maxS; i++)
+			for(i=0; i<=maxS; i++) { 
 				System.out.format("%d\t%d\n",i,counts[i]);
+				poolCounts.add(
+						new ImmutablePair<Double, Double>((double)i,(double) counts[i])
+						);
+			}
 			if(other != 0) 
 				System.out.format("Overlaps\t%d\n",other);
 		}
 		//		  if(f!=stdout && f!=stderr) fclose(f);		
+		return poolsCounts;
 	}
 
 
@@ -732,10 +876,13 @@ public class AllPrimers {
 		}
 
 
-
-
 	public void dGprintBonds(PrintStream out, double threshold, int[] pools, float[] table) {
+		dGprintBonds(out,threshold,pools,table,-1);
 		
+	}
+
+	public void dGprintBonds(PrintStream out, double threshold, int[] pools, float[] table, int onlyPoolI) {
+
 		class DG_ScoreRecord {
 			public DG_ScoreRecord(float dG, int i, int j) {
 				this.i = i; this.j = j ; this.dG = dG;
@@ -743,93 +890,152 @@ public class AllPrimers {
 			int i , j;
 			float dG;
 		};
-		
+
 		Instant next = Triangle.t_ProgressStart("Sorting...");
-//		DG_ScoreRecord[] sr = new DG_ScoreRecord[ Triangle.t_Nitems(np)];
+		// DG_ScoreRecord[] sr = new DG_ScoreRecord[ Triangle.t_Nitems(np)];
 		ArrayList<DG_ScoreRecord> sr = new ArrayList<DG_ScoreRecord>();
-//		int srIndex = 0; 
+		// int srIndex = 0; 
 		Instant start = Instant.now();
-//		  #if defined(_OPENMP)
-//		  #pragma omp parallel
-//		  #endif
-		  {
-		  TwoRanges tr= Triangle.t_iBounds(np);
-		   int r,i,j,done=0;
-		   for(r=0; r<2; r++)
-		   for(i=tr.r[r].start; i<tr.r[r].end; i++, next = Triangle.t_Progress("Sorting... ",tr,np,done,next),done+=np-i)
-		   {
-			IPrimer forwardPrimer = forward.get(i);
-		    for(j=i; j<np; j++) {
-		      if( pools == null || pools[i]==pools[j]) {
-		        float dG =   currentFactory.getDeltaG(forwardPrimer, backward.get(j),table);
-		        if (dG <= threshold) {
-//		          #if defined(_OPENMP)
-//		          #pragma omp critical
-//		          #endif
-//		          if(sr) 
-		          {
-		             sr.add( new DG_ScoreRecord(dG, i, j)) ;
-//		             srIndex++;
-		             }
-//		          } 
-//		          else 
-//		        	  dGprint64MaybeD(forward[i],backward[j],names[i],names[j],dG,f,table);
-		        }
-		      }
-		    }
-		   }
-		 }
-//		  if(sr) 
-		  {
-			  sr.sort( new Comparator<DG_ScoreRecord>() {
+		// #if defined(_OPENMP)
+		// #pragma omp parallel
+		// #endif
+		{
+			TwoRanges tr= Triangle.t_iBounds(np);
+			int r,i,j,done=0;
+			for(r=0; r<2; r++)
+				for(i=tr.r[r].start; i<tr.r[r].end; i++, next = Triangle.t_Progress("Sorting... ",tr,np,done,next),done+=np-i)
+				{
+					IPrimer forwardPrimer = forward.get(i);
+					for(j=i; j<np; j++) {
+						if( pools == null || pools[i]==pools[j]) {
+							if(onlyPoolI != -1 && onlyPoolI != pools[i])
+								// only then 
+								continue;
+							float dG =   currentFactory.getDeltaG(forwardPrimer, backward.get(j),table);
+							if (dG <= threshold) {
+								// #if defined(_OPENMP)
+								// #pragma omp critical
+								//#endif
+								// if(sr) 
+								{
+									sr.add( new DG_ScoreRecord(dG, i, j)) ;
+									// srIndex++;
+								} 
+								//	else 
+								//	dGprint64MaybeD(forward[i],backward[j],names[i],names[j],dG,f,table);
+							}
+						}
+					}
+				}
+		}
+		//		  if(sr) 
+		{
+			sr.sort( new Comparator<DG_ScoreRecord>() {
 
 				@Override
 				public int compare(DG_ScoreRecord o1, DG_ScoreRecord o2) {
 					return Float.compare(o1.dG,o2.dG) ;
 				}
 			}); 
-//		    qsort(sr,sr2-sr,sizeof(DG_ScoreRecord),dGhighestScore1st);
-		    System.err.format("\rSorting... done");
-		    HelperMethods.prnSeconds( Instant.now().getEpochSecond() - start .getEpochSecond()); 
-		    System.err.format("\n");
-//		    if(f!=stdout) 
-//		    { 
-//		    	fputs("Outputting... ",stderr); 
-//		    	start = time(NULL); 
-//		    	next = start + 2; 
-//		    }
-//		    fflush(stderr);
-		    int srIndex = 0;
-		    for(srIndex=0 ; srIndex<sr.size(); srIndex++) {
-//		      if(f!=stdout && time(NULL) > next) {
-//		        fprintf(stderr,"\rOutputting... (%d%%) ",100*(int)(s-sr)/(int)(sr2-sr)); fflush(stderr);
-//		        next = time(NULL) + 2;
-//		      }
-		     DG_ScoreRecord s =  sr.get(srIndex);
-		      dGprint64MaybeD(s.i,s.j,s.dG,out,table);
-		    }
-//		    free(sr);
-		    if(out != System.out) 
-		    { 
-//		    	fputs("\rOutputting... done",stderr); 
-//		    	prnSeconds((long)(time(NULL)-start)); 
-//		    	fputs("\n",stderr); fflush(stderr); }
-		    }
-		  }
+			//		    qsort(sr,sr2-sr,sizeof(DG_ScoreRecord),dGhighestScore1st);
+			System.err.format("\rSorting... done");
+			HelperMethods.prnSeconds( Instant.now().getEpochSecond() - start .getEpochSecond()); 
+			System.err.format("\n");
+			//		    if(f!=stdout) 
+			//		    { 
+			//		    	fputs("Outputting... ",stderr); 
+			//		    	start = time(NULL); 
+			//		    	next = start + 2; 
+			//		    }
+			//		    fflush(stderr);
+			int srIndex = 0;
+			for(srIndex=0 ; srIndex<sr.size(); srIndex++) {
+				//		      if(f!=stdout && time(NULL) > next) {
+				//		        fprintf(stderr,"\rOutputting... (%d%%) ",100*(int)(s-sr)/(int)(sr2-sr)); fflush(stderr);
+				//		        next = time(NULL) + 2;
+				//		      }
+				DG_ScoreRecord s =  sr.get(srIndex);
+				dGprint64MaybeD(s.i,s.j,s.dG,out,table);
+			}
+			//		    free(sr);
+			if(out != System.out) 
+			{ 
+				//		    	fputs("\rOutputting... done",stderr); 
+				//		    	prnSeconds((long)(time(NULL)-start)); 
+				//		    	fputs("\n",stderr); fflush(stderr); }
+			}
+		}
 	}
+	
+	public void printBonds(PrintStream out, double threshold, int[] pools) {
+		printBonds( out,  threshold, pools,-1);
+	}
+	public void printBonds(PrintStream out, double threshold, int[] pools , int onlyPoolI) {
+		class ScoreRecord {
+			public ScoreRecord(int score, int i, int j) {
+				this.i = i; this.j = j ; this.score = score;
+			}
+			int i , j;
+			int score;
+		}
+		ArrayList<ScoreRecord> sr = new ArrayList<ScoreRecord>();
+		for(int i=0; i<np; i++) {
+			IPrimer forwardPrimer = forward.get(i);
+			for(int j=i; j<np; j++) {
+				if( pools == null || pools[i]==pools[j])  {
+					if(onlyPoolI != -1 && onlyPoolI != pools[i])
+						// only then 
+						continue;
+					int score = currentFactory.getScore(forwardPrimer, backward.get(j));
+					if (score >= threshold) {
+						sr.add( new ScoreRecord(score, i, j)) ;
+					}
+				}
+			}
+		}
+		sr.sort( new Comparator<ScoreRecord>() {
+
+			@Override
+			public int compare(ScoreRecord a, ScoreRecord b) {
+				int res = Integer.compare(b.score,a.score) ;
+				if(res != 0 )
+					return res;
+				res = Integer.compare(a.i,b.i) ;
+				if(res != 0 )
+					return res;
+				return Integer.compare(a.j,b.j) ;
+			}
+		});
+		for(ScoreRecord s :sr ) {
+//			forward.get(s.i).print(backward.get( s.j), s.score, out);
+			print64MaybeD(s.i,s.j,s.score, out);
+		}
+	}
+	
 
 	void dGprint64MaybeD(int fI ,int bI,float minDG,PrintStream out,final float[]table) {
-//			  if(!name1 || !*name1) name1="(no name)";
-//			  if(!name2 || !*name2) name2="(no name)";
-			  out.printf("%s versus %s\n",names.get(fI),names.get(bI));
-			  IPrimer forwardPrimer = this.forward.get(fI);
-			  IPrimer backwardPrimer = this.backward.get(bI);
-			  count64MaybeD(forwardPrimer,backwardPrimer,out);
-			  currentFactory.dGprint(forwardPrimer,backwardPrimer,minDG,out,table);
-			  out.println();
-		  }
+		// if(!name1 || !*name1) name1="(no name)";
+		// if(!name2 || !*name2) name2="(no name)";
+		out.printf("%s versus %s\n",names.get(fI),names.get(bI));
+		IPrimer forwardPrimer = this.forward.get(fI);
+		IPrimer backwardPrimer = this.backward.get(bI);
+		count64MaybeD(forwardPrimer,backwardPrimer,out);
+		currentFactory.dGprint(forwardPrimer,backwardPrimer,minDG,out,table);
+		out.println();
+	}
 
 
+	void print64MaybeD(int fI ,int bI,int maxScore,PrintStream out) {
+		// if(!name1 || !*name1) name1="(no name)";
+		// if(!name2 || !*name2) name2="(no name)";
+		out.printf("%s versus %s\n",names.get(fI),names.get(bI));
+		IPrimer forwardPrimer = this.forward.get(fI);
+		IPrimer backwardPrimer = this.backward.get(bI);
+		count64MaybeD(forwardPrimer,backwardPrimer,out);
+		currentFactory.print(forwardPrimer,backwardPrimer,maxScore,out);
+		out.println();
+	}
+	
 	private void count64MaybeD(IPrimer forwardPrimer, IPrimer backwardPrimer, PrintStream out) {
 		  /* Put clarification for any beginner users who haven't
 	     been informed that we automatically try all positions
@@ -843,10 +1049,7 @@ public class AllPrimers {
 
 
 
-	public void printBonds(PrintStream out, double threshold, int[] pools) {
-		// TODO Auto-generated method stub
-		
-	}
+
 
 
 
@@ -868,6 +1071,14 @@ public class AllPrimers {
 		
 
 	}
+
+
+	public String getPrimerName(int i) {
+		return names.get(i);
+	}
+
+
+
 
 
 

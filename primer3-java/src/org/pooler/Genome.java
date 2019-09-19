@@ -9,6 +9,7 @@ import org.pooler.Fasta2Bit.SeqInfo;
 public class Genome {
 
 	public static List<SeqInfo> go_throgh_genome(Amplicons amplicons) {
+		// TODO :: add read from fasta file
 //		if(is_fasta(f)) return fasta_genome(f);
 		try {
 			// return fasta_genome(genomeFile);
@@ -25,7 +26,8 @@ public class Genome {
 			amplicons.allocateSeqs(genome2bit.nSeq);
 			for(int seqNo=0;seqNo<genome2bit.nSeq;seqNo++) {
 				SeqData seqData = genome2bit.parseNextSeq();
-				if (seqData.seq.seqname.contains(" ") || seqData.seq.seqname.contains("_")) {
+				// TODO :: please revise
+				if (seqData.seq.seqname.contains("-") || seqData.seq.seqname.contains("_")) {
 					continue;
 				}
 				else

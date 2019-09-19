@@ -339,6 +339,53 @@ class DegeneratePrimer64  extends DegeneratePrimer {
 		    if(sL != 0) sL--; else sR++;		
 		  }
 	}
+	
+	@Override
+	public void print(IPrimer backwardPrimer, int maxScore, PrintStream out) {
+		DegeneratePrimer64 degPrimer64 = (DegeneratePrimer64) backwardPrimer;
+//		long p1Valid = this.MaybeA | this.MaybeC | this.MaybeG | this.MaybeT;
+		long p2Valid = degPrimer64.MaybeA | degPrimer64.MaybeC | degPrimer64.MaybeG | degPrimer64.MaybeT;
+		
+		int sL=(64 - 1) - Long.numberOfLeadingZeros(p2Valid);
+		int sR = 0; 
+		long p1B_MaybeA , p1B_MaybeC , p1B_MaybeG , p1B_MaybeT;
+
+		while(true) {
+			if(sL != 0) {
+				p1B_MaybeA = this.MaybeA << sL;
+				p1B_MaybeC = this.MaybeC << sL;
+				p1B_MaybeG = this.MaybeG << sL;
+				p1B_MaybeT = this.MaybeT << sL;
+		    } else {
+		      p1B_MaybeA = this.MaybeA >>> sR;
+		      p1B_MaybeC = this.MaybeC >>> sR;
+		      p1B_MaybeG = this.MaybeG >>> sR;
+		      p1B_MaybeT = this.MaybeT >>> sR;
+		    }
+		    long overlap = (p1B_MaybeA|p1B_MaybeC|p1B_MaybeG|p1B_MaybeT) & p2Valid;
+		    // bit64 overlap = DegenerateValid64(p1B) & DegenerateValid64(p2);
+		    long bonds = (p1B_MaybeA & degPrimer64.MaybeT) |
+		      (p1B_MaybeC & degPrimer64.MaybeG) |
+		      (p1B_MaybeG & degPrimer64.MaybeC) |
+		      (p1B_MaybeT & degPrimer64.MaybeA);
+		    
+		    int score = 2*Long.bitCount(bonds) - Long.bitCount(overlap);
+		    if(score == maxScore) {
+		      /* TODO: if more than one ==maxScore, how to
+		         prioritise the links in the degenerate case? */
+		      out.format("Matches = %d\n", Long.bitCount(bonds));
+		      out.format("Score = %d\n",maxScore);
+		      print64D_inner(sL-sR,degPrimer64,overlap,bonds,out);
+//		      print64D_inner(sL-sR,p2,overlap,bonds,f);
+		      //return; /* comment out to print ALL maxScore matches */
+		    }
+		    if(!   (overlap != 0)) return; /* needed if not returning above */
+		    if(sL != 0) sL--; else sR++;
+		  }
+		
+	}
+	
+	
 	 void print64D_inner(int sL,DegeneratePrimer64 p2,long overlap,long bonds,PrintStream out) {
 		 int i1 = Long.numberOfLeadingZeros((this.MaybeA | this.MaybeC | this.MaybeG | this.MaybeT))-sL, 
 				 i2 = Long.numberOfLeadingZeros(p2.MaybeA | p2.MaybeC | p2.MaybeG | p2.MaybeT), 
@@ -456,4 +503,16 @@ class DegeneratePrimer64  extends DegeneratePrimer {
 	  return ((this.MaybeA >> 32) | (this.MaybeC >> 32) | (this.MaybeG >> 32) | (this.MaybeT >> 32)) != 0;
 //	#endif
 	}
+
+
+
+	@Override
+	public void printBases(PrintStream outstream) {
+		printBases64D(outstream);
+		
+	}
+
+
+
+	
 }

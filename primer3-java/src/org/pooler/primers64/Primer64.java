@@ -248,6 +248,48 @@ class Primer64  extends NonDegeneratePrimer {
 		    else sR++;
 		  }		
 	}
+	
+	@Override
+	public void print(IPrimer primer, int maxScore, PrintStream out) {
+		/* maxScore has been found by score64; print a representation
+	     of the interaction, along with the score */
+		Primer64 primer64 = (Primer64) primer;
+		int sL= (64 - 1) - Long.numberOfLeadingZeros(primer64.valid);
+
+//		int sL=(64 - 1) - leading0_64(p2.valid);
+	  int sR = 0; 
+	  long AorT, GorT,valid;
+//	  Primer64 p1B;
+	  	while(true) {
+	    if(sL != 0) {
+	      AorT = this.AorT << sL; 
+	      GorT = this.GorT << sL;
+	      valid = this.valid << sL;
+	    } else {
+	      /* this function is allowed to be a bit slower than
+	         score64, and we need to keep all bits */
+	      AorT = this.AorT >>> sR; 
+	      GorT = this.GorT >>> sR;
+	      valid = this.valid >>> sR;
+	    }
+	    long overlap = valid & primer64.valid;
+	    long bonds = (~(AorT ^ primer64.AorT)) & (GorT ^ primer64.GorT) & overlap;
+	    int score = 2*Long.bitCount(bonds) - Long.bitCount(overlap);
+	    if(score == maxScore) {
+	      /* TODO: if more than one ==maxScore, prioritise
+	         any that has more C-G links, stronger than A-T */
+	      out.format("Matches = %d\n",Long.bitCount(bonds));
+	      out.format("Score = %d\n",maxScore);
+	      print64_inner(sL-sR,primer64,overlap,bonds,out);
+	      //return; /* comment out to print ALL maxScore matches */
+	    }
+	    if(! (overlap !=0)) return; /* needed if not returning above */
+	    if(sL != 0 ) sL--; else sR++;
+	  }
+		
+	}
+	
+	
 	void print64_inner(int sL,Primer64 p2,long overlap,long bonds,PrintStream out) {
 		  /* code common to print64 and dGprint64 */
 		  int i1 = Long.numberOfLeadingZeros(this.valid)-sL, 
@@ -293,4 +335,10 @@ class Primer64  extends NonDegeneratePrimer {
 		complement.GorT = ~(complement.GorT);
 		return complement;
 	}
+	@Override
+	public void printBases(PrintStream outstream) {
+		printBases64(outstream);	
+	}
+
+	
 }

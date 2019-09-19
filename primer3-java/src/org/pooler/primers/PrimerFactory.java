@@ -72,5 +72,18 @@ public abstract class PrimerFactory {
 		}
 		forwardPrimer.dGprint(backwardPrimer, minDG, out,table);		
 	}
+	public void print(IPrimer forwardPrimer, IPrimer backwardPrimer, int maxScore, PrintStream out) {
+		if(forwardPrimer.isDegeneratePrimer() && !backwardPrimer.isDegeneratePrimer())
+		{
+			forwardPrimer.print(upgradeToDegeneratePrimer(backwardPrimer) , maxScore, out);
+			return ;
+		}
+		if(!forwardPrimer.isDegeneratePrimer() && backwardPrimer.isDegeneratePrimer())
+		{
+			upgradeToDegeneratePrimer(forwardPrimer).print(backwardPrimer, maxScore, out);
+			return ;
+		}
+		forwardPrimer.print(backwardPrimer, maxScore, out);
+	}
 
 }

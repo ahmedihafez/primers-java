@@ -276,7 +276,7 @@ public class PoolSplit {
 
 
 
-	static int[]  split_into_pools(AllPrimers ap,
+	public static int[]  split_into_pools(AllPrimers ap,
 			int nPools,
 			int timeLimit,
 			PS_cache cache,

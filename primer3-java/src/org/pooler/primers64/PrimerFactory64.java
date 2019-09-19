@@ -29,6 +29,7 @@ public class PrimerFactory64 extends PrimerFactory {
 
 		}
 	}
+	
 	public IPrimer createPrimer(char[] primerSeq)  {
 		throw new Exception("Not Emplemented Yet");
 	}

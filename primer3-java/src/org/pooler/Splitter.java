@@ -29,7 +29,7 @@ public class Splitter {
 	//  ##################
 	List<Integer> shared_moves = null;
 	int numMoves=0;
-	int[] bestPools = null;
+	public int[] bestPools = null;
 	// ##################
 
 
