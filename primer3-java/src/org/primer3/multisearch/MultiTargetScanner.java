@@ -36,7 +36,7 @@ public class MultiTargetScanner {
 	ArrayList<P3RetVal> revals = new ArrayList<P3RetVal>();
 	
 	IP3MultiSearch p3MultiplexSearcher;
-	MultiplexResult result;
+	public MultiplexResult result;
 	public MultiTargetScanner(IP3MultiSearch p3MultiplexSearcher, String gname ,  P3GlobalSettings pa)
 	{
 		this.p3MultiplexSearcher = p3MultiplexSearcher;

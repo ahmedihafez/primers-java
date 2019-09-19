@@ -689,7 +689,7 @@ public class P3RetVal {
 	}
 
 	
-	public void inisSearch(DPAlArgHolder dpal_arg_to_use, THAlArgHolder thal_arg_to_use,
+	public void initSearch(DPAlArgHolder dpal_arg_to_use, THAlArgHolder thal_arg_to_use,
 			THAlArgHolder thal_oligo_arg_to_use)
 	{
 		p3Finder = new P3OptimzedFinder(this,dpal_arg_to_use, thal_arg_to_use, thal_oligo_arg_to_use);

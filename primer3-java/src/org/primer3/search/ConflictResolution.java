@@ -16,4 +16,8 @@ public interface ConflictResolution<T> {
 	 * @return true if it is a valid combination
 	 */
 	boolean checkConflict(T o1 , T o2);
+	
+	
+	
+	void setReslotion(int resoltionDiff);
 }

@@ -182,11 +182,6 @@ public class LibPrimer3 {
 		}
 
 		
-
-
-
-
-
 		/* 
 		 * TODO :: Error checking will be converted to Exception handling
 		 * For catching ENOMEM.  WARNING: We can only use longjmp to escape
@@ -2287,7 +2282,7 @@ public class LibPrimer3 {
 	 * @throws ThermodynamicAlignmentException 
 	 * @throws AlignmentException 
 	 */
-	private static int add_primers_to_check(P3RetVal retval, P3GlobalSettings pa,
+	public static int add_primers_to_check(P3RetVal retval, P3GlobalSettings pa,
 			SeqArgs sa, DPAlArgHolder dpal_arg_to_use,
 			THAlArgHolder thal_arg_to_use,
 			THAlArgHolder thal_oligo_arg_to_use) throws AlignmentException, ThermodynamicAlignmentException, PrimerRecordException {
@@ -2323,7 +2318,7 @@ public class LibPrimer3 {
 	 * @throws ThermodynamicAlignmentException 
 	 * @throws AlignmentException 
 	 */
-	private static void pick_sequencing_primer_list(P3RetVal retval,
+	public static void pick_sequencing_primer_list(P3RetVal retval,
 			P3GlobalSettings pa, SeqArgs sa,
 			DPAlArgHolder dpal_arg_to_use,
 			THAlArgHolder thal_arg_to_use) throws AlignmentException, ThermodynamicAlignmentException, PrimerRecordException {
@@ -2600,7 +2595,7 @@ public class LibPrimer3 {
 	 * @throws ThermodynamicAlignmentException 
 	 * @throws AlignmentException 
 	 */
-	private static int make_complete_primer_lists(P3RetVal retval,
+	public static int make_complete_primer_lists(P3RetVal retval,
 			P3GlobalSettings pa, SeqArgs sa,
 			DPAlArgHolder dpal_arg_to_use2, THAlArgHolder thal_arg_to_use2,
 			THAlArgHolder thal_oligo_arg_to_use2) throws PrimerRecordException, AlignmentException, ThermodynamicAlignmentException {
@@ -2802,7 +2797,7 @@ public class LibPrimer3 {
 	 * @param warning
 	 * @return false 
 	 */
-	private static boolean _pr_data_control(P3GlobalSettings pa, SeqArgs sa,
+	public static boolean _pr_data_control(P3GlobalSettings pa, SeqArgs sa,
 			StringBuilder glob_err,
 			StringBuilder nonfatal_err,
 			StringBuilder warning) {
@@ -3497,7 +3492,7 @@ public class LibPrimer3 {
 
 
 
-	private static void p3_print_args(P3GlobalSettings pa, SeqArgs sa) {
+	public static void p3_print_args(P3GlobalSettings pa, SeqArgs sa) {
 
 		pa.p3_print_args();
 		sa.p3_print_args();

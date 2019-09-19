@@ -124,17 +124,19 @@ public class P3MultiplexSearch implements IP3MultiSearch {
 //		final P3OptimzedMultiTargetFinder sFindermLeft = new P3OptimzedMultiTargetFinder(multiTargetScan, dpal_arg_to_use, thal_primers_arg_to_use, thal_oligo_arg_to_use);
 //		final P3OptimzedMultiTargetFinder sFindermRight = new P3OptimzedMultiTargetFinder(multiTargetScan, dpal_arg_to_use, thal_primers_arg_to_use, thal_oligo_arg_to_use);
 
-		sFinderSp.initSearch(new P3OptimzedMultiTargetFinder.TargetPrimerFiller() {
-			
-			@Override
-			public void fillTargetPrimer(int targetIndex) {
-				String targetName = multiTargetScan.targets.get(targetIndex);
-				sFinderSp.advanceSearchForProductOnly(targetIndex , multiTargetScan.targetsToSpFwd.get(targetName),multiTargetScan.targetsToSpRev.get(targetName));
-				// TODO :: need to be revised
-//				sFinderSp.advanceSearchForProductOnly(targetIndex , multiTargetScan.multiFwd,multiTargetScan.targetsToSpRev.get(targetName));
-
-			}
-		});
+		sFinderSp.initSearch(
+//			new P3OptimzedMultiTargetFinder.TargetPrimerFiller() {
+//			
+//			@Override
+//			public void fillTargetPrimer(int targetIndex) {
+//				String targetName = multiTargetScan.targets.get(targetIndex);
+//				sFinderSp.advanceSearchForProductOnly(targetIndex , multiTargetScan.targetsToSpFwd.get(targetName),multiTargetScan.targetsToSpRev.get(targetName));
+//				// TODO :: need to be revised
+////				sFinderSp.advanceSearchForProductOnly(targetIndex , multiTargetScan.multiFwd,multiTargetScan.targetsToSpRev.get(targetName));
+//
+//			}
+//		}
+		);
 		
 //		sFindermLeft.initSearch(new P3OptimzedMultiTargetFinder.TargetPrimerFiller() {
 //			
@@ -177,56 +179,7 @@ public class P3MultiplexSearch implements IP3MultiSearch {
 		}
 		
 		return sFinderSp.getFinalResult();
-//		if(true)
-//			return result;
-//		result.calcSpecific();
-//		result.inisSearch(dpal_arg_to_use, thal_primers_arg_to_use, thal_oligo_arg_to_use);
-//		boolean canContinue = false;
-//		while (true)
-//		{
-//		// retval is already have some : no 
-//			System.err.println("Next Round ");
-//			System.err.println(searchRound);
-//			
-//
-//			for(P3RetVal reval : group )
-//			{
-//				String targetName = reval.sa.getSequenceName();
-//				if(searchRound.contains(targetName))
-//				{
-//					if(hasMorePairs.get(targetName))
-//					{
-//						List< PrimerPair> newPairs = result.getNextRusult(targetName);
-//						if(newPairs.size() == 0 )
-//						{	
-//							hasMorePairs.put(targetName,false);
-//						}
-//						else
-//						{
-//							
-//							result.addPairs(reval.sa.getSequenceName(),newPairs);
-//						}
-//					}
-//				}// reval.choose_pairs(dpal_arg_to_use, thal_arg_to_use, thal_oligo_arg_to_use);
-//				// init a set
-//			}
-//			
-//			searchRound.clear();
-//			searchRound = result.getNextSearchRound(hasMorePairs);
-//			System.err.println(hasMorePairs);
-//			if ( result.hasGoodSets())
-//			{
-//				break;
-//			}
-//			canContinue = false;
-//			for(boolean anyCanContinue : hasMorePairs.values())
-//				if(anyCanContinue)
-//					canContinue = true;
-//			if(!canContinue)
-//				break;
-//		}
-//		result.sort();
-//		return result;
+
 		
 	}
 

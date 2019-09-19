@@ -7,8 +7,9 @@ Require-Bundle: org.apache.commons.cli,
  org.apache.commons.lang3,
  org.apache.commons.io,
  biojava;bundle-version="1.0.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Export-Package: org.primer3,
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: org.pooler,
+ org.primer3,
  org.primer3.dpal,
  org.primer3.libprimer3,
  org.primer3.masker,

@@ -52,22 +52,45 @@ public class PotentialPairSetsCombination {
 			
 			return isValid;
 		}
+
+		@Override
+		public void setReslotion(int resoltionDiff) {
+			// TODO Auto-generated method stub
+		}
 	} ;
 	
 	
 	
 	static public final ConflictResolution<PotentialPairSet> productTmConflictResolution = new ConflictResolution<PotentialPairSet>() {
+		int tmResoltionDiff ;
 		
 		@Override
 		public boolean currentValid(PotentialPairSet o) {
 			// TODO Auto-generated method stub
-			return false;
+			return true;
 		}
 		
 		@Override
 		public boolean checkConflict(PotentialPairSet o1, PotentialPairSet o2) {
-			// TODO Auto-generated method stub
-			return false;
+			int productTm1 = o1.productCriterion;
+			int productTm2 = o2.productCriterion;
+			
+			boolean isValid = true;
+					
+			int diff =  Math.abs(productTm1-productTm2);
+				
+				
+			if( diff < tmResoltionDiff ) // not exactly should be
+			{
+				isValid = false;
+			}
+			
+			return isValid;
+		}
+
+		@Override
+		public void setReslotion(int resoltionDiff) {
+			tmResoltionDiff = 	resoltionDiff;	
 		}
 	} ;
 	

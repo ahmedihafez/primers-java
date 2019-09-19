@@ -1,47 +1,41 @@
 package org.primer3.multisearch;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.primer3.dpal.AlignmentException;
 import org.primer3.libprimer3.DPAlArgHolder;
-import org.primer3.libprimer3.DebugInfo;
 import org.primer3.libprimer3.LibPrimer3;
-import org.primer3.libprimer3.P3GlobalSettings;
-import org.primer3.libprimer3.P3RetVal;
-import org.primer3.libprimer3.P3Task;
-import org.primer3.libprimer3.PairArrayT;
-import org.primer3.libprimer3.PairStats;
-import org.primer3.libprimer3.SeqArgs;
+import org.primer3.libprimer3.PCRType;
 import org.primer3.libprimer3.THAlArgHolder;
-import org.primer3.search.PotentialPairSetsCombination;
-import org.primer3.search.multiplex.MultiplexResult;
-import org.primer3.search.multiplex.MultiplexSet;
-import org.primer3.multisearch.PotentialPair;
+import org.primer3.oligotm.OligoTMCalculator;
 import org.primer3.primer.MultiTargetPrimerRecord;
 import org.primer3.primer.PrimerPair;
 import org.primer3.primer.PrimerRecord;
-import org.primer3.thal.ThermodynamicAlignmentException;
-
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
+import org.primer3.search.ConflictResolution;
+import org.primer3.search.PotentialPairSetsCombination;
+import org.primer3.search.multiplex.MultiplexResult;
+import org.primer3.search.multiplex.MultiplexSet;
 
 // Stateful search of primers pairs 
 public class P3OptimzedMultiTargetFinder {
 		
+	
+// enum SearchStrategy {
+		boolean 
+		SpecificLeftSpecificRight = true,
+		MultLeftSpecificRight = false,
+		SpecificLeftMultiRight = false;
+//	}
+	boolean RealTimePCR = false;
+	int realTimeReslotion = 10;
 	DPAlArgHolder dpal_arg_to_use;
 	THAlArgHolder thal_arg_to_use;
 	THAlArgHolder thal_oligo_arg_to_use;
 	// Objects used in the Stateful search 
 //	int[][] max_j_seen;
 	
-	MultiTargetScanner scanner = null;
+	public MultiTargetScanner scanner = null;
 	
 	
 	public P3OptimzedMultiTargetFinder(MultiTargetScanner scanner , DPAlArgHolder dpal_arg_to_use, THAlArgHolder thal_arg_to_use,
@@ -51,33 +45,10 @@ public class P3OptimzedMultiTargetFinder {
 		this. thal_arg_to_use = thal_arg_to_use;
 		this. thal_oligo_arg_to_use = thal_oligo_arg_to_use;
 		this.scanner = scanner;
-//		max_j_seen = new int[scanner.nTargets][];
-//		calcPairs = new TreeSet[scanner.nTargets];
-//		calcPairsList = new ArrayList[scanner.nTargets];
-//		pLens =  new List[scanner.nTargets];
-//		productCalcPairs = new PotentialPairSetsCollection[scanner.nTargets];
-//		intCache = new HashMap[scanner.nTargets];
+		RealTimePCR = this.scanner.pa.getPcrType() == PCRType.QPCR ;
 		globalCache = new InternalCache(scanner);
-//		calcPairsBucket = new TreeSet[scanner.nTargets];
-//		for(int i = 0 ; i < scanner.nTargets;i++)
-//		{
-//			productCalcPairs[i] = new PotentialPairSetsCollection();
-//		}
 		
-//		resetSearch();
-		
-	}
-	
-	
-//	public void resetSearch()
-//	{
-//		for (int i = 0; i < scanner.nTargets; i++) {
-//			for (int j = 0; j < max_j_seen[i].length; j++) {		
-//				max_j_seen[i][j] = -1;
-//			}
-//		}
-//	}
-	
+	}	
 
 	static double ALPHA = 1;
 	
@@ -90,14 +61,7 @@ public class P3OptimzedMultiTargetFinder {
 	
 	
 	
-//	mPairs mPairs1 = new mPairs(null);
-	
 
-	// this
-//	TreeSet<ijPair>[] calcPairs;
-//	ArrayList<ijPair>[] calcPairsList;
-	
-//	ArrayList<HashMap<String,ijPair>> cachePiars = new ArrayList<HashMap<String,ijPair>>();
 	PotentialPairSetsCombination mPairsIterator ;
 	TreeSet<PotentialPairSetsCombination> allmPairIterators = new TreeSet<PotentialPairSetsCombination>(new Comparator<PotentialPairSetsCombination>() {
 
@@ -112,35 +76,42 @@ public class P3OptimzedMultiTargetFinder {
 			return res ;
 		}
 	});
-	public interface TargetPrimerFiller{
-		void fillTargetPrimer(int targetIndex);
-	}
 	
-	public void initSearch(TargetPrimerFiller filler) {
+	// No need for this
+//	public interface TargetPrimerFiller {
+//		void fillTargetPrimer(int targetIndex);
+//	}
+	
+	public void initSearch() {
 		for(int targetIndex =0 ; targetIndex < scanner.nTargets;targetIndex++  )
 		{
-//			String targetName = scanner.targets.get(targetIndex);
+			String targetName = scanner.targets.get(targetIndex);
 			
-			filler.fillTargetPrimer(targetIndex);
+			
+			this.advanceSearchForProductOnly(targetIndex , scanner.targetsToSpFwd.get(targetName),scanner.targetsToSpRev.get(targetName));
+//			this.advanceSearchForProductOnly(targetIndex , scanner.multiFwd,scanner.targetsToSpRev.get(targetName));
+
+			// filler.fillTargetPrimer(targetIndex);
 			globalCache.clean(targetIndex);
-//			advanceSearchForProductOnly(targetIndex , scanner.multiFwd,scanner.targetsToSpRev.get(targetName));
-//			advanceSearchForProductOnly(targetIndex , scanner.targetsToSpFwd.get(targetName),scanner.targetsToSpRev.get(targetName));
-//			advanceSearchForProductOnly(targetIndex , scanner.targetsToSpFwd.get(targetName), scanner.multiRev );
-//			for (Integer pLen : intCache[targetIndex].keySet()) {
-//				Integer pLen = (Integer) iterator.next();
-//				calcPairsBucket.get(pLen).calcPairs[targetIndex].productCriterion = pLen;
-//				productCalcPairs[targetIndex].add(intCache[targetIndex].get(pLen));
-//			}
+
 		}
 		
 		globalCache.fillMissing();
+		
+		
+		ConflictResolution<PotentialPairSet> conflictResolution = PotentialPairSetsCombination.productLenConflictResolution;
+		if(RealTimePCR )
+		{
+			PotentialPairSetsCombination.productTmConflictResolution.setReslotion(realTimeReslotion);
+			conflictResolution = PotentialPairSetsCombination.productTmConflictResolution;
+		}
 		
 		// init values here
 		while (true) {
 			PotentialPairSetsCollection[] productCalcPairs = globalCache.getNext();
 			if(productCalcPairs == null)
 				break;
-			PotentialPairSetsCombination newComp = new PotentialPairSetsCombination(productCalcPairs, PotentialPairSetsCombination.productLenConflictResolution );
+			PotentialPairSetsCombination newComp = new PotentialPairSetsCombination(productCalcPairs, conflictResolution );
 			if(! (newComp.getEstimatedScore() >= Double.MAX_VALUE) )
 				allmPairIterators.add(newComp);
 		}
@@ -314,7 +285,7 @@ public class P3OptimzedMultiTargetFinder {
 				}
 				if( newPairComp.setStatus == PrimerPair.PAIR_OK)
 				{
-					MultiplexSet res = new  MultiplexSet(scanner.result);
+					MultiplexSet res = new  MultiplexSet(this);
 					for (int i = 0; i < newset.length; i++) {
 						PotentialPair ijPair = newset[i];
 						if(!res.addPair(scanner.targets.get(i), ijPair.pairRecord)) {
@@ -407,14 +378,38 @@ public class P3OptimzedMultiTargetFinder {
 				
 				int product_size  = selectedRight.start - selectedleft.start+1;
 				if (!scanner.pa.chackProductSizeRanges( product_size)) {
-					scanner.revals.get(targetIndex).best_pairs.expl.product++;
+					// scanner.revals.get(targetIndex).best_pairs.expl.product++;
 					if(!selectedleft.must_use  && !selectedRight.must_use){
 						scanner.revals.get(targetIndex).best_pairs.expl.product++;
 						continue;
 					}	
 				}
 				
+				double product_tm =  OligoTMCalculator.longSeqTM(scanner.revals.get(targetIndex).sa.getTrimmedSequence(), selectedleft.start,
+						selectedRight.start - selectedleft.start + 1,
+						/* TO DO -- skewed, it would be better to not use p_args elements here */
+						scanner.pa.primersArgs.getSaltConcentration(),
+						scanner.pa.primersArgs.getDivalentConcentration(),
+						scanner.pa.primersArgs.getDntpConcentration());
+				
+				if (scanner.pa.getProductMinTM() != LibPrimer3.PR_DEFAULT_PRODUCT_MIN_TM
+						&& product_tm < scanner.pa.getProductMinTM()) {
+					// scanner.revals.get(targetIndex).best_pairs.expl.low_tm++;
+					if(!selectedleft.must_use  && !selectedRight.must_use){
+						scanner.revals.get(targetIndex).best_pairs.expl.low_tm++;
+						continue;
+					}	
+				}
 
+				if (scanner.pa.getProductMaxTM() != LibPrimer3.PR_DEFAULT_PRODUCT_MAX_TM
+						&& product_tm > scanner.pa.getProductMaxTM()) {
+					if(!selectedleft.must_use  && !selectedRight.must_use){
+						scanner.revals.get(targetIndex).best_pairs.expl.high_tm++;
+						continue;
+					}	
+				}
+				
+				
 				
 				PotentialPair newPairInfo = new PotentialPair(scanner, left, right, scanner.pa.getPrPairWeights().primer_quality * 
 						(left.quality + right.quality));
@@ -422,28 +417,19 @@ public class P3OptimzedMultiTargetFinder {
 
 //				int binId = sizeToBins(product_size);
 				
-				newPairInfo.productCriterion = product_size;
+				if(RealTimePCR)
+				{
+					newPairInfo.productCriterion = (int)(product_tm*realTimeReslotion);
+				}
+				else
+				{
+					newPairInfo.productCriterion = product_size;
+				}
 				newPairInfo.targetIndex = targetIndex;
 				
 				globalCache.broadcast(newPairInfo);
 
-//				if(!calcPairsBucket.containsKey(product_size))
-//				{
-//					ijPairProductBucket newBucket = new ijPairProductBucket(scanner.nTargets);
-//					newBucket.productSize = product_size;
-////					newBucket.calcPairs[targetIndex].productSize =  product_size;
-//					calcPairsBucket.put(product_size, newBucket);
-//					
-//				}
-//				if(!intCache[targetIndex].containsKey(product_size))
-				{
-//					calcPairsBucket.get(product_size).calcPairs[targetIndex].productSize = product_size;
-//					productCalcPairs[targetIndex].add(calcPairsBucket.get(product_size).calcPairs[targetIndex]);
-//					intCache[targetIndex].put(product_size, new PotentialPairSet(product_size) );
-				}
-//				calcPairs[targetIndex].add( newPairInfo);
-//				intCache[targetIndex].get(product_size).add(newPairInfo);
-//				calcPairsBucket.get(product_size).calcPairs[targetIndex].add(newPairInfo);
+
 
 			}
 			
@@ -466,6 +452,16 @@ public class P3OptimzedMultiTargetFinder {
 
 	public boolean hasGoodSets() {
 		return scanner.result.hasGoodSets();
+	}
+
+
+	public boolean getIsRealTimePCR() {
+		return RealTimePCR;
+	}
+
+
+	public int getRealTimePCRResoltion() {
+		return realTimeReslotion;
 	}
 
 

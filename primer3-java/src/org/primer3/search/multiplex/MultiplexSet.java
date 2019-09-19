@@ -10,6 +10,7 @@ import javax.sound.midi.Sequence;
 
 import org.primer3.dpal.AlignmentException;
 import org.primer3.libprimer3.LibPrimer3;
+import org.primer3.multisearch.P3OptimzedMultiTargetFinder;
 import org.primer3.primer.MultiTargetPrimerRecord;
 import org.primer3.primer.PrimerPair;
 import org.primer3.primer.PrimerRecord;
@@ -17,17 +18,31 @@ import org.primer3.thal.ThermodynamicAlignmentException;
 
 public class MultiplexSet implements Comparable<MultiplexSet>  {
 
+	P3OptimzedMultiTargetFinder p3OptimzedMultiTargetFinder;
+	
+	
 	boolean checkTmDiff = false;
-	boolean checkProductsLen = true;
+	boolean realTimePCR = true;
+	
+	
+	
+	int tmReslotion = 10;
 	double minTm = Double.MAX_VALUE , maxTm = Double.MIN_VALUE;
 	MultiplexResult parentResult = null;
 	
 	HashMap<String, PrimerPair> set = new HashMap<String, PrimerPair>();
 	
-	HashMap<String , Integer> productsLen = new HashMap<String , Integer>();
+	HashMap<String , Integer> productsCriteria = new HashMap<String , Integer>();
 	
 	public MultiplexSet(MultiplexResult multiplexResult) {
 		parentResult = multiplexResult;
+	}
+
+	public MultiplexSet(P3OptimzedMultiTargetFinder p3OptimzedMultiTargetFinder) {
+		this.p3OptimzedMultiTargetFinder = p3OptimzedMultiTargetFinder;
+		parentResult = this.p3OptimzedMultiTargetFinder.scanner.result;
+		realTimePCR =  p3OptimzedMultiTargetFinder.getIsRealTimePCR();
+		tmReslotion = p3OptimzedMultiTargetFinder.getRealTimePCRResoltion();
 	}
 
 	public boolean hasPair(String targetName) {
@@ -55,28 +70,23 @@ public class MultiplexSet implements Comparable<MultiplexSet>  {
 		
 		PrimerRecord left  = pair.left , right = pair.right;
 		// 1 product len/tm
-		int newProdcutLen =  right.start - left.start+1;
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		if (checkProductsLen)
+		int newProdcutCriteria =  pair.product_size;		
+		if (realTimePCR)
 		{
-			
-			if ( !checkSetProductsLen(newProdcutLen))
+			newProdcutCriteria = (int) (pair.product_tm*tmReslotion);
+			if ( !checkSetProductsTm(newProdcutCriteria))
 			{
-				// not valid product can not add it here 
-				// if got rejected becouse of len then see if the new pair has a
-//				pair = checkUnversalPrimer( targetName,  pair);
-//				if(pair == null )
 				return false;
 			}
 		}
+		else
+		{
+			if ( !checkSetProductsLen(newProdcutCriteria))
+			{
+				return false;
+			}
+		}
+		
 		// 1 TODO :: diff tm between primers.
 		
 		// 1 primers dimers between primers
@@ -164,7 +174,7 @@ public class MultiplexSet implements Comparable<MultiplexSet>  {
 			compl_any.get(pTarget).put(targetName, newPairMaxAny.get(pTarget));
 		}
 
-		productsLen.put(targetName, newProdcutLen);
+		productsCriteria.put(targetName, newProdcutCriteria);
 		set.put(targetName, pair);
 		return status;
 	}
@@ -347,7 +357,7 @@ public class MultiplexSet implements Comparable<MultiplexSet>  {
 		boolean isValid = true;
 		
 		ArrayList<Integer> productsLen = new ArrayList<Integer>() ;
-		productsLen.addAll(this.productsLen.values());
+		productsLen.addAll(this.productsCriteria.values());
 		productsLen.add(newProdcutLen);
 		productsLen.sort(new Comparator<Integer>() {
 
@@ -384,12 +394,45 @@ public class MultiplexSet implements Comparable<MultiplexSet>  {
 		
 	}
 
+	
+	private boolean checkSetProductsTm(int newProdcutTm) {
+		boolean isValid = true;
+		
+		ArrayList<Integer> productsTm = new ArrayList<Integer>() ;
+		productsTm.addAll(this.productsCriteria.values());
+		productsTm.add(newProdcutTm);
+		productsTm.sort(new Comparator<Integer>() {
+
+			@Override
+			public int compare(Integer o1, Integer o2) {
+				// TODO Auto-generated method stub
+				return Integer.compare(o1, o2);
+			}
+		});
+		for(int i = 1 ; i < productsTm.size() ; i ++ )
+		{
+			int tm_p = productsTm.get(i-1);
+			int tm_n = productsTm.get(i);
+			int diff =  Math.abs(tm_n-tm_p);
+			
+
+			if( diff < tmReslotion ) // not exactly should be
+			{
+				isValid = false;
+				break;
+			}
+		}
+		
+		return isValid;
+		
+	}
+	
 	public MultiplexSet getAlt(String targetName, PrimerPair pair) throws Exception {
 
 		// make sure you have a pair for targetName
 		MultiplexSet newAltset = new MultiplexSet(parentResult);
-		newAltset.productsLen = (HashMap<String, Integer>) productsLen.clone();
-		newAltset.productsLen.remove(targetName);
+		newAltset.productsCriteria = (HashMap<String, Integer>) productsCriteria.clone();
+		newAltset.productsCriteria.remove(targetName);
 //		for(Entry<String, Integer> entry :  productsLen.entrySet()  )
 //		{
 //			if(!targetName.equals(entry.getKey()))
