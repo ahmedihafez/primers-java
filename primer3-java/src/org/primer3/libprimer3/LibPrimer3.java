@@ -3894,7 +3894,7 @@ public class LibPrimer3 {
 	public static void p3_print_oligo_lists(P3RetVal retval, SeqArgs sarg,
 			P3GlobalSettings global_pa, StringBuilder per_sequence_err,
 			String sequence_name) {
-		// TODO Auto-generated method stub
+		// TODO p3_print_oligo_lists Not yet implemented
 
 	}
 

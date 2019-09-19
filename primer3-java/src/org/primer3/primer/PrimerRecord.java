@@ -818,7 +818,7 @@ public class PrimerRecord  {
 		// oligo_type l = otype;
 		int poly_x, max_poly_x;
 		boolean must_use = this.must_use;
-		boolean three_conditions = (must_use || pa.file_flag != 0 || retval.output_type == P3OutputType.primer_list);
+		boolean three_conditions = (must_use || pa.getFileFlag() != 0 || retval.output_type == P3OutputType.primer_list);
 		char[] seq = sa.getTrimmedSequence();
 		ThermodynamicAlignmentArguments thal_args_for_template_mispriming = LibPrimer3.use_end_for_th_template_mispriming == 1 ? thal_arg_to_use.end1
 				: thal_arg_to_use.any;
@@ -1183,7 +1183,7 @@ public class PrimerRecord  {
 			}
 		}
 
-		if ((must_use || pa.file_flag != 0
+		if ((must_use || pa.getFileFlag() != 0
 				|| retval.output_type == P3OutputType.primer_list
 				|| po_args.weights.getComplAny() > 0 || po_args.weights.getComplEnd() > 0)
 				&& !pa.isThermodynamicOligoAlignment()) {
@@ -1199,7 +1199,7 @@ public class PrimerRecord  {
 			}
 		} else {
 			/* Thermodynamical approach: for primers only */
-			if ((must_use || pa.file_flag != 0
+			if ((must_use || pa.getFileFlag() != 0
 					|| retval.output_type == P3OutputType.primer_list
 					|| po_args.weights.getComplAnyTh() > 0 || po_args.weights.getComplEndTh() > 0)
 					&& pa.isThermodynamicOligoAlignment()) {

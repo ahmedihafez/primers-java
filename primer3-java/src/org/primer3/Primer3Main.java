@@ -187,7 +187,7 @@ public class Primer3Main {
 		P3GlobalSettings global_pa;
 		SeqArgs sarg;
 		// TODO :: Missing ??
-		read_boulder_record_results read_boulder_record_res ;
+//		read_boulder_record_results read_boulder_record_res ;
 
 
 
@@ -339,7 +339,7 @@ public class Primer3Main {
 		/* Settings files have to be read in just below, and
 	    	the functions need a temporary sarg */
 		sarg = new SeqArgs();
-		read_boulder_record_res = new read_boulder_record_results();
+//		read_boulder_record_res = new read_boulder_record_results();
 		/* Read data from the settings file until a "=" line occurs.  Assign
 	     parameter values for primer picking to pa and sa. */
 		if(p3_settings_path != null && !p3_settings_path.isEmpty())
@@ -349,7 +349,7 @@ public class Primer3Main {
 					strict_tags, 
 					global_pa, sarg, 
 					fatal_parse_err,
-					nonfatal_parse_err, warnings, read_boulder_record_res);
+					nonfatal_parse_err, warnings);
 
 			/* Check if any thermodynamical alignment flag was given */
 			if ((global_pa.isThermodynamicOligoAlignment() ) || 
@@ -388,7 +388,7 @@ public class Primer3Main {
 		//	    destroy_seq_args(sarg);
 		sarg = null ;
 
-		read_boulder_record_res = new read_boulder_record_results();
+//		read_boulder_record_res = new read_boulder_record_results();
 
 		// for new part in multiplex 
 		ArrayList<P3RetVal> lateResult = new ArrayList<P3RetVal>();
@@ -420,8 +420,7 @@ public class Primer3Main {
 						sarg,
 						fatal_parse_err,
 						nonfatal_parse_err,
-						warnings,
-						read_boulder_record_res))
+						warnings))
 				{
 					break; /* There were no more boulder records */
 				}
@@ -507,7 +506,7 @@ public class Primer3Main {
 					}
 				}
 
-				if (read_boulder_record_res.file_flag == 1 && sarg.getSequenceName() == null) {
+				if (global_pa.getFileFlag() == 1 && sarg.getSequenceName() == null) {
 					/* We will not have a base name for the files */
 					if (format_output) {
 						boulder.format_error((String)null,
@@ -519,8 +518,8 @@ public class Primer3Main {
 				}
 
 				/* Pick the primers - the central function */
-				LibPrimer3.p3_set_gs_primer_file_flag(global_pa,
-						read_boulder_record_res.file_flag);
+//				LibPrimer3.p3_set_gs_primer_file_flag(global_pa,
+//						read_boulder_record_res.file_flag);
 				retval = LibPrimer3.choose_primers(global_pa, sarg);
 
 				if(sarg.isMultiplex() )
@@ -548,7 +547,7 @@ public class Primer3Main {
 					/* We need to test for errors before we call
 			         p3_print_oligo_lists. This function only works on retval as
 			         returned when there were no errors. */
-					if (read_boulder_record_res.file_flag != 0) {
+					if (global_pa.getFileFlag() != 0) {
 						/* Create files with left, right, and internal oligos. */
 						LibPrimer3.p3_print_oligo_lists(retval, sarg, global_pa,
 								retval.per_sequence_err,
@@ -559,11 +558,11 @@ public class Primer3Main {
 				if (format_output) {
 					boulder. print_format_output(io_version, global_pa,
 							sarg, retval, pr_release,
-							read_boulder_record_res.explain_flag);
+							global_pa.getExplainFlag());
 				} else {
 					/* Use boulder output */
 					retval.print_boulder(io_version, 
-							read_boulder_record_res.explain_flag != 0);
+							global_pa.getExplainFlag() != 0);
 				}
 
 
@@ -578,11 +577,11 @@ public class Primer3Main {
 				if (format_output) {
 					boulder. print_format_output(io_version, global_pa,
 							sarg, lateRetval, pr_release,
-							read_boulder_record_res.explain_flag);
+							global_pa.getExplainFlag());
 				} else {
 					/* Use boulder output */
 					lateRetval.print_boulder(io_version, 
-							read_boulder_record_res.explain_flag != 0);
+							global_pa.getExplainFlag() != 0);
 				}
 			}
 			if(multiplexHasResult ) {

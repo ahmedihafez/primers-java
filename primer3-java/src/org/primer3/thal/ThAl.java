@@ -433,7 +433,7 @@ public class ThAl {
 
 
 	static  List<String> loadResource(String res_name) {
-		String resourceFolder = "resources/";
+		String resourceFolder = "resources/thal/";
 		ClassLoader classLoader = ThAl.class .getClassLoader();
 		String resourceName = resourceFolder + res_name;		
 		InputStream file = classLoader.getResourceAsStream(resourceName);

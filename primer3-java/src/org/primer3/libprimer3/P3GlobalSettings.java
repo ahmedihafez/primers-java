@@ -52,7 +52,7 @@ public class P3GlobalSettings {
 	private boolean    pickInternalOligo;   
 
 	/* TODO, See if this can be factored out. */
-	public  int    file_flag; 
+	private  int    fileFlag; 
 
 	/** 
 	 * The index of the first base in the input
@@ -281,7 +281,10 @@ public class P3GlobalSettings {
 
 	/** Maximum allowed difference between temperature of primer and
 	 * temperature of product.  Cannot be calculated until product is
-	 * known. */
+	 * known. 
+	 * 
+	 * Maximum acceptable (unsigned) difference between the melting temperatures of the left and right primers.
+	 * */
 	private double maxDiffTm;
 	
 	private PairWeights  prPairWeights = new PairWeights();
@@ -726,7 +729,7 @@ public class P3GlobalSettings {
 		System.out.format("  pick_left_primer %s\n", p.isPickLeftPrimer());
 		System.out.format("  pick_right_primer %s\n", p.isPickRightPrimer());
 		System.out.format("  pick_internal_oligo %s\n", p.isPickInternalOligo());
-		System.out.format("  file_flag %s\n", p.file_flag) ;
+		System.out.format("  file_flag %s\n", p.fileFlag) ;
 		System.out.format("  first_base_index %s\n", p.firstBaseIndex);
 		System.out.format("  liberal_base %s\n", p.liberalBase );
 		System.out.format("  num_return %s\n", p.numReturn) ;
@@ -1714,6 +1717,8 @@ public class P3GlobalSettings {
 	 */
 	public void setPickInternalOligo(boolean pickInternalOligo) {
 		this.pickInternalOligo = pickInternalOligo;
+		if(this.pickInternalOligo )
+			this.pcrType = PCRType.QPCR;
 	}
 
 	/**
@@ -1846,6 +1851,9 @@ public class P3GlobalSettings {
 	}
 
 	int mispriming3EndScore  = 0;
+
+
+	private int explainFlag;
 	public void setMispriming3EndScore(String datum) {
 		mispriming3EndScore = Integer.parseInt(datum);
 	}
@@ -1864,6 +1872,20 @@ public class P3GlobalSettings {
 		this.pcrType = pcrType;
 		if(pcrType == PCRType.NORMAL_PCR)
 			pickInternalOligo = false;
+	}
+
+	public void setExplainFlag(int explainFlag) {
+		this.explainFlag = explainFlag;
+	}
+	public int getExplainFlag() {
+		return this.explainFlag;
+	}
+	
+	public void setFileFlag(int file_flag) {
+		this.fileFlag = file_flag;
+	}
+	public int getFileFlag() {
+		return this.fileFlag;
 	}
 	
 }
