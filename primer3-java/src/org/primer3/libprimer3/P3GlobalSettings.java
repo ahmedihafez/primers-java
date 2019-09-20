@@ -23,8 +23,7 @@ public class P3GlobalSettings {
 		return r;
 	} 
 
-	public static P3GlobalSettings p3_create_global_settings(
-			int default_version) {
+	public static P3GlobalSettings p3_create_global_settings( int default_version) {
 		if (default_version == 1)
 			return p3_create_global_settings_default_version_1();
 		else if (default_version == 2) 
@@ -1392,6 +1391,7 @@ public class P3GlobalSettings {
 		this.setPickInternalOligo(false);
 		this.firstBaseIndex    = 0;
 		this.numReturn          = 5;
+		this.productSizeRanges.clear();
 		this.addProductSizeRange(100, 300);
 		//		this.pr_min[0]           = 100;
 		//		this.pr_max[0]           = 300;
@@ -1502,7 +1502,7 @@ public class P3GlobalSettings {
 	/*
 	 * Write the default values for default_values=2
 	 */
-	private void pr_set_default_global_args_2() {
+	public void pr_set_default_global_args_2() {
 		this.pr_set_default_global_args_1();
 		this.mtMethod                    = MeltingTemperatureMethod.santalucia_auto;
 		this.setSaltCorrectionMethod(SaltCorrectionMethod.santalucia);
@@ -1511,6 +1511,7 @@ public class P3GlobalSettings {
 		this.primersArgs.setDivalentConcentration(1.5);
 		this.primersArgs.setDntpConcentration(0.6);
 		this.libAmbiguityCodesConsensus    = false;
+		this.maxDiffTm = 10;
 	}
 
 	/**
@@ -1718,7 +1719,7 @@ public class P3GlobalSettings {
 	public void setPickInternalOligo(boolean pickInternalOligo) {
 		this.pickInternalOligo = pickInternalOligo;
 		if(this.pickInternalOligo )
-			this.pcrType = PCRType.QPCR;
+			this.pcrType = PCRType.Real_Time_PCR;
 	}
 
 	/**
@@ -1887,5 +1888,16 @@ public class P3GlobalSettings {
 	public int getFileFlag() {
 		return this.fileFlag;
 	}
+
+	public static final String DEFAULT_PROFILE_NAME = "Default"; 
+	String fileID = DEFAULT_PROFILE_NAME ;
 	
+	public void setFileID(String datum) {
+		this.fileID = datum;
+		
+	}
+	public String getFileID() {
+		return this.fileID;
+		
+	}
 }

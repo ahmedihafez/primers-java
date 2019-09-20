@@ -45,7 +45,7 @@ public class P3OptimzedMultiTargetFinder {
 		this. thal_arg_to_use = thal_arg_to_use;
 		this. thal_oligo_arg_to_use = thal_oligo_arg_to_use;
 		this.scanner = scanner;
-		RealTimePCR = this.scanner.pa.getPcrType() == PCRType.QPCR ;
+		RealTimePCR = this.scanner.pa.getPcrType() == PCRType.Real_Time_PCR ;
 		globalCache = new InternalCache(scanner);
 		
 	}	

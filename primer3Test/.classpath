@@ -22,16 +22,6 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="lib" path="/home/ahafez/.m2/repository/commons-io/commons-io/2.4/commons-io-2.4.jar" sourcepath="/home/ahafez/.m2/repository/commons-io/commons-io/2.4/commons-io-2.4-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/home/ahafez/.m2/repository/commons-io/commons-io/2.4/commons-io-2.4-javadoc.jar!/"/>
-			<attribute name="maven.pomderived" value="true"/>
-			<attribute name="maven.groupId" value="commons-io"/>
-			<attribute name="maven.artifactId" value="commons-io"/>
-			<attribute name="maven.version" value="2.4"/>
-			<attribute name="maven.scope" value="compile"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5">
 		<attributes>
@@ -44,5 +34,17 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry exported="true" kind="src" path="/primer3-java"/>
+	<classpathentry kind="lib" path="/home/ahmed/workspace/.metadata/.plugins/org.eclipse.pde.core/.bundle_pool/plugins/org.apache.commons.io_2.6.0.v20190123-2029.jar" sourcepath="/home/ahmed/workspace/.metadata/.plugins/org.eclipse.pde.core/.bundle_pool/plugins/org.apache.commons.io.source_2.6.0.v20190123-2029.jar">
+		<accessrules>
+			<accessrule kind="accessible" pattern="org/apache/commons/io/*"/>
+			<accessrule kind="accessible" pattern="org/apache/commons/io/comparator/*"/>
+			<accessrule kind="accessible" pattern="org/apache/commons/io/filefilter/*"/>
+			<accessrule kind="accessible" pattern="org/apache/commons/io/input/*"/>
+			<accessrule kind="accessible" pattern="org/apache/commons/io/monitor/*"/>
+			<accessrule kind="accessible" pattern="org/apache/commons/io/output/*"/>
+			<accessrule kind="accessible" pattern="org/apache/commons/io/serialization/*"/>
+			<accessrule ignoreifbetter="true" kind="nonaccessible" pattern="**/*"/>
+		</accessrules>
+	</classpathentry>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

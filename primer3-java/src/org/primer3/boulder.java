@@ -6,8 +6,8 @@ import java.io.InputStream;
 import java.util.Scanner;
 
 import org.primer3.libprimer3.P3GlobalSettings;
-import org.primer3.libprimer3.P3Task;
 import org.primer3.libprimer3.P3RetVal;
+import org.primer3.libprimer3.P3Task;
 import org.primer3.libprimer3.SeqArgs;
 import org.primer3.p3_seq_lib.seq_lib;
 
@@ -29,7 +29,7 @@ public class boulder {
 			SeqArgs sa,
 			StringBuilder glob_err,
 			StringBuilder non_fatal_err,
-			StringBuilder warnings) throws FileNotFoundException{
+			StringBuilder warnings) throws FileNotFoundException {
 		StringBuilder parse_err = non_fatal_err;
 		boolean data_found = false;
 		String task_tmp = null ;
@@ -46,7 +46,7 @@ public class boulder {
 				break;
 			if(line.startsWith("#"))
 				continue;
-			if (file_type == P3FileType.settings && ! line.startsWith("PRIMER_") && ! line.startsWith("P3_FILE_ID") )
+			if (file_type == P3FileType.settings && !line.startsWith("PRIMER_") && !line.startsWith("P3_FILE_ID") )
 				continue;
 			data_found = true;
 			if (echo_output) 
@@ -67,6 +67,20 @@ public class boulder {
 					datum = lineTokens[1];
 				try
 				{
+					
+					if(file_type == P3FileType.settings) {
+						// if we are loading a setting file and 
+						if (datum.isEmpty()) {
+							// then this mean set to default value
+							// 
+							setDefault(pa,key);
+							continue;
+						}
+						if(datum.toLowerCase().equals("none"))
+							datum = null;
+						
+					}
+					
 
 					if(key.startsWith("SEQUENCE_"))
 					{
@@ -74,97 +88,16 @@ public class boulder {
 						continue;
 					}
 
-					//					if (key.equals("SEQUENCE_TEMPLATE")) {   /* NEW WAY */
-					//						if (sa.getSequence() != null) {
-					//							parse_err.append("Duplicate tag: ");
-					//							parse_err.append("SEQUENCE_TEMPLATE"); 
-					//						} else {
-					//							// TODO :: check if the seq exist or not and report that to the user
-					//							if(pa.getInputFasta() != null)
-					//							{
-					//								
-					//								char[] seqValue = pa.getInputFasta().getSeq(datum);
-					//								sa.setSequence(seqValue);
-					//							}
-					//							else
-					//							{
-					//								sa.setSequence(datum); 
-					//							}
-					//						}
-					//					}
-					//					else if (key.equals("SEQUENCE_QUALITY")) {
-					//	//					 = parse_seq_quality(datum, sa);
-					//						if (!sa.set_n_quality(datum)) {
-					//							parse_err.append("Error in sequence quality data");
-					//						}
-					//					}
-					//					else if (key.equals("SEQUENCE_ID"))
-					//					{
-					//						sa.setSequenceName(datum);
-					//					} 
-					//					else if (key.equals("SEQUENCE_PRIMER")) {
-					//						sa.p3_set_sa_left_input(datum);
-					//					} 
-					//					else if (key.equals("SEQUENCE_PRIMER_REVCOMP")) {
-					//						sa.p3_set_sa_right_input(datum);	
-					//					}
-					//					else if (key.equals("SEQUENCE_INTERNAL_OLIGO")) { 
-					//						sa.p3_set_sa_internal_input(datum);
-					//					}
-					//					else if (key.equals("SEQUENCE_PRIMER_PAIR_OK_REGION_LIST")) { 
-					//						sa.p3_set_sa_ok_regions(datum);
-					//					}
-					//					else if (key.equals("SEQUENCE_TARGET")) { 
-					//						sa.p3_set_sa_tar2(datum);
-					//					}
-					//					else if (key.equals("SEQUENCE_EXCLUDED_REGION")) { 
-					//						sa.p3_set_sa_excl2(datum);
-					//					}
-					//					else if (key.equals("SEQUENCE_INTERNAL_EXCLUDED_REGION")) {
-					//						sa.p3_set_sa_excl_internal2(datum);
-					//					}
-					//					else if (key.equals("SEQUENCE_OVERLAP_JUNCTION_LIST")) {
-					//						if(!sa.p3_set_sa_primer_overlap_junctions(datum))
-					//						{
-					//							parse_err.append("Error in SEQUENCE_PRIMER_OVERLAP_JUNCTION_LIST");
-					//						}
-					//	//					if (parse_intron_list(datum, sa.p3_set_sa_primer_overlap_junctions, 
-					//	//						      &sa.p3_set_sa_primer_overlap_junctions_count) == 0) {
-					//	//			          pr_append_new_chunk(parse_err,
-					//	//						      "Error in SEQUENCE_PRIMER_OVERLAP_JUNCTION_LIST");
-					//	//			        }
-					//					} 
-					//					else if (key.equals("SEQUENCE_INCLUDED_REGION")) {
-					//				        
-					//						if(!sa.p3_set_sa_incl_sl(datum))
-					//						{
-					//							tag_syntax_error("SEQUENCE_INCLUDED_REGION", datum,			
-					//			                             parse_err);
-					//						}
-					//					} 
-					//					else if (key.equals("SEQUENCE_START_CODON_POSITION")) { 
-					//						sa.p3_set_sa_start_codon_pos(datum);
-					//					}
-					//					else if (key.equals("SEQUENCE_FORCE_LEFT_START")) { 
-					//						sa.p3_set_sa_force_left_start(datum);
-					//					}
-					//					else if (key.equals("SEQUENCE_FORCE_LEFT_END")) { 
-					//						sa.p3_set_sa_force_left_end(datum);
-					//					}
-					//					else if (key.equals("SEQUENCE_FORCE_RIGHT_START")) { 
-					//						sa.p3_set_sa_force_right_start(datum);
-					//					}
-					//					else if (key.equals("SEQUENCE_FORCE_RIGHT_END")) { 
-					//						sa.p3_set_sa_force_right_end(datum);
-					//						continue;
-					//					}
-
 					/* Process "Global" Arguments (those that persist between boulder
 					 * records). */
 					parse_err = glob_err;  /* These errors are considered fatal. */
 
-
-					if (key.equals("PRIMER_PRODUCT_SIZE_RANGE")) {
+					
+					
+					if(key.equals("P3_FILE_ID")) {
+						pa.setFileID(datum);
+					}
+					else if (key.equals("PRIMER_PRODUCT_SIZE_RANGE")) {
 						pa.p3_set_pa_product_size(datum);
 					}
 					else if (key.equals("PRIMER_OPT_SIZE")) { 
@@ -737,7 +670,6 @@ public class boulder {
 						if(strict_tags) {
 							glob_err.append("Unrecognized tag: " + line);
 							System.err.println("Unrecognized tag: " + line);
-
 						}
 					}
 
@@ -746,6 +678,7 @@ public class boulder {
 				catch(Exception ex)
 				{
 					ex.printStackTrace();
+					throw ex;
 				}
 				// catch  here
 
@@ -886,6 +819,13 @@ public class boulder {
 
 
 
+	private static void setDefault(P3GlobalSettings pa, String key) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
 	private static void setSeqArgsParameters(SeqArgs sa , String key, String datum,  P3GlobalSettings pa , StringBuilder parse_err) {
 		if (key.equals("SEQUENCE_TEMPLATE")) {   /* NEW WAY */
 			if (sa.getSequence() != null) {
@@ -996,13 +936,7 @@ public class boulder {
 			StringBuilder fatal_err,
 			StringBuilder nonfatal_err,
 			StringBuilder warnings){
-
-		String line1 = null;
-		String line2 = null;
-		String line3 = null;
 		Scanner scan = null;
-		int io_version = 4;
-		P3FileType file_type = P3FileType.all_parameters;
 		try {
 			scan = new Scanner(new File(file_name));
 			
@@ -1057,22 +991,6 @@ public class boulder {
 			}
 
 
-
-
-			//	if ((strcmp(line1,"Primer3 File - http://primer3.org") != 0) &&
-			//		      (strcmp(line1,"Primer3 File - http://primer3.sourceforge.net") != 0)) {
-			//		      pr_append2(fatal_err,
-			//		                 "First line must be \"Primer3 File - http://primer3.org\" in ",
-			//				 file_name);
-			//		      return ret_par;
-			//		  }
-
-
-
-
-
-
-
 			if(scan.hasNext())
 				line2 = scan.nextLine();
 			if(line2 == null)
@@ -1096,9 +1014,6 @@ public class boulder {
 				System.out.format("P3_SETTINGS_FILE_USED=%s\n", file_name);
 				System.out.format("%s\n", line2);
 			}
-
-
-
 
 
 			if(scan.hasNext())
@@ -1138,6 +1053,9 @@ public class boulder {
 		} catch (FileNotFoundException e) {
 			fatal_err.append("Cannot open "+ file_name);
 		}
+		catch(Exception ex) {
+			throw ex;
+		}
 		finally{
 			if(scan !=  null )
 				scan.close();
@@ -1159,10 +1077,99 @@ public class boulder {
 			StringBuilder fatal_err,
 			StringBuilder nonfatal_err,
 			StringBuilder warnings){ 
-		return false;
+		Scanner scan = null;
+		try {
+			scan = new Scanner(infile);
+			
+			return read_p3_file(
+					"Setting File",
+					scan,
+					expected_file_type,
+					echo_output,
+					strict_tags,
+					pa, 
+					 sarg,
+					 fatal_err,
+					 nonfatal_err,
+					 warnings);
+		}
+		finally{
+			if(scan !=  null )
+				scan.close();
+		}	
 	}
 
-
+	
+	public P3GlobalSettings getP3SettingProfile(String profile) throws Exception {
+		P3GlobalSettings pa = P3GlobalSettings.p3_create_global_settings();
+		
+		try {
+			InputStream in = loadResource(profile);
+			if( readP3SettingsFile(in,pa) ) {
+				throw new Exception("Can not read Settings");
+			}
+		}
+		catch(Exception ex ) {
+			throw new Exception("Can not read P3 Settings profile " + profile);
+		}
+		
+		return pa;
+	}
+	
+	public static void getP3SettingProfile(String profile ,P3GlobalSettings pa) throws Exception {		
+		try {
+			InputStream in = loadResource(profile);
+			if(!readP3SettingsFile(in,pa) ) {
+				throw new Exception("Can not read Settings");
+			}
+		}
+		catch(Exception ex ) {
+			throw new Exception("Can not read P3 Settings profile " + profile +".\n Error : "+ ex.getMessage());
+		}
+	}
+	
+	
+	static  InputStream loadResource(String p3_name) {
+		String resourceFolder = "resources/p3.settings/";
+		ClassLoader classLoader = P3GlobalSettings.class .getClassLoader();
+		String resourceName = resourceFolder + p3_name + ".p3";		
+		InputStream file = classLoader.getResourceAsStream(resourceName);
+		return file;
+	}
+	
+	static public boolean readP3SettingsFile(
+			InputStream infile,
+			P3GlobalSettings pa) { 
+		Scanner scan = null;
+		P3FileType expected_file_type = P3FileType.settings;
+		boolean echo_output= false;
+		boolean strict_tags = false;
+		SeqArgs sarg = null;
+		StringBuilder fatal_err = new StringBuilder();
+		StringBuilder nonfatal_err  = new StringBuilder();
+		StringBuilder warnings = new StringBuilder();
+		try {
+			scan = new Scanner(infile);
+			
+			return read_p3_file(
+					"Setting File",
+					scan,
+					expected_file_type,
+					echo_output,
+					strict_tags,
+					pa, 
+					 sarg,
+					 fatal_err,
+					 nonfatal_err,
+					 warnings);
+		}
+		finally{
+			if(scan !=  null )
+				scan.close();
+		}	
+	}
+	
+	
 	public static void format_warning(String sequence_name,
 			String warnings) {
 		if(sequence_name != null && !sequence_name.isEmpty())

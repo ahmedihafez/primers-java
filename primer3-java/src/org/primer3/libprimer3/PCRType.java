@@ -7,7 +7,7 @@ public enum PCRType {
 	 
 	
 	NORMAL_PCR(0,"Conventional PCR"),
-	QPCR(1,"Real Time PCR");
+	Real_Time_PCR(1,"Real Time PCR");
 	
 	
 	private int id ;
