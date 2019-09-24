@@ -301,15 +301,13 @@ public  class  MultiListIterator<T> {
 	public static final ConflictResolution<Integer> CheckSetProductsLen = new  ConflictResolution<Integer>() {
 		@Override
 		public boolean currentValid(Integer o) {
-			if(o == 200 ) 
-			{
-				if(flip)
-				{	
-					//					flip = false;
-					return false;
-				}
-				//				flip = true;
-			}
+//			if(o == 200 ) 
+//			{
+//				if(flip)
+//				{	
+//					return false;
+//				}
+//			}
 
 			return true;
 		}
@@ -337,6 +335,12 @@ public  class  MultiListIterator<T> {
 			}
 
 			return isValid;
+		}
+
+		@Override
+		public void setReslotion(int resoltionDiff) {
+			// TODO Auto-generated method stub
+			
 		}
 	};
 
@@ -407,7 +411,7 @@ public  class  MultiListIterator<T> {
 			}
 			else
 				p--;
-			MultiListIterator.flip = !MultiListIterator.flip;
+//			MultiListIterator.flip = !MultiListIterator.flip;
 		}
 		System.err.println("Done");
 

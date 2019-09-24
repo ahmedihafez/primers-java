@@ -93,6 +93,14 @@ public class PotentialPairsLocalSearch {
 				
 				return o.pairStatus != 0;
 			}
+
+
+
+			@Override
+			public void setReslotion(int resoltionDiff) {
+				// TODO Auto-generated method stub
+				
+			}
 		});
 		
 		
