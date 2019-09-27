@@ -1153,7 +1153,7 @@ public class PrimerRecord  {
 				po_args.getSaltConcentration(),
 				po_args.getDivalentConcentration(),
 				po_args.getDntpConcentration(), LibPrimer3.MAX_NN_TM_LENGTH,
-				pa.mtMethod, pa.getSaltCorrectionMethod());
+				pa.getMeltingTemperatureMethod(), pa.getSaltCorrectionMethod());
 
 		if (this.temp < po_args.getMinTm()) {
 			op_set_low_tm();
@@ -1174,7 +1174,7 @@ public class PrimerRecord  {
 		 */
 		if (OligoType.OT_LEFT == otype || OligoType.OT_RIGHT == otype) {
 			if ((this.end_stability = OligoTMCalculator.end_oligodg(oligo_seq, 5,
-					pa.mtMethod)) > pa.getMaxEndStability()) {
+					pa.getMeltingTemperatureMethod())) > pa.getMaxEndStability()) {
 				/* Must not be called on a hybridization probe / internal oligo: */
 				op_set_high_end_stability();
 				stats.stability++;

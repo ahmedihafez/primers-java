@@ -1,5 +1,6 @@
 package org.pooler;
 
+import java.io.PrintStream;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +47,26 @@ public class Splitter {
 		this.fix_to_pool = cache.fix_to_pool;
 
 	}
+
+	public void runSplit(PrintStream redirErr) throws Exception {
+		PrintStream orgErrStream = System.err;
+		System.setErr(redirErr);
+
+		try {
+			runSplit();
+
+		}
+		catch (Exception e) {
+			throw e;
+		}
+		finally {
+			System.setErr(orgErrStream);
+		}
+
+
+
+	}
+
 
 	public void runSplit() throws Exception {
 
@@ -166,6 +187,12 @@ public class Splitter {
 	// running stats to support interruption 
 	int stop_state = 0;  // 0 s_KeepGoing , 1 s_ccPressed, 2 s_tooManyIters
 
+	public void setCC() {
+		stop_state = 1;
+		
+	}
+	
+	
 	void poolsplit_thread(
 			//			final List<Integer> shared_moves,
 			//			AllPrimers ap,
@@ -260,6 +287,8 @@ public class Splitter {
 					} 
 					iter = 0;
 				}
+				if(stop_state == 1)
+					System.out.println("stop_state = " + stop_state);
 				boolean timesUp = stop_state != 0 || (limitTimeToRun != null && Instant.now().isAfter(limitTimeToRun) );
 				if(timesUp || valueOfMove(bestMove,nPools,pools,bContrib,poolCounts,maxCount) == 0) {
 					/* looks like we're at a local maxima */
@@ -458,6 +487,10 @@ public class Splitter {
 	{ 
 		return (PoolSplit.oldPoolOfMove(m,nPools,pools)+1+(m % (nPools-1))) % nPools;
 	}
+
+	
+
+
 
 
 }

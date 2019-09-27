@@ -131,7 +131,7 @@ public class P3GlobalSettings {
 	 *   
 	 * The default value is 0 only for backward compatibility.
 	 */
-	public MeltingTemperatureMethod mtMethod;
+	private MeltingTemperatureMethod meltingTemperatureMethod;
 
 
 	/** 
@@ -737,7 +737,7 @@ public class P3GlobalSettings {
 		System.out.format("  quality_range_min %s\n", p.qualityRangeMin) ;
 		System.out.format("  quality_range_max %s\n", p.qualityRangeMax) ;
 
-		System.out.format("  tm_santalucia %s\n", p.mtMethod) ;
+		System.out.format("  tm_santalucia %s\n", p.getMeltingTemperatureMethod()) ;
 		System.out.format("  salt_corrections %s\n", p.getSaltCorrectionMethod()) ;
 		System.out.format("  max_end_stability %f\n", p.maxEndStability) ;
 		System.out.format("  gc_clamp %s\n", p.getGcClamp()) ;
@@ -1301,11 +1301,11 @@ public class P3GlobalSettings {
 		int typeInt = Integer.parseInt(datum);
 		if(typeInt == MeltingTemperatureMethod.santalucia_auto.getValue() )
 		{
-			this.mtMethod = MeltingTemperatureMethod.santalucia_auto;
+			this.setMeltingTemperatureMethod(MeltingTemperatureMethod.santalucia_auto);
 		}
 		else if(typeInt == MeltingTemperatureMethod.breslauer_auto.getValue() )
 		{
-			this.mtMethod = MeltingTemperatureMethod.breslauer_auto;
+			this.setMeltingTemperatureMethod(MeltingTemperatureMethod.breslauer_auto);
 		}
 
 	}
@@ -1376,7 +1376,7 @@ public class P3GlobalSettings {
 		/* End of arguments for primers =========================== */
 
 		this.maxDiffTm         = 100.0;
-		this.mtMethod       = MeltingTemperatureMethod.breslauer_auto;
+		this.setMeltingTemperatureMethod(MeltingTemperatureMethod.breslauer_auto);
 		this.setSaltCorrectionMethod(SaltCorrectionMethod.schildkraut);
 		this.pairComplAny      = 8.0;
 		this.pairComplEnd      = 3.0;
@@ -1504,7 +1504,7 @@ public class P3GlobalSettings {
 	 */
 	public void pr_set_default_global_args_2() {
 		this.pr_set_default_global_args_1();
-		this.mtMethod                    = MeltingTemperatureMethod.santalucia_auto;
+		this.setMeltingTemperatureMethod(MeltingTemperatureMethod.santalucia_auto);
 		this.setSaltCorrectionMethod(SaltCorrectionMethod.santalucia);
 		this.thermodynamicOligoAlignment    = true;
 		this.thermodynamicTemplateAlignment = false;
@@ -1899,5 +1899,13 @@ public class P3GlobalSettings {
 	public String getFileID() {
 		return this.fileID;
 		
+	}
+
+	public MeltingTemperatureMethod getMeltingTemperatureMethod() {
+		return meltingTemperatureMethod;
+	}
+
+	public void setMeltingTemperatureMethod(MeltingTemperatureMethod meltingTemperatureMethod) {
+		this.meltingTemperatureMethod = meltingTemperatureMethod;
 	}
 }

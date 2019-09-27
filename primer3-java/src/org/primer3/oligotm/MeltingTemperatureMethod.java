@@ -33,15 +33,28 @@ package org.primer3.oligotm;
  * version 1.0.1
  */
 public enum MeltingTemperatureMethod {
-	breslauer_auto(0),
-	santalucia_auto (1);
+	breslauer_auto(0,"Rychlik W (1990) && Breslauer KJ (1986)"),
+	santalucia_auto (1,"SantaLucia JR (1998)");
 
 	private int id ;
-	MeltingTemperatureMethod(int id ){
+	private String name;
+	MeltingTemperatureMethod(int id, String name ){
 		this.id = id;
+		this.name = name;
 	}
 	public int getValue() { return id; }
 
+	
+    public String getName()
+    {
+    	return name;
+    }
+    
+    
+    public String toString()
+    {
+    	return name;
+    }
 
 
 }

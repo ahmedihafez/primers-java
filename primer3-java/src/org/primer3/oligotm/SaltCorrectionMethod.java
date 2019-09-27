@@ -25,9 +25,9 @@ package org.primer3.oligotm;
 public enum SaltCorrectionMethod {
 	 
 	
-	schildkraut(0,"schildkraut"),
-	santalucia(1,"Santalucia 1998"),
-	owczarzy(2,"owczarzy");
+	schildkraut(0,"Schildkraut (1965)"),
+	santalucia(1,"Santalucia (1998)"),
+	owczarzy(2,"Owczarzy (2008)");
 	
 	
 	private int id ;
