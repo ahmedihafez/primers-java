@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+@Deprecated
 // TODO :: use loop instead of the recursion 
 public class  Permutation<T> {
 

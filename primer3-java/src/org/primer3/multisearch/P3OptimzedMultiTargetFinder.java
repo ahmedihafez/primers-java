@@ -22,7 +22,7 @@ public class P3OptimzedMultiTargetFinder {
 		
 	
 // enum SearchStrategy {
-		boolean 
+	boolean 
 		SpecificLeftSpecificRight = true,
 		MultLeftSpecificRight = false,
 		SpecificLeftMultiRight = false;

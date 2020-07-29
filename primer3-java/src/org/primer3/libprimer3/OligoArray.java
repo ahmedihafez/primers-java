@@ -93,7 +93,10 @@ public class OligoArray {
 				if(a1.length < a2.length) return -1;
 				return 1;
 			}
-		});		
+		});
+		
+		
+		
 	}
 
 	 

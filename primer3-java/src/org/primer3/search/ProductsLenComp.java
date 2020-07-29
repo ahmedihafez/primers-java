@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.TreeSet;
 
-
+@Deprecated 
 public class ProductsLenComp {
 
 	TreeSet<Integer> lens;

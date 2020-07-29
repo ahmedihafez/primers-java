@@ -27,8 +27,8 @@ public class MultiTargetScanner {
 
 //	HashMap<String, ArrayList<PrimerRecord>> targetsToLeft = new HashMap<String, ArrayList<PrimerRecord>>();
 	static final String REVERSE_PREFIX_TARGETS = "reverse " ;
-	ArrayList<MultiTargetPrimerRecord> leftPrimers = new ArrayList<MultiTargetPrimerRecord>() ;
-	ArrayList<MultiTargetPrimerRecord> rightPrimers = new ArrayList<MultiTargetPrimerRecord>() ;
+	private ArrayList<MultiTargetPrimerRecord> leftPrimers = new ArrayList<MultiTargetPrimerRecord>() ;
+	private ArrayList<MultiTargetPrimerRecord> rightPrimers = new ArrayList<MultiTargetPrimerRecord>() ;
 	int nTargets = 0;
 	public ArrayList<String> targets =  new  ArrayList<String>(); 
 	seq_lib targets_lib = new seq_lib();
@@ -219,6 +219,16 @@ public class MultiTargetScanner {
 		{
 			spPrimerList.sort(primerComparator);
 		}
+		
+		
+		
+		// TODEBUG ::
+		// No need for them here
+		leftPrimers.clear();;
+		rightPrimers.clear();
+		leftPrimers = null;
+		rightPrimers = null;
+		
 	}
 
 	

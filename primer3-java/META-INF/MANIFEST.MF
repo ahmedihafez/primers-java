@@ -6,9 +6,8 @@ Bundle-Version: 1.0.0.qualifier
 Require-Bundle: org.apache.commons.cli,
  org.apache.commons.lang3,
  org.apache.commons.io,
- org.slf4j.api,
  biojava
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.pooler,
  org.primer3,
  org.primer3.dpal,
@@ -21,3 +20,4 @@ Export-Package: org.pooler,
  org.primer3.search.multiplex,
  org.primer3.sequence,
  org.primer3.thal
+Import-Package: org.slf4j

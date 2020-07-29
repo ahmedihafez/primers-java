@@ -3,7 +3,7 @@ package org.primer3.search;
 public interface ConflictResolution<T> {
 
 	/**
-	 * true of o is a valid object, this to avoid wasting time in trying differnt combination if the current one is not valid
+	 * true of o is a valid object, this to avoid wasting time in trying different combination if the current one is not valid
 	 * @param o
 	 * @return
 	 */

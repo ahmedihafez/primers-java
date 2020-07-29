@@ -1,7 +1,5 @@
 package org.primer3.primer;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -28,8 +26,8 @@ import org.primer3.masker.oligo_pair;
 import org.primer3.oligotm.OligoTMCalculator;
 import org.primer3.p3_seq_lib.seq_lib;
 import org.primer3.sequence.Sequence;
-import org.primer3.thal.ThermodynamicAlignmentException;
 import org.primer3.thal.ThermodynamicAlignmentArguments;
+import org.primer3.thal.ThermodynamicAlignmentException;
 
 public class PrimerRecord  {
 	// not used right now TODO :: use it as an option
@@ -818,6 +816,7 @@ public class PrimerRecord  {
 		// oligo_type l = otype;
 		int poly_x, max_poly_x;
 		boolean must_use = this.must_use;
+		// This does do check for muplitplex ??
 		boolean three_conditions = (must_use || pa.getFileFlag() != 0 || retval.output_type == P3OutputType.primer_list);
 		char[] seq = sa.getTrimmedSequence();
 		ThermodynamicAlignmentArguments thal_args_for_template_mispriming = LibPrimer3.use_end_for_th_template_mispriming == 1 ? thal_arg_to_use.end1
@@ -1247,7 +1246,7 @@ public class PrimerRecord  {
 
 		// #else
 
-		if (three_conditions || po_args.weights.getRepeatSimilarity() > 0) {
+		if (  three_conditions || po_args.weights.getRepeatSimilarity() > 0) {
 			this.oligo_repeat_library_mispriming(pa, sa, otype, stats,
 					dpal_arg_to_use, retval.glob_err);
 		}
