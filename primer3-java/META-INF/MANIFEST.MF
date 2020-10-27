@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Primer3-java
-Bundle-SymbolicName: primer3-java;singleton:=true
+Bundle-Name: Primers-java
+Bundle-SymbolicName: primers-java;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Require-Bundle: org.apache.commons.cli,
  org.apache.commons.io,
