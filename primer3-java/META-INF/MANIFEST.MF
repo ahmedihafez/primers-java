@@ -4,9 +4,9 @@ Bundle-Name: Primer3-java
 Bundle-SymbolicName: primer3-java;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Require-Bundle: org.apache.commons.cli,
- org.apache.commons.lang3,
  org.apache.commons.io,
- biojava
+ biojava,
+ org.apache.commons.lang3
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.pooler,
  org.primer3,
