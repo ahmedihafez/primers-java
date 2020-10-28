@@ -1,17 +1,17 @@
 /*
-    This file is part of primer3 porting to java
+    This file is part of Primer3 porting to java (https://github.com/primer3-org/primer3)
+
+
+	Copyright (c) 1996,1997,1998,1999,2000,2001,2004,2006,2007,2008
+	Whitehead Institute for Biomedical Research, Steve Rozen
+	(http://purl.com/STEVEROZEN/), Andreas Untergasser and Helen Skaletsky
+	All rights reserved to Primer3 authors.
+
     Primer3 and the libprimer3 library are free software;
     you can redistribute them and/or modify them under the terms
     of the GNU General Public License as published by the Free
     Software Foundation; either version 2 of the License, or (at
     your option) any later version.
-
-	Original file are part of https://github.com/primer3-org/primer3
-	Whitehead Institute for Biomedical Research, Steve Rozen
-	(http://purl.com/STEVEROZEN/), Andreas Untergasser and Helen Skaletsky
-	All rights reserved.
-
-
 
     This software is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of

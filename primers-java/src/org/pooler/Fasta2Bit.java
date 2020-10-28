@@ -1,7 +1,6 @@
 /*
-  This file is part of Java porting of Primer Pooler
-  Original Primer Pooler (c) Silas S. Brown.  For Wen.
-  Please refer to https://github.com/ssb22/PrimerPooler
+  This file is part of Java porting of Primer Pooler (https://github.com/ssb22/PrimerPooler)
+  Primer Pooler (c) Silas S. Brown.  For Wen.
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
