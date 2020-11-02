@@ -412,7 +412,7 @@ class DegeneratePrimer64  extends DegeneratePrimer {
 		HelperMethods.indent(iMid+(3), out);
 
 		long bond = (long)1 << (64-1-Long.numberOfLeadingZeros(overlap));
-		for(; (bond&overlap) != 0; bond>>=1) 
+		for(; (bond&overlap) != 0; bond>>>=1) 
 			out.print((bond&bonds) != 0 ?'|':'x');
 		out.print('\n'); 
 		HelperMethods.indent(i2,out);
@@ -426,7 +426,7 @@ class DegeneratePrimer64  extends DegeneratePrimer {
 	private void printBases64D(PrintStream out) {
 		long valid = this.MaybeA | this.MaybeC | this.MaybeG | this.MaybeT;
 		long i = (long)1 << (64-1-Long.numberOfLeadingZeros(valid));
-		  for(; (i&valid)  != 0; i>>=1) {
+		  for(; (i&valid)  != 0; i>>>=1) {
 		    int j =  (((this.MaybeA & i)!=0 ? 1 : 0   )  << 3 ) |
 		    		 (((this.MaybeC & i)!=0 ? 1 : 0   )  << 2 ) |
 		    		 (((this.MaybeG & i)!=0 ? 1 : 0   )  << 1 ) |
@@ -442,8 +442,8 @@ class DegeneratePrimer64  extends DegeneratePrimer {
 		  /* number of possible primers this degenerate primer might be equal to (assumes aligned right) */
 		  int r = 1, sR, poss;
 		  for(sR=0; sR<32; sR++) { /* 32, not sixty four etc, because we want the return value to work with Make2bitFrom64D  */
-		    poss = (int) (((this.MaybeA >> sR) & 1) + ((this.MaybeC >> sR) & 1)
-		      + ((this.MaybeG >> sR) & 1) + ((this.MaybeT >> sR) & 1));
+		    poss = (int) (((this.MaybeA >>> sR) & 1) + ((this.MaybeC >>> sR) & 1)
+		      + ((this.MaybeG >>> sR) & 1) + ((this.MaybeT >>> sR) & 1));
 		    if (poss != 0) 
 		    	r *= poss; 
 		    else 
@@ -488,10 +488,10 @@ class DegeneratePrimer64  extends DegeneratePrimer {
 	  int sR, poss;
 	  long toOut=0,toOutValid=0;
 	  for(sR=0; sR<32; sR++) { /* 32, not sixty four etc */
-	    int MaybeA = (int) ((this.MaybeA >> sR) & 1),
-	      MaybeC = (int) ((this.MaybeC >> sR) & 1),
-	      MaybeG = (int) ((this.MaybeG >> sR) & 1),
-	      MaybeT = (int) ((this.MaybeT >> sR) & 1);
+	    int MaybeA = (int) ((this.MaybeA >>> sR) & 1),
+	      MaybeC = (int) ((this.MaybeC >>> sR) & 1),
+	      MaybeG = (int) ((this.MaybeG >>> sR) & 1),
+	      MaybeT = (int) ((this.MaybeT >>> sR) & 1);
 	    poss = MaybeA + MaybeC + MaybeG + MaybeT;
 	    if (poss != 0) {
 	      int partitionSize = nPoss / poss;
@@ -513,7 +513,7 @@ class DegeneratePrimer64  extends DegeneratePrimer {
 //	#ifdef Is_32bit
 //	  return 0; // avoid compiler warnings
 //	#else
-	  return ((this.MaybeA >> 32) | (this.MaybeC >> 32) | (this.MaybeG >> 32) | (this.MaybeT >> 32)) != 0;
+	  return ((this.MaybeA >>> 32) | (this.MaybeC >>> 32) | (this.MaybeG >>> 32) | (this.MaybeT >>> 32)) != 0;
 //	#endif
 	}
 
