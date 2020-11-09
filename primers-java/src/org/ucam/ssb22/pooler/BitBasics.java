@@ -11,16 +11,10 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package org.pooler.primers;
+package org.ucam.ssb22.pooler;
 
-import org.pooler.Amplicons.PrimerToFind;
 
-public abstract class DegeneratePrimer implements IPrimer {
+// all operation will be on a 64bit -- Long
+public class BitBasics {
 
-	@Override
-	public final boolean isDegeneratePrimer() {
-		return true;
-	}
-
-	public abstract boolean make2bit(PrimerToFind newPrimerPoss, int possNo, int nPoss);
 }

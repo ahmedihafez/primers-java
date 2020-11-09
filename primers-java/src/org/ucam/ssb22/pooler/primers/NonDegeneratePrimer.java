@@ -11,13 +11,17 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package org.pooler;
+package org.ucam.ssb22.pooler.primers;
 
-public class dHS {
-	  float dH_kcal_per_mol;
-	  float dS_cal_per_molK;
-	  public dHS(float dH , float dS) {
-		  this.dH_kcal_per_mol = dH;
-		  this.dS_cal_per_molK = dS;
-	  }
+public abstract class NonDegeneratePrimer implements IPrimer {
+
+	
+	@Override
+	public final boolean isDegeneratePrimer() {
+		return false;
+	}
+	@Override
+	public final int NumPossibilities_32bases() {
+		return 1;
+	}
 }

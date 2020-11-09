@@ -11,7 +11,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package org.pooler;
+package org.ucam.ssb22.pooler;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.pooler.AllPrimers.PS_cache;
+import org.ucam.ssb22.pooler.AllPrimers.PS_cache;
 
 public class PoolSplit {
 	static void randomise_pools(int np,

@@ -11,17 +11,10 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package org.pooler.primers;
+package org.ucam.ssb22.pooler.primers64;
 
-public abstract class NonDegeneratePrimer implements IPrimer {
+import org.ucam.ssb22.pooler.primers.IPrimer;
 
-	
-	@Override
-	public final boolean isDegeneratePrimer() {
-		return false;
-	}
-	@Override
-	public final int NumPossibilities_32bases() {
-		return 1;
-	}
+abstract public class Base64 implements IPrimer {
+
 }

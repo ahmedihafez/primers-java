@@ -11,7 +11,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package org.pooler;
+package org.ucam.ssb22.pooler;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -33,13 +33,13 @@ import org.biojava.nbio.core.sequence.compound.NucleotideCompound;
 import org.biojava.nbio.core.sequence.io.DNASequenceCreator;
 import org.biojava.nbio.core.sequence.io.FastaReader;
 import org.biojava.nbio.core.sequence.io.GenericFastaHeaderParser;
-import org.pooler.Amplicons.PrimerToFind;
-import org.pooler.Triangle.TwoRanges;
-import org.pooler.primers.CountResult;
-import org.pooler.primers.IPrimer;
-import org.pooler.primers.PrimerFactory;
-import org.pooler.primers64.PrimerFactory64;
 import org.primer3.p3_seq_lib.DNACharSet;
+import org.ucam.ssb22.pooler.Amplicons.PrimerToFind;
+import org.ucam.ssb22.pooler.Triangle.TwoRanges;
+import org.ucam.ssb22.pooler.primers.CountResult;
+import org.ucam.ssb22.pooler.primers.IPrimer;
+import org.ucam.ssb22.pooler.primers.PrimerFactory;
+import org.ucam.ssb22.pooler.primers64.PrimerFactory64;
 
 public class AllPrimers {
 
