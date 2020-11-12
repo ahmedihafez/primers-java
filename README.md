@@ -2,9 +2,9 @@
 In progress Porting of Primer3 and PrimerPooler tools to java to be used as an API. 
 Please note that:
 
-Primer3 copyright are reserved to its authors (Whitehead Institute for Biomedical Research, Steve Rozen, Andreas Untergasser and Helen Skaletsky)
+Primer3 copyright are reserved to its authors (Andreas Untergasser, Ioana Cutcutache, Triinu Koressaar, Jian Ye, Brant C. Faircloth, Maido Remm and Steven G. Rozen)
 
-PrimerPooler copyright are reserved to its authors (Silas S. Brown et. al. 2017 )
+PrimerPooler copyright are reserved to its authors (Silas S. Brown, Yun-Wen Chen, Ming Wang, Alexandra Clipson, Eguzkine Ochoa, and Ming-Qing Du)
 
 Please if used in your work, cite:
 
