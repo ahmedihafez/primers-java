@@ -93,6 +93,14 @@ public class AllPrimers {
 				{
 					System.out.println(">" + seq.getKey());
 					System.out.println(seq.getValue().getSequenceAsString());
+					
+					// before We continue check length
+					if ( seq.getValue().getLength() > currentFactory.getCurrentSize() ) {
+						// primer will be truncated
+						System.err.format("This version of PrimerPooler only support primers up to %d bases. %s Primer Sequence will be truncated.", currentFactory.getCurrentSize(), seq.getKey());
+
+					}
+					
 					IPrimer mdp = currentFactory.createPrimer(seq.getValue().getSequenceAsString());
 					String seqName =  seq.getKey();
 					if (seqName.startsWith("tag") && seqName.length() == 4 ) {

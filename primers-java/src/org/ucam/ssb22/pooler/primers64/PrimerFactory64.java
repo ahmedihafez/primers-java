@@ -27,6 +27,11 @@ public class PrimerFactory64 extends PrimerFactory {
 	
 	public IPrimer createPrimer(String primerSeq)  {
 		
+		if (primerSeq.length() > getCurrentSize()) {
+			// truncated
+			primerSeq = primerSeq.substring(0,getCurrentSize());
+		}
+		
 		boolean isDegn = false;
 		if(!primerSeq.matches("[ACTGactg]*"))
 		{
