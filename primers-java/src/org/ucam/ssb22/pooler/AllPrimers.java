@@ -142,14 +142,19 @@ public class AllPrimers {
 			p = 0;
 			for(Entry<Character,Boolean> checkTag : check_not_last.entrySet() )
 			{
+				Character charValue = checkTag.getKey();
 				if(checkTag.getValue()) {
 					if(p != 0) 
 					{
-						//fprintf(stderr,"WARNING: Same applies to >tag%c\n",nextTag);
+						System.err.format("WARNING: Same applies to >tag%c\n",charValue);
 					}
 					else {
 						p = 1;
-						//fprintf(stderr,"\nWARNING: You have multiple >tag%c sequences\n         and the last one does not precede a >...%c primer.\n         This probably means you've made a mistake.\n         Apart from the first >tag%c, all >tag%c tags will apply to\n         >...%c primers AFTER the >tag%c (not before it).\n",nextTag,nextTag,nextTag,nextTag,nextTag,nextTag);
+						System.err.format(
+								"\nWARNING: You have multiple >tag%c sequences\n"+
+								"\t and the last one does not precede a >...%c primer.\n"+
+								"\t This probably means you've made a mistake.\n\t Apart from the first >tag%c, all >tag%c tags will apply to\n"+
+								"\t >...%c primers AFTER the >tag%c (not before it).\n",charValue,charValue,charValue,charValue,charValue,charValue);
 					}
 				}
 			}
@@ -250,14 +255,19 @@ public class AllPrimers {
 			p = 0;
 			for(Entry<Character,Boolean> checkTag : check_not_last.entrySet() )
 			{
+				Character charValue = checkTag.getKey();
 				if(checkTag.getValue()) {
 					if(p != 0) 
 					{
-						//fprintf(stderr,"WARNING: Same applies to >tag%c\n",nextTag);
+						System.err.format("WARNING: Same applies to >tag%c\n",charValue);
 					}
 					else {
 						p = 1;
-						//fprintf(stderr,"\nWARNING: You have multiple >tag%c sequences\n         and the last one does not precede a >...%c primer.\n         This probably means you've made a mistake.\n         Apart from the first >tag%c, all >tag%c tags will apply to\n         >...%c primers AFTER the >tag%c (not before it).\n",nextTag,nextTag,nextTag,nextTag,nextTag,nextTag);
+						System.err.format("\nWARNING: You have multiple >tag%c sequences\n "
+								+ "\t and the last one does not precede a >...%c primer.\n"
+								+ "\t This probably means you've made a mistake.\n"
+								+ "\t Apart from the first >tag%c, all >tag%c tags will apply to\n"
+								+ "\t >...%c primers AFTER the >tag%c (not before it).\n",charValue,charValue,charValue,charValue,charValue,charValue);
 					}
 				}
 			}
