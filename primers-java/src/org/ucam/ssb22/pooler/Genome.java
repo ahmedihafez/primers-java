@@ -11,13 +11,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package org.pooler;
+package org.ucam.ssb22.pooler;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.pooler.Fasta2Bit.SeqData;
-import org.pooler.Fasta2Bit.SeqInfo;
+import org.ucam.ssb22.pooler.Fasta2Bit.SeqData;
+import org.ucam.ssb22.pooler.Fasta2Bit.SeqInfo;
 
 public class Genome {
 

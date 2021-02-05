@@ -11,15 +11,14 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package org.pooler.primers64;
-
-import org.pooler.primers.NonDegeneratePrimer;
+package org.ucam.ssb22.pooler.primers64;
 
 import java.io.PrintStream;
 
-import org.pooler.HelperMethods;
-import org.pooler.primers.CountResult;
-import org.pooler.primers.IPrimer;
+import org.ucam.ssb22.pooler.HelperMethods;
+import org.ucam.ssb22.pooler.primers.CountResult;
+import org.ucam.ssb22.pooler.primers.IPrimer;
+import org.ucam.ssb22.pooler.primers.NonDegeneratePrimer;
 
 class Primer64  extends NonDegeneratePrimer {
 	public Primer64(String primerSeq) {

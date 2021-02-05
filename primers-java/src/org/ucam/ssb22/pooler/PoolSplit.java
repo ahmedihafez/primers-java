@@ -11,7 +11,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package org.pooler;
+package org.ucam.ssb22.pooler;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.pooler.AllPrimers.PS_cache;
+import org.ucam.ssb22.pooler.AllPrimers.PS_cache;
 
 public class PoolSplit {
 	static void randomise_pools(int np,
@@ -126,7 +126,7 @@ public class PoolSplit {
 		if(score < lswScore) 
 			return badness; /* this score is too insignificant to count at the current maximum level */
 		int sL = (score-lswScore)*16;
-		if(((badness>>sL)&0xFFFF)==0xFFFF) return badness; /* saturated */
+		if(((badness>>>sL)&0xFFFF)==0xFFFF) return badness; /* saturated */
 		badness += (((long)1) << sL);
 		assert(maxScoreOfBadness(badness) == max);
 		return badness;
@@ -260,10 +260,10 @@ public class PoolSplit {
 		int lswScore = max - 2;
 		if(score < lswScore) return false; /* this score is too insignificant to affect the counters */
 		int sL = (score-lswScore)*16;
-		if(((badness>>sL)&0xFFFF)==0xFFFF) return false; /* if it was saturated, we'll have to leave it "stuck" there I'm afraid (unless return 1 to recalculate, but in many cases it would just saturate again) */
+		if(((badness>>>sL)&0xFFFF)==0xFFFF) return false; /* if it was saturated, we'll have to leave it "stuck" there I'm afraid (unless return 1 to recalculate, but in many cases it would just saturate again) */
 		badness -= (((long)1) << sL);
 		bContrib[index] = badness;
-		return ((badness>>32)&0xFFFF) == 0; /* recalc max if count(max)==0 */
+		return ((badness>>>32)&0xFFFF) == 0; /* recalc max if count(max)==0 */
 	}
 
 

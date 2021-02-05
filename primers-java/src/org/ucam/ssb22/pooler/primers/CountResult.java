@@ -11,10 +11,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package org.pooler.primers64;
+package org.ucam.ssb22.pooler.primers;
 
-import org.pooler.primers.IPrimer;
-
-abstract public class Base64 implements IPrimer {
-
+public class CountResult {
+	public int count = 0;
+	public int tried = 0 ;
 }

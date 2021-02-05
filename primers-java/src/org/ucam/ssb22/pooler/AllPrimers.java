@@ -11,7 +11,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package org.pooler;
+package org.ucam.ssb22.pooler;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -33,13 +33,13 @@ import org.biojava.nbio.core.sequence.compound.NucleotideCompound;
 import org.biojava.nbio.core.sequence.io.DNASequenceCreator;
 import org.biojava.nbio.core.sequence.io.FastaReader;
 import org.biojava.nbio.core.sequence.io.GenericFastaHeaderParser;
-import org.pooler.Amplicons.PrimerToFind;
-import org.pooler.Triangle.TwoRanges;
-import org.pooler.primers.CountResult;
-import org.pooler.primers.IPrimer;
-import org.pooler.primers.PrimerFactory;
-import org.pooler.primers64.PrimerFactory64;
 import org.primer3.p3_seq_lib.DNACharSet;
+import org.ucam.ssb22.pooler.Amplicons.PrimerToFind;
+import org.ucam.ssb22.pooler.Triangle.TwoRanges;
+import org.ucam.ssb22.pooler.primers.CountResult;
+import org.ucam.ssb22.pooler.primers.IPrimer;
+import org.ucam.ssb22.pooler.primers.PrimerFactory;
+import org.ucam.ssb22.pooler.primers64.PrimerFactory64;
 
 public class AllPrimers {
 
@@ -93,6 +93,14 @@ public class AllPrimers {
 				{
 					System.out.println(">" + seq.getKey());
 					System.out.println(seq.getValue().getSequenceAsString());
+					
+					// before We continue check length
+					if ( seq.getValue().getLength() > currentFactory.getCurrentSize() ) {
+						// primer will be truncated
+						System.err.format("This version of PrimerPooler only support primers up to %d bases. %s Primer Sequence will be truncated.", currentFactory.getCurrentSize(), seq.getKey());
+
+					}
+					
 					IPrimer mdp = currentFactory.createPrimer(seq.getValue().getSequenceAsString());
 					String seqName =  seq.getKey();
 					if (seqName.startsWith("tag") && seqName.length() == 4 ) {
@@ -134,14 +142,19 @@ public class AllPrimers {
 			p = 0;
 			for(Entry<Character,Boolean> checkTag : check_not_last.entrySet() )
 			{
+				Character charValue = checkTag.getKey();
 				if(checkTag.getValue()) {
 					if(p != 0) 
 					{
-						//fprintf(stderr,"WARNING: Same applies to >tag%c\n",nextTag);
+						System.err.format("WARNING: Same applies to >tag%c\n",charValue);
 					}
 					else {
 						p = 1;
-						//fprintf(stderr,"\nWARNING: You have multiple >tag%c sequences\n         and the last one does not precede a >...%c primer.\n         This probably means you've made a mistake.\n         Apart from the first >tag%c, all >tag%c tags will apply to\n         >...%c primers AFTER the >tag%c (not before it).\n",nextTag,nextTag,nextTag,nextTag,nextTag,nextTag);
+						System.err.format(
+								"\nWARNING: You have multiple >tag%c sequences\n"+
+								"\t and the last one does not precede a >...%c primer.\n"+
+								"\t This probably means you've made a mistake.\n\t Apart from the first >tag%c, all >tag%c tags will apply to\n"+
+								"\t >...%c primers AFTER the >tag%c (not before it).\n",charValue,charValue,charValue,charValue,charValue,charValue);
 					}
 				}
 			}
@@ -242,14 +255,19 @@ public class AllPrimers {
 			p = 0;
 			for(Entry<Character,Boolean> checkTag : check_not_last.entrySet() )
 			{
+				Character charValue = checkTag.getKey();
 				if(checkTag.getValue()) {
 					if(p != 0) 
 					{
-						//fprintf(stderr,"WARNING: Same applies to >tag%c\n",nextTag);
+						System.err.format("WARNING: Same applies to >tag%c\n",charValue);
 					}
 					else {
 						p = 1;
-						//fprintf(stderr,"\nWARNING: You have multiple >tag%c sequences\n         and the last one does not precede a >...%c primer.\n         This probably means you've made a mistake.\n         Apart from the first >tag%c, all >tag%c tags will apply to\n         >...%c primers AFTER the >tag%c (not before it).\n",nextTag,nextTag,nextTag,nextTag,nextTag,nextTag);
+						System.err.format("\nWARNING: You have multiple >tag%c sequences\n "
+								+ "\t and the last one does not precede a >...%c primer.\n"
+								+ "\t This probably means you've made a mistake.\n"
+								+ "\t Apart from the first >tag%c, all >tag%c tags will apply to\n"
+								+ "\t >...%c primers AFTER the >tag%c (not before it).\n",charValue,charValue,charValue,charValue,charValue,charValue);
 					}
 				}
 			}
