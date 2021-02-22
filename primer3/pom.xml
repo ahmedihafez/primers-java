@@ -1,0 +1,79 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.primer3</groupId>
+  <artifactId>primer3</artifactId>
+  <packaging>jar</packaging>
+  <version>1.0-SNAPSHOT</version>
+  <name>primer3</name>
+  <url>http://maven.apache.org</url>
+  <dependencies>
+  
+    <!-- https://mvnrepository.com/artifact/commons-cli/commons-cli -->
+	<dependency>
+	    <groupId>commons-cli</groupId>
+	    <artifactId>commons-cli</artifactId>
+	    <version>1.4</version>
+	</dependency>
+	
+	<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+	<dependency>
+	    <groupId>org.apache.commons</groupId>
+	    <artifactId>commons-lang3</artifactId>
+	    <version>3.11</version>
+	</dependency>
+	
+	<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-io -->
+	<dependency>
+	    <groupId>org.apache.commons</groupId>
+	    <artifactId>commons-io</artifactId>
+	    <version>1.3.2</version>
+	</dependency>
+	
+	<!-- https://mvnrepository.com/artifact/org.biojava/biojava-core -->
+	<dependency>
+	    <groupId>org.biojava</groupId>
+	    <artifactId>biojava-core</artifactId>
+	    <version>5.4.0</version>
+	</dependency>
+
+	
+	
+  </dependencies>
+  
+  <properties>
+		<!-- https://maven.apache.org/general.html#encoding-warning -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
+  
+  <build>
+        <plugins>
+        
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <!-- Attach the shade goal into the package phase -->
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+			                <transformers>
+			                    <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+			                        <mainClass>org.primer3.Primer3Main</mainClass>
+			                    </transformer>
+			                </transformers>
+			            </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+</project>
