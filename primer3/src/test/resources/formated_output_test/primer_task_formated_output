@@ -1,0 +1,296 @@
+PRIMER PICKING RESULTS FOR pcr_primers
+
+No mispriming library specified
+Using 0-based sequence positions
+NO PRIMERS FOUND
+
+SEQUENCE SIZE: 161
+INCLUDED REGION SIZE: 161
+
+TARGETS (start, len)*: 21,122
+
+    0 TCCTACAGCTGTGGGAAAATGatgcgtacgatccatgctagctagctactatcgattagc
+                           ***************************************
+
+   60 tatcatctactatcatctactatctactacacatctactatcatctacacacacacacac
+      ************************************************************
+
+  120 actaggccgctatatcatctagcGCCGCCATGTACACACTG
+      ***********************                  
+
+KEYS (in order of precedence):
+****** target
+
+
+Statistics
+         con   too    in    in   not          no    tm    tm   high  high  high        high      
+         sid  many   tar  excl    ok   bad    GC   too   too any_th 3'_th hair-  poly   end      
+        ered    Ns   get   reg   reg   GC% clamp   low  high  compl compl   pin     X  stab    ok
+Left      10     0     0     0     0     0     0     9     0      0     0     1     0     0     0
+Right      1     0     0     0     0     0     0     0     0      0     0     0     0     0     1
+Pair Stats:
+considered 0, ok 0
+libprimer3 release 2.4.0
+
+
+PRIMER PICKING RESULTS FOR pcr_primers_and_io
+
+No mispriming library specified
+No internal oligo mishyb library specified
+Using 0-based sequence positions
+OLIGO            start  len      tm     gc%  any_th  3'_th hairpin seq
+LEFT PRIMER          7   21   57.04   42.86    0.00   0.00    0.00 GCTGTTTCACACTTACGGAAA
+RIGHT PRIMER       247   21   59.51   47.62    0.00   0.00   37.46 TCCTGTTGGAGAAAAGCCACT
+INTERNAL OLIGO     142   20   60.18   65.00    5.01   0.00   34.96 TTAGCGTGCGTGGGGTCCCT
+SEQUENCE SIZE: 300
+INCLUDED REGION SIZE: 300
+
+PRODUCT SIZE: 241, PAIR ANY_TH COMPL: 0.00, PAIR 3'_TH COMPL: 0.00
+
+    0 NATCCANGCTGTTTCACACTTACGGAAATGGANGACTNCCCATAGCTNCTGGGCTNTTAT
+             >>>>>>>>>>>>>>>>>>>>>                                
+
+   60 CCAAAAAACATTCTCTNNNTGNTGCTTATTGGCNTCTCNAAGTGTGCNNACTTCATGGGC
+                                                                  
+
+  120 CTACACANAATTGNNCANGGGCTTAGCGTGCGTGGGGTCCCTNGGTAACATNGGCATCTC
+                            ^^^^^^^^^^^^^^^^^^^^                  
+
+  180 TGCACTTCNNGGTNNCCTTCCTTCTNACCAAGGGGTATCTGGNTGCCAGTGGCTTTTCTC
+                                                     <<<<<<<<<<<<<
+
+  240 CAACAGGAANGGGGGTATGTGCATTNGCAGACATCAATGANCATGAGAGATATNAATAGG
+      <<<<<<<<                                                    
+
+KEYS (in order of precedence):
+>>>>>> left primer
+<<<<<< right primer
+^^^^^^ internal oligo
+
+ADDITIONAL OLIGOS
+                    start  len      tm     gc%  any_th  3'_th hairpin seq
+
+ 1 LEFT PRIMER          7   21   57.04   42.86    0.00   0.00    0.00 GCTGTTTCACACTTACGGAAA
+   RIGHT PRIMER       245   21   59.39   52.38    0.00   0.00   34.56 CTGTTGGAGAAAAGCCACTGG
+   INTERNAL OLIGO     142   20   60.18   65.00    5.01   0.00   34.96 TTAGCGTGCGTGGGGTCCCT
+   PRODUCT SIZE: 239, PAIR ANY_TH COMPL: 0.00, PAIR 3'_TH COMPL: 0.00
+
+ 2 LEFT PRIMER          7   21   57.04   42.86    0.00   0.00    0.00 GCTGTTTCACACTTACGGAAA
+   RIGHT PRIMER       246   21   59.39   52.38    0.00   0.00   34.56 CCTGTTGGAGAAAAGCCACTG
+   INTERNAL OLIGO     142   20   60.18   65.00    5.01   0.00   34.96 TTAGCGTGCGTGGGGTCCCT
+   PRODUCT SIZE: 240, PAIR ANY_TH COMPL: 0.00, PAIR 3'_TH COMPL: 0.00
+
+ 3 LEFT PRIMER          7   21   57.04   42.86    0.00   0.00    0.00 GCTGTTTCACACTTACGGAAA
+   RIGHT PRIMER       244   20   58.31   50.00    0.00   0.00   34.56 TGTTGGAGAAAAGCCACTGG
+   INTERNAL OLIGO     142   20   60.18   65.00    5.01   0.00   34.96 TTAGCGTGCGTGGGGTCCCT
+   PRODUCT SIZE: 238, PAIR ANY_TH COMPL: 0.00, PAIR 3'_TH COMPL: 0.00
+
+ 4 LEFT PRIMER          7   23   58.78   43.48    0.00   0.00   33.58 GCTGTTTCACACTTACGGAAATG
+   RIGHT PRIMER       247   21   59.51   47.62    0.00   0.00   37.46 TCCTGTTGGAGAAAAGCCACT
+   INTERNAL OLIGO     142   20   60.18   65.00    5.01   0.00   34.96 TTAGCGTGCGTGGGGTCCCT
+   PRODUCT SIZE: 241, PAIR ANY_TH COMPL: 0.00, PAIR 3'_TH COMPL: 0.00
+
+Statistics
+         con   too    in    in   not          no    tm    tm   high  high  high        high      
+         sid  many   tar  excl    ok   bad    GC   too   too any_th 3'_th hair-  poly   end      
+        ered    Ns   get   reg   reg   GC% clamp   low  high  compl compl   pin     X  stab    ok
+Left     281   210     0     0     0     0     0    34    26      0     0     0     0     0    11
+Right    284   210     0     0     0     0     0    15    34      0     0    10     0     0    15
+Intl     393   280     0     0     0     0     0    76     6      0     0     0     3     0    28
+Pair Stats:
+considered 16, unacceptable product size 1, no internal oligo 10, ok 5
+libprimer3 release 2.4.0
+
+
+PRIMER PICKING RESULTS FOR left_only
+
+No mispriming library specified
+Using 0-based sequence positions
+OLIGO            start  len      tm     gc%  any_th  3'_th hairpin seq
+LEFT_PRIMER         62   20   60.03   60.00   30.63   9.03   43.40 CCCTGCAGGTTTAGAAGGGG
+SEQUENCE SIZE: 175
+INCLUDED REGION SIZE: 175
+
+TARGETS (start, len)*: 100,20
+    0 GNATCTGCACCCTGTAAACCCTGGCTCCTGCCTCTCCGGGACACCCCACTGAGGTCAGCA
+                                                                  
+
+   60 CACCCTGCAGGTTTAGAAGGGGTGTCTGGGTGCATTTGGTGACACCGCAGGCAGAGGGGG
+        >>>>>>>>>>>>>>>>>>>>                  ********************
+
+  120 GACNCCACAGCCAGCTCTGCCCGCGGATGCCACGTCCATTTGCTTCAGCAGGATC
+                                                             
+
+KEYS (in order of precedence):
+****** target
+>>>>>> left primer
+
+
+ADDITIONAL OLIGOS
+                    start  len      tm     gc%  any_th  3'_th hairpin seq
+ 1 LEFT_PRIMER         10   20   60.04   60.00    0.00   0.00    0.00 CCTGTAAACCCTGGCTCCTG
+ 2 LEFT_PRIMER        149   20   60.11   55.00    0.00   0.00   42.50 CCACGTCCATTTGCTTCAGC
+ 3 LEFT_PRIMER        148   20   60.11   55.00    0.00   0.00    0.00 GCCACGTCCATTTGCTTCAG
+ 4 LEFT_PRIMER          7   20   60.32   60.00    0.00   0.00    0.00 CACCCTGTAAACCCTGGCTC
+
+Statistics
+         con   too    in    in   not          no    tm    tm   high  high  high        high      
+         sid  many   tar  excl    ok   bad    GC   too   too any_th 3'_th hair-  poly   end      
+        ered    Ns   get   reg   reg   GC% clamp   low  high  compl compl   pin     X  stab    ok
+Left    1121    38    23     0     0     0     0    56   754      0     0   113     0     0   137
+libprimer3 release 2.4.0
+
+
+PRIMER PICKING RESULTS FOR right_only
+
+No mispriming library specified
+Using 0-based sequence positions
+OLIGO            start  len      tm     gc%  any_th  3'_th hairpin seq
+RIGHT_PRIMER       126   20   59.15   50.00    0.00   0.00    0.00 CGTGCTTTGCGTTTTGGAAG
+SEQUENCE SIZE: 136
+INCLUDED REGION SIZE: 136
+
+TARGETS (start, len)*: 90,10
+    0 GANCAATGCANGTAATGANGTTGGCANAATTATGAATCGCAATCAAATTTTTTCTATGAC
+                                                                  
+
+   60 CTGATAGAAACGCCAACTCACTGTATGAGTCTGTTGTCAAAGTCTAACTTCCAAAACGCA
+                                    **********       <<<<<<<<<<<<<
+
+  120 AAGCACGCTCCCGATC
+      <<<<<<<         
+
+KEYS (in order of precedence):
+****** target
+<<<<<< right primer
+
+
+ADDITIONAL OLIGOS
+                    start  len      tm     gc%  any_th  3'_th hairpin seq
+ 1 RIGHT_PRIMER       127   20   61.14   50.00    0.00   0.00    0.00 GCGTGCTTTGCGTTTTGGAA
+ 2 RIGHT_PRIMER       130   19   60.30   52.63    0.00   0.00   37.44 GGAGCGTGCTTTGCGTTTT
+ 3 RIGHT_PRIMER       130   20   61.54   55.00    0.00   0.00   37.44 GGAGCGTGCTTTGCGTTTTG
+ 4 RIGHT_PRIMER       129   20   61.54   55.00    0.00   0.00   37.44 GAGCGTGCTTTGCGTTTTGG
+
+Statistics
+         con   too    in    in   not          no    tm    tm   high  high  high        high      
+         sid  many   tar  excl    ok   bad    GC   too   too any_th 3'_th hair-  poly   end      
+        ered    Ns   get   reg   reg   GC% clamp   low  high  compl compl   pin     X  stab    ok
+Right    623    27    36     0     0     5     0   299    82      0     0    26     0     0   148
+libprimer3 release 2.4.0
+
+
+PRIMER PICKING RESULTS FOR hyb_probe_only
+
+No internal oligo mishyb library specified
+Using 0-based sequence positions
+OLIGO            start  len      tm     gc%  any_th  3'_th hairpin seq
+INTERNAL_OLIGO      23   20   59.97   70.00    0.00   0.00   30.41 GCTCCTGCCTCTCCGGGACA
+SEQUENCE SIZE: 175
+INCLUDED REGION SIZE: 175
+
+INTERNAL OLIGO EXCLUDED REGIONS (start, len)*: 90,20
+    0 GCATCTGCACCCTGTAAACCCTGGCTCCTGCCTCTCCGGGACACCCCACTGAGGTCAGCA
+                             ^^^^^^^^^^^^^^^^^^^^                 
+
+   60 CACCCTGCAGGTTTAGAAGGGGTGTCTGGGTGCATTTGGTGACACCGCAGGCAGAGGGGG
+                                    xxxxxxxxxxxxxxxxxxxx          
+
+  120 GACNCCACAGCCAGCTCTGCCCGCGGATGCCACGTCCATTTGCTTCAGCAGGATC
+                                                             
+
+KEYS (in order of precedence):
+xxxxxx excluded region for internal oligo
+^^^^^^ internal oligo
+
+
+ADDITIONAL OLIGOS
+                    start  len      tm     gc%  any_th  3'_th hairpin seq
+ 1 INTERNAL_OLIGO     140   20   60.11   65.00   20.33   0.00   35.40 CCGCGGATGCCACGTCCATT
+ 2 INTERNAL_OLIGO      25   20   59.61   70.00    0.00   0.00   30.41 TCCTGCCTCTCCGGGACACC
+ 3 INTERNAL_OLIGO      26   20   60.60   75.00    0.00   0.00   38.95 CCTGCCTCTCCGGGACACCC
+ 4 INTERNAL_OLIGO     124   19   60.04   73.68    0.00   0.00   34.17 CCACAGCCAGCTCTGCCCG
+
+Statistics
+         con   too    in    in   not          no    tm    tm   high  high  high        high      
+         sid  many   tar  excl    ok   bad    GC   too   too any_th 3'_th hair-  poly   end      
+        ered    Ns   get   reg   reg   GC% clamp   low  high  compl compl   pin     X  stab    ok
+Intl    1040    27     0    33     0     0     0   271   297      0     0   144     0     0   268
+libprimer3 release 2.4.0
+
+
+PRIMER PICKING RESULTS FOR left_only
+
+No mispriming library specified
+Using 0-based sequence positions
+OLIGO            start  len      tm     gc%  any_th  3'_th hairpin seq
+LEFT_PRIMER          0   20   58.64   55.00    0.00   0.00    0.00 TTAGAAGGGGTGTCTGGGTG
+SEQUENCE SIZE: 20
+INCLUDED REGION SIZE: 20
+
+    0 TTAGAAGGGGTGTCTGGGTG
+      >>>>>>>>>>>>>>>>>>>>
+
+KEYS (in order of precedence):
+>>>>>> left primer
+
+
+
+Statistics
+         con   too    in    in   not          no    tm    tm   high  high  high        high      
+         sid  many   tar  excl    ok   bad    GC   too   too any_th 3'_th hair-  poly   end      
+        ered    Ns   get   reg   reg   GC% clamp   low  high  compl compl   pin     X  stab    ok
+Left       1     0     0     0     0     0     0     0     0      0     0     0     0     0     1
+libprimer3 release 2.4.0
+
+
+PRIMER PICKING RESULTS FOR right_only
+
+No mispriming library specified
+Using 0-based sequence positions
+OLIGO            start  len      tm     gc%  any_th  3'_th hairpin seq
+LEFT_PRIMER          0   20   58.64   55.00    0.00   0.00    0.00 TTAGAAGGGGTGTCTGGGTG
+SEQUENCE SIZE: 20
+INCLUDED REGION SIZE: 20
+
+    0 TTAGAAGGGGTGTCTGGGTG
+      >>>>>>>>>>>>>>>>>>>>
+
+KEYS (in order of precedence):
+>>>>>> left primer
+
+
+
+Statistics
+         con   too    in    in   not          no    tm    tm   high  high  high        high      
+         sid  many   tar  excl    ok   bad    GC   too   too any_th 3'_th hair-  poly   end      
+        ered    Ns   get   reg   reg   GC% clamp   low  high  compl compl   pin     X  stab    ok
+Left       1     0     0     0     0     0     0     0     0      0     0     0     0     0     1
+libprimer3 release 2.4.0
+
+
+PRIMER PICKING RESULTS FOR hyb_probe_only
+
+No mispriming library specified
+Using 0-based sequence positions
+OLIGO            start  len      tm     gc%  any_th  3'_th hairpin seq
+LEFT_PRIMER          0   20   58.64   55.00    0.00   0.00    0.00 TTAGAAGGGGTGTCTGGGTG
+SEQUENCE SIZE: 20
+INCLUDED REGION SIZE: 20
+
+    0 TTAGAAGGGGTGTCTGGGTG
+      >>>>>>>>>>>>>>>>>>>>
+
+KEYS (in order of precedence):
+>>>>>> left primer
+
+
+
+Statistics
+         con   too    in    in   not          no    tm    tm   high  high  high        high      
+         sid  many   tar  excl    ok   bad    GC   too   too any_th 3'_th hair-  poly   end      
+        ered    Ns   get   reg   reg   GC% clamp   low  high  compl compl   pin     X  stab    ok
+Left       1     0     0     0     0     0     0     0     0      0     0     0     0     0     1
+libprimer3 release 2.4.0
+
+
