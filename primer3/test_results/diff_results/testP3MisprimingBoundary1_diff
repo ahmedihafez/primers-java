@@ -1,0 +1,18 @@
+29,30c29,30
+< PRIMER_LEFT_EXPLAIN=considered 83, high any compl 11, high repeat similarity 55, ok 17
+< PRIMER_RIGHT_EXPLAIN=considered 83, high any compl 4, high hairpin stability 3, ok 76
+---
+> PRIMER_LEFT_EXPLAIN=considered 83, high any compl 11, high repeat similarity 60, ok 12
+> PRIMER_RIGHT_EXPLAIN=considered 83, high any compl 13, high hairpin stability 3, ok 67
+32c32
+< PRIMER_PAIR_EXPLAIN=considered 3221, unacceptable product size 2040, tm diff too large 1181, ok 0
+---
+> PRIMER_PAIR_EXPLAIN=considered 985, unacceptable product size 985, ok 0
+55c55
+< PRIMER_RIGHT_EXPLAIN=considered 83, high any compl 8, high hairpin stability 3, ok 72
+---
+> PRIMER_RIGHT_EXPLAIN=considered 83, high any compl 31, high hairpin stability 3, ok 49
+57c57
+< PRIMER_PAIR_EXPLAIN=considered 5247, unacceptable product size 2942, tm diff too large 1473, high any compl 1, high mispriming library similarity 831, ok 0
+---
+> PRIMER_PAIR_EXPLAIN=considered 3528, unacceptable product size 2149, high any compl 1, high mispriming library similarity 1378, ok 0

@@ -1,0 +1,73 @@
+30c30
+< PRIMER_RIGHT_EXPLAIN=considered 35, too many Ns 33, ok 2
+---
+> PRIMER_RIGHT_EXPLAIN=considered 35, too many Ns 33, high hairpin stability 1, ok 1
+32c32
+< PRIMER_PAIR_EXPLAIN=considered 2, tm diff too large 1, no internal oligo 1, ok 0
+---
+> PRIMER_PAIR_EXPLAIN=considered 1, no internal oligo 1, ok 0
+59,60c59,60
+< PRIMER_RIGHT_EXPLAIN=considered 35, too many Ns 33, ok 2
+< PRIMER_PAIR_EXPLAIN=considered 2, tm diff too large 1, ok 1
+---
+> PRIMER_RIGHT_EXPLAIN=considered 35, too many Ns 33, high hairpin stability 1, ok 1
+> PRIMER_PAIR_EXPLAIN=considered 1, ok 1
+94c94
+< PRIMER_LEFT_EXPLAIN=considered 35, too many Ns 33, ok 2
+---
+> PRIMER_LEFT_EXPLAIN=considered 35, too many Ns 33, high hairpin stability 1, ok 1
+97c97
+< PRIMER_PAIR_EXPLAIN=considered 2, tm diff too large 1, no internal oligo 1, ok 0
+---
+> PRIMER_PAIR_EXPLAIN=considered 1, no internal oligo 1, ok 0
+108,109c108,109
+< PRIMER_LEFT_EXPLAIN=considered 35, too many Ns 33, ok 2
+< PRIMER_RIGHT_EXPLAIN=considered 35, too many Ns 33, ok 2
+---
+> PRIMER_LEFT_EXPLAIN=considered 35, too many Ns 33, high hairpin stability 1, ok 1
+> PRIMER_RIGHT_EXPLAIN=considered 35, too many Ns 33, high hairpin stability 1, ok 1
+111c111
+< PRIMER_PAIR_EXPLAIN=considered 4, unacceptable product size 1, tm diff too large 2, no internal oligo 1, ok 0
+---
+> PRIMER_PAIR_EXPLAIN=considered 1, no internal oligo 1, ok 0
+124c124
+< PRIMER_RIGHT_EXPLAIN=considered 35, too many Ns 33, ok 2
+---
+> PRIMER_RIGHT_EXPLAIN=considered 35, too many Ns 33, high hairpin stability 1, ok 1
+126c126
+< PRIMER_PAIR_EXPLAIN=considered 2, tm diff too large 1, no internal oligo 1, ok 0
+---
+> PRIMER_PAIR_EXPLAIN=considered 1, no internal oligo 1, ok 0
+154,155c154,155
+< PRIMER_RIGHT_EXPLAIN=considered 1, ok 1
+< PRIMER_PAIR_EXPLAIN=considered 2, unacceptable product size 1, tm diff too large 1, ok 0
+---
+> PRIMER_RIGHT_EXPLAIN=considered 1, high hairpin stability 1, ok 0
+> PRIMER_PAIR_EXPLAIN=considered 0, ok 0
+168,169c168,169
+< PRIMER_RIGHT_EXPLAIN=considered 1, ok 1
+< PRIMER_PAIR_EXPLAIN=considered 1, tm diff too large 1, ok 0
+---
+> PRIMER_RIGHT_EXPLAIN=considered 1, high hairpin stability 1, ok 0
+> PRIMER_PAIR_EXPLAIN=considered 0, ok 0
+182c182
+< PRIMER_RIGHT_EXPLAIN=considered 1, ok 1
+---
+> PRIMER_RIGHT_EXPLAIN=considered 1, high hairpin stability 1, ok 0
+184c184
+< PRIMER_PAIR_EXPLAIN=considered 2, unacceptable product size 1, tm diff too large 1, ok 0
+---
+> PRIMER_PAIR_EXPLAIN=considered 0, ok 0
+198c198
+< PRIMER_RIGHT_EXPLAIN=considered 1, ok 1
+---
+> PRIMER_RIGHT_EXPLAIN=considered 1, high hairpin stability 1, ok 0
+200c200
+< PRIMER_PAIR_EXPLAIN=considered 1, tm diff too large 1, ok 0
+---
+> PRIMER_PAIR_EXPLAIN=considered 0, ok 0
+253c253
+< =
+---
+> =
+\ No newline at end of file

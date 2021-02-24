@@ -2,9 +2,9 @@
 In progress Porting of Primer3 and PrimerPooler tools to java to be used as an API. 
 Please note that:
 
-Primer3 copyright are reserved to its authors (Whitehead Institute for Biomedical Research, Steve Rozen, Andreas Untergasser and Helen Skaletsky)
+Primer3 copyright are reserved to its authors (Andreas Untergasser, Ioana Cutcutache, Triinu Koressaar, Jian Ye, Brant C. Faircloth, Maido Remm and Steven G. Rozen)
 
-PrimerPooler copyright are reserved to its authors (Silas S. Brown et. al. 2017 )
+PrimerPooler copyright are reserved to its authors (Silas S. Brown, Yun-Wen Chen, Ming Wang, Alexandra Clipson, Eguzkine Ochoa, and Ming-Qing Du)
 
 Please if used in your work, cite:
 
@@ -15,11 +15,17 @@ For PrimerPooler : Silas S. Brown, Yun-Wen Chen, Ming Wang, Alexandra Clipson, E
 or both.
 
 
-This far from a clean API, use with caution.
-## TODO
-design a clean interface to use as API and add more documentation to the source code.
-Please note that the java version may contain undetected bugs and slower than the c version.
+This is far from a clean API, use with caution.
 
+## Versions
+The current version of the porting is :
+* Primer3 : 2.4.0
+* PrimerPooler : 1.5
+
+## TODO
+* design a clean interface to use as API and add more documentation to the source code.
+Please note that the java version may contain undetected bugs and slower than the c version.
+* Update and inlcude bugs fixes from lastest versions
 
 Any comments, suggestion or issues are welcome.
 

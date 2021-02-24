@@ -74,11 +74,13 @@ public class Primer3Main {
 
 	static String pr_release = LibPrimer3.libprimer3_release();
 	static String pr_program_name = "" ;
+	static HelpFormatter formatter;
+	static Options options;
 
 	static CommandLine setArgs(String[] args)
 	{
 		CommandLineParser parser = new DefaultParser();
-		Options options = new Options();
+		options = new Options();
 
 		Option  argOption   = Option.builder("formated_output").argName( "formated_output" ).longOpt("formated_output")
 				.desc("formated_output" )
@@ -161,7 +163,7 @@ public class Primer3Main {
 		options.addOption(helpOption);
 
 		// automatically generate the help statement
-		HelpFormatter formatter = new HelpFormatter();
+		formatter = new HelpFormatter();
 		formatter.setOptionComparator(null);
 		formatter.setLongOptSeparator("=");
 		try {
@@ -247,7 +249,8 @@ public class Primer3Main {
 
 
 
-
+		if(line.hasOption("help"))
+			formatter.printHelp("primer3", options);
 		if(line.hasOption("a"))
 			about=1;
 		if(line.hasOption("p"))

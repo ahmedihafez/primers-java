@@ -1,0 +1,4 @@
+2477c2477
+< PRIMER_MISPRIMING_LIBRARY=src/test/resources/groupA_test/humrep_and_simple.txt
+---
+> PRIMER_MISPRIMING_LIBRARY=../src/humrep_and_simple.txt
