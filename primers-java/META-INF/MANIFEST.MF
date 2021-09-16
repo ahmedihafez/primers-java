@@ -8,16 +8,5 @@ Require-Bundle: org.apache.commons.cli,
  biojava,
  org.apache.commons.lang3
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Export-Package: org.primer3,
- org.primer3.dpal,
- org.primer3.libprimer3,
- org.primer3.masker,
- org.primer3.multisearch,
- org.primer3.oligotm,
- org.primer3.p3_seq_lib,
- org.primer3.primer,
- org.primer3.search.multiplex,
- org.primer3.sequence,
- org.primer3.thal,
- org.ucam.ssb22.pooler
+Export-Package: org.ucam.ssb22.pooler
 Import-Package: org.slf4j
