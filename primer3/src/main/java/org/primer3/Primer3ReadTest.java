@@ -347,9 +347,9 @@ public class Primer3ReadTest {
 	
 				if (retvalList.get(g).glob_err.length() == 0 && retvalList.get(g).per_sequence_err.length() == 0  ) {
 
-					if (PaList.get(g).getFileFlag() != 0) {
+					if (PaList.get(0).getFileFlag() != 0) {
 
-						LibPrimer3.p3_print_oligo_lists(retvalList.get(g), SargsList.get(g), PaList.get(g),
+						LibPrimer3.p3_print_oligo_lists(retvalList.get(g), SargsList.get(g), PaList.get(0),
 								retvalList.get(g).per_sequence_err,
 								SargsList.get(g).getSequenceName());
 					}
@@ -358,14 +358,14 @@ public class Primer3ReadTest {
 				//PRINTING AGAIN
 				if(! SargsList.get(g).isMultiplex() )
 				if (format_output) {
-					boulder.print_format_output(io_version, PaList.get(g),
+					boulder.print_format_output(io_version, PaList.get(0),
 							SargsList.get(g), retvalList.get(g), pr_release,
-							PaList.get(g).getExplainFlag());
+							PaList.get(0).getExplainFlag());
 				} else {
 					/* Use boulder output */
 					
 					retvalList.get(g).print_boulder(io_version, 
-							PaList.get(g).getExplainFlag() != 0);
+							PaList.get(0).getExplainFlag() != 0);
 				}
 
 
