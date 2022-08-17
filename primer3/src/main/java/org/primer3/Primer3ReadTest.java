@@ -324,7 +324,7 @@ public class Primer3ReadTest {
 			
 			
 			//WE READ ALL THE RETVALS FROM THE FILE 				
-			List<P3RetVal> retvalList = read_from_file(args[0], PaList,SargsList);
+			List<P3RetVal> retvalList = read_from_file(args[0], PaList.get(0),SargsList);
 			
 			//WE PRINT AGAIN THE RETVALS
 			for(int g = 0; g < SargsList.size();g++){
@@ -428,7 +428,7 @@ public class Primer3ReadTest {
 		}
 	}
 	
-	public static List<P3RetVal> read_from_file(String path, List<P3GlobalSettings> pa,List<SeqArgs> sa){
+	public static List<P3RetVal> read_from_file(String path, P3GlobalSettings pa,List<SeqArgs> sa){
 		List<P3RetVal> result = new ArrayList<P3RetVal>();
 		Pattern p = Pattern.compile("[0-9]+");
 		List<P3RetValData> listOResults = new ArrayList<P3RetValData>(); //list of the generated retvals
@@ -482,15 +482,15 @@ public class Primer3ReadTest {
 
 		int indi = 0;
 		for ( P3RetValData obj : listOResults) {
-			P3RetVal new_retval = new P3RetVal(pa.get(indi), sa.get(indi));
+			P3RetVal new_retval = new P3RetVal(pa, sa.get(indi));
 			
-			if (pa.get(indi).isPickLeftPrimer() && pa.get(indi).isPickRightPrimer()) {
+			if (pa.isPickLeftPrimer() && pa.isPickRightPrimer()) {
 				new_retval.output_type = P3OutputType.primer_pairs;
 			} else {
 				new_retval.output_type = P3OutputType.primer_list;
 			}
-			if (	pa.get(indi).getPrimerTask() == P3Task.PICK_PRIMER_LIST ||
-					pa.get(indi).getPrimerTask() == P3Task.PICK_SEQUENCING_PRIMERS) {
+			if (	pa.getPrimerTask() == P3Task.PICK_PRIMER_LIST ||
+					pa.getPrimerTask() == P3Task.PICK_SEQUENCING_PRIMERS) {
 				new_retval.output_type = P3OutputType.primer_list;
 			}
 			
@@ -568,17 +568,17 @@ public class Primer3ReadTest {
 						//START AND LENGHT
 						if(line.matches("PRIMER_LEFT_[0-9]+=[0-9]+,[0-9]+")) {
 							List<String> start_length = Arrays.asList(line.substring(line.indexOf("=")+1).split(","));
-							left.start = Integer.parseInt(start_length.get(0)) - sa.get(indi).getIncludedRegionStart() - pa.get(indi).getFirstBaseIndex();
+							left.start = Integer.parseInt(start_length.get(0)) - sa.get(indi).getIncludedRegionStart() - pa.getFirstBaseIndex();
 							left.length = Integer.parseInt(start_length.get(1));
 						}
 						if(line.matches("PRIMER_RIGHT_[0-9]+=[0-9]+,[0-9]+")) {
 							List<String> start_length = Arrays.asList(line.substring(line.indexOf("=")+1).split(","));
-							right.start = Integer.parseInt(start_length.get(0)) - sa.get(indi).getIncludedRegionStart() - pa.get(indi).getFirstBaseIndex();
+							right.start = Integer.parseInt(start_length.get(0)) - sa.get(indi).getIncludedRegionStart() - pa.getFirstBaseIndex();
 							right.length = Integer.parseInt(start_length.get(1));
 						}
 						if(line.matches("PRIMER_INTERNAL_[0-9]+=[0-9]+,[0-9]+")) {
 							List<String> start_length = Arrays.asList(line.substring(line.indexOf("=")+1).split(","));
-							intl.start = Integer.parseInt(start_length.get(0)) - sa.get(indi).getIncludedRegionStart() - pa.get(indi).getFirstBaseIndex();
+							intl.start = Integer.parseInt(start_length.get(0)) - sa.get(indi).getIncludedRegionStart() - pa.getFirstBaseIndex();
 							intl.length = Integer.parseInt(start_length.get(1));
 						}
 						
@@ -755,20 +755,20 @@ public class Primer3ReadTest {
 				
 					//storing pairs in their place
 					if (new_retval.output_type == P3OutputType.primer_list) {
-						if ((pa.get(indi).isPickLeftPrimer())) {
+						if ((pa.isPickLeftPrimer())) {
 							new_retval.fwd.add_oligo_to_oligo_array(left);
 						}
-						if ((pa.get(indi).isPickRightPrimer())) {
+						if ((pa.isPickRightPrimer())) {
 							new_retval.rev.add_oligo_to_oligo_array(right);
 						}
-						if ((pa.get(indi).isPickInternalOligo())) {
+						if ((pa.isPickInternalOligo())) {
 							new_retval.intl.add_oligo_to_oligo_array(intl);
 						}
 						
 					}else {
 						pp.left = left;
 						pp.right = right;
-						if (pa.get(indi).isPickInternalOligo() ) {
+						if (pa.isPickInternalOligo() ) {
 							pp.intl = intl;
 						}
 						new_retval.best_pairs.add_pair(pp);
