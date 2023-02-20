@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>primersTest</name>
+	<name>primer3</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -22,7 +22,7 @@
 	</natures>
 	<filteredResources>
 		<filter>
-			<id>1675767624958</id>
+			<id>1675767624955</id>
 			<name></name>
 			<type>30</type>
 			<matcher>

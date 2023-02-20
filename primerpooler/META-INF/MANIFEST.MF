@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Primers-java
+Bundle-SymbolicName: org.ucam.ssb22.pooler;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Require-Bundle: org.apache.commons.cli,
+ org.apache.commons.io,
+ org.apache.commons.lang3,
+ biojava
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Export-Package: org.ucam.ssb22.pooler,
+ org.ucam.ssb22.pooler.primers,
+ org.ucam.ssb22.pooler.primers128,
+ org.ucam.ssb22.pooler.primers64,
+ resources,
+ resources.thal
+Import-Package: org.slf4j

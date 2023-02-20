@@ -15,11 +15,13 @@
 		<attributes>
 			<attribute name="optional" value="true"/>
 			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="test" value="true"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry excluding="**" kind="src" output="target/test-classes" path="src/test/resources">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="test" value="true"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
@@ -33,18 +35,38 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="src" path="/primer3-java"/>
-	<classpathentry kind="lib" path="/home/ahmed/workspace/.metadata/.plugins/org.eclipse.pde.core/.bundle_pool/plugins/org.apache.commons.io_2.6.0.v20190123-2029.jar" sourcepath="/home/ahmed/workspace/.metadata/.plugins/org.eclipse.pde.core/.bundle_pool/plugins/org.apache.commons.io.source_2.6.0.v20190123-2029.jar">
+	<classpathentry combineaccessrules="false" kind="src" path="/primer3"/>
+	<classpathentry kind="lib" path="/home/ahafez/eclipse-workspaces/eclipse-workspace-6-22/.metadata/.plugins/org.eclipse.pde.core/.bundle_pool/plugins/org.apache.commons.io_2.8.0.v20210415-0900.jar" sourcepath="/home/ahafez/eclipse-workspaces/eclipse-workspace-6-22/.metadata/.plugins/org.eclipse.pde.core/.bundle_pool/plugins/org.apache.commons.io.source_2.8.0.v20210415-0900.jar">
 		<accessrules>
 			<accessrule kind="accessible" pattern="org/apache/commons/io/*"/>
 			<accessrule kind="accessible" pattern="org/apache/commons/io/comparator/*"/>
+			<accessrule kind="accessible" pattern="org/apache/commons/io/file/*"/>
 			<accessrule kind="accessible" pattern="org/apache/commons/io/filefilter/*"/>
+			<accessrule kind="accessible" pattern="org/apache/commons/io/function/*"/>
 			<accessrule kind="accessible" pattern="org/apache/commons/io/input/*"/>
+			<accessrule kind="accessible" pattern="org/apache/commons/io/input/buffer/*"/>
 			<accessrule kind="accessible" pattern="org/apache/commons/io/monitor/*"/>
 			<accessrule kind="accessible" pattern="org/apache/commons/io/output/*"/>
 			<accessrule kind="accessible" pattern="org/apache/commons/io/serialization/*"/>
 			<accessrule ignoreifbetter="true" kind="nonaccessible" pattern="**/*"/>
 		</accessrules>
+	</classpathentry>
+	<classpathentry kind="src" path="target/generated-sources/annotations">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="ignore_optional_problems" value="true"/>
+			<attribute name="m2e-apt" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" output="target/test-classes" path="target/generated-test-sources/test-annotations">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="ignore_optional_problems" value="true"/>
+			<attribute name="m2e-apt" value="true"/>
+			<attribute name="test" value="true"/>
+		</attributes>
 	</classpathentry>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
