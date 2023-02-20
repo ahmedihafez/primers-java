@@ -4,7 +4,7 @@
   <groupId>org.primer3</groupId>
   <artifactId>primer3</artifactId>
   <packaging>jar</packaging>
-  <version>1.0-SNAPSHOT</version>
+  <version>2.4.0-SNAPSHOT</version>
   <name>primer3</name>
   <url>http://maven.apache.org</url>
   <dependencies>

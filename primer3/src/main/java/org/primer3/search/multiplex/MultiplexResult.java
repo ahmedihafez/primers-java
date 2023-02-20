@@ -113,13 +113,14 @@ public class MultiplexResult {
 	
 
 	public void print_boulder(int io_version) {
-		System.out.println("Result Sets for " + this.groupName);
+		System.out.println("MULTIPLEX_GROUP=" + this.groupName);
 		for(int i = 0 ; i < multiplexSets.size();i++) {
-			System.out.println("Sets #" + i);
+			System.out.println("MULTIPLEX_SET=" + i);
 			multiplexSets.get(i).print_buolder(io_version);
 				
 		}
-		
+		System.out.println("MULTIPLEX_GROUP_END");
+
 	}
 
 

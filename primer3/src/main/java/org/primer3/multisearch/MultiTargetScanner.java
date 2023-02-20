@@ -234,7 +234,11 @@ public class MultiTargetScanner {
 					MultiTargetPrimerRecord  r1 = (MultiTargetPrimerRecord ) o1;
 					MultiTargetPrimerRecord  r2 = (MultiTargetPrimerRecord ) o2;
 					
-					if(Math.abs(r1.quality - r2.quality ) <=  0.05 )
+					// FIXME :: this might be causing a problem
+					// java.lang.IllegalArgumentException: Comparison method violates its general contract!
+					// if(Math.abs(r1.quality - r2.quality ) <=  0.05 )
+					// the following fix appears to work !
+					if( (Math.round(r1.quality*100.0)/100.0) == (Math.round(r2.quality*100.0)/100.0) )
 					{
 						return -Integer.compare(r1.getNTarget(), r2.getNTarget());
 					}

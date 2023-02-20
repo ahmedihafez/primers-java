@@ -488,9 +488,9 @@ public class MultiplexSet implements Comparable<MultiplexSet>  {
 
 	public void print_buolder( int io_version) {
 		
-		System.out.println("********");
+		//System.out.println("********");
 		System.out.println("PRIMER_MULTIPLEX_NUM_TARGETS="+this.set.size());
-		System.out.println("***");
+		System.out.println("****");
 		for(Entry<String, HashMap<String, Double>> mAnySp : compl_any.entrySet())
 		{
 			System.out.print(mAnySp.getKey() + " : ");
@@ -505,9 +505,9 @@ public class MultiplexSet implements Comparable<MultiplexSet>  {
 		{
 			
 			pair.getValue().print_boulder( parentResult.sourcePairsResult.get(pair.getKey()), pair.getKey(), io_version);
-			System.out.println("***");
+			//System.out.println("***");
 		}
-		System.out.println("********");
+		//System.out.println("********");
 	}
 
 	

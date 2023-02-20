@@ -4,7 +4,7 @@
   <groupId>org.primer3</groupId>
   <artifactId>primer3</artifactId>
   <name>primer3</name>
-  <version>1.0-SNAPSHOT</version>
+  <version>2.4.0-SNAPSHOT</version>
   <url>http://maven.apache.org</url>
   <build>
     <plugins>

@@ -33,7 +33,6 @@ import org.biojava.nbio.core.sequence.compound.NucleotideCompound;
 import org.biojava.nbio.core.sequence.io.DNASequenceCreator;
 import org.biojava.nbio.core.sequence.io.FastaReader;
 import org.biojava.nbio.core.sequence.io.GenericFastaHeaderParser;
-import org.primer3.p3_seq_lib.DNACharSet;
 import org.ucam.ssb22.pooler.Amplicons.PrimerToFind;
 import org.ucam.ssb22.pooler.Triangle.TwoRanges;
 import org.ucam.ssb22.pooler.primers.CountResult;

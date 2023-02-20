@@ -14,7 +14,6 @@ limitations under the License.
 package org.ucam.ssb22.pooler;
 
 import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -25,7 +24,6 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.time.Instant;
 
-import org.primer3.masker.formula_parameters;
 
 public class Fasta2Bit {
 

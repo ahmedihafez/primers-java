@@ -577,8 +577,10 @@ public class P3RetVal {
 				System.out.format("PRIMER_PAIR%s_PRODUCT_SIZE=%d\n", suffix,
 						retval.best_pairs.pairs.get(i).product_size);
 				/* Print the product Tm if a Tm range is defined */
-				if (pa.getProductMaxTM() != LibPrimer3.PR_DEFAULT_PRODUCT_MAX_TM ||
-						pa.getProductMinTM() != LibPrimer3.PR_DEFAULT_PRODUCT_MIN_TM) {
+				// Modified : print pair tm anyway 
+				// if (pa.getProductMaxTM() != LibPrimer3.PR_DEFAULT_PRODUCT_MAX_TM ||
+				//		pa.getProductMinTM() != LibPrimer3.PR_DEFAULT_PRODUCT_MIN_TM) 
+				{
 					System.out.format("PRIMER_PAIR%s_PRODUCT_TM=%.4f\n", suffix,
 							retval.best_pairs.pairs.get(i).product_tm);
 

@@ -612,6 +612,7 @@ public class Primer3Main {
 			boolean multiplexHasResult = LibPrimer3.multiplexSearch.search();
 			// this part is for multiplex after finishing each seq, we wait to all seqs within the same well are ready to search
 
+			boolean firstSeq = true;
 			for(P3RetVal lateRetval : lateResult)
 			{
 				if (format_output) {
@@ -620,6 +621,11 @@ public class Primer3Main {
 							global_pa.getExplainFlag());
 				} else {
 					/* Use boulder output */
+					if(firstSeq) {
+						System.out.format("=\n");
+						firstSeq=false;
+					}
+					System.out.format("SEQUENCE_ID=%s\n", lateRetval.sa.getSequenceName());
 					lateRetval.print_boulder(io_version, 
 							global_pa.getExplainFlag() != 0);
 				}
